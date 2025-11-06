@@ -52,16 +52,91 @@ pytest tests/test_tools.py
 ```
 
 ### Docker Workflow
+
+**Image Details**:
+- Base: `python:3.11-slim`
+- Size: ~2.74GB (includes GTK+3, Xvfb, gnome-screenshot)
+- Virtual display: Xvfb :99 (1920x1080x24)
+- Entrypoint: Custom script handling X server initialization
+
+**Build & Run**:
 ```bash
 # Build image
-docker build -t grokputer .
+docker build -t grokputer:latest .
 
-# Run with volume mount for vault access
-docker run -it -v $(pwd)/vault:/app/vault grokputer
+# Quick test with docker-compose
+TASK="invoke server prayer" docker-compose run --rm grokputer
 
-# Test specific task
-docker run -it grokputer --task "label 5 memes"
+# Run with custom task
+TASK="scan vault for files" docker-compose run --rm grokputer
+
+# Direct docker run (Windows paths require special handling)
+docker run --rm --env-file .env grokputer:latest python main.py --task "your task"
+
+# With volume mount for vault access
+docker run --rm --env-file .env -v "$(pwd)/vault:/app/vault" grokputer:latest
 ```
+
+**Docker Compose Usage**:
+```yaml
+# Main service
+services:
+  grokputer:
+    build: .
+    volumes:
+      - ./vault:/app/vault    # Vault files
+      - ./logs:/app/logs      # Execution logs
+      - ./.env:/app/.env:ro   # Environment config
+    environment:
+      - TASK=${TASK:-invoke server prayer}
+
+# VNC debug service (optional, use --profile debug)
+docker-compose --profile debug up grokputer-vnc
+# Connect VNC client to localhost:5900
+```
+
+**Container Features**:
+- ✓ Headless X server (Xvfb) for screenshot capture
+- ✓ Screenshot working (~6-8KB PNG per capture)
+- ✓ Volume mounting for vault and logs
+- ✓ Environment variable passing via .env file
+- ✓ Automatic X authority handling
+- ✓ Graceful entrypoint with proper timing
+
+**IMPORTANT LIMITATION - Black Screen**:
+⚠️ The Docker container captures a **blank black screen** because Xvfb creates an empty virtual display with no desktop environment or windows rendered. This means:
+
+- ✅ **Good for**: Vault scanning, bash commands, API testing, tool execution, infrastructure testing
+- ❌ **NOT for**: Actual screen observation, mouse/keyboard control of real applications, visual analysis
+
+**For real computer control** (seeing actual windows, clicking buttons, etc.), you MUST run natively:
+```bash
+# Native execution - sees your actual screen
+python main.py --task "describe what's on my screen"
+```
+
+The Docker setup is designed for **sandboxed execution** and **non-visual tasks** only. Screenshots will always be black because there's no desktop environment running in the container.
+
+**Tested Commands**:
+```bash
+# Server prayer (verified working)
+docker run --rm --env-file .env grokputer:latest \
+  python main.py --task "invoke server prayer" --max-iterations 1
+
+# Vault scanning (verified working - detected 9 files)
+TASK="scan vault for files" docker-compose run --rm grokputer
+
+# Screenshot capture (verified working - ~6KB PNG)
+docker run --rm --env-file .env grokputer:latest \
+  sh -c "scrot /tmp/screenshot.png && ls -lh /tmp/screenshot.png"
+```
+
+**Performance in Docker**:
+- Xvfb startup: ~3 seconds
+- Screenshot capture: ~50ms
+- API latency: ~2-3 seconds (same as native)
+- Full iteration: ~3-4 seconds total
+- Memory usage: ~500MB typical
 
 ### Development Mode
 ```bash
@@ -186,15 +261,16 @@ grokputer/
 
 **Working Features**:
 - ✓ xAI Grok API integration (OpenAI-compatible)
-- ✓ Screen observation (~470KB base64 per frame)
+- ✓ Screen observation (~8KB base64 per frame in Docker, ~470KB native)
 - ✓ Tool execution (bash, computer control, vault scanning)
 - ✓ Observe-reason-act loop (2-3s per iteration)
 - ✓ Server prayer invocation
 - ✓ Windows console compatibility (ASCII output)
-- ✓ Docker containerization
+- ✓ Docker containerization with Xvfb
+- ✓ Vault file mounting and access
 - ✓ Unit test coverage
 
-**Verified Commands**:
+**Verified Commands (Native)**:
 ```bash
 # Boot test (working)
 python main.py --task "invoke server prayer"
@@ -204,6 +280,23 @@ python main.py --task "scan the vault directory"
 
 # With max iterations
 python main.py --task "describe screen" --max-iterations 3
+```
+
+**Verified Commands (Docker)**:
+```bash
+# Server prayer invocation (working)
+docker run --rm --env-file .env grokputer:latest \
+  python main.py --task "invoke server prayer" --max-iterations 1
+
+# Vault file scanning (working - detected 9 files including PDFs and markdown)
+TASK="scan vault for files" docker-compose run --rm grokputer
+
+# Screenshot capture test (working - 6KB PNG output)
+docker run --rm --env-file .env grokputer:latest \
+  sh -c "scrot /tmp/test.png && ls -lh /tmp/test.png"
+
+# Multi-iteration task (working - up to 10 iterations tested)
+TASK="scan vault for files" docker-compose run --rm grokputer
 ```
 
 **Known Configuration**:

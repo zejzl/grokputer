@@ -7,7 +7,7 @@ services:
     container_name: grokputer
     environment:
       - XAI_API_KEY=${XAI_API_KEY}
-      - GROK_MODEL=${GROK_MODEL:-grok-beta}
+      - GROK_MODEL=${GROK_MODEL:-grok-4-fast-reasoning}
       - XAI_BASE_URL=${XAI_BASE_URL:-https://api.x.ai/v1}
       - REQUIRE_CONFIRMATION=${REQUIRE_CONFIRMATION:-true}
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
@@ -27,7 +27,7 @@ services:
     container_name: grokputer-vnc
     environment:
       - XAI_API_KEY=${XAI_API_KEY}
-      - GROK_MODEL=${GROK_MODEL:-grok-beta}
+      - GROK_MODEL=${GROK_MODEL:-grok-4-fast-reasoning}
       - DISPLAY=:99
     volumes:
       - ./vault:/app/vault

@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     xvfb \
     x11vnc \
     scrot \
+    gnome-screenshot \
     python3-tk \
     python3-dev \
     && rm -rf /var/lib/apt/lists/*
@@ -31,9 +32,16 @@ COPY . .
 # Create necessary directories
 RUN mkdir -p /app/vault /app/logs
 
+# Copy and set up entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN apt-get update && apt-get install -y dos2unix && dos2unix /entrypoint.sh && apt-get remove -y dos2unix && rm -rf /var/lib/apt/lists/*
+RUN chmod +x /entrypoint.sh
+
 # Set Python path
 ENV PYTHONPATH=/app
 
-# Start Xvfb and run Grokputer
-CMD Xvfb :99 -screen 0 1920x1080x24 & \
-    python main.py --task "${TASK:-invoke server prayer}"
+# Use entrypoint script
+ENTRYPOINT ["/entrypoint.sh"]
+
+# Default command
+CMD ["python", "main.py", "--task", "invoke server prayer"]
