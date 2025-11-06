@@ -1,0 +1,18 @@
+# Core Dependencies
+openai>=1.0.0              # xAI Grok API (OpenAI-compatible)
+pyautogui>=0.9.54          # Screen capture and control
+pillow>=10.0.0             # Image processing
+requests>=2.31.0           # HTTP requests for web tasks
+python-dotenv>=1.0.0       # Environment variable management
+
+# CLI
+click>=8.1.0               # Command-line interface
+
+# Utilities
+typing-extensions>=4.8.0   # Type hints for older Python versions
+
+# Development Dependencies
+pytest>=7.4.0              # Testing framework
+pytest-cov>=4.1.0          # Coverage reporting
+black>=23.0.0              # Code formatting
+flake8>=6.1.0              # Linting

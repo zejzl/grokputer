@@ -1,0 +1,224 @@
+"""
+Grok API client wrapper for Grokputer.
+Uses xAI's OpenAI-compatible API to communicate with Grok.
+"""
+
+import logging
+from typing import List, Dict, Any, Optional
+from openai import OpenAI
+from src import config
+
+logger = logging.getLogger(__name__)
+
+
+class GrokClient:
+    """
+    Wrapper for xAI's Grok API using OpenAI-compatible interface.
+    """
+
+    def __init__(
+        self,
+        api_key: Optional[str] = None,
+        base_url: Optional[str] = None,
+        model: Optional[str] = None
+    ):
+        """
+        Initialize the Grok client.
+
+        Args:
+            api_key: xAI API key (defaults to config.XAI_API_KEY)
+            base_url: API base URL (defaults to config.XAI_BASE_URL)
+            model: Model name (defaults to config.GROK_MODEL)
+        """
+        self.api_key = api_key or config.XAI_API_KEY
+        self.base_url = base_url or config.XAI_BASE_URL
+        self.model = model or config.GROK_MODEL
+
+        # Initialize OpenAI client pointing to xAI
+        self.client = OpenAI(
+            api_key=self.api_key,
+            base_url=self.base_url
+        )
+
+        logger.info(f"Initialized Grok client: model={self.model}, base_url={self.base_url}")
+
+    def create_message(
+        self,
+        task: str,
+        screenshot_base64: Optional[str] = None,
+        conversation_history: Optional[List[Dict[str, Any]]] = None
+    ) -> Dict[str, Any]:
+        """
+        Send a message to Grok with optional screenshot and get a response.
+
+        Args:
+            task: The task description/prompt
+            screenshot_base64: Base64-encoded screenshot (optional)
+            conversation_history: Previous conversation messages (optional)
+
+        Returns:
+            Response from Grok API
+        """
+        try:
+            messages = []
+
+            # Add system prompt
+            messages.append({
+                "role": "system",
+                "content": config.SYSTEM_PROMPT
+            })
+
+            # Add conversation history if provided
+            if conversation_history:
+                messages.extend(conversation_history)
+
+            # Build user message
+            user_content = f"Task: {task}"
+
+            # Add screenshot if provided
+            if screenshot_base64:
+                user_content += f"\n\nScreen observation available (base64): {screenshot_base64[:100]}..."
+
+            messages.append({
+                "role": "user",
+                "content": user_content
+            })
+
+            logger.info(f"Sending message to Grok: task='{task[:50]}...'")
+
+            # Make API call
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                tools=config.TOOLS if config.TOOLS else None,
+                temperature=0.7,
+                max_tokens=4096
+            )
+
+            logger.info(f"Received response from Grok: {response.id}")
+
+            return self._parse_response(response)
+
+        except Exception as e:
+            logger.error(f"Error calling Grok API: {e}")
+            return {
+                "status": "error",
+                "error": str(e)
+            }
+
+    def _parse_response(self, response: Any) -> Dict[str, Any]:
+        """
+        Parse the API response into a standardized format.
+
+        Args:
+            response: Raw API response
+
+        Returns:
+            Parsed response dictionary
+        """
+        try:
+            choice = response.choices[0]
+            message = choice.message
+
+            result = {
+                "status": "success",
+                "response_id": response.id,
+                "model": response.model,
+                "finish_reason": choice.finish_reason,
+                "content": message.content,
+                "tool_calls": []
+            }
+
+            # Parse tool calls if present
+            if hasattr(message, 'tool_calls') and message.tool_calls:
+                for tool_call in message.tool_calls:
+                    result["tool_calls"].append({
+                        "id": tool_call.id,
+                        "type": tool_call.type,
+                        "function": {
+                            "name": tool_call.function.name,
+                            "arguments": tool_call.function.arguments
+                        }
+                    })
+
+                logger.info(f"Grok requested {len(result['tool_calls'])} tool calls")
+
+            return result
+
+        except Exception as e:
+            logger.error(f"Error parsing Grok response: {e}")
+            return {
+                "status": "error",
+                "error": f"Failed to parse response: {e}"
+            }
+
+    def continue_conversation(
+        self,
+        tool_results: List[Dict[str, Any]],
+        conversation_history: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
+        """
+        Continue the conversation after tool execution.
+
+        Args:
+            tool_results: Results from executed tools
+            conversation_history: Previous conversation messages
+
+        Returns:
+            Next response from Grok
+        """
+        try:
+            messages = [{"role": "system", "content": config.SYSTEM_PROMPT}]
+            messages.extend(conversation_history)
+
+            # Add tool results as assistant messages
+            for result in tool_results:
+                messages.append({
+                    "role": "tool",
+                    "tool_call_id": result.get("tool_call_id", ""),
+                    "content": str(result.get("result", ""))
+                })
+
+            logger.info(f"Continuing conversation with {len(tool_results)} tool results")
+
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                tools=config.TOOLS if config.TOOLS else None,
+                temperature=0.7,
+                max_tokens=4096
+            )
+
+            return self._parse_response(response)
+
+        except Exception as e:
+            logger.error(f"Error continuing conversation: {e}")
+            return {
+                "status": "error",
+                "error": str(e)
+            }
+
+    def test_connection(self) -> bool:
+        """
+        Test the connection to Grok API.
+
+        Returns:
+            True if connection is successful, False otherwise
+        """
+        try:
+            logger.info("Testing Grok API connection...")
+
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "user", "content": "Hello, Grok. This is a connection test."}
+                ],
+                max_tokens=50
+            )
+
+            logger.info("Grok API connection successful")
+            return True
+
+        except Exception as e:
+            logger.error(f"Grok API connection failed: {e}")
+            return False

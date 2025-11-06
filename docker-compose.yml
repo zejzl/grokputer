@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  grokputer:
+    build: .
+    image: grokputer:latest
+    container_name: grokputer
+    environment:
+      - XAI_API_KEY=${XAI_API_KEY}
+      - GROK_MODEL=${GROK_MODEL:-grok-beta}
+      - XAI_BASE_URL=${XAI_BASE_URL:-https://api.x.ai/v1}
+      - REQUIRE_CONFIRMATION=${REQUIRE_CONFIRMATION:-true}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - TASK=${TASK:-invoke server prayer}
+    volumes:
+      - ./vault:/app/vault
+      - ./logs:/app/logs
+      - ./.env:/app/.env:ro
+    stdin_open: true
+    tty: true
+    command: python main.py --task "${TASK:-invoke server prayer}"
+
+  # Optional: VNC server for debugging
+  grokputer-vnc:
+    build: .
+    image: grokputer:latest
+    container_name: grokputer-vnc
+    environment:
+      - XAI_API_KEY=${XAI_API_KEY}
+      - GROK_MODEL=${GROK_MODEL:-grok-beta}
+      - DISPLAY=:99
+    volumes:
+      - ./vault:/app/vault
+      - ./logs:/app/logs
+      - ./.env:/app/.env:ro
+    ports:
+      - "5900:5900"
+    command: >
+      sh -c "Xvfb :99 -screen 0 1920x1080x24 &
+             x11vnc -display :99 -forever -shared &
+             python main.py --task '${TASK:-invoke server prayer}'"
+    profiles:
+      - debug
