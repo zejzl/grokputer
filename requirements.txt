@@ -10,9 +10,23 @@ click>=8.1.0               # Command-line interface
 
 # Utilities
 typing-extensions>=4.8.0   # Type hints for older Python versions
+tenacity>=8.2.0            # Retry logic with exponential backoff (CRITICAL for Phase 0)
 
 # Development Dependencies
+pytest-asyncio>=0.21.0     # Async testing framework
 pytest>=7.4.0              # Testing framework
 pytest-cov>=4.1.0          # Coverage reporting
 black>=23.0.0              # Code formatting
 flake8>=6.1.0              # Linting
+
+# LoRA Fine-Tuning Dependencies (AMD ROCm compatible)
+# Install PyTorch with ROCm first: pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.1
+transformers>=4.36.0       # Hugging Face transformers
+peft>=0.7.0                # Parameter-Efficient Fine-Tuning (LoRA)
+accelerate>=0.25.0         # Training acceleration
+trl>=0.7.0                 # Transformer Reinforcement Learning (SFTTrainer)
+datasets>=2.16.0           # Dataset loading and processing
+bitsandbytes>=0.41.0       # 4-bit quantization (Note: May need special build for AMD)
+safetensors>=0.4.0         # Safe model serialization
+sentencepiece>=0.1.99      # Tokenizer support
+protobuf>=3.20.0           # Protocol buffers
