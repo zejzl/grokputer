@@ -157,10 +157,8 @@ class Grokputer:
                     )
                     screenshot_size = len(screenshot_base64)
                     screenshot_success = True
-                    self.session_logger.log_observation(True, screenshot_size)
                     self.logger.info(f"Screenshot captured: {screenshot_size} bytes")
                 except Exception as e:
-                    self.session_logger.log_observation(False, error=str(e))
                     self.logger.error(f"Failed to capture screenshot: {e}")
                     iteration_errors.append(f"Screenshot capture failed: {e}")
                     screenshot_base64 = None
