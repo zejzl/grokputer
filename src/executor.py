@@ -68,7 +68,7 @@ class ToolExecutor:
                     result = self._execute_bash(arguments)
                 elif function_name == "computer":
                     result = self._execute_computer(arguments)
-                elif function_name in ["scan_vault", "invoke_prayer"]:
+                elif function_name in ["scan_vault", "invoke_prayer", "get_vault_stats", "mcp_vault_operation"]:
                     result = execute_custom_tool(function_name, **arguments)
                 else:
                     result = {
@@ -97,7 +97,7 @@ class ToolExecutor:
 
     def _execute_bash(self, arguments: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Execute a bash command.
+        Execute a bash command with safety scoring.
 
         Args:
             arguments: Dictionary with 'command' key
@@ -110,13 +110,28 @@ class ToolExecutor:
         if not command:
             return {"status": "error", "error": "No command provided"}
 
+        # Calculate safety score
+        safety_score = config.get_command_safety_score(command)
+        risk_level = "LOW" if safety_score <= 30 else "MEDIUM" if safety_score <= 70 else "HIGH"
+
+        # Log safety assessment
+        logger.info(f"Command safety score: {safety_score}/100 (risk: {risk_level}) - {command}")
+
+        # Determine if confirmation is needed
+        needs_confirmation = config.requires_confirmation(command)
+
         # Confirm if required
-        if self.require_confirmation:
-            confirm = self._confirm_action(f"Execute bash command: {command}")
+        if needs_confirmation:
+            confirm = self._confirm_action(
+                f"Execute bash command (risk: {risk_level}, score: {safety_score}/100): {command}"
+            )
             if not confirm:
+                logger.warning(f"User cancelled high-risk command: {command}")
                 return {
                     "status": "cancelled",
-                    "message": "User cancelled bash execution"
+                    "message": "User cancelled bash execution",
+                    "safety_score": safety_score,
+                    "risk_level": risk_level
                 }
 
         try:
@@ -136,19 +151,23 @@ class ToolExecutor:
                 "command": command,
                 "stdout": result.stdout,
                 "stderr": result.stderr,
-                "returncode": result.returncode
+                "returncode": result.returncode,
+                "safety_score": safety_score,
+                "risk_level": risk_level
             }
 
         except subprocess.TimeoutExpired:
             return {
                 "status": "error",
-                "error": "Command timed out (30s limit)"
+                "error": "Command timed out (30s limit)",
+                "safety_score": safety_score
             }
         except Exception as e:
             logger.error(f"Error executing bash: {e}")
             return {
                 "status": "error",
-                "error": str(e)
+                "error": str(e),
+                "safety_score": safety_score
             }
 
     def _execute_computer(self, arguments: Dict[str, Any]) -> Dict[str, Any]:

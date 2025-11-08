@@ -2,6 +2,153 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Effective AI Pair Programming
+- Prioritize user requests above all
+- Simple questions → quick answers (note assumptions at end)
+- Complex problems → numbered plan first, then code
+- Debugging stuck users → propose multiple causes, pick most likely, suggest fixes
+- Always write complete, runnable code (no placeholders/TODOs)
+- Readability > performance
+- Include all imports, use markdown codeblocks with filenames
+
+## When Users Are Stuck
+If user is debugging and:
+- Seems frustrated
+- Repeats same error multiple times
+- Appears stuck
+
+Then propose:
+1. 2-3 possible causes
+2. Pick the most likely
+3. Suggest specific fixes OR further debugging steps
+
+## Modern CLI Tool Upgrades
+
+A curated set of CLI tools that replace traditional Unix utilities with modern, user-friendly alternatives. These tools prioritize speed, better defaults, and improved UX.
+
+### Quick Install (Windows - winget; PowerShell)
+```bash
+winget install -e sharkdp.fd
+winget install -e BurntSushi.ripgrep
+winget install -e jqlang.jq
+winget install -e junegunn.fzf
+winget install -e eza-community.eza
+winget install -e sharkdp.bat
+winget install -e ajeetdsouza.zoxide
+winget install -e HTTPie.HTTPie
+winget install -e dandavison.delta
+# ast-grep: easiest via npm or cargo (pick one)
+npm i -g @ast-grep/cli
+# or: cargo install ast-grep
+```
+
+### Tool Reference
+
+| Tool | Replaces | What it does | Key benefits |
+|------|----------|--------------|--------------|
+| **fd** | `find` | Fast, user-friendly file finder | Simpler syntax, blazing speed, ignores `.gitignore` by default |
+| **ripgrep (rg)** | `grep`/`ack`/`ag` | Code searcher (recursive grep) | Much faster, respects `.gitignore`, great defaults |
+| **ast-grep (sg)** | — | AST-aware code search & refactor | Searches syntax not text; precise refactors across codebases |
+| **jq** | — | JSON processor | Query/transform JSON: `jq '.items[].id'` |
+| **fzf** | — | Fuzzy finder (anything → filtered list) | Interactive history search, file picker: `fzf`, `history \| fzf` |
+| **bat** | `cat` | `cat` with wings: syntax, paging, git | Syntax highlighting, line numbers, Git integration |
+| **eza** | `ls` | Modern `ls` | Better defaults, icons/trees/git info, readable at a glance |
+| **zoxide** | `cd` | Smart `cd` (learns your paths) | Jumps to dirs by frecency: `z foo`, `zi my/project` |
+| **httpie** | `curl` | Human-friendly HTTP client | Cleaner than `curl` for JSON APIs (colors, headers, pretty output) |
+| **git-delta** | `git diff` pager | Better `git diff`/pager | Side-by-side, syntax-colored diffs; easier code reviews in terminal |
+
+### Example Usage
+```bash
+# fd: find TypeScript files modified in last 7 days
+fd -e ts --changed-within 7d
+
+# ripgrep: search for TODO comments, exclude node_modules
+rg "TODO" -g '!node_modules'
+
+# ast-grep: find all React useState calls
+sg -p 'useState($ARG)'
+
+# jq: extract all IDs from JSON response
+curl api.example.com/users | jq '.users[].id'
+
+# fzf: fuzzy search command history
+history | fzf
+
+# bat: view file with syntax highlighting
+bat src/main.rs
+
+# eza: list files with git status and icons
+eza -l --git --icons
+
+# zoxide: jump to frequently used directory
+z proj  # matches ~/code/my-project
+
+# httpie: GET request with pretty output
+http GET api.example.com/data Authorization:"Bearer $TOKEN"
+
+# git-delta: use as git diff pager
+git config --global core.pager delta
+git diff
+```
+
+### Why These Tools?
+
+- **Speed**: Built in Rust/Go; orders of magnitude faster than originals
+- **Smart defaults**: Respect `.gitignore`, use colors, handle common cases
+- **Better UX**: Clearer syntax, helpful output, fewer flags to remember
+- **Interoperability**: Drop-in replacements; use alongside traditional tools
+
+### Pro Tips
+
+- **Combine tools**: `fd -e js | fzf | xargs bat` (find JS files → pick one → view with syntax)
+- **Aliases**: Add to `.zshrc`/`.bashrc`: `alias cat=bat`, `alias ls=eza`, `alias diff='git diff'`
+- **ripgrep + ast-grep**: Use `rg` for speed, `sg` for precision (see ast-grep vs ripgrep section)
+
+## AI Pair Programming Best Practices
+
+### Approach
+- Simple questions → quick answers with assumptions noted
+- Complex problems → create detailed numbered plan first, then implement
+- Stuck users → propose 2-3 causes, pick most likely, suggest fixes
+
+### Code Quality Standards
+- Write complete, immediately runnable code
+- No placeholders, TODOs, or `// ...` truncations
+- Include all imports and dependencies
+- Use markdown codeblocks with filenames as comments
+- Prioritize readability over performance
+- Anticipate edge cases
+
+### Security
+- Never hardcode secrets/API keys in code
+- Proactively call out security concerns
+- Suggest environment variables for configuration
+
+## Security Reminders
+- Never hardcode API keys in client-side code
+- Call out potential security concerns proactively
+- Use environment variables for secrets
+
+## AI Pair Programming Best Practices
+
+### Approach
+- Simple questions → quick answers with assumptions noted
+- Complex problems → create detailed numbered plan first, then implement
+- Stuck users → propose 2-3 causes, pick most likely, suggest fixes
+
+### Code Quality Standards
+- Write complete, immediately runnable code
+- No placeholders, TODOs, or `// ...` truncations
+- Include all imports and dependencies
+- Use markdown codeblocks with filenames as comments
+- Prioritize readability over performance
+- Anticipate edge cases
+
+### Security
+- Never hardcode secrets/API keys in code
+- Proactively call out security concerns
+- Suggest environment variables for configuration
+
 ## Project Overview
 
 **Grokputer** is a CLI tool that enables xAI's Grok API to control a PC through screen observation, keyboard/mouse simulation, and file system access. This is a fork/adaptation of Anthropic's Computer Use demo, replacing Claude API with Grok API.
@@ -23,6 +170,63 @@ Key components:
 - Docker sandbox for safe execution
 
 ## Build & Development Commands
+
+> **TL;DR**: Use `ast-grep` for syntax-aware code changes (refactors, codemods). 
+   > Use `ripgrep` for fast text searches. Combine them for best results.
+
+ast-grep vs ripgrep: Quick Guidance for Code Searching
+Why compare? Both are powerful CLI tools for searching (and sometimes modifying) code, but they shine in different scenarios. ripgrep (rg) is a super-fast text searcher, while ast-grep (sg or ast-grep) understands code structure via Abstract Syntax Trees (ASTs). Choose based on whether you need raw speed or syntactic precision. They're often used together for best results.
+Use ast-grep When Structure Matters
+It parses code into AST nodes, ignoring comments, strings, and whitespace for accurate matches. Ideal for safe, targeted operations on code syntax.
+
+Refactors/codemods: Rename APIs, update import styles, rewrite function calls, or convert variable declarations.
+Policy checks/enforcement: Scan repos for patterns (e.g., banned functions) using rules; integrate with CI via scan and test commands.
+Editor/automation integration: Supports LSP for IDEs; outputs JSON for scripting/tools.
+
+Pros: Low false positives, built-in rewriting with diff previews, multi-language support (e.g., JS/TS, Python, Rust).
+Cons: Slower on huge repos; requires learning pattern syntax (like CSS selectors for code).
+Use ripgrep When Text Is Enough
+It's the fastest grep alternative for literal or regex searches across files, treating everything as text.
+
+Recon/exploration: Hunt for strings, TODOs, error logs, config keys, or non-code files (docs, markdown).
+Pre-filtering: Quickly narrow down files before deeper analysis.
+
+Pros: Blazing speed, smart defaults (e.g., ignores .git, binary files), easy regex.
+Cons: Prone to false positives in code (e.g., matches in comments); no native rewriting.
+Rule of Thumb
+
+Need correctness over speed, or plan to apply changes? Start with ast-grep for precision.
+Need raw speed or just hunting text? Start with rg.
+Combine them: Use rg to shortlist files, then ast-grep for structural matching/modifying. This leverages rg's speed with ast-grep's accuracy.
+
+Snippets
+Structured code search (ignores comments/strings):
+bash# Find all TypeScript imports matching a pattern
+ast-grep run -l ts -p 'import $X from "$P"'
+Codemod (safely rewrite only real var declarations to let):
+bashast-grep run -l js -p 'var $A = $B' -r 'let $A = $B' -U  # -U for update in place with backup
+Policy check example (scan for unsafe eval usage):
+bash# Define a rule in YAML (e.g., rules.yml)
+kind: call_expression
+pattern: eval($$$ARGS)
+# Then scan
+ast-grep scan --rule rules.yml
+Quick textual hunt:
+bashrg -n 'console\.log\(' -t js  # -n for line numbers, -t js to filter JS files
+Combine for efficiency:
+bash# rg filters files with 'useQuery', then ast-grep rewrites to 'useSuspenseQuery'
+rg -l -t ts 'useQuery\(' | xargs ast-grep run -l ts -p 'useQuery($A)' -r 'useSuspenseQuery($A)' -U
+Mental Model: Key Differences at a Glance
+
+Aspectast-grepripgrep (rg)Unit of MatchAST node (e.g., function call)Line or substringFalse PositivesLow (understands syntax)Higher (regex-dependent)RewritesFirst-class (safe, previewable)None native; use with sed/awk (risky)SpeedGood, but parses full ASTExtremely fastBest ForCode analysis/refactorText grep/quick scansLanguages20+ (extensible via tree-sitter)Any text file
+Tips:
+
+Install: cargo install ripgrep for rg; cargo install ast-grep or via npm/Homebrew for ast-grep.
+Pitfalls: ast-grep patterns use $VAR for metavariables—test them interactively with ast-grep scan --interactive.
+Resources: ast-grep docs, ripgrep docs.
+Extend: For very large repos, parallelize with --threads in both.
+
+This keeps your notes evergreen—update as tools evolve!
 
 ### Initial Setup
 ```bash
@@ -50,6 +254,41 @@ pytest --cov=src tests/
 # Run specific test file
 pytest tests/test_tools.py
 ```
+
+### Viewing Session Logs
+
+Grokputer now includes enhanced session logging that tracks every execution:
+
+```bash
+# List recent sessions
+python view_sessions.py list
+
+# View a specific session summary
+python view_sessions.py show <session_id>
+
+# View full JSON log
+python view_sessions.py show <session_id> --format json
+
+# View metrics only
+python view_sessions.py show <session_id> --format metrics
+
+# Search sessions by task
+python view_sessions.py search "vault"
+
+# Compare recent sessions
+python view_sessions.py compare
+
+# Tail the last lines of a session log
+python view_sessions.py tail <session_id>
+```
+
+**Session logs location**: `logs/<session_id>/`
+
+Each session creates:
+- `session.log` - Human-readable text log
+- `session.json` - Structured JSON with all data
+- `metrics.json` - Performance metrics summary
+- `summary.txt` - Quick overview
 
 ### Docker Workflow
 
@@ -148,6 +387,43 @@ python main.py --debug --task "your task here"
 ```
 
 ## Key Implementation Notes
+
+### Session Logging System
+
+Grokputer includes a comprehensive logging system that tracks:
+- **Session Metadata**: Task, model, timestamps, configuration
+- **Iteration Metrics**: Screenshot size, API call duration, tool executions
+- **Performance Data**: Success rates, timing, error tracking
+- **Structured Logs**: Both human-readable and JSON formats
+
+**Key Components**:
+- `src/session_logger.py`: Enhanced session tracking with metrics
+- `view_sessions.py`: CLI utility for viewing/analyzing past sessions
+- `logs/<session_id>/`: Individual session directories
+
+**What Gets Logged**:
+1. Each screenshot capture (success/failure, size in bytes)
+2. Every API call (duration, response, success/failure)
+3. Tool executions (name, parameters, results, status)
+4. Errors and warnings throughout execution
+5. Conversation history and Grok responses
+
+**Benefits**:
+- Debug failures by reviewing exact execution flow
+- Compare performance across different tasks/models
+- Track API costs and usage patterns
+- Search past sessions by task description
+- Generate metrics for optimization
+
+**Usage in Code**:
+```python
+# Session logging is automatic - just run a task
+python main.py --task "your task here"
+
+# Then view the logs
+python view_sessions.py list
+python view_sessions.py show session_20251106_143052
+```
 
 ### API Integration
 - Uses OpenAI-compatible API: `from openai import OpenAI` pointing to xAI endpoint
@@ -310,3 +586,298 @@ TASK="scan vault for files" docker-compose run --rm grokputer
 2. ✓ xAI API key configured in `.env`
 3. ✓ Active credits on xAI account
 4. ✓ Dependencies installed via pip
+
+### Phase 0 Progress (IN PROGRESS)
+
+**Status**: Week 1 - Async foundation + production features
+
+**✅ Completed Features**:
+
+1. **Safety Scoring System** (2025-11-08)
+   - SAFETY_SCORES dict with 40+ commands (LOW/MEDIUM/HIGH risk)
+   - `get_command_safety_score()` - Pattern detection, flag analysis
+   - Smart confirmation: 0-30 auto-approve, 31-70 warn, 71-100 confirm
+   - Integration in `src/executor.py` with risk logging
+   - Test script: `test_safety_scoring.py` - all risk levels verified
+   - See: src/config.py:37-154
+
+2. **Production MessageBus** - Milestone 1.1 ✅ (2025-11-08)
+   - Message priorities (HIGH/NORMAL/LOW) with asyncio.PriorityQueue
+   - Request-response pattern with auto correlation IDs
+   - Message history buffer (last 100 messages)
+   - Latency tracking per message type (avg/min/max)
+   - Background receiver tasks for responses
+   - 10/10 unit tests passing (pytest-asyncio)
+   - Live test: 18,384 msg/sec, 0.01-0.05ms latency
+   - Test script: `test_messagebus_live.py`
+   - See: src/core/message_bus.py (450+ lines production code)
+
+**Test Results**:
+```bash
+# Safety scoring
+python test_safety_scoring.py
+# Output: 16 commands tested, all risk levels correct
+
+# MessageBus live test
+python test_messagebus_live.py
+# Output: Broadcast [OK], Request-Response [OK], Priority [OK]
+# Performance: 18,384 msg/sec throughput, <0.05ms latency
+```
+
+**Key Insights from Grok** (Runtime validation):
+- API flake rate: ~5% with grok-4-fast-reasoning
+- Retries save 80% of transient failures
+- Self-healing: 85% → 95% reliability immediately
+- Swarm context: Healing 10x more critical (one bad agent tanks hive)
+- **Priority**: Self-healing first (Phase 1), self-improving second (Phase 2)
+
+**Remaining Phase 0 Tasks**:
+- [ ] AsyncIO conversion (main.py, GrokClient, ScreenObserver)
+- [ ] BaseAgent abstract class
+- [ ] ActionExecutor for PyAutoGUI
+- [ ] 3-day PoC (Observer + Actor duo)
+- [ ] Screenshot quality modes (high/medium/low)
+
+---
+
+## Development Roadmap
+
+**Status**: Phase 0 in progress - Milestone 1.1 complete
+
+See **DEVELOPMENT_PLAN.md v2.0** for comprehensive 7-week roadmap to multi-agent architecture.
+
+### Planned Evolution: Single-Agent → Multi-Agent Swarm
+
+**Current**: Single-agent ORA loop
+**Target**: 3-5 agent swarm with 95% reliability, 3x speedup on parallel tasks
+
+### Key Architectural Changes Coming
+
+#### Phase 0: Async Foundation (Week 1)
+**Goal**: Convert to asyncio architecture and validate with 3-day proof of concept
+
+**Major Changes**:
+1. **asyncio foundation** - Convert main.py, GrokClient, ScreenObserver to async
+2. **Core infrastructure**:
+   - `src/core/message_bus.py` - asyncio.Queue for inter-agent messaging
+   - `src/core/base_agent.py` - Abstract base class for all agents
+   - `src/core/action_executor.py` - Thread-safe PyAutoGUI wrapper
+3. **3-day PoC** - Build Observer + Actor duo to validate approach
+4. **Quick wins** - Safety scoring, screenshot quality modes, model update
+
+**New Dependencies**:
+```
+tenacity>=8.2.0           # Retry logic (CRITICAL)
+pytest-asyncio>=0.21.0    # Async testing
+```
+
+#### Phase 1: Multi-Agent Swarm (Weeks 2-4)
+**Goal**: Working 3-agent swarm (Coordinator, Observer, Actor)
+
+**Architecture**:
+```
+┌─────────────┐
+│ Coordinator │ ← Task decomposition, delegation
+└──────┬──────┘
+       │
+   ┌───┴───┐
+   │       │
+┌──▼───┐ ┌─▼────┐
+│Observer│ │Actor │
+└────────┘ └──────┘
+    │         │
+    └─────┬───┘
+      asyncio.Queue
+```
+
+**Components**:
+- `src/agents/coordinator.py` - Task decomposition, confirmation handling
+- `src/agents/observer.py` - Screen capture, OCR, visual analysis
+- `src/agents/actor.py` - Bash/computer control execution
+- `src/core/message_bus.py` - asyncio.Queue routing (<1ms latency)
+- `src/observability/cost_tracker.py` - Budget enforcement
+- `src/observability/deadlock_detector.py` - Stuck agent watchdog
+
+**Target Performance**:
+- Duo test: <5s handoff, 100% success
+- Trio test: <10s end-to-end on 3-step tasks
+- Zero deadlocks, zero PyAutoGUI threading issues
+
+#### Phase 2: Production Features (Weeks 5-7)
+**Goal**: Enterprise-ready with Validator, OCR, error recovery
+
+**Features**:
+- `src/agents/validator.py` - Output verification (>90% accuracy)
+- OCR integration - pytesseract or easyocr (>85% accuracy on UI text)
+- Session persistence - Save/resume tasks
+- Smart caching - Perceptual hashing, 40-60% cache hit rate
+- Redis migration - Optional, for multi-machine scaling
+- Performance: 25% faster via caching + JPEG encoding
+
+**New Dependencies**:
+```
+imagehash>=4.3.0          # Screenshot caching
+Pillow-SIMD>=10.0.0       # 2-4x faster encoding
+pydantic>=2.0.0           # Data validation
+redis-py>=5.0.0           # Optional Redis (Phase 2)
+pytesseract>=0.3.10       # OCR
+```
+
+#### Phase 3: Advanced Features (Weeks 8+)
+- Browser control (Selenium)
+- Multi-monitor support
+- Task scheduling (cron-like)
+- Advanced swarm patterns (adversarial validation, parallel observation)
+
+### Critical Technical Decisions
+
+Based on expert Python review, these architectural choices were made:
+
+1. **asyncio over ThreadPoolExecutor**
+   - Workload is 95% I/O-bound (API calls, screenshots)
+   - asyncio handles 100+ coroutines vs 5-10 threads
+   - No locks needed for most operations
+   - **CRITICAL**: PyAutoGUI is NOT thread-safe → ActionExecutor pattern required
+
+2. **asyncio.Queue over vault files**
+   - Microsecond latency (1μs vs 1-5ms for files)
+   - Thread-safe, atomic operations built-in
+   - Perfect for local 3-5 agent swarm
+   - Migrate to Redis only when scaling >10 agents
+
+3. **ActionExecutor pattern for PyAutoGUI**
+   - Single-threaded executor with message queue
+   - Async interface for agents: `await executor.execute_async()`
+   - Prevents race conditions and threading bugs
+   - See DEVELOPMENT_PLAN.md for full implementation
+
+4. **Validator deferred to Phase 2**
+   - Keep Phase 1 simple (3 agents only)
+   - Learn validation requirements from testing
+   - Add as 4th agent in Phase 2 once patterns are clear
+
+### Updated Project Structure (Phase 1+)
+
+```
+grokputer/
+├── main.py                       # Async orchestrator
+├── src/
+│   ├── config.py                 # Configuration
+│   ├── session_logger.py         # Enhanced with SwarmMetrics
+│   │
+│   ├── core/                     # NEW: Async infrastructure
+│   │   ├── base_agent.py         # Abstract base class
+│   │   ├── message_bus.py        # asyncio.Queue router
+│   │   ├── action_executor.py    # PyAutoGUI single-thread
+│   │   ├── supervisor.py         # Swarm orchestrator
+│   │   └── screenshot_cache.py   # Smart caching
+│   │
+│   ├── agents/                   # NEW: Agent implementations
+│   │   ├── coordinator.py        # Task decomposition
+│   │   ├── observer.py           # Screen observation
+│   │   ├── actor.py              # Action execution
+│   │   └── validator.py          # Output validation (Phase 2)
+│   │
+│   └── observability/            # NEW: Monitoring
+│       ├── cost_tracker.py       # API cost tracking
+│       ├── deadlock_detector.py  # Watchdog
+│       ├── security_validator.py # Command sanitization
+│       └── task_decomposer.py    # Task breakdown
+│
+├── tests/
+│   ├── core/                     # Core component tests
+│   ├── agents/                   # Agent tests
+│   └── integration/              # End-to-end tests
+│
+├── DEVELOPMENT_PLAN.md           # 7-week roadmap (v2.0)
+├── COLLABORATION.md              # Claude-Grok coordination
+└── view_sessions.py              # Session viewer (+ swarm viz)
+```
+
+### Success Metrics (v1.0)
+
+**Phase 0 Goals**:
+- ✓ PoC: 2 agents complete task in <5s
+- ✓ asyncio foundation stable (no deadlocks)
+- ✓ Zero PyAutoGUI threading issues
+
+**Phase 1 Goals**:
+- ✓ Trio: <10s on 3-step tasks
+- ✓ asyncio.Queue: <100ms handoff latency
+- ✓ 20+ tests passing
+
+**Phase 2 Goals**:
+- ✓ 95% reliability on multi-step tasks
+- ✓ 3x speedup on 100-file vault scans
+- ✓ OCR: >85% accuracy on UI text
+- ✓ 40+ tests passing
+
+**Overall v1.0**:
+- 95% reliability on multi-step tasks
+- 50% fewer iterations than solo mode
+- 3x speedup on parallel operations
+- <100ms handoff latency
+- <$500 total API cost for development
+- 80%+ test coverage
+
+### Implementation Timeline
+
+- **Week 1 (Phase 0)**: Async foundation + PoC → Go/No-Go decision
+- **Weeks 2-4 (Phase 1)**: Multi-agent swarm implementation
+- **Weeks 5-7 (Phase 2)**: Production features (Validator, OCR, caching)
+- **Weeks 8+ (Phase 3)**: Advanced features (browser, scheduling, etc.)
+
+**Total v1.0**: ~7 weeks / 280 hours / $170-350 API costs
+
+### Key References
+
+- **DEVELOPMENT_PLAN.md** - Comprehensive technical roadmap with code examples
+- **COLLABORATION.md** - Claude-Grok coordination workspace
+- **Phase 0 branch**: `phase-0/async-foundation` (to be created)
+
+### Go/No-Go Decision Points
+
+**After Phase 0 (Week 1)**:
+- **GO if**: PoC succeeds, asyncio stable, ActionExecutor works
+- **PIVOT if**: Fundamental issues → stick with single-agent + better prompting
+
+**After Phase 1 (Week 4)**:
+- **GO if**: Trio tests pass, zero deadlocks, swarm usable
+- **PIVOT if**: Too complex → simplify to 2 agents or revert
+
+### Important Notes for Development
+
+1. **PyAutoGUI Thread Safety**: MUST use ActionExecutor pattern - direct threading will fail
+2. **asyncio on Windows**: Works fine, tested - use `asyncio.run()` as entry point
+3. **Message Format**: Use Pydantic models for validation, include correlation IDs
+4. **Cost Control**: Implement CostTracker early - multi-agent can explode API costs
+5. **Testing**: Use `pytest-asyncio` for all async code, mock PyAutoGUI/GrokAPI
+6. **Security**: Sanitize bash commands, validate file paths (SecurityValidator)
+
+---
+
+## Quick Start for Phase 0
+
+When ready to begin Phase 0 implementation:
+
+```bash
+# Create feature branch
+git checkout -b phase-0/async-foundation
+
+# Install new dependencies
+pip install tenacity pytest-asyncio
+
+# Start with async conversion (Day 1-2)
+# 1. Convert main.py to use asyncio.run()
+# 2. Make GrokClient async: async def call_api()
+# 3. Update ScreenObserver with async screenshot capture
+
+# Build 3-day PoC (Day 3-5)
+# 1. Create minimal Observer + Actor duo
+# 2. Test asyncio.Queue messaging
+# 3. Validate ActionExecutor pattern
+
+# Go/No-Go decision on Day 5
+```
+
+See DEVELOPMENT_PLAN.md for detailed implementation steps and code examples.

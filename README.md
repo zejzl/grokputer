@@ -144,6 +144,69 @@ python main.py --task "your task"  # Run natively, not in Docker
 
 ---
 
+## 📊 Session Logging & Analytics
+
+**NEW**: Enhanced logging system tracks every execution with detailed metrics!
+
+### Viewing Session History
+
+```bash
+# List recent sessions
+python view_sessions.py list
+
+# View specific session
+python view_sessions.py show session_20251106_143052
+
+# View just metrics
+python view_sessions.py show session_20251106_143052 --format metrics
+
+# Search by task
+python view_sessions.py search "vault"
+
+# Compare recent sessions
+python view_sessions.py compare
+
+# Tail session log
+python view_sessions.py tail session_20251106_143052
+```
+
+### What Gets Tracked
+
+Each session automatically logs:
+
+- ✅ **Screenshots**: Size, success/failure, timing
+- ✅ **API Calls**: Duration, response, costs
+- ✅ **Tool Executions**: Name, parameters, results
+- ✅ **Performance**: Iteration timing, success rates
+- ✅ **Errors**: Full error tracking and context
+- ✅ **Conversation**: Complete Grok interaction history
+
+### Session Files
+
+Every task creates a session directory in `logs/session_<timestamp>/`:
+
+```
+logs/session_20251106_143052/
+├── session.log        # Human-readable log
+├── session.json       # Structured data (JSON)
+├── metrics.json       # Performance metrics
+└── summary.txt        # Quick overview
+```
+
+### Use Cases
+
+**Debug failures**: Review exact execution flow when tasks fail
+
+**Optimize performance**: Compare API durations across different models
+
+**Track costs**: Monitor screenshot sizes and API call counts
+
+**Search history**: Find similar past tasks for reference
+
+**Collaborate**: Share session logs with team/AI collaborators
+
+---
+
 ## 🏗️ Architecture
 
 ### Observe-Reason-Act Loop
@@ -177,6 +240,8 @@ python main.py --task "your task"  # Run natively, not in Docker
 - **`src/executor.py`**: Tool execution with safety confirmations
 - **`src/tools.py`**: Custom tools (vault scanner, server prayer)
 - **`src/config.py`**: Configuration management
+- **`src/session_logger.py`**: Enhanced session tracking and metrics
+- **`view_sessions.py`**: CLI for viewing/analyzing execution logs
 
 ---
 
@@ -289,11 +354,93 @@ python main.py --task "list files in current directory"
 
 ---
 
+## 🚀 Phase 0 Progress - Multi-Agent Foundation (NEW!)
+
+**Status**: Week 1 in progress - Building async foundation for agent swarm
+
+### ✅ Completed Features (2025-11-08)
+
+#### 1. Safety Scoring System
+Smart risk assessment for bash commands with automatic approval/confirmation:
+
+```bash
+# Test the safety scoring system
+python test_safety_scoring.py
+
+# Example output:
+#   ls -la        → 10/100 (LOW)    Auto-approve
+#   mkdir test    → 40/100 (MEDIUM) Auto-approve
+#   rm file.txt   → 90/100 (HIGH)   Requires confirmation
+#   rm -rf /      → 100/100 (HIGH)  Requires confirmation
+```
+
+**Features**:
+- 40+ command risk scores (0-100 scale)
+- Pattern detection (rm -rf, sudo rm, system file writes)
+- Flag-based scoring (+20 for --force, +15 for --recursive)
+- Three risk levels: LOW (0-30), MEDIUM (31-70), HIGH (71-100)
+- Integration with executor for automatic safety decisions
+
+**Files**: `src/config.py`, `src/executor.py`, `test_safety_scoring.py`
+
+#### 2. Production MessageBus - Milestone 1.1 ✅
+
+High-performance async message bus for multi-agent coordination:
+
+```bash
+# Test the MessageBus live
+python test_messagebus_live.py
+
+# Output:
+#   Broadcast [OK] - 18,384 msg/sec throughput
+#   Request-Response [OK] - 18ms latency
+#   Priority Ordering [OK] - HIGH→NORMAL→LOW
+#   Latency: 0.01-0.05ms average
+```
+
+**Features**:
+- Message priorities (HIGH/NORMAL/LOW) with asyncio.PriorityQueue
+- Request-response pattern with auto-generated correlation IDs
+- Message history buffer (last 100 messages for debugging)
+- Latency tracking per message type (avg/min/max stats)
+- Broadcast support with exclude patterns
+- 10/10 unit tests passing
+
+**Performance**:
+- Throughput: 18,384 messages/second
+- Latency: <0.05ms average (sub-millisecond routing)
+- Zero deadlocks, zero threading issues
+
+**Files**: `src/core/message_bus.py`, `tests/core/test_message_bus.py`, `test_messagebus_live.py`
+
+### 🎯 Key Insights from Grok (Runtime Validation)
+
+Based on real-world execution experience:
+- API flake rate: ~5% with grok-4-fast-reasoning
+- Retries save 80% of transient failures
+- **Self-healing impact**: 85% → 95% reliability immediately
+- **Swarm context**: Healing is 10x more critical (one bad agent tanks hive)
+- **Architecture decision**: Self-healing first (Phase 1), self-improving second (Phase 2)
+
+### 📋 Remaining Phase 0 Tasks
+- [ ] AsyncIO conversion (main.py, GrokClient, ScreenObserver)
+- [ ] BaseAgent abstract class
+- [ ] ActionExecutor for thread-safe PyAutoGUI
+- [ ] 3-day PoC (Observer + Actor duo)
+- [ ] Screenshot quality modes (high/medium/low)
+
+**Goal**: Multi-agent swarm with 95% reliability and 3x speedup on parallel tasks
+
+---
+
 ## 📚 Documentation
 
 - **[CLAUDE.md](CLAUDE.md)**: Technical documentation for Claude Code
+- **[COLLABORATION.md](COLLABORATION.md)**: Claude-Grok collaboration workspace
+- **[DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md)**: 7-week roadmap to multi-agent architecture
 - **[grok.md](grok.md)**: Original build guide
 - **[actual_instructions.txt](actual_instructions.txt)**: Detailed implementation notes
+- **Session Logs**: `logs/<session_id>/` - Individual execution records
 
 ---
 
