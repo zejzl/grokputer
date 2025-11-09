@@ -208,7 +208,8 @@ class Grokputer:
 @click.option('--skip-boot', is_flag=True, help='Skip boot sequence')
 @click.option('--messagebus', '-mb', is_flag=True, help='Enable collaboration mode (Claude + Grok)')
 @click.option('--max-rounds', default=5, help='Maximum collaboration rounds (messagebus mode only)')
-def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebus: bool, max_rounds: int):
+@click.option('--review-mode', '-r', is_flag=True, help='Pause after each round for human review (messagebus mode only)')
+def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebus: bool, max_rounds: int, review_mode: bool):
     """
     Grokputer - VRZIBRZI Node
 
@@ -225,6 +226,12 @@ def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebu
         grokputer -mb --task "design an MCP server with best practices"
 
         grokputer --messagebus --task "create implementation plan for dice roller"
+
+    Grok-only mode (no ANTHROPIC_API_KEY required):
+        grokputer -mb --task "analyze this codebase structure"
+
+    Review mode (pause after each round for human oversight):
+        grokputer -mb -r --task "design system architecture"
     """
     # Load environment variables
     load_dotenv()
@@ -239,7 +246,7 @@ def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebu
     try:
         if messagebus:
             # Collaboration mode
-            asyncio.run(_run_collaboration_mode(task, max_rounds, debug))
+            asyncio.run(_run_collaboration_mode(task, max_rounds, debug, review_mode))
         else:
             # Single-agent mode
             _run_single_agent_mode(task, max_iterations, debug, skip_boot)
@@ -266,7 +273,7 @@ def _run_single_agent_mode(task: str, max_iterations: int, debug: bool, skip_boo
     grokputer.run_task(task, max_iterations=max_iterations)
 
 
-async def _run_collaboration_mode(task: str, max_rounds: int, debug: bool):
+async def _run_collaboration_mode(task: str, max_rounds: int, debug: bool, review_mode: bool):
     """Run dual-agent collaboration via MessageBus."""
 
     logger = logging.getLogger(__name__)
@@ -275,11 +282,13 @@ async def _run_collaboration_mode(task: str, max_rounds: int, debug: bool):
     claude_key = os.getenv("ANTHROPIC_API_KEY")
     grok_key = os.getenv("XAI_API_KEY")
 
+    # Claude key is optional - run Grok-only mode if missing
     if not claude_key:
-        logger.error("ANTHROPIC_API_KEY not found in .env")
-        print("\n[ERROR] ANTHROPIC_API_KEY not found in .env file")
-        print("Get your API key from: https://console.anthropic.com/")
-        raise ValueError("Missing ANTHROPIC_API_KEY")
+        logger.warning("ANTHROPIC_API_KEY not found - running Grok-only mode")
+        print("\n[WARNING] ANTHROPIC_API_KEY not found in .env file")
+        print("Running in Grok-only mode (Claude agent disabled)")
+        print("To enable dual-agent mode, get API key from: https://console.anthropic.com/")
+        print("")
 
     if not grok_key:
         logger.error("XAI_API_KEY not found in .env")
@@ -289,19 +298,24 @@ async def _run_collaboration_mode(task: str, max_rounds: int, debug: bool):
 
     logger.info(f"[COLLABORATION MODE] Task: {task}")
     logger.info(f"Max rounds: {max_rounds}")
+    logger.info(f"Review mode: {review_mode}")
+    logger.info(f"Claude agent: {'Enabled' if claude_key else 'Disabled (Grok-only)'}")
 
     print("\n" + "="*70)
-    print("COLLABORATION MODE - Claude + Grok")
+    mode_label = "Grok + Claude" if claude_key else "Grok-Only"
+    print(f"COLLABORATION MODE - {mode_label}")
     print("="*70)
     print(f"Task: {task}")
     print(f"Max rounds: {max_rounds}")
+    print(f"Review mode: {'Enabled' if review_mode else 'Disabled'}")
     print("="*70 + "\n")
 
     # Initialize coordinator
     coordinator = CollaborationCoordinator(
-        claude_api_key=claude_key,
+        claude_api_key=claude_key,  # Can be None
         grok_api_key=grok_key,
-        max_rounds=max_rounds
+        max_rounds=max_rounds,
+        review_mode=review_mode
     )
 
     # Run collaboration
