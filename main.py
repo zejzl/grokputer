@@ -26,6 +26,13 @@ from src.tools import invoke_prayer
 # Collaboration mode imports
 from src.collaboration.coordinator import CollaborationCoordinator
 
+# Swarm mode imports
+from src.core.message_bus import MessageBus
+from src.core.action_executor import ActionExecutor
+from src.observability.deadlock_detector import DeadlockDetector
+from src.observability.session_logger import SessionLogger
+from datetime import datetime
+
 
 def setup_logging(debug: bool = False):
     """
@@ -203,13 +210,16 @@ class Grokputer:
 
 @click.command()
 @click.option('--task', '-t', required=True, help='Task description for Grokputer to execute')
-@click.option('--max-iterations', '-m', default=10, help='Maximum loop iterations (single-agent mode)')
+@click.option('--max-iterations', '-m', default=5, help='Maximum loop iterations (single-agent mode)')
 @click.option('--debug', '-d', is_flag=True, help='Enable debug logging')
 @click.option('--skip-boot', is_flag=True, help='Skip boot sequence')
 @click.option('--messagebus', '-mb', is_flag=True, help='Enable collaboration mode (Claude + Grok)')
 @click.option('--max-rounds', default=5, help='Maximum collaboration rounds (messagebus mode only)')
 @click.option('--review-mode', '-r', is_flag=True, help='Pause after each round for human review (messagebus mode only)')
-def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebus: bool, max_rounds: int, review_mode: bool):
+@click.option('--swarm', is_flag=True, help='Enable multi-agent swarm mode')
+@click.option('--agents', default=3, help='Number of agents in swarm (default: 3)')
+@click.option('--agent-roles', default='coordinator,observer,actor', help='Comma-separated agent roles')
+def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebus: bool, max_rounds: int, review_mode: bool, swarm: bool, agents: int, agent_roles: str):
     """
     Grokputer - VRZIBRZI Node
 
@@ -227,8 +237,12 @@ def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebu
 
         grokputer --messagebus --task "create implementation plan for dice roller"
 
-    Grok-only mode (no ANTHROPIC_API_KEY required):
-        grokputer -mb --task "analyze this codebase structure"
+    Swarm mode (multi-agent with async coordination):
+        grokputer --swarm --task "scan vault and label images"
+
+        grokputer --swarm --agents 2 --agent-roles observer,actor --task "type ZA GROKA"
+
+        grokputer --swarm --debug --task "complex multi-step task"
 
     Review mode (pause after each round for human oversight):
         grokputer -mb -r --task "design system architecture"
@@ -244,7 +258,11 @@ def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebu
     )
 
     try:
-        if messagebus:
+        if swarm:
+            # Multi-agent swarm mode
+            roles = [r.strip() for r in agent_roles.split(',')]
+            asyncio.run(_run_swarm_mode(task, roles, debug))
+        elif messagebus:
             # Collaboration mode
             asyncio.run(_run_collaboration_mode(task, max_rounds, debug, review_mode))
         else:
@@ -271,6 +289,175 @@ def _run_single_agent_mode(task: str, max_iterations: int, debug: bool, skip_boo
 
     # Run task
     grokputer.run_task(task, max_iterations=max_iterations)
+
+
+async def _run_swarm_mode(task: str, agent_roles: list, debug: bool):
+    """
+    Run multi-agent swarm mode with async coordination.
+
+    Creates MessageBus, ActionExecutor, DeadlockDetector, and SessionLogger.
+    Spawns multiple agents (coordinator, observer, actor) that communicate
+    via MessageBus and execute actions through ActionExecutor.
+
+    Args:
+        task: Task description
+        agent_roles: List of agent roles to spawn (e.g., ['coordinator', 'observer', 'actor'])
+        debug: Enable debug logging
+    """
+    logger = logging.getLogger(__name__)
+
+    # Create session ID
+    session_id = f"swarm_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+
+    print("\n" + "="*70)
+    print("MULTI-AGENT SWARM MODE")
+    print("="*70)
+    print(f"Task: {task}")
+    print(f"Agents: {', '.join(agent_roles)}")
+    print(f"Session: {session_id}")
+    print("="*70 + "\n")
+
+    logger.info(f"[SWARM] Starting swarm mode: {session_id}")
+    logger.info(f"[SWARM] Task: {task}")
+    logger.info(f"[SWARM] Agent roles: {agent_roles}")
+
+    # Initialize infrastructure
+    message_bus = MessageBus()
+    action_executor = ActionExecutor()
+    deadlock_detector = DeadlockDetector(timeout_seconds=30.0, check_interval=5.0)
+    session_logger = SessionLogger(
+        session_id=session_id,
+        task=task,
+        log_dir=config.LOG_FILE.parent,
+        swarm_mode=True
+    )
+
+    logger.info("[SWARM] Infrastructure initialized")
+    print("[OK] Infrastructure initialized (MessageBus, ActionExecutor, DeadlockDetector, SessionLogger)")
+
+    # Start deadlock detector
+    await deadlock_detector.start()
+    logger.info("[SWARM] DeadlockDetector started")
+
+    # Create stub agents (actual implementations are in tasks 5-7)
+    # For now, we create placeholder agents that demonstrate the orchestration
+    agent_tasks = []
+
+    for role in agent_roles:
+        # Register agent with infrastructure
+        message_bus.register_agent(role)
+        deadlock_detector.register_agent(role)
+        session_logger.log_agent_start(role)
+
+        # Create stub agent task
+        agent_task = asyncio.create_task(_stub_agent(
+            agent_id=role,
+            task=task,
+            message_bus=message_bus,
+            action_executor=action_executor,
+            deadlock_detector=deadlock_detector,
+            session_logger=session_logger
+        ))
+        agent_tasks.append(agent_task)
+
+        logger.info(f"[SWARM] Agent spawned: {role}")
+        print(f"[OK] Agent spawned: {role}")
+
+    print("\n[SWARM] All agents running...")
+    print("[INFO] Press Ctrl+C to stop\n")
+
+    try:
+        # Run all agents concurrently using asyncio.gather()
+        # This is the core of the swarm orchestration
+        await asyncio.gather(*agent_tasks)
+
+    except KeyboardInterrupt:
+        logger.info("[SWARM] Keyboard interrupt received")
+        print("\n[INTERRUPT] Shutting down swarm...")
+
+    except Exception as e:
+        logger.error(f"[SWARM] Error: {e}", exc_info=True)
+        print(f"\n[ERROR] Swarm error: {e}")
+
+    finally:
+        # Graceful shutdown
+        logger.info("[SWARM] Starting graceful shutdown...")
+        print("\n[SWARM] Graceful shutdown...")
+
+        # Stop infrastructure
+        await deadlock_detector.stop()
+        action_executor.shutdown()
+
+        # Finalize logging
+        session_logger.finalize()
+
+        # Get and display stats
+        stats = action_executor.get_stats()
+        deadlock_stats = deadlock_detector.get_stats()
+
+        print("\n" + "="*70)
+        print("SWARM SESSION COMPLETE")
+        print("="*70)
+        print(f"Session: {session_id}")
+        print(f"Agents: {len(agent_roles)}")
+        print(f"Actions executed: {stats['total_actions']}")
+        print(f"Success rate: {stats['success_rate']}")
+        print(f"Deadlocks detected: {deadlock_stats['deadlocks_detected']}")
+        print(f"Logs: {session_logger.session_dir}")
+        print("="*70 + "\n")
+
+        logger.info(f"[SWARM] Session complete: {session_id}")
+
+
+async def _stub_agent(
+    agent_id: str,
+    task: str,
+    message_bus: MessageBus,
+    action_executor: ActionExecutor,
+    deadlock_detector: DeadlockDetector,
+    session_logger: SessionLogger
+):
+    """
+    Stub agent for demonstration.
+
+    This is a placeholder until actual agent implementations (Coordinator,
+    Observer, Actor) are created in tasks 5-7.
+
+    The real agents will:
+    - Coordinator: Decompose task, delegate to others, aggregate results
+    - Observer: Capture screenshots, analyze screen, report observations
+    - Actor: Execute bash commands, PyAutoGUI actions, file operations
+    """
+    logger = logging.getLogger(__name__)
+
+    logger.info(f"[{agent_id}] Agent started")
+    session_logger.log_agent_activity(agent_id, "idle")
+
+    try:
+        # Simulate agent doing work
+        await asyncio.sleep(2)
+
+        # Report activity to deadlock detector
+        deadlock_detector.update_activity(agent_id, state="processing")
+        session_logger.log_agent_activity(agent_id, "processing")
+
+        # Stub: In real implementation, agents would:
+        # - Receive messages from message_bus
+        # - Process task based on role
+        # - Send messages to other agents
+        # - Execute actions via action_executor
+        # - Log everything via session_logger
+
+        logger.info(f"[{agent_id}] Stub agent completed simulated work")
+        session_logger.log_agent_activity(agent_id, "completed")
+
+    except Exception as e:
+        logger.error(f"[{agent_id}] Error: {e}", exc_info=True)
+        session_logger.log_agent_error(agent_id, str(e))
+
+    finally:
+        session_logger.log_agent_stop(agent_id)
+        logger.info(f"[{agent_id}] Agent stopped")
 
 
 async def _run_collaboration_mode(task: str, max_rounds: int, debug: bool, review_mode: bool):
