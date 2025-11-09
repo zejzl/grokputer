@@ -9,7 +9,10 @@ ZA GROKA. ZA VRZIBRZI. ZA SERVER.
 import sys
 import logging
 import click
+import asyncio
+import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent))
@@ -19,6 +22,9 @@ from src.grok_client import GrokClient
 from src.screen_observer import ScreenObserver
 from src.executor import ToolExecutor
 from src.tools import invoke_prayer
+
+# Collaboration mode imports
+from src.collaboration.coordinator import CollaborationCoordinator
 
 
 def setup_logging(debug: bool = False):
@@ -197,33 +203,46 @@ class Grokputer:
 
 @click.command()
 @click.option('--task', '-t', required=True, help='Task description for Grokputer to execute')
-@click.option('--max-iterations', '-m', default=10, help='Maximum loop iterations')
+@click.option('--max-iterations', '-m', default=10, help='Maximum loop iterations (single-agent mode)')
 @click.option('--debug', '-d', is_flag=True, help='Enable debug logging')
 @click.option('--skip-boot', is_flag=True, help='Skip boot sequence')
-def main(task: str, max_iterations: int, debug: bool, skip_boot: bool):
+@click.option('--messagebus', '-mb', is_flag=True, help='Enable collaboration mode (Claude + Grok)')
+@click.option('--max-rounds', default=5, help='Maximum collaboration rounds (messagebus mode only)')
+def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebus: bool, max_rounds: int):
     """
     Grokputer - VRZIBRZI Node
 
     Execute tasks using Grok AI with full computer control.
 
-    Examples:
-
+    Single-agent mode (default):
         grokputer --task "label 5 memes from vault"
 
         grokputer --task "search X for pliny follows" --debug
 
         grokputer --task "invoke server prayer"
+
+    Collaboration mode (Claude + Grok):
+        grokputer -mb --task "design an MCP server with best practices"
+
+        grokputer --messagebus --task "create implementation plan for dice roller"
     """
+    # Load environment variables
+    load_dotenv()
+
+    # Configure logging
+    log_level = logging.DEBUG if debug else logging.INFO
+    logging.basicConfig(
+        level=log_level,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+
     try:
-        # Initialize Grokputer
-        grokputer = Grokputer(debug=debug)
-
-        # Boot sequence
-        if not skip_boot:
-            grokputer.boot()
-
-        # Run task
-        grokputer.run_task(task, max_iterations=max_iterations)
+        if messagebus:
+            # Collaboration mode
+            asyncio.run(_run_collaboration_mode(task, max_rounds, debug))
+        else:
+            # Single-agent mode
+            _run_single_agent_mode(task, max_iterations, debug, skip_boot)
 
     except KeyboardInterrupt:
         print("\n\n[INTERRUPT] Interrupted by user. Shutting down...\n")
@@ -232,6 +251,79 @@ def main(task: str, max_iterations: int, debug: bool, skip_boot: bool):
         print(f"\n[FATAL ERROR] {e}\n")
         logging.error(f"Fatal error: {e}", exc_info=True)
         sys.exit(1)
+
+
+def _run_single_agent_mode(task: str, max_iterations: int, debug: bool, skip_boot: bool):
+    """Run single-agent ORA loop (Grok only)."""
+    # Initialize Grokputer
+    grokputer = Grokputer(debug=debug)
+
+    # Boot sequence
+    if not skip_boot:
+        grokputer.boot()
+
+    # Run task
+    grokputer.run_task(task, max_iterations=max_iterations)
+
+
+async def _run_collaboration_mode(task: str, max_rounds: int, debug: bool):
+    """Run dual-agent collaboration via MessageBus."""
+
+    logger = logging.getLogger(__name__)
+
+    # Get API keys
+    claude_key = os.getenv("ANTHROPIC_API_KEY")
+    grok_key = os.getenv("XAI_API_KEY")
+
+    if not claude_key:
+        logger.error("ANTHROPIC_API_KEY not found in .env")
+        print("\n[ERROR] ANTHROPIC_API_KEY not found in .env file")
+        print("Get your API key from: https://console.anthropic.com/")
+        raise ValueError("Missing ANTHROPIC_API_KEY")
+
+    if not grok_key:
+        logger.error("XAI_API_KEY not found in .env")
+        print("\n[ERROR] XAI_API_KEY not found in .env file")
+        print("Get your API key from: https://console.x.ai/")
+        raise ValueError("Missing XAI_API_KEY")
+
+    logger.info(f"[COLLABORATION MODE] Task: {task}")
+    logger.info(f"Max rounds: {max_rounds}")
+
+    print("\n" + "="*70)
+    print("COLLABORATION MODE - Claude + Grok")
+    print("="*70)
+    print(f"Task: {task}")
+    print(f"Max rounds: {max_rounds}")
+    print("="*70 + "\n")
+
+    # Initialize coordinator
+    coordinator = CollaborationCoordinator(
+        claude_api_key=claude_key,
+        grok_api_key=grok_key,
+        max_rounds=max_rounds
+    )
+
+    # Run collaboration
+    final_plan = await coordinator.run_collaboration(task)
+
+    # Print summary
+    print("\n" + "="*70)
+    print("COLLABORATION COMPLETE")
+    print("="*70)
+    print(f"Task: {final_plan.task_description[:80]}...")
+    print(f"Rounds: {final_plan.total_rounds}")
+    print(f"Consensus: {'Yes' if final_plan.consensus_reached else 'Partial'}")
+    print(f"Convergence: {final_plan.metadata.get('convergence_score', 0):.2f}")
+    print(f"Confidence: {final_plan.metadata.get('confidence', 0):.2f}")
+    print(f"\nSaved to: docs/collaboration_plan_<timestamp>.md")
+    print("="*70 + "\n")
+
+    # Optionally print unified plan
+    if os.getenv("PRINT_PLAN", "false").lower() == "true":
+        print("\n--- UNIFIED PLAN ---\n")
+        print(final_plan.unified_plan)
+        print("\n--- END PLAN ---\n")
 
 
 if __name__ == '__main__':

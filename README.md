@@ -73,13 +73,15 @@ python main.py --task "your task here" [OPTIONS]
 
 Options:
   -t, --task TEXT              Task description (required)
-  -m, --max-iterations INTEGER Maximum loop iterations (default: 10)
+  -m, --max-iterations INTEGER Maximum loop iterations - single-agent (default: 10)
   -d, --debug                  Enable debug logging
   --skip-boot                  Skip boot sequence
+  -mb, --messagebus            Enable collaboration mode (Claude + Grok)
+  --max-rounds INTEGER         Maximum collaboration rounds (default: 5)
   --help                       Show help message
 ```
 
-### Example Tasks
+### Single-Agent Mode (Default)
 
 ```bash
 # Low-risk: Prayer and vault operations
@@ -95,6 +97,44 @@ python main.py --task "find the search button"
 python main.py --task "open notepad and type hello"
 python main.py --task "search google for grok ai"
 ```
+
+### Collaboration Mode (Claude + Grok)
+
+**NEW**: Enable dual-agent collaboration where Claude and Grok work together to solve tasks!
+
+```bash
+# Design and planning tasks
+python main.py -mb --task "Design a REST API for a todo app with best practices"
+
+# Code review and analysis
+python main.py -mb --task "Review the messagebus system and suggest improvements"
+
+# Implementation planning
+python main.py -mb --task "Create implementation plan for MCP dice roller server"
+
+# With custom rounds
+python main.py --messagebus --task "Analyze async vs sync programming" --max-rounds 3
+```
+
+**How it works**:
+1. Both Claude (Anthropic) and Grok (xAI) receive the task
+2. They exchange proposals and feedback over multiple rounds
+3. Consensus detection analyzes agreement/disagreement patterns
+4. Final unified plan saved to `docs/collaboration_plan_<timestamp>.md`
+
+**Requirements**:
+- `ANTHROPIC_API_KEY` in `.env` (for Claude)
+- `XAI_API_KEY` in `.env` (for Grok)
+- Both agents need active API credits
+
+**Features**:
+- ✅ Graceful degradation if one agent fails
+- ✅ Consensus detection with confidence scoring
+- ✅ Parallel API calls for speed
+- ✅ Full conversation history preserved
+- ✅ Structured markdown output
+
+See `docs/COLLABORATION_SYSTEM.md` for detailed documentation.
 
 ### Docker Usage
 

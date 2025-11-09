@@ -612,6 +612,20 @@ TASK="scan vault for files" docker-compose run --rm grokputer
    - Test script: `test_messagebus_live.py`
    - See: src/core/message_bus.py (450+ lines production code)
 
+3. **Collaboration System** - Milestone 1.2 ✅ (2025-11-09)
+   - Claude + Grok dual-agent collaboration via MessageBus
+   - CLI integration with `-mb` / `--messagebus` flag
+   - 7 core components: message models, agents, consensus, output generator, coordinator
+   - Consensus detection: 11 agreement + 9 disagreement patterns
+   - Jaccard similarity convergence scoring (0-1)
+   - Graceful degradation when one agent fails
+   - Pydantic message validation with correlation IDs
+   - Async parallel API calls with retry logic (tenacity)
+   - Markdown output with full conversation history
+   - Comprehensive documentation: docs/COLLABORATION_SYSTEM.md
+   - Test: `python main.py -mb --task "your task" --max-rounds 3`
+   - See: src/collaboration/, src/agents/claude_agent.py, src/agents/grok_agent.py
+
 **Test Results**:
 ```bash
 # Safety scoring
@@ -622,6 +636,11 @@ python test_safety_scoring.py
 python test_messagebus_live.py
 # Output: Broadcast [OK], Request-Response [OK], Priority [OK]
 # Performance: 18,384 msg/sec throughput, <0.05ms latency
+
+# Collaboration system
+python main.py -mb --task "List 3 key features of async programming" --max-rounds 2
+# Output: Collaboration complete, saved to docs/collaboration_plan_*.md
+# Performance: 2 rounds in ~13s, graceful Claude failure handling, Grok responses complete
 ```
 
 **Key Insights from Grok** (Runtime validation):
@@ -632,11 +651,18 @@ python test_messagebus_live.py
 - **Priority**: Self-healing first (Phase 1), self-improving second (Phase 2)
 
 **Remaining Phase 0 Tasks**:
+- [x] Collaboration System (Claude + Grok dual-agent)
 - [ ] AsyncIO conversion (main.py, GrokClient, ScreenObserver)
 - [ ] BaseAgent abstract class
 - [ ] ActionExecutor for PyAutoGUI
 - [ ] 3-day PoC (Observer + Actor duo)
 - [ ] Screenshot quality modes (high/medium/low)
+
+**Important Notes**:
+- Collaboration system built OUTSIDE async foundation (sync coordinator works fine)
+- Can be migrated to async later in Phase 1 multi-agent swarm
+- Current implementation: Pydantic models, tenacity retries, asyncio.gather for parallel API calls
+- **Known Issue**: Clear Python cache after updates: `find . -type d -name __pycache__ -exec rm -rf {} +`
 
 ---
 
