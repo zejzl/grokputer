@@ -6,6 +6,8 @@ Executes tool calls from Grok including computer control, bash, and custom tools
 import json
 import logging
 import subprocess
+import shlex
+import os
 from typing import Dict, Any, List
 import pyautogui
 from src import config
@@ -97,7 +99,7 @@ class ToolExecutor:
 
     def _execute_bash(self, arguments: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Execute a bash command with safety scoring.
+        Execute a bash command with safety scoring and shell injection prevention.
 
         Args:
             arguments: Dictionary with 'command' key
@@ -116,6 +118,17 @@ class ToolExecutor:
 
         # Log safety assessment
         logger.info(f"Command safety score: {safety_score}/100 (risk: {risk_level}) - {command}")
+
+        # SECURITY: Sanitize input to prevent shell injection
+        dangerous_chars = [';', '&', '|', '<', '>', '$', '`', '\\', '\n']
+        if any(char in command for char in dangerous_chars):
+            logger.error(f"Command contains dangerous shell metacharacters: {command}")
+            return {
+                "status": "error",
+                "error": "Command contains dangerous shell metacharacters (;, &, |, <, >, $, `, \\). Use shell=False with explicit arguments instead.",
+                "safety_score": 100,  # Maximum risk
+                "risk_level": "CRITICAL"
+            }
 
         # Determine if confirmation is needed
         needs_confirmation = config.requires_confirmation(command)
@@ -137,13 +150,27 @@ class ToolExecutor:
         try:
             logger.info(f"Executing bash: {command}")
 
-            # Execute command
+            # SECURITY FIX: Parse command safely and execute without shell
+            # This prevents shell injection attacks by avoiding shell interpretation
+            try:
+                # Use shlex to safely parse command into argument list
+                argv = shlex.split(command)
+            except ValueError as e:
+                logger.error(f"Failed to parse command: {e}")
+                return {
+                    "status": "error",
+                    "error": f"Malformed command: {str(e)}",
+                    "safety_score": safety_score
+                }
+
+            # Execute with shell=False (SECURE: no shell interpretation)
             result = subprocess.run(
-                command,
-                shell=True,
+                argv,  # List of arguments instead of string
+                shell=False,  # SECURE: Prevents shell injection
                 capture_output=True,
                 text=True,
-                timeout=30
+                timeout=30,
+                env={**os.environ}  # Explicit environment passing
             )
 
             return {
@@ -160,6 +187,13 @@ class ToolExecutor:
             return {
                 "status": "error",
                 "error": "Command timed out (30s limit)",
+                "safety_score": safety_score
+            }
+        except FileNotFoundError:
+            # Command not found in PATH
+            return {
+                "status": "error",
+                "error": f"Command not found: {argv[0] if argv else command}",
                 "safety_score": safety_score
             }
         except Exception as e:
