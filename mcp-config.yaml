@@ -1,0 +1,40 @@
+# Grokputer MCP Server Configuration
+# For use with MCP Gateway or Claude Desktop
+
+mcpServers:
+  grokputer:
+    # Local development (Docker)
+    url: http://localhost:8000
+
+    # Alternative: Production deployment
+    # url: http://your-server:8000
+
+    # Server metadata
+    name: "Grokputer MCP Server"
+    description: "VRZIBRZI node - Vault scanning, prayer invocation, and stats"
+    version: "1.0.0"
+
+    # Tool namespace to avoid conflicts
+    toolPrefix: "grokputer"
+
+    # Timeout settings for <3s startup requirement
+    timeout:
+      startup: 3000  # 3 seconds max startup
+      request: 10000  # 10 seconds per request
+
+    # Available tools (auto-discovered from server)
+    tools:
+      - scan_vault
+      - invoke_prayer
+      - get_vault_stats
+
+    # Optional: Authentication (if needed)
+    # auth:
+    #   type: bearer
+    #   token: ${GROKPUTER_API_KEY}
+
+    # Health check endpoint
+    healthCheck:
+      enabled: true
+      endpoint: /health
+      interval: 30000  # 30 seconds

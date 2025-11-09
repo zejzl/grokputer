@@ -1,0 +1,14 @@
+# Grokputer MCP Server Dependencies
+# Lightweight setup for <3s startup time
+
+# MCP Framework
+fastmcp>=0.1.0
+
+# ASGI Server
+uvicorn[standard]>=0.24.0
+
+# Optional: Data validation (if needed for complex schemas)
+pydantic>=2.0.0
+
+# Async file operations
+aiofiles>=23.0.0
