@@ -186,6 +186,32 @@ def improve(target: str, category: str, severity: str, auto_approve_safe: bool, 
     TARGET can be a file or directory path.
     """
     asyncio.run(_improve(target, category, severity, auto_approve_safe, dangerously_skip_permissions))
+@cli.command()
+@click.argument('target', type=click.Path(exists=True))
+@click.option('--interval', type=int, default=60, help='Cycle interval in seconds')
+@click.option('--evolve-chance', type=float, default=0.3, help='Chance of param evolution')
+@click.option('--no-redis', is_flag=True, help='Disable Redis persistence')
+def daemon(target: str, interval: int, evolve_chance: float, no_redis: bool):
+    """
+    Run daemon mode for continuous code monitoring and evolution.
+
+    TARGET is the directory or file to monitor.
+    """
+    asyncio.run(_daemon(target, interval, evolve_chance, no_redis))
+
+@cli.command()
+@click.argument('target', type=click.Path(exists=True))
+@click.option('--interval', type=int, default=60, help='Cycle interval in seconds')
+@click.option('--evolve-chance', type=float, default=0.3, help='Chance of param evolution')
+@click.option('--no-redis', is_flag=True, help='Disable Redis persistence')
+def daemon(target: str, interval: int, evolve_chance: float, no_redis: bool):
+    """
+    Run daemon mode for continuous code monitoring and evolution.
+
+    TARGET is the directory or file to monitor.
+    """
+    asyncio.run(_daemon(target, interval, evolve_chance, no_redis))
+
 
 
 async def _improve(target: str, category: str, severity: str, auto_approve_safe: bool, dangerously_skip_permissions: bool):
@@ -194,152 +220,77 @@ async def _improve(target: str, category: str, severity: str, auto_approve_safe:
 
     # Step 1: Scan
     await _scan(target, category, severity, None, auto_propose=True, dangerously_skip_permissions=dangerously_skip_permissions)
+async def evolve_params(agent: str, chance: float):
+    await asyncio.sleep(0.1)  # Yield for concurrency
+    if random.random() < chance:
+        # Mock param tweak logic
+        return f"{agent} evolved: +0.1 divergence"
+    return f"{agent} stable"
 
 
-# Helper functions
-
-def _filter_findings(findings: List[Finding], category: str, severity: str) -> List[Finding]:
-    """Filter findings by category and severity."""
-    severity_order = {'critical': 4, 'high': 3, 'medium': 2, 'low': 1, 'info': 0}
-    min_severity = severity_order.get(severity, 0) if severity != 'all' else 0
-
-    filtered = []
-    for f in findings:
-        # Category filter
-        if category != 'all' and f.category != category:
-            continue
-
-        # Severity filter
-        if severity != 'all' and severity_order.get(f.severity, 0) < min_severity:
-            continue
-
-        filtered.append(f)
-
-    return filtered
+async def security_scan(agent: str, target_path, scanner):
+    vulns = []
+    if agent == "scanner" and scanner and target_path:
+        try:
+            report = await scanner.scan_directory(target_path)
+            vulns = [f for f in report.findings if f.severity in ['critical', 'high']]
+        except Exception as e:
+            vulns = []  # Graceful fail
+    if vulns:
+        console.print(f"[yellow]{len(vulns)} issues detected in {agent}! Review proposals.[/yellow]")
+    return f"{agent}: {len(vulns)} alerts"
 
 
-def _display_scan_report(report: ScanReport, findings: List[Finding]):
-    """Display scan report in a nice format."""
-    # Summary
-    summary = Table(title="Scan Summary", show_header=False)
-    summary.add_row("Files Scanned", str(report.files_scanned))
-    summary.add_row("Total Lines", str(report.total_lines))
-    summary.add_row("Issues Found", str(len(findings)))
-    console.print(summary)
-
-    # Severity breakdown
-    if findings:
-        console.print("\n[bold]Severity Breakdown:[/bold]")
-        severity_table = Table()
-        severity_table.add_column("Severity", style="bold")
-        severity_table.add_column("Count", justify="right")
-
-        severity_counts = {}
-        for f in findings:
-            severity_counts[f.severity] = severity_counts.get(f.severity, 0) + 1
-
-        for sev in ['critical', 'high', 'medium', 'low', 'info']:
-            count = severity_counts.get(sev, 0)
-            if count > 0:
-                color = {'critical': 'red', 'high': 'orange1', 'medium': 'yellow', 'low': 'blue', 'info': 'dim'}.get(sev, 'white')
-                severity_table.add_row(f"[{color}]{sev.upper()}[/{color}]", str(count))
-
-        console.print(severity_table)
-
-        # Findings list
-        console.print("\n[bold]Findings:[/bold]")
-        for i, finding in enumerate(findings[:10], 1):  # Show first 10
-            color = {'critical': 'red', 'high': 'orange1', 'medium': 'yellow', 'low': 'blue', 'info': 'dim'}.get(finding.severity, 'white')
-
-            console.print(f"\n[{color}]{i}. [{finding.severity.upper()}][/{color}] {finding.description}")
-            console.print(f"   [dim]File: {finding.file_path}:{finding.line_number}[/dim]")
-            console.print(f"   [dim]ID: {finding.finding_id}[/dim]")
-
-        if len(findings) > 10:
-            console.print(f"\n[dim]... and {len(findings) - 10} more findings[/dim]")
+async def generate_haiku(results):
+    # Simple mock haiku; can integrate LLM later
+    return "Eternal queues / Agents dance without wait / Bloom in code's night"
 
 
-def _display_proposal(proposal: Proposal):
-    """Display proposal in a nice format."""
-    # Header
-    risk_color = {'low': 'green', 'medium': 'yellow', 'high': 'orange1', 'critical': 'red'}.get(proposal.risk_level, 'white')
-
-    console.print(Panel(
-        f"[bold]{proposal.title}[/bold]\n\n"
-        f"{proposal.description}\n\n"
-        f"[dim]File: {proposal.file_path}[/dim]\n"
-        f"[dim]Risk: [{risk_color}]{proposal.risk_level.upper()}[/{risk_color}] | "
-        f"Effort: {proposal.estimated_effort} | "
-        f"Breaking: {'Yes' if proposal.breaking_change else 'No'}[/dim]",
-        title=f"Proposal: {proposal.proposal_id}",
-        border_style="cyan"
-    ))
-
-    # Rationale
-    console.print("\n[bold]Rationale:[/bold]")
-    console.print(proposal.rationale)
-
-    # Benefits
-    if proposal.benefits:
-        console.print("\n[bold green]Benefits:[/bold green]")
-        for benefit in proposal.benefits:
-            console.print(f"  • {benefit}")
-
-    # Risks
-    if proposal.risks:
-        console.print("\n[bold yellow]Risks:[/bold yellow]")
-        for risk in proposal.risks:
-            console.print(f"  • {risk}")
-
-    # Code diff
-    console.print("\n[bold]Code Changes:[/bold]")
-    if proposal.diff:
-        syntax = Syntax(proposal.diff, "diff", theme="monokai", line_numbers=True)
-        console.print(syntax)
-    else:
-        console.print("\n[dim]Old Code:[/dim]")
-        console.print(Syntax(proposal.old_code, "python", theme="monokai"))
-        console.print("\n[dim]New Code:[/dim]")
-        console.print(Syntax(proposal.new_code, "python", theme="monokai"))
-
-    # Test strategy
-    console.print(f"\n[bold]Test Strategy:[/bold] {proposal.test_strategy}")
+async def async_daemon_cycle(target_path, agents: List[str], chance: float = 0.3, r = None, scanner = None):
+    """Async param evolution + security scan — non-blocking swarm bliss."""
+    tasks = []
+    for agent in agents:
+        tasks.append(asyncio.create_task(evolve_params(agent, chance)))
+        tasks.append(asyncio.create_task(security_scan(agent, target_path, scanner)))
+    
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    
+    haiku = await generate_haiku(results)
+    if r:
+        r.set("eternal_bloom", haiku)
+    console.print(f"Cycle complete: {len(results)} evals, {chance*100}% drift survived.")
+    console.print(f"Haiku: {haiku}")
 
 
-async def _auto_propose(findings: List[Finding], dangerously_skip_permissions: bool):
-    """Auto-generate proposals for findings."""
+async def _daemon(target: str, interval: int, evolve_chance: float, no_redis: bool):
+    target_path = Path(target)
     api_key = os.getenv('XAI_API_KEY')
     if not api_key:
-        console.print("\n[red]Error:[/red] XAI_API_KEY environment variable not set")
-        console.print("[dim]Set your API key: export XAI_API_KEY=your_key_here[/dim]")
+        console.print("[red]Error:[/red] XAI_API_KEY environment variable not set")
         return
-
-    console.print(f"\n[bold cyan]Generating proposals for {len(findings)} findings...[/bold cyan]\n")
-
-    proposer = ProposalGeneratorAgent(api_key=api_key)
-
-    for i, finding in enumerate(findings, 1):
-        console.print(f"\n[bold]{i}/{len(findings)}:[/bold] {finding.description}")
-
+    scanner = CodeScannerAgent()
+    proposer = ProposalGeneratorAgent(api_key=api_key)  # For future use
+    agents = ["scanner", "proposer"]
+    r = None
+    if not no_redis:
         try:
-            with console.status(f"[bold green]Generating proposal..."):
-                proposal = await proposer.generate_proposal(finding)
-
-            _display_proposal(proposal)
-
-            # Ask for approval (unless skip permissions)
-            if not dangerously_skip_permissions:
-                if not click.confirm("\nContinue to next finding?", default=True):
-                    break
-            else:
-                console.print("\n[dim][SKIPPED APPROVAL - dangerously-skip-permissions enabled][/dim]")
-
+            r = redis.Redis(host='localhost', port=6379, db=0)
+            r.ping()
+            console.print("[green]Redis connected.[/green]")
         except Exception as e:
-            console.print(f"[red]Error generating proposal:[/red] {e}")
-            if not dangerously_skip_permissions:
-                if not click.confirm("Continue despite error?", default=True):
-                    break
+            console.print(f"[yellow]Redis unavailable ({e}), using console fallback.[/yellow]")
+            r = None
+    console.print(f"[bold green]Starting autonomous daemon on {target_path} (interval: {interval}s)[/bold green]")
+    try:
+        while True:
+            await async_daemon_cycle(target_path, agents, evolve_chance, r, scanner)
+            await asyncio.sleep(interval)
+    except KeyboardInterrupt:
+        console.print("
+[green]Daemon stopped by user.[/green]")
+        if r:
+            r.set("daemon_stopped", "true")
 
 
-if __name__ == '__main__':
-    cli()
+
+

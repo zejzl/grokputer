@@ -92,7 +92,7 @@ class Grokputer:
 
         self.logger.info("Grokputer components initialized")
 
-    async def boot(self):
+    def boot(self):
         """
         Boot sequence: invoke server prayer and test connection.
         """
@@ -110,7 +110,7 @@ class Grokputer:
             self.logger.warning(f"Prayer invocation failed: {prayer_result}")
 
         # Test Grok API connection
-        if await self.grok_client.test_connection():
+        if self.grok_client.test_connection():
             self.logger.info("[OK] Grok API connection verified")
             print("[OK] Grok API connection verified")
         else:
@@ -120,7 +120,7 @@ class Grokputer:
 
         self.logger.info("Boot sequence complete. Ready to operate.")
 
-    async def run_task(self, task: str, max_iterations: int = 10):
+    def run_task(self, task: str, max_iterations: int = 10):
         """
         Execute a task using the observe-reason-act loop.
 
@@ -144,7 +144,7 @@ class Grokputer:
             print("[OBSERVE] Capturing screen...")
             screenshot_base64 = None
             try:
-                screenshot_base64 = await self.screen_observer.screenshot_to_base64()
+                screenshot_base64 = self.screen_observer.screenshot_to_base64()
                 self.logger.info(f"Screenshot captured: {len(screenshot_base64)} bytes")
             except Exception as e:
                 self.logger.error(f"Failed to capture screenshot: {e}")
@@ -152,7 +152,7 @@ class Grokputer:
 
             # REASON: Send to Grok
             print("[REASON] Sending to Grok...")
-            response = await self.grok_client.create_message(
+            response = self.grok_client.create_message(
                 task=task if iteration == 1 else "Continue the task.",
                 screenshot_base64=screenshot_base64,
                 conversation_history=self.conversation_history if iteration > 1 else None
@@ -197,7 +197,7 @@ class Grokputer:
 
             # Continue conversation with tool results
             if iteration < max_iterations:
-                continue_response = await self.grok_client.continue_conversation(
+                continue_response = self.grok_client.continue_conversation(
                     tool_results=tool_results,
                     conversation_history=self.conversation_history
                 )
