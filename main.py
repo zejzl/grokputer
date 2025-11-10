@@ -436,6 +436,7 @@ def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebu
         sys.exit(1)
 
 
+async def _run_swarm_mode(task: str, agent_roles: list, debug: bool):
     """
     Run multi-agent swarm mode with async coordination.
 
