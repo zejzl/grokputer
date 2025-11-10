@@ -220,6 +220,23 @@ class Grokputer:
         self.logger.info("Task execution finished")
 
 
+
+async def _run_single_agent_mode(task: str, max_iterations: int, debug: bool, skip_boot: bool):
+    """
+    Run single-agent mode with async support.
+    
+    Args:
+        task: Task description
+        max_iterations: Maximum loop iterations
+        debug: Enable debug logging
+        skip_boot: Skip boot sequence
+    """
+    grokputer = Grokputer(debug=debug)
+    if not skip_boot:
+        await grokputer.boot()
+    await grokputer.run_task(task=task, max_iterations=max_iterations)
+
+
 def _run_interactive_mode(debug: bool, max_iterations: int, max_rounds: int, skip_boot: bool):
     """
     Run interactive menu mode - user selects mode and enters task.
@@ -259,10 +276,17 @@ def _run_interactive_mode(debug: bool, max_iterations: int, max_rounds: int, ski
         print("\n[MODE] Single Agent (Grok only)\n")
         task = input("Enter task: ").strip()
         if task:
-            grokputer = Grokputer(debug=debug)
-            if not skip_boot:
-                grokputer.boot()
-            grokputer.run(task=task, max_iterations=max_iterations)
+            async def run_single():
+                grokputer = Grokputer(debug=debug)
+                if not skip_boot:
+                    await grokputer.boot()
+                await grokputer.run_task(task=task, max_iterations=max_iterations)
+            asyncio.run(run_single())
+            async def run_single():
+                grokputer = Grokputer(debug=debug)
+                if not skip_boot:
+                    await grokputer.boot()
+                await grokputer.run_task(task=task, max_iterations=max_iterations)
         else:
             print("[ERROR] Task cannot be empty")
 
@@ -425,7 +449,7 @@ def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebu
             asyncio.run(_run_collaboration_mode(task, max_rounds, debug, review_mode))
         else:
             # Single-agent mode
-            _run_single_agent_mode(task, max_iterations, debug, skip_boot)
+            asyncio.run(_run_single_agent_mode(task, max_iterations, debug, skip_boot))
 
     except KeyboardInterrupt:
         print("\n\n[INTERRUPT] Interrupted by user. Shutting down...\n")

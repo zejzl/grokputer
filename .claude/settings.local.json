@@ -34,7 +34,9 @@
       "Bash(find:*)",
       "Bash(XAI_API_KEY=\"xai-JgBsxcWxsauXW9bDhm67h3qF1pDyRqTjc52T4THXOoealzcarVRCIGDQTDnuAFXZr7emdpD1UJ31EZvB\" python autonomous.py improve src/ --category security --severity critical --dangerously-skip-permissions)",
       "Bash(tee:*)",
-      "Bash(/c/Python314/python.exe:*)"
+      "Bash(/c/Python314/python.exe:*)",
+      "Bash(git rev-list:*)",
+      "Bash(xargs git grep \"xai-JgBsxcWxsauXW9bDhm67h3qF1pDyRqTjc52T4THXOoealzcarVRCIGDQTDnuAFXZr7emdpD1UJ31EZvB\")"
     ],
     "deny": [],
     "ask": []
