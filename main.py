@@ -289,12 +289,16 @@ def _run_interactive_mode(debug: bool, max_iterations: int, max_rounds: int, ski
         print("\n[MODE] Improver Manual - Self-improvement on session/log\n")
         print("[INFO] Improver agent will analyze a specific session and propose improvements")
         session_id = input("Enter session ID (or 'latest'): ").strip()
-        if session_id:
-            print(f"[IMPROVER] Analyzing session: {session_id}")
-            # TODO: Implement improver agent call
-            print("[TODO] Improver agent not yet implemented")
-        else:
-            print("[ERROR] Session ID cannot be empty")
+        if not session_id:
+            session_id = "latest"
+
+        try:
+            from src.agents.session_improver import SessionImprover
+            improver = SessionImprover()
+            improver.improve_session(session_id)
+        except Exception as e:
+            print(f"[ERROR] Improver failed: {e}")
+            logging.error(f"Improver error: {e}", exc_info=True)
 
     elif choice == "5":
         # Offline Mode
@@ -302,22 +306,28 @@ def _run_interactive_mode(debug: bool, max_iterations: int, max_rounds: int, ski
         print("[INFO] Using cached responses and local knowledge base")
         task = input("Enter task: ").strip()
         if task:
-            print(f"[OFFLINE] Task: {task}")
-            # TODO: Implement offline mode with cached responses
-            print("[TODO] Offline mode not yet implemented")
+            try:
+                from src.offline_mode import run_offline_mode
+                run_offline_mode(task, max_iterations)
+            except Exception as e:
+                print(f"[ERROR] Offline mode failed: {e}")
+                logging.error(f"Offline mode error: {e}", exc_info=True)
         else:
             print("[ERROR] Task cannot be empty")
 
     elif choice == "6":
         # Community Vault Sync
         print("\n[MODE] Community Vault Sync - Pull/push evolutions and tools\n")
-        sync_choice = input("Sync action (pull/push/both): ").strip().lower()
-        if sync_choice in ['pull', 'push', 'both']:
-            print(f"[VAULT SYNC] {sync_choice.upper()} operation started...")
-            # TODO: Implement vault sync with community repository
-            print("[TODO] Community vault sync not yet implemented")
+        sync_choice = input("Sync action (pull/push/both/list): ").strip().lower()
+        if sync_choice in ['pull', 'push', 'both', 'list']:
+            try:
+                from src.vault_sync import run_vault_sync
+                run_vault_sync(sync_choice)
+            except Exception as e:
+                print(f"[ERROR] Vault sync failed: {e}")
+                logging.error(f"Vault sync error: {e}", exc_info=True)
         else:
-            print("[ERROR] Invalid sync action. Choose 'pull', 'push', or 'both'")
+            print("[ERROR] Invalid sync action. Choose 'pull', 'push', 'both', or 'list'")
 
     elif choice == "7":
         # Save Game

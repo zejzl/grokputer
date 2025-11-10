@@ -28,7 +28,10 @@
       "Bash(git reset:*)",
       "Bash(git commit:*)",
       "Bash(git merge:*)",
-      "Bash(xargs ls:*)"
+      "Bash(xargs ls:*)",
+      "Bash(git rm:*)",
+      "Bash(python:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []

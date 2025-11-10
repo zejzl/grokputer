@@ -51,11 +51,57 @@ Run `python main.py` without arguments to see:
         1. Single Agent (Grok only) - Observe-Reason-Act loop
         2. Collaboration Mode (Grok + Claude) - Dual AI planning
         3. Swarm Mode (Multi-agent) - Async team coordination
-        4. Improver Manual - Run self-improvement on specific session/log
-        5. Offline Mode - Cached/local fallback (no API, uses vault/KB)
-        6. Community Vault Sync - Pull/push evolutions and tools
+        4. Improver Manual - Run self-improvement on specific session/log ✅
+        5. Offline Mode - Cached/local fallback (no API, uses vault/KB) ✅
+        6. Community Vault Sync - Pull/push evolutions and tools ✅
         7. Save Game - Invoke progress save script
         8. Quit
+```
+
+**New Features (Options 4-6 - Just Implemented!):**
+
+#### 4. Session Improver
+Analyzes past Grokputer sessions and provides detailed recommendations:
+- Performance metrics (iterations, API calls, costs)
+- Error analysis with categorization
+- Tool usage patterns and optimization suggestions
+- Success/failure insights
+- Saves analysis as JSON for future reference
+
+```bash
+# From interactive menu
+Choose mode (1-8): 4
+Enter session ID (or 'latest'): latest
+
+# Direct usage
+python -c "from src.agents.session_improver import SessionImprover; SessionImprover().improve_session('latest')"
+```
+
+#### 5. Offline Mode
+Uses cached session history and local knowledge base when APIs are unavailable:
+- Matches tasks to similar past executions
+- Suggests tools based on historical patterns
+- Provides cached recommendations
+- Works completely offline
+- Automatically builds knowledge base from session logs
+
+```bash
+# From interactive menu
+Choose mode (1-8): 5
+Enter task: scan vault for files
+```
+
+#### 6. Community Vault Sync
+Share and sync tools, agents, and configurations:
+- **Pull**: Download community contributions (tools, agents, docs)
+- **Push**: Share your local tools and agents with community
+- **List**: Browse available community items
+- **Both**: Bidirectional sync in one command
+
+```bash
+# From interactive menu
+Choose mode (1-8): 6
+Sync action (pull/push/both/list): pull
 ```
 
 ---
@@ -253,8 +299,11 @@ python main.py --swarm --debug --task "complex task"
 - Database with performance tracking
 - Session logging and analysis
 - 32/32 unit tests passing
-- Interactive menu mode
-- Save game functionality
+- Interactive menu mode with 8 options
+- Save game functionality (optimized backups)
+- **NEW:** Session Improver - Analyze past sessions and get recommendations
+- **NEW:** Offline Mode - Use cached responses and local knowledge base
+- **NEW:** Community Vault Sync - Share tools and agents
 
 ### 🚧 In Progress (Phase 1)
 - Duo/trio validation testing
@@ -264,10 +313,9 @@ python main.py --swarm --debug --task "complex task"
 
 ### 📅 Roadmap (Phase 2+)
 - Validator agent for output verification
-- Offline mode with cached responses
-- Community vault sync
 - Browser automation enhancements
 - Advanced swarm patterns
+- Remote community vault repository
 
 See [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md) for detailed roadmap.
 
