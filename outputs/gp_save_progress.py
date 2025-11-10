@@ -12,8 +12,8 @@ import os
 from datetime import datetime
 from pathlib import Path
 
-PROGRESS_DIRS = ["src", "logs", "vault", "outputs", "mcp", "db"]
-DOC_FILES = ["swarm_mcp.md", "README.md", "main.py"]  # Add more as needed
+PROGRESS_DIRS = ["src", "logs", "outputs", "mcp", "db"]  # Removed vault (5GB+ user files - backup separately if needed)
+DOC_FILES = ["main.py", "COLLABORATION.md", "DEVELOPMENT_PLAN.md"]  # Add more as needed
 BACKUP_DIR = Path("backups")
 STATES_FILE = BACKUP_DIR / "agent_states.json"
 
