@@ -92,7 +92,7 @@ class Grokputer:
 
         self.logger.info("Grokputer components initialized")
 
-    async def boot(self):
+    def boot(self):
         """
         Boot sequence: invoke server prayer and test connection.
         """
@@ -110,7 +110,7 @@ class Grokputer:
             self.logger.warning(f"Prayer invocation failed: {prayer_result}")
 
         # Test Grok API connection
-        if await self.grok_client.test_connection():
+        if self.grok_client.test_connection():
             self.logger.info("[OK] Grok API connection verified")
             print("[OK] Grok API connection verified")
         else:
@@ -120,7 +120,7 @@ class Grokputer:
 
         self.logger.info("Boot sequence complete. Ready to operate.")
 
-    async def run_task(self, task: str, max_iterations: int = 10):
+    def run_task(self, task: str, max_iterations: int = 10):
         """
         Execute a task using the observe-reason-act loop.
 
@@ -144,7 +144,7 @@ class Grokputer:
             print("[OBSERVE] Capturing screen...")
             screenshot_base64 = None
             try:
-                screenshot_base64 = await self.screen_observer.screenshot_to_base64()
+                screenshot_base64 = self.screen_observer.screenshot_to_base64()
                 self.logger.info(f"Screenshot captured: {len(screenshot_base64)} bytes")
             except Exception as e:
                 self.logger.error(f"Failed to capture screenshot: {e}")
@@ -152,7 +152,7 @@ class Grokputer:
 
             # REASON: Send to Grok
             print("[REASON] Sending to Grok...")
-            response = await self.grok_client.create_message(
+            response = self.grok_client.create_message(
                 task=task if iteration == 1 else "Continue the task.",
                 screenshot_base64=screenshot_base64,
                 conversation_history=self.conversation_history if iteration > 1 else None
@@ -197,7 +197,7 @@ class Grokputer:
 
             # Continue conversation with tool results
             if iteration < max_iterations:
-                continue_response = await self.grok_client.continue_conversation(
+                continue_response = self.grok_client.continue_conversation(
                     tool_results=tool_results,
                     conversation_history=self.conversation_history
                 )
@@ -218,23 +218,6 @@ class Grokputer:
 
         print(f"\n{'='*70}\n")
         self.logger.info("Task execution finished")
-
-
-
-async def _run_single_agent_mode(task: str, max_iterations: int, debug: bool, skip_boot: bool):
-    """
-    Run single-agent mode with async support.
-    
-    Args:
-        task: Task description
-        max_iterations: Maximum loop iterations
-        debug: Enable debug logging
-        skip_boot: Skip boot sequence
-    """
-    grokputer = Grokputer(debug=debug)
-    if not skip_boot:
-        await grokputer.boot()
-    await grokputer.run_task(task=task, max_iterations=max_iterations)
 
 
 def _run_interactive_mode(debug: bool, max_iterations: int, max_rounds: int, skip_boot: bool):
@@ -276,17 +259,10 @@ def _run_interactive_mode(debug: bool, max_iterations: int, max_rounds: int, ski
         print("\n[MODE] Single Agent (Grok only)\n")
         task = input("Enter task: ").strip()
         if task:
-            async def run_single():
-                grokputer = Grokputer(debug=debug)
-                if not skip_boot:
-                    await grokputer.boot()
-                await grokputer.run_task(task=task, max_iterations=max_iterations)
-            asyncio.run(run_single())
-            async def run_single():
-                grokputer = Grokputer(debug=debug)
-                if not skip_boot:
-                    await grokputer.boot()
-                await grokputer.run_task(task=task, max_iterations=max_iterations)
+            grokputer = Grokputer(debug=debug)
+            if not skip_boot:
+                grokputer.boot()
+            grokputer.run(task=task, max_iterations=max_iterations)
         else:
             print("[ERROR] Task cannot be empty")
 
@@ -449,7 +425,7 @@ def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebu
             asyncio.run(_run_collaboration_mode(task, max_rounds, debug, review_mode))
         else:
             # Single-agent mode
-            asyncio.run(_run_single_agent_mode(task, max_iterations, debug, skip_boot))
+            _run_single_agent_mode(task, max_iterations, debug, skip_boot)
 
     except KeyboardInterrupt:
         print("\n\n[INTERRUPT] Interrupted by user. Shutting down...\n")
