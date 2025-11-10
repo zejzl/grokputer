@@ -25,14 +25,14 @@ class ProposalGeneratorAgent:
     - Provide multiple alternative approaches
     """
 
-    def __init__(self, api_key: str, base_url: str = "https://api.x.ai/v1", model: str = "grok-beta"):
+    def __init__(self, api_key: str, base_url: str = "https://api.x.ai/v1", model: str = "grok-4-fast-reasoning"):
         """
         Initialize the proposal generator.
 
         Args:
             api_key: xAI API key
             base_url: API base URL
-            model: Model to use (default: grok-beta)
+            model: Model to use (default: grok-4-fast-reasoning)
         """
         self.client = OpenAI(api_key=api_key, base_url=base_url)
         self.model = model

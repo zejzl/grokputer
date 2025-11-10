@@ -13,6 +13,7 @@ Extends BaseAgent for lifecycle management.
 import asyncio
 import logging
 import subprocess
+import shlex
 import time
 from typing import Dict, Any, Optional
 from pathlib import Path
@@ -312,9 +313,11 @@ class Actor(BaseAgent):
     def _run_bash_command(self, command: str) -> Dict:
         """Run bash command (blocking, runs in thread pool)."""
         try:
+            # Use shlex.split() with shell=False to prevent shell injection
+            args = shlex.split(command)
             result = subprocess.run(
-                command,
-                shell=True,
+                args,
+                shell=False,
                 capture_output=True,
                 text=True,
                 timeout=30.0

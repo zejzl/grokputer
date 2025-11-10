@@ -10,6 +10,7 @@ Date: 2025-11-08
 """
 
 import asyncio
+import ast
 import logging
 from typing import Dict, Any, Optional
 from datetime import datetime
@@ -301,6 +302,26 @@ class WebDevAgent(BaseAgent):
 
         return result
 
+    def _has_unsafe_eval_or_exec(self, code_str: str) -> bool:
+        """
+        Use AST parsing to detect unsafe eval/exec calls.
+        More accurate than string matching - avoids false positives.
+        """
+        try:
+            tree = ast.parse(code_str)
+            for node in ast.walk(tree):
+                if (isinstance(node, ast.Call) and
+                    isinstance(node.func, ast.Name) and
+                    node.func.id in ('eval', 'exec')):
+                    return True
+            return False
+        except SyntaxError:
+            # If code is invalid Python, conservatively flag as potentially unsafe
+            return True
+        except Exception:
+            # Handle any other parsing errors gracefully
+            return False
+
     async def _review_code(self, content: Dict[str, Any]) -> Dict[str, Any]:
         """Review code for security vulnerabilities and optimization opportunities."""
         # Logging handled via session_logger (f"[{self.agent_id}] Reviewing code")
@@ -312,10 +333,10 @@ class WebDevAgent(BaseAgent):
         issues_found = 0
         suggestions = []
 
-        # Basic checks
-        if "eval(" in code:
+        # Basic checks - Use AST parsing for accurate eval/exec detection
+        if self._has_unsafe_eval_or_exec(code):
             issues_found += 1
-            suggestions.append("CRITICAL: Avoid using eval() - security risk")
+            suggestions.append("CRITICAL: Avoid using eval() or exec() - security risk")
 
         if "password" in code.lower() and "hash" not in code.lower():
             issues_found += 1
