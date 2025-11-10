@@ -76,5 +76,5 @@ if __name__ == "__main__":
     update_docs(timestamp)
     save_agent_states(timestamp)
 
-    print("\n[COMPLETE] All progress saved—backups, docs updated, states dumped.")
-    print("Goodnight! Sleep well—Grokputer has your back. 💤 ZA GROKA.")
+    print("\n[COMPLETE] All progress saved - backups, docs updated, states dumped.")
+    print("Goodnight! Sleep well - Grokputer has your back. ZA GROKA.")
