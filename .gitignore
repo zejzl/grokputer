@@ -64,3 +64,10 @@ models/*.safetensors
 # Backups (too large for git)
 backups/*.tar.gz
 backups/*.zip
+
+# Security - Prevent API key leaks
+.claude/settings.local.json
+.grok/settings.json
+*/.grok/settings.json
+**/.grok/settings.json
+superagent/superagent stuff.txt

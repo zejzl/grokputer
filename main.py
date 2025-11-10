@@ -721,12 +721,15 @@ async def _run_swarm_mode(task: str, agent_roles: list, debug: bool):
 
     # Send initial task to coordinator
     logger.info(f"[SWARM] Sending task to coordinator: {task}")
-    await message_bus.send("coordinator", {
-        "type": "observe_screen",
-        "from": "user",
-        "task": task,
-        "timestamp": asyncio.get_event_loop().time()
-    })
+    from src.core.message_bus import Message, MessagePriority
+    task_msg = Message(
+        from_agent="user",
+        to_agent="coordinator",
+        message_type="new_task",
+        content={"description": task, "task_id": "task_001"},
+        priority=MessagePriority.HIGH
+    )
+    await message_bus.send(task_msg)
     
     # Let agents process for a few seconds
     await asyncio.sleep(5)
