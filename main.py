@@ -31,6 +31,9 @@ from src.collaboration.coordinator import CollaborationCoordinator
 import sys
 sys.stdout.reconfigure(encoding="utf-8")
 from src.core.message_bus import MessageBus
+from src.agents.observer_agent import ObserverAgent
+from src.agents.actor_agent import ActorAgent
+from src.agents.coordinator import Coordinator
 from src.core.action_executor import ActionExecutor
 from src.observability.deadlock_detector import DeadlockDetector
 from src.observability.session_logger import SessionLogger
@@ -356,6 +359,15 @@ def _run_interactive_mode(debug: bool, max_iterations: int, max_rounds: int, ski
         print("\n[ERROR] Invalid choice. Please select 1-8.\n")
         _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot)
 
+def _run_single_agent_mode(task: str, max_iterations: int, debug: bool, skip_boot: bool):
+    """Run single-agent mode using Grokputer class."""
+    grokputer = Grokputer(debug=debug)
+    if not skip_boot:
+        grokputer.boot()
+    grokputer.run_task(task=task, max_iterations=max_iterations)
+
+
+
 
 @click.command()
 @click.option('--task', '-t', default=None, help='Task description for Grokputer to execute (optional: omit for interactive idle mode)')
@@ -368,7 +380,8 @@ def _run_interactive_mode(debug: bool, max_iterations: int, max_rounds: int, ski
 @click.option('--swarm', is_flag=True, help='Enable multi-agent swarm mode')
 @click.option('--agents', default=3, help='Number of agents in swarm (default: 3)')
 @click.option('--agent-roles', default='coordinator,observer,actor', help='Comma-separated agent roles')
-def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebus: bool, max_rounds: int, review_mode: bool, swarm: bool, agents: int, agent_roles: str, syntax_check: bool = False):
+@click.option('--pantheon', '-p', is_flag=True, help='Enable Pantheon mode (9-agent architecture with validation & learning)')
+def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebus: bool, max_rounds: int, review_mode: bool, swarm: bool, agents: int, agent_roles: str, pantheon: bool, syntax_check: bool = False):
     """
     Grokputer - VRZIBRZI Node
 
@@ -393,12 +406,18 @@ def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebu
 
         grokputer --swarm --debug --task "complex multi-step task"
 
+    Pantheon mode (9-agent architecture with validation & learning):
+        grokputer --pantheon --task "execute complex task with safety validation"
+
+        grokputer -p --task "scan files and create report" --debug
+
+        # Enhanced workflow: Observe → Reason → Validate → Act → Verify
+
     Review mode (pause after each round for human oversight):
         grokputer -mb -r --task "design system architecture"
 
     Interactive mode:
         grokputer  # Boot, show ASCII art, enter menu to select mode and options
-        grokputer -mb -r --task "design system architecture"
     """
     # Load environment variables
     load_dotenv()
@@ -412,11 +431,14 @@ def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebu
 
     try:
         # Interactive mode if no task specified
-        if task is None and not swarm and not messagebus:
+        if task is None and not swarm and not messagebus and not pantheon:
             _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot)
             return
 
-        if swarm:
+        if pantheon:
+            # Pantheon mode (9-agent architecture)
+            asyncio.run(_run_pantheon_mode(task, debug))
+        elif swarm:
             # Multi-agent swarm mode
             roles = [r.strip() for r in agent_roles.split(',')]
             asyncio.run(_run_swarm_mode(task, roles, debug))
@@ -434,6 +456,164 @@ def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebu
         print(f"\n[FATAL ERROR] {e}\n")
         logging.error(f"Fatal error: {e}", exc_info=True)
         sys.exit(1)
+
+
+async def _run_pantheon_mode(task: str, debug: bool):
+    """
+    Run Pantheon mode with 9-agent architecture.
+
+    The Pantheon consists of:
+    1. Observer - Screen capture and vision analysis
+    2. Reasoner (Coordinator) - Task decomposition and delegation
+    3. Actor - Command and action execution
+    4. Validator - Safety and quality verification
+    5. Learner - Pattern recognition (placeholder)
+    6. Memory Manager - Persistent state (placeholder)
+    7. Executor - Specialized execution (uses Actor)
+    8. Analyzer - Performance metrics (placeholder)
+    9. Improver - Self-improvement (placeholder)
+
+    Args:
+        task: Task description
+        debug: Enable debug logging
+    """
+    logger = logging.getLogger(__name__)
+
+    # Create session ID
+    session_id = f"pantheon_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+
+    print("\n" + "="*70)
+    print("🏛️  PANTHEON MODE - 9-AGENT ARCHITECTURE")
+    print("="*70)
+    print(f"Task: {task}")
+    print(f"Session: {session_id}")
+    print("="*70)
+    print("\nInitializing Pantheon agents:")
+    print("  1. Observer - Vision & screen capture")
+    print("  2. Reasoner - Task decomposition")
+    print("  3. Actor - Command execution")
+    print("  4. Validator - Safety verification")
+    print("  5-9. [Learning, Memory, Analysis systems]")
+    print("="*70 + "\n")
+
+    logger.info(f"[PANTHEON] Starting Pantheon mode: {session_id}")
+    logger.info(f"[PANTHEON] Task: {task}")
+
+    # Initialize infrastructure
+    message_bus = MessageBus()
+    action_executor = ActionExecutor()
+    deadlock_detector = DeadlockDetector(timeout_seconds=30.0, check_interval=5.0)
+    session_logger = SessionLogger(
+        session_id=session_id,
+        task=task,
+        log_dir=config.LOG_FILE.parent,
+        swarm_mode=True
+    )
+
+    logger.info("[PANTHEON] Infrastructure initialized")
+    print("[OK] Infrastructure initialized\n")
+
+    # Create agent configuration
+    agent_config = {"debug": debug}
+
+    # Create core agents
+    observer = ObserverAgent(
+        agent_id="observer",
+        message_bus=message_bus,
+        session_logger=session_logger,
+        config=agent_config
+    )
+    session_logger.log_agent_start("observer")
+    print("✓ Observer agent ready")
+
+    reasoner = Coordinator(
+        message_bus=message_bus,
+        session_logger=session_logger,
+        config=agent_config
+    )
+    session_logger.log_agent_start("reasoner")
+    print("✓ Reasoner (Coordinator) agent ready")
+
+    actor = ActorAgent(
+        agent_id="actor",
+        message_bus=message_bus,
+        session_logger=session_logger,
+        config=agent_config
+    )
+    session_logger.log_agent_start("actor")
+    print("✓ Actor agent ready")
+
+    validator = ValidatorAgent(
+        agent_id="validator",
+        message_bus=message_bus,
+        session_logger=session_logger,
+        config=agent_config,
+        action_executor=action_executor
+    )
+    session_logger.log_agent_start("validator")
+    print("✓ Validator agent ready")
+
+    # Create Pantheon Coordinator
+    from src.agents.pantheon_coordinator import PantheonCoordinator
+
+    pantheon = PantheonCoordinator(
+        message_bus=message_bus,
+        session_logger=session_logger,
+        config=agent_config
+    )
+
+    # Initialize with core agents
+    await pantheon.initialize_pantheon(observer, reasoner, actor, validator)
+    print("✓ Pantheon Coordinator initialized with 4 core agents\n")
+
+    print("[PANTHEON] Starting execution with enhanced workflow...")
+    print("  Workflow: Observe → Reason → Validate → Act → Verify\n")
+
+    # Start agent tasks
+    agent_tasks = [
+        asyncio.create_task(observer.run()),
+        asyncio.create_task(reasoner.run()),
+        asyncio.create_task(actor.run()),
+        asyncio.create_task(validator.run()),
+        asyncio.create_task(pantheon.run())
+    ]
+
+    # Send initial task to Pantheon
+    initial_message = Message(
+        message_type="new_task",
+        from_agent="user",
+        to_agent="pantheon_coordinator",
+        priority=MessagePriority.HIGH,
+        content={"task": task, "task_id": f"task_{session_id}"}
+    )
+    await message_bus.send("pantheon_coordinator", initial_message)
+
+    logger.info("[PANTHEON] Task sent to Pantheon Coordinator")
+
+    # Wait for completion or timeout
+    try:
+        await asyncio.wait_for(asyncio.gather(*agent_tasks, return_exceptions=True), timeout=300.0)
+    except asyncio.TimeoutError:
+        logger.warning("[PANTHEON] Execution timed out after 5 minutes")
+        print("\n[TIMEOUT] Pantheon execution exceeded 5 minutes\n")
+    except Exception as e:
+        logger.error(f"[PANTHEON] Error during execution: {e}", exc_info=True)
+        print(f"\n[ERROR] {e}\n")
+
+    # Get final stats
+    stats = pantheon.get_pantheon_stats()
+    print("\n" + "="*70)
+    print("PANTHEON EXECUTION COMPLETE")
+    print("="*70)
+    print(f"Tasks completed: {stats['tasks_completed']}")
+    print(f"Tasks failed: {stats['tasks_failed']}")
+    print(f"Success rate: {stats['success_rate']:.1%}")
+    print(f"Validations performed: {stats['validations_performed']}")
+    print(f"Active agents: {len(stats['active_agents'])}")
+    print("="*70 + "\n")
+
+    session_logger.log_session_end()
+    logger.info("[PANTHEON] Session complete")
 
 
 async def _run_swarm_mode(task: str, agent_roles: list, debug: bool):
@@ -488,28 +668,69 @@ async def _run_swarm_mode(task: str, agent_roles: list, debug: bool):
     # For now, we create placeholder agents that demonstrate the orchestration
     agent_tasks = []
 
+    # Create real agent instances
+    agent_config = {"debug": debug}
+    
     for role in agent_roles:
-        # Register agent with infrastructure
-        message_bus.register_agent(role)
         deadlock_detector.register_agent(role)
         session_logger.log_agent_start(role)
 
-        # Create stub agent task
-        agent_task = asyncio.create_task(_stub_agent(
-            agent_id=role,
-            task=task,
-            message_bus=message_bus,
-            action_executor=action_executor,
-            deadlock_detector=deadlock_detector,
-            session_logger=session_logger
-        ))
+        # Create the appropriate agent type
+        if role == "observer":
+            agent = ObserverAgent(
+                agent_id=role,
+                message_bus=message_bus,
+                session_logger=session_logger,
+                config=agent_config
+            )
+        elif role == "actor":
+            agent = ActorAgent(
+                agent_id=role,
+                message_bus=message_bus,
+                session_logger=session_logger,
+                config=agent_config
+            )
+        elif role == "coordinator":
+            agent = Coordinator(
+                message_bus=message_bus,
+                session_logger=session_logger,
+                config=agent_config
+            )
+        else:
+            logger.warning(f"[SWARM] Unknown agent role: {role}, using stub")
+            agent_task = asyncio.create_task(_stub_agent(
+                agent_id=role,
+                task=task,
+                message_bus=message_bus,
+                action_executor=action_executor,
+                deadlock_detector=deadlock_detector,
+                session_logger=session_logger
+            ))
+            agent_tasks.append(agent_task)
+            continue
+
+        # Start agent task
+        agent_task = asyncio.create_task(agent.run())
         agent_tasks.append(agent_task)
 
-        logger.info(f"[SWARM] Agent spawned: {role}")
-        print(f"[OK] Agent spawned: {role}")
+        logger.info(f"[SWARM] Agent spawned: {role} ({agent.__class__.__name__})")
+        print(f"[OK] Agent spawned: {role} ({agent.__class__.__name__})")
 
     print("\n[SWARM] All agents running...")
     print("[INFO] Press Ctrl+C to stop\n")
+
+    # Send initial task to coordinator
+    logger.info(f"[SWARM] Sending task to coordinator: {task}")
+    await message_bus.send("coordinator", {
+        "type": "observe_screen",
+        "from": "user",
+        "task": task,
+        "timestamp": asyncio.get_event_loop().time()
+    })
+    
+    # Let agents process for a few seconds
+    await asyncio.sleep(5)
+    
 
     try:
         # Run all agents concurrently using asyncio.gather()
@@ -674,3 +895,11 @@ async def _run_collaboration_mode(task: str, max_rounds: int, debug: bool, revie
 
 if __name__ == '__main__':
     main()
+test 
+def _run_single_agent_mode(task: str, max_iterations: int, debug: bool, skip_boot: bool):
+    """Run single-agent mode using Grokputer class."""
+    grokputer = Grokputer(debug=debug)
+    if not skip_boot:
+        grokputer.boot()
+    grokputer.run_task(task=task, max_iterations=max_iterations)
+

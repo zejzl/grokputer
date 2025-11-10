@@ -297,6 +297,17 @@ python main.py --swarm --agent-roles "observer,actor" --task "take screenshot"
 python main.py --swarm --debug --task "complex task"
 ```
 
+### Pantheon Mode (9-Agent Architecture)
+```bash
+# Execute with enhanced workflow: Observe → Reason → Validate → Act → Verify
+python main.py --pantheon --task "execute complex task with safety validation"
+
+# Short flag with debug
+python main.py -p --task "scan files and create report" --debug
+
+# All actions are validated before execution, with learning and metrics tracking
+```
+
 ---
 
 ## 📈 Development Status
