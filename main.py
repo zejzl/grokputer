@@ -22,6 +22,7 @@ from src.grok_client import GrokClient
 from src.screen_observer import ScreenObserver
 from src.executor import ToolExecutor
 from src.tools import invoke_prayer
+from src.tools import code_generator, execute_script
 
 # Collaboration mode imports
 from src.collaboration.coordinator import CollaborationCoordinator
@@ -32,6 +33,11 @@ from src.core.action_executor import ActionExecutor
 from src.observability.deadlock_detector import DeadlockDetector
 from src.observability.session_logger import SessionLogger
 from datetime import datetime
+
+from typing import Optional
+from pathlib import Path
+import ast
+import sys
 
 
 def setup_logging(debug: bool = False):
@@ -89,6 +95,10 @@ class Grokputer:
         Boot sequence: invoke server prayer and test connection.
         """
         self.logger.info("Starting boot sequence...")
+        print("""
+[GROKPUTER] BOOTING - VRZIBRZI NODE
+""")
+        self.logger.info("Grokputer booted with banner")
 
         # Invoke server prayer
         prayer_result = invoke_prayer()
@@ -209,7 +219,7 @@ class Grokputer:
 
 
 @click.command()
-@click.option('--task', '-t', required=True, help='Task description for Grokputer to execute')
+@click.option('--task', '-t', default=None, help='Task description for Grokputer to execute (optional: omit for interactive idle mode)')
 @click.option('--max-iterations', '-m', default=5, help='Maximum loop iterations (single-agent mode)')
 @click.option('--debug', '-d', is_flag=True, help='Enable debug logging')
 @click.option('--skip-boot', is_flag=True, help='Skip boot sequence')
@@ -219,7 +229,7 @@ class Grokputer:
 @click.option('--swarm', is_flag=True, help='Enable multi-agent swarm mode')
 @click.option('--agents', default=3, help='Number of agents in swarm (default: 3)')
 @click.option('--agent-roles', default='coordinator,observer,actor', help='Comma-separated agent roles')
-def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebus: bool, max_rounds: int, review_mode: bool, swarm: bool, agents: int, agent_roles: str):
+def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebus: bool, max_rounds: int, review_mode: bool, swarm: bool, agents: int, agent_roles: str, syntax_check: bool = False):
     """
     Grokputer - VRZIBRZI Node
 
@@ -228,9 +238,9 @@ def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebu
     Single-agent mode (default):
         grokputer --task "label 5 memes from vault"
 
-        grokputer --task "search X for pliny follows" --debug
+        grokputer  # Interactive menu: Choose mode (single, collab, swarm) and enter task
 
-        grokputer --task "invoke server prayer"
+        grokputer --task "search X for pliny follows" --debug
 
     Collaboration mode (Claude + Grok):
         grokputer -mb --task "design an MCP server with best practices"
@@ -245,6 +255,10 @@ def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebu
         grokputer --swarm --debug --task "complex multi-step task"
 
     Review mode (pause after each round for human oversight):
+        grokputer -mb -r --task "design system architecture"
+
+    Interactive mode:
+        grokputer  # Boot, show ASCII art, enter menu to select mode and options
         grokputer -mb -r --task "design system architecture"
     """
     # Load environment variables
@@ -278,20 +292,6 @@ def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebu
         sys.exit(1)
 
 
-def _run_single_agent_mode(task: str, max_iterations: int, debug: bool, skip_boot: bool):
-    """Run single-agent ORA loop (Grok only)."""
-    # Initialize Grokputer
-    grokputer = Grokputer(debug=debug)
-
-    # Boot sequence
-    if not skip_boot:
-        grokputer.boot()
-
-    # Run task
-    grokputer.run_task(task, max_iterations=max_iterations)
-
-
-async def _run_swarm_mode(task: str, agent_roles: list, debug: bool):
     """
     Run multi-agent swarm mode with async coordination.
 
