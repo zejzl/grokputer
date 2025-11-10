@@ -1,0 +1,4 @@
+  File "<string>", line 1
+    "from
+    ^
+SyntaxError: unterminated string literal (detected at line 1)

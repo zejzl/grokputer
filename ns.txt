@@ -1,0 +1,71 @@
+  ### Next Suggested Steps (Prioritized, 1-Week Focus)
+
+    From todo.md + log integration (parallel LoRA/MCP for quick wins; total 4
+    weeks). Start with verification, then execute.
+
+        1. **Immediate/High (Today: Verify & LoRA Prep – 1 Day)**:
+
+
+            * Run scale test: `docker-compose --profile slim run --rm grokputer
+    python main.py --swarm --agents 128 --task "128 agents flip coin"` (confirms
+     100% success, log failures for LoRA dataset).
+
+            * Collect LoRA data: Execute 20 diverse tasks (e.g., `--task "scan
+    vault + OCR meme" --max-iterations 5`), rate failures (<3 stars via
+    session.json). Target 50 examples (use `view_sessions.py search "failure"`).
+     Why: Builds self-improvement dataset; Claude-endorsed for Phase 3 gains.
+
+            * Fix Claude: Add credits (console.anthropic.com) or set
+    `COLLAB_MODE=false` in .env for solo Grok runs.
+        2. **High (Week 1: MCP Server Track 1 + Phase 4 Start – 1-2 Weeks)**:
+
+
+            * MCP Server: Create `grokputer_server.py` (FastMCP decorators for
+    scan_vault/invoke_prayer/get_vault_stats). Add Dockerfile/requirements.txt,
+    build image (`docker build -t grokputer-mcp:latest`), test custom.yaml in
+    MCP Gateway/Claude Desktop (<3s startup, tools visible).
+
+            * Phase 4 Ultra-Scale: Implement BaseAgent sleep_cycle (pause idle
+    30s) in src/agents/base_agent.py; update main.py for batch loading
+    (`--agents 256, active=64`). Test batched 256 via Docker Swarm (<2min for
+    256-task).
+
+            * Why: MCP enables tool sharing (vault ideas like decentralized
+    notes); ultra-scale builds on 128 success for 256+.
+        3. **Medium (Week 2: Tool Validator Track 2 + LoRA Train – 2-3 Weeks)**:
+
+
+            * Validator: Create `tool_rubric.py` (ToolRule dataclasses, 10+
+    rules for bash/OCR validation, e.g., deprecated patterns → preferred tools).
+     Integrate into src/executor.py (pre-execution checks, <5ms overhead, 80%
+    catch rate). Add feedback loop (suggestions to prompts) and metrics
+    (deprecated tools caught).
+
+            * LoRA POC: Setup finetune_qlora.py (deps: transformers/peft/trl;
+    base: Llama-3-8B). Train on dataset (`--epochs 3 --lr 1e-4`, CPU 10h).
+    Integrate: ActorAgent.load_lora('v1'); test A/B on 10 tasks (+0.3 accuracy
+    expected). Retrain v2 on new failures.
+
+            * Why: Validator ties to safety/OCR (logs show adversarial needs);
+    LoRA enables eternal learning (from 5 logged failures to 95% reliability).
+        4. **Medium (Week 3: MCP Discovery Track 3 + OCR/Redis – 3-4 Weeks)**:
+
+
+            * MCP Multi-Agent: Build AgentMCPClient (tools/list + tools/call
+    methods). Integrate with swarm (dynamic discovery/execution, >95% success,
+    <500ms latency).
+
+            * OCR Processor: src/ocr_processor.py (pytesseract async for
+    screenshots, >85% acc on vault PNGs/memes). Test regions/conf with TOON
+    encoding.
+
+            * Redis Migration: Add Redis service to docker-compose.yml; update
+    MessageBus for pub/sub (<10ms). Test host-Docker hybrid (local inject →
+    hive).
+
+            * Why: Discovery scales tools (multi-MCP servers); OCR/Redis fix
+    gaps (e.g., UI text extraction, low-latency scaling).
+
+    Run python main.py --task "lo ra prep" to kick off LoRA, or specify a step
+    (e.g., "mcp server stub"). Metrics goal: 95% reliability, <10s tasks. ZA
+    GROKA! 🚀

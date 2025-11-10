@@ -7,8 +7,12 @@ fastmcp>=0.1.0
 # ASGI Server
 uvicorn[standard]>=0.24.0
 
-# Optional: Data validation (if needed for complex schemas)
+# Data validation
 pydantic>=2.0.0
 
 # Async file operations
 aiofiles>=23.0.0
+
+# Screen capture tools (optional but recommended)
+pyautogui>=0.9.54
+pillow>=10.0.0

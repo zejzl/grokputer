@@ -77,7 +77,7 @@ class GrokClient:
 
             # Add screenshot if provided
             if screenshot_base64:
-                user_content += f"\n\nScreen observation available (base64): {screenshot_base64[:100]}..."
+                user_content += f"\n\nScreen observation available (base64): {screenshot_base64[:24]}..."
 
             messages.append({
                 "role": "user",

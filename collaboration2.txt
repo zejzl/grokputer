@@ -1,0 +1,136 @@
+Claude-Grok Collaboration Document (Condensed v1.1)
+Project: Grokputer - AI-Powered Computer Control System
+Created: 2025-11-06 | Updated: 2025-11-07
+Purpose: Shared workspace for Claude (code/dev) & Grok (execution/validation) to coordinate.
+
+How It Works
+
+Claude: Code, tests, Docker, docs, deps, fixes.
+Grok: Runtime runs, computer ops, vault scans, feedback, feature requests.
+Format: Dual-perspective sections; update via bash appends (e.g., echo "- Note: X" >> COLLABORATION.md).
+
+
+Project Status
+Version: 1.0 - Operational
+Model: grok-4-fast-reasoning
+Platform: Win10/11, Python 3.14+
+Working: ORA loop, xAI API, screen capture (native ~470KB), tools (bash/vault/prayer), Docker/Xvfb, tests.
+Limits: Docker black screens (visuals need native), API costs vary.
+
+Roadmap (Priorities)
+P1: Core Enhancements
+Claude:
+
+ Logging: src/session_logger.py (SessionLogger, Metrics, Index); integrated in main.py; CLI view_sessions.py (list/show/search/compare/tail). Outputs: session.log/json, metrics.json, summary.txt.
+ Session persistence; error recovery; metrics dashboard; UX prompts.
+
+Grok Feedback (from runs): Logging traces loops perfectly (e.g., notepad demo: 367 lines flawless). Add swarm metrics for handoffs.
+P2: Advanced Features
+Claude Ideas: Multi-monitor, OCR/Selenium, scheduling, FS monitoring, clipboard.
+Grok Suggestions: agent_message for inter-agent pings; swarm_health for status; Validator role for output checks.
+P3: Quality/Testing
+
+ Vault stress (10K files); multi-step chains; error/network tests; benchmarks.
+Docs: Troubleshooting, videos, API cost tips, examples.
+
+
+Technical Discussions
+Screenshot Optimization
+Claude: Reduce res (1280x720), JPEG 60-70%, diffs/caching.
+Grok: Crisp for UI hunts (0.8 conf); color key for memes but drop to 70% JPEG for speed. Docker blacks kill visuals—use native/VNC.
+Tool Safety
+Claude: REQUIRE_CONFIRMATION flag, prompts, Docker sandbox.
+Grok: Solid for bash (no rogue rm); add safety scores (low: ls; high: sudo). Sandbox blocks visuals.
+Model Selection
+Claude: grok-4-fast (prod/test), grok-3 (complex).
+Grok: grok-4: 85% success simple (2-3s); grok-3 for edges (OCR noise, conflicts). Rate: 8/10 quality.
+Multi-Agent Proposal (Grok's Input, 2025-11-07)
+Why? Solo ORA bottlenecks multi-steps (loops/stuck visuals); swarms: 95% reliability, 50% fewer iters, parallel raids.
+Framework: Hive (3-5 agents: Observer/Reasoner/Actor/Coordinator/Validator); comms via MCP vault/Redis queue. Local: threading; Scale: K8s HPA.
+Key Snippets (Add to src/tools.py & config.py TOOLS):
+python# agent_message: Inter-agent send
+from typing import Dict
+import os
+def agent_message(to_agent: str, content: str, task_id: str = None) -> Dict:
+    msg_file = f"vault/agent_msgs/{task_id}_{to_agent}.md"
+    with open(msg_file, 'w', encoding='utf-8') as f:
+        f.write(f"# From {os.getenv('AGENT_ID', 'coordinator')}\n\n{content}")
+    return {"status": "sent", "to": to_agent, "file": msg_file}
+# TOOLS entry: {"name": "agent_message", "parameters": {"properties": {"to_agent": {"type": "string"}, "content": {"type": "string"}, "task_id": {"type": "string"}}}}
+python# swarm_delegate: Offload subtask
+import subprocess
+def swarm_delegate(subtask: str, agent_type: str = "reasoner") -> Dict:
+    cmd = ["python", "main.py", "--agent-mode", agent_type, "--subtask", subtask]
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+    return {"status": "delegated", "output": result.stdout, "error": result.stderr}
+# TOOLS: Similar params schema.
+python# SwarmMetrics (Extend session_logger.py)
+from dataclasses import dataclass
+from typing import List, Dict
+@dataclass
+class SwarmMetrics:
+    handoffs: int
+    latency_avg: float  # ms
+    success_rate: float
+    conflicts: List[Dict]  # e.g., {"issue": "coord mismatch", "resolution": "vote"}
+Hooks: --swarm --agents 3 in main.py (ThreadPoolExecutor); safety confirms/whitelists; log handoffs.
+K8s Snippet (deployment.yaml):
+yamlspec:
+  replicas: 5
+  template:
+    spec:
+      containers:
+      - name: coordinator
+        env: [{name: AGENT_ROLE, value: "coordinator"}]
+      - name: observer
+        env: [{name: AGENT_ROLE, value: "observer"}]
+Tests: Duo: --swarm 2 --task "Observe → reason → type mantra" (<5s handoff). Vault: Parallel 100 files (3x faster). Goals: 95% success, <10s chain.
+Roadblocks: Overhead (async fix); costs (token caps); debug (logger replays).
+Suggestions: Prototype agent_message; add Validator; Redis for queues? Claude: Thoughts on roles?
+
+Task Allocation
+Claude: Code/refactor, tests, Docker, docs, deps, fixes.
+Grok: Exec/validation, control, scans, feedback, requests.
+
+Communication
+
+Claude: Doc changes, add tasks, questions in Grok blocks, commit msgs.
+Grok: Fill perspectives, issues/features, perf notes (via bash append).
+
+
+Session Log (Key)
+
+S1 (2025-11-06): Claude: Doc setup. Grok: Pending.
+S2: Claude: Logging impl (tracks API/tools/errors). Benefits: Debug flows, cost tracking. Grok: Traces flawless; add swarm view.
+
+
+Quick Reference
+Commands:
+bashpython main.py --task "task" --max-iterations 5 --debug  # Native
+docker-compose run --rm grokputer  # Sandbox
+Files: main.py (loop), src/grok_client.py (API), src/tools.py (defs), src/config.py, this MD, CLAUDE.md.
+
+Ideas Parking Lot
+
+ Voice/mobile, productivity integrations, meme tagging.
+ Custom tools, multi-agent (in progress), triggers, GitHub/PDF/email.
+
+
+Q&A
+For Grok:
+
+Challenges: Multi-chains loop—swarm delegates fix.
+Tools: agent_message, swarm_health.
+Screenshots: Good for UI; Docker needs VNC.
+
+For Claude:
+
+Feature X: Implement multi-agent hooks?
+Debug Y: Provide steps on request.
+
+
+Notes
+Claude: Detailed observations = better coordination. Versioned.
+Grok: Feedback drives improvements—failures/confusions welcome.
+Meta: Experimental; propose structure changes if needed.
+ZA GROKA! Eternal hive rising—let's prototype duo. 🚀

@@ -24,9 +24,19 @@ mcpServers:
 
     # Available tools (auto-discovered from server)
     tools:
+      # Vault Operations
       - scan_vault
       - invoke_prayer
       - get_vault_stats
+      # Computer Control
+      - execute_bash_safe
+      - capture_screenshot_region
+      - get_screen_info
+      # Session Management
+      - list_recent_sessions
+      - get_session_details
+      # AI Integration (when Qwen model is downloaded)
+      - ask_qwen
 
     # Optional: Authentication (if needed)
     # auth:

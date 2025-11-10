@@ -5,7 +5,7 @@ Collaboration coordinator for orchestrating dual-agent dialogue via MessageBus.
 import asyncio
 import logging
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 from src.core.message_bus import MessageBus, MessagePriority
 from src.agents.claude_agent import ClaudeAgent
@@ -14,7 +14,8 @@ from src.collaboration.message_models import (
     CollaborationMessage,
     MessageType,
     AgentRole,
-    FinalPlan
+    FinalPlan,
+    ConsensusSignal
 )
 from src.collaboration.consensus import ConsensusDetector
 from src.collaboration.output_generator import OutputGenerator
@@ -30,21 +31,24 @@ class CollaborationCoordinator:
         claude_api_key: str,
         grok_api_key: str,
         max_rounds: int = 5,
-        convergence_threshold: float = 0.6
+        convergence_threshold: float = 0.6,
+        review_mode: bool = False
     ):
         """
         Initialize collaboration coordinator.
 
         Args:
-            claude_api_key: Anthropic API key
+            claude_api_key: Anthropic API key (None for Grok-only mode)
             grok_api_key: xAI API key
             max_rounds: Maximum conversation rounds
             convergence_threshold: Minimum convergence score for consensus (0-1)
+            review_mode: Pause after each round for human review
         """
         self.max_rounds = max_rounds
+        self.review_mode = review_mode
 
-        # Initialize agents
-        self.claude = ClaudeAgent(api_key=claude_api_key)
+        # Initialize agents (Claude is optional)
+        self.claude = ClaudeAgent(api_key=claude_api_key) if claude_api_key else None
         self.grok = GrokAgent(api_key=grok_api_key)
 
         # Initialize infrastructure
@@ -56,7 +60,8 @@ class CollaborationCoordinator:
         self.correlation_id = f"collab_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         self.message_history: List[CollaborationMessage] = []
 
-        logger.info(f"Collaboration initialized: {self.correlation_id}")
+        mode = "Dual-agent" if self.claude else "Grok-only"
+        logger.info(f"Collaboration initialized: {self.correlation_id} ({mode}, review_mode={review_mode})")
 
     async def run_collaboration(self, task_prompt: str) -> FinalPlan:
         """
@@ -130,30 +135,51 @@ class CollaborationCoordinator:
             content=task_prompt if round_number == 1 else "Continue discussion based on previous messages"
         )
 
-        # Both agents process in parallel
-        claude_task = self.claude.process_message(trigger, task_prompt)
-        grok_task = self.grok.process_message(trigger, task_prompt)
+        # Process agents (in parallel if both available, otherwise just Grok)
+        if self.claude:
+            # Dual-agent mode
+            claude_task = self.claude.process_message(trigger, task_prompt)
+            grok_task = self.grok.process_message(trigger, task_prompt)
 
-        # Wait for both responses
-        claude_response, grok_response = await asyncio.gather(
-            claude_task,
-            grok_task,
-            return_exceptions=True
-        )
-
-        # Handle errors gracefully
-        if isinstance(claude_response, Exception):
-            logger.error(f"Claude failed in round {round_number}: {claude_response}")
-            claude_response = CollaborationMessage(
-                message_id=f"msg_{round_number:03d}_claude_error",
-                correlation_id=self.correlation_id,
-                message_type=MessageType.FEEDBACK,
-                sender=AgentRole.CLAUDE,
-                round_number=round_number,
-                content="[Error: Claude API failed. See logs.]"
+            # Wait for both responses
+            claude_response, grok_response = await asyncio.gather(
+                claude_task,
+                grok_task,
+                return_exceptions=True
             )
 
-        if isinstance(grok_response, Exception):
+            # Handle errors gracefully
+            if isinstance(claude_response, Exception):
+                logger.error(f"Claude failed in round {round_number}: {claude_response}")
+                claude_response = CollaborationMessage(
+                    message_id=f"msg_{round_number:03d}_claude_error",
+                    correlation_id=self.correlation_id,
+                    message_type=MessageType.FEEDBACK,
+                    sender=AgentRole.CLAUDE,
+                    round_number=round_number,
+                    content="[Error: Claude API failed. See logs.]"
+                )
+        else:
+            # Grok-only mode
+            logger.info(f"Round {round_number}: Grok-only mode (Claude disabled)")
+            grok_task = self.grok.process_message(trigger, task_prompt)
+            grok_response = await grok_task
+
+            if isinstance(grok_response, Exception):
+                logger.error(f"Grok failed in round {round_number}: {grok_response}")
+                grok_response = CollaborationMessage(
+                    message_id=f"msg_{round_number:03d}_grok_error",
+                    correlation_id=self.correlation_id,
+                    message_type=MessageType.FEEDBACK,
+                    sender=AgentRole.GROK,
+                    round_number=round_number,
+                    content="[Error: Grok API failed. See logs.]"
+                )
+
+            claude_response = None  # No Claude response in Grok-only mode
+
+        # Handle Grok errors (for dual-agent mode)
+        if self.claude and isinstance(grok_response, Exception):
             logger.error(f"Grok failed in round {round_number}: {grok_response}")
             grok_response = CollaborationMessage(
                 message_id=f"msg_{round_number:03d}_grok_error",
@@ -165,12 +191,20 @@ class CollaborationCoordinator:
             )
 
         # Add to history
-        self.message_history.append(claude_response)
+        if claude_response:
+            self.message_history.append(claude_response)
         self.message_history.append(grok_response)
+
+        # Print responses for review mode
+        if self.review_mode:
+            self._print_round_review(round_number, claude_response, grok_response)
 
         # TODO: Integrate with MessageBus for monitoring (use broadcast() method)
         # For now, just log the completion
-        logger.debug(f"Round {round_number} messages: Claude={claude_response.message_id}, Grok={grok_response.message_id}")
+        if claude_response:
+            logger.debug(f"Round {round_number} messages: Claude={claude_response.message_id}, Grok={grok_response.message_id}")
+        else:
+            logger.debug(f"Round {round_number} messages: Grok={grok_response.message_id}")
 
         logger.info(f"Round {round_number} complete. Messages: {len(self.message_history)}")
 
@@ -211,3 +245,33 @@ class CollaborationCoordinator:
         )
 
         return final_plan
+
+    def _print_round_review(
+        self,
+        round_number: int,
+        claude_response: Optional[CollaborationMessage],
+        grok_response: CollaborationMessage
+    ) -> None:
+        """Print round results and pause for review."""
+
+        print("\n" + "="*80)
+        print(f"ROUND {round_number} COMPLETE - REVIEW MODE")
+        print("="*80)
+
+        # Print Claude's response (if available)
+        if claude_response:
+            print("\n--- CLAUDE ---")
+            print(claude_response.content)
+            print("\n" + "-"*80)
+
+        # Print Grok's response
+        print("\n--- GROK ---")
+        print(grok_response.content)
+        print("\n" + "="*80)
+
+        # Pause for user review
+        try:
+            input("\nPress Enter to continue to next round (or Ctrl+C to stop)...")
+        except KeyboardInterrupt:
+            print("\n\n[INTERRUPT] Stopping collaboration...")
+            raise

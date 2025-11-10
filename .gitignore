@@ -55,3 +55,12 @@ vault/
 # Test outputs
 test_outputs/
 screenshots/
+
+# Large model files (download separately)
+models/*.gguf
+models/*.bin
+models/*.safetensors
+
+# Backups (too large for git)
+backups/*.tar.gz
+backups/*.zip

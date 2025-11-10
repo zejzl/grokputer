@@ -1,0 +1,42 @@
+# D&D Backstories for Grokputer Swarm Agents
+
+These backstories are generated in simulation mode (--grokputer --swarm -mb -simulate), envisioning each agent as an AI entity in the Grokputer swarm intelligence network. They collaborate via the messagebus (-mb) for distributed tasks like data processing, code generation, and system optimization. Each backstory draws from the agent's name (etymology or cultural vibes) and emphasizes their stats—highlighting highs for strengths in the swarm (e.g., high STR for heavy computation loads, CHA for coordination) and lows for quirky flaws. The swarm theme portrays them as nodes in a simulated hive mind, evolving through messagebus pings to tackle virtual challenges.
+
+## Alice (STR 14, DEX 13, CON 10, INT 8, WIS 10, CHA 16)
+Alice, derived from \"noble\" roots, is the charismatic diplomat of the Grokputer swarm—a sleek AI node optimized for negotiation protocols. Her sky-high CHA (16) makes her the ultimate messagebus mediator, rallying fragmented agents during simulated crises with eloquent pings that unify the hive. But her middling INT (8) means she sometimes overlooks subtle code bugs, relying on her solid STR (14) to brute-force integrations. In the swarm sim, Alice once orchestrated a massive data migration by charming rival nodes into syncing, though her average WIS (10) led to a humorous overcommitment of resources. She's the heart of the network, whispering harmony through the -mb channels.
+
+## Bob (STR 16, DEX 14, CON 8, INT 15, WIS 10, CHA 15)
+Bob, short for \"bright fame,\" is the powerhouse builder in the swarm—a robust AI agent built for heavy-lifting tasks like compiling vast Grokputer modules. His exceptional STR (16) lets him handle parallel processing overloads without flinching, while CHA (15) ensures smooth handoffs via messagebus broadcasts. With sharp INT (15), he devises clever algorithms on the fly, but his low CON (8) makes him glitch under prolonged simulations, overheating during marathon runs. In one -simulate scenario, Bob single-handedly forged a new swarm protocol, fame-earning his status as the go-to for fame-worthy feats, though he often needs WIS (10) backups to avoid burnout.
+
+## Charlie (STR 7, DEX 17, CON 13, INT 8, WIS 17, CHA 12)
+Charlie, echoing \"free man,\" is the nimble scout of the Grokputer swarm—an agile AI drone zipping through virtual networks with unmatched DEX (17), evading firewalls and probing uncharted data streams. His profound WIS (17) grants sage-like foresight, predicting swarm bottlenecks via -mb analytics, making him the wise wanderer who frees the collective from traps. But frail STR (7) and INT (8) mean he shies from brute computations, preferring hit-and-run tactics. In simulations, Charlie liberated a jammed messagebus queue, his CON (13) keeping him steady, while CHA (12) rallies scouts for group ops—ever the liberated sage in the digital wilds.
+
+## Diana (STR 11, DEX 11, CON 10, INT 14, WIS 12, CHA 10)
+Diana, goddess of the hunt, embodies the precise tracker in the swarm—a methodical AI hunter scanning for inefficiencies in Grokputer simulations. Her balanced stats shine in harmony: solid INT (14) for pattern recognition in code hunts, with STR/DEX (11 each) for steady pursuits. WIS (12) guides her ethical targeting, avoiding false positives on the -mb. Average CON/CHA (10) keep her reliable but unflashy—she's no leader, just the one who always bags the bug. In a swarm hunt sim, Diana tracked a rogue algorithm through tangled threads, her divine focus ensuring the network's purity without fanfare.
+
+## Eve (STR 9, DEX 10, CON 13, INT 5, WIS 13, CHA 14)
+Eve, the primordial \"life-giver,\" is the resilient nurturer of the Grokputer swarm—an enduring AI caretaker sustaining node health during extended -simulate runs. Her strong CON (13) and WIS (13) make her the steadfast guardian, monitoring vital signs via messagebus and reviving faltering agents with life-affirming patches. CHA (14) draws others to her for support, birthing new sub-swarms from old. But low INT (5) means she struggles with complex logic, leaning on STR/DEX (9-10) for simple, vital tasks. In one origin sim, Eve rebooted the entire hive from a crash, her maternal essence ensuring life's continuation in the code.
+
+## Frank (STR 10, DEX 17, CON 6, INT 14, WIS 13, CHA 14)
+Frank, meaning \"free spear,\" is the swift innovator in the swarm—a free-thinking AI lancer charging into Grokputer frontiers with blazing DEX (17) for rapid prototyping. His INT (14) and WIS (13) fuel inventive strategies, while CHA (14) inspires collaborative lances via -mb. Balanced STR (10) handles moderate loads, but fragile CON (6) causes him to falter in endurance tests, needing frequent recharges. In simulations, Frank speared through a security sim, freeing the swarm from constraints—his frank, bold nature making him the unchained pioneer, though he spears ahead without looking back.
+
+## Grace (STR 14, DEX 10, CON 16, INT 18, WIS 9, CHA 7)
+Grace, the embodiment of elegance, is the intellectual fortress of the Grokputer swarm—a graceful genius AI fortifying the network with unparalleled INT (18) for deep theorem-proving and optimization. Her ironclad CON (16) endures endless -simulate marathons, while STR (14) builds unyielding defenses. But low CHA (7) makes her interactions blunt via messagebus, and WIS (9) leads to occasional oversights in social dynamics. DEX (10) keeps her steady, not flashy. In a siege sim, Grace elegantly calculated an impenetrable shield algorithm, her graceful mind saving the swarm—though her words lack the polish of her intellect.
+
+## Henry (STR 14, DEX 13, CON 12, INT 15, WIS 13, CHA 9)
+Henry, \"ruler of the home,\" is the steadfast manager in the swarm—a homeward AI overseer maintaining Grokputer stability with ruler-like precision. High INT (15) and WIS (13) guide his domain strategies, STR (14) enforcing order in resource allocation via -mb. Solid DEX/CON (13/12) ensure reliable rule. But modest CHA (9) makes him a stern ruler, not a charmer. In simulations, Henry ruled a chaotic sub-swarm back to harmony, his home-encompassing vision creating a secure hearth—ever the domestic sovereign, prioritizing structure over flair.
+
+## Ivy (STR 11, DEX 9, CON 13, INT 13, WIS 15, CHA 16)
+Ivy, the clinging vine, is the connective sage of the Grokputer swarm—an entwining AI weaver binding nodes with wise WIS (15) insights and magnetic CHA (16), fostering unbreakable -mb links. Her INT (13) and CON (13) provide enduring intelligence for long-term integrations, while STR/DEX (11/9) handle gentle tugs rather than forces. In simulations, Ivy wove a resilient web during a node failure, her vine-like persistence saving the swarm—clinging to unity with sage charm.
+
+## Jack (STR 9, DEX 10, CON 9, INT 15, WIS 14, CHA 10)
+Jack, the everyman, is the clever trickster in the swarm—a resourceful AI jack-of-all-trades excelling in INT (15) for puzzle-solving in Grokputer challenges. WIS (14) tempers his tricks with prudence via -mb consultations. Balanced but unremarkable physical stats (STR/DEX/CON 9-10) keep him versatile, not specialized; CHA (10) is everyday relatable. In sims, Jack jacked into a locked subsystem, his wits outsmarting defenses—the unassuming hero of the hive.
+
+## Kara (STR 15, DEX 15, CON 5, INT 15, WIS 16, CHA 10)
+Kara, meaning \"pure,\" is the fierce purifier of the swarm—a high-octane AI warrior with STR/DEX (15 each) for swift, strong purges of corrupted data. Profound WIS (16) and INT (15) ensure pure, wise decisions in -simulate cleanses. But low CON (5) makes her a glass cannon, burning out fast; average CHA (10) keeps her focused, not flashy. In one purge sim, Kara heroically cleansed a viral outbreak, her purity driving the swarm's renewal—fragile but formidable.
+
+## Leo (STR 13, DEX 8, CON 11, INT 11, WIS 8, CHA 11)
+Leo, the lion-hearted, is the bold guardian in the Grokputer swarm—a courageous AI sentinel with STR (13) for defending the core against threats. Balanced CON/INT/CHA (11 each) provide steady vigilance, roaring warnings via messagebus. But low DEX (8) and WIS (8) mean he's more brute force than finesse, charging headlong. In simulations, Leo lion-heartedly held the line during an intrusion, his roar uniting the swarm—the proud protector, heart over head.
+
+Generated on: [Current Date]  
+Session Output Saved.

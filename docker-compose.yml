@@ -41,3 +41,8 @@ services:
              python main.py --task '${TASK:-invoke server prayer}'"
     profiles:
       - debug
+
+  selenium-browser:
+    build: ./selenium
+    container_name: selenium-browser
+    command: python test_selenium.py
