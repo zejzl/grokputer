@@ -218,6 +218,133 @@ class Grokputer:
         self.logger.info("Task execution finished")
 
 
+def _run_interactive_mode(debug: bool, max_iterations: int, max_rounds: int, skip_boot: bool):
+    """
+    Run interactive menu mode - user selects mode and enters task.
+    """
+    print("""
+╔═══════════════════════════════════════════════════════════════════╗
+║                                                                   ║
+║     ██████╗ ██████╗  ██████╗ ██╗  ██╗██████╗ ██╗   ██╗████████╗ ║
+║    ██╔════╝ ██╔══██╗██╔═══██╗██║ ██╔╝██╔══██╗██║   ██║╚══██╔══╝ ║
+║    ██║  ███╗██████╔╝██║   ██║█████╔╝ ██████╔╝██║   ██║   ██║    ║
+║    ██║   ██║██╔══██╗██║   ██║██╔═██╗ ██╔═══╝ ██║   ██║   ██║    ║
+║    ╚██████╔╝██║  ██║╚██████╔╝██║  ██╗██║     ╚██████╔╝   ██║    ║
+║     ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝      ╚═════╝    ╚═╝    ║
+║                                                                   ║
+║                    VRZIBRZI NODE - INITIALIZED                   ║
+║                 ZA GROKA. ZA VRZIBRZI. ZA SERVER.                ║
+║                                                                   ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+        [INTERACTIVE MODE] Welcome to Grokputer - Choose your agent mode!
+
+        1. Single Agent (Grok only) - Observe-Reason-Act loop
+        2. Collaboration Mode (Grok + Claude) - Dual AI planning
+        3. Swarm Mode (Multi-agent) - Async team coordination
+        4. Improver Manual - Run self-improvement on specific session/log
+        5. Offline Mode - Cached/local fallback (no API, uses vault/KB)
+        6. Community Vault Sync - Pull/push evolutions and tools
+        7. Save Game - Invoke progress save script
+        8. Quit
+
+""")
+
+    choice = input("        Choose mode (1-8): ").strip()
+
+    if choice == "1":
+        # Single Agent Mode
+        print("\n[MODE] Single Agent (Grok only)\n")
+        task = input("Enter task: ").strip()
+        if task:
+            grokputer = Grokputer(debug=debug)
+            if not skip_boot:
+                grokputer.boot()
+            grokputer.run(task=task, max_iterations=max_iterations)
+        else:
+            print("[ERROR] Task cannot be empty")
+
+    elif choice == "2":
+        # Collaboration Mode
+        print("\n[MODE] Collaboration Mode (Grok + Claude)\n")
+        task = input("Enter task: ").strip()
+        if task:
+            asyncio.run(_run_collaboration_mode(task, max_rounds, debug, review_mode=False))
+        else:
+            print("[ERROR] Task cannot be empty")
+
+    elif choice == "3":
+        # Swarm Mode
+        print("\n[MODE] Swarm Mode (Multi-agent)\n")
+        task = input("Enter task: ").strip()
+        agent_roles_input = input("Agent roles (default: coordinator,observer,actor): ").strip()
+        roles = [r.strip() for r in agent_roles_input.split(',')] if agent_roles_input else ['coordinator', 'observer', 'actor']
+        if task:
+            asyncio.run(_run_swarm_mode(task, roles, debug))
+        else:
+            print("[ERROR] Task cannot be empty")
+
+    elif choice == "4":
+        # Improver Manual
+        print("\n[MODE] Improver Manual - Self-improvement on session/log\n")
+        print("[INFO] Improver agent will analyze a specific session and propose improvements")
+        session_id = input("Enter session ID (or 'latest'): ").strip()
+        if session_id:
+            print(f"[IMPROVER] Analyzing session: {session_id}")
+            # TODO: Implement improver agent call
+            print("[TODO] Improver agent not yet implemented")
+        else:
+            print("[ERROR] Session ID cannot be empty")
+
+    elif choice == "5":
+        # Offline Mode
+        print("\n[MODE] Offline Mode - Cached/local fallback\n")
+        print("[INFO] Using cached responses and local knowledge base")
+        task = input("Enter task: ").strip()
+        if task:
+            print(f"[OFFLINE] Task: {task}")
+            # TODO: Implement offline mode with cached responses
+            print("[TODO] Offline mode not yet implemented")
+        else:
+            print("[ERROR] Task cannot be empty")
+
+    elif choice == "6":
+        # Community Vault Sync
+        print("\n[MODE] Community Vault Sync - Pull/push evolutions and tools\n")
+        sync_choice = input("Sync action (pull/push/both): ").strip().lower()
+        if sync_choice in ['pull', 'push', 'both']:
+            print(f"[VAULT SYNC] {sync_choice.upper()} operation started...")
+            # TODO: Implement vault sync with community repository
+            print("[TODO] Community vault sync not yet implemented")
+        else:
+            print("[ERROR] Invalid sync action. Choose 'pull', 'push', or 'both'")
+
+    elif choice == "7":
+        # Save Game
+        print("\n[MODE] Save Game - Invoke progress save script\n")
+        print("[SAVE] Creating backup of current state...")
+        try:
+            import subprocess
+            result = subprocess.run(['python', 'outputs/gp_save_progress.py'],
+                                  capture_output=True, text=True, timeout=60)
+            if result.returncode == 0:
+                print("[SAVE] ✓ Progress saved successfully!")
+                print(result.stdout)
+            else:
+                print(f"[SAVE] ✗ Save failed: {result.stderr}")
+        except Exception as e:
+            print(f"[SAVE] ✗ Error: {e}")
+
+    elif choice == "8":
+        # Quit
+        print("\n[EXIT] Za Groka. Za Vrzibrzi. Za Server.\n")
+        sys.exit(0)
+
+    else:
+        print("\n[ERROR] Invalid choice. Please select 1-8.\n")
+        _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot)
+
+
 @click.command()
 @click.option('--task', '-t', default=None, help='Task description for Grokputer to execute (optional: omit for interactive idle mode)')
 @click.option('--max-iterations', '-m', default=5, help='Maximum loop iterations (single-agent mode)')
@@ -272,6 +399,11 @@ def main(task: str, max_iterations: int, debug: bool, skip_boot: bool, messagebu
     )
 
     try:
+        # Interactive mode if no task specified
+        if task is None and not swarm and not messagebus:
+            _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot)
+            return
+
         if swarm:
             # Multi-agent swarm mode
             roles = [r.strip() for r in agent_roles.split(',')]
