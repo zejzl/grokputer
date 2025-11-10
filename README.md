@@ -118,19 +118,30 @@ Sync action (pull/push/both/list): pull
 - ✅ **Database Integration** - SQLite with WAL mode for performance metrics
 
 ### Agent Types
-- **Single Agent** - Classic observe-reason-act with Grok
-- **Coordinator** - Task decomposition and delegation
-- **Observer** - Screenshot capture with caching and vision analysis
-- **Actor** - Bash, PyAutoGUI, and file operations
-- **Improver** - Self-improvement on past sessions (WIP)
-- **Validator** - Output verification (WIP)
+
+**Current (3-Agent ORA)**:
+- **Observer** - Screenshot capture with async support, caching, and vision analysis
+- **Reasoner** - Task decomposition and delegation (Coordinator)
+- **Actor** - Bash, PyAutoGUI, and file operations with security hardening
+
+**Coming Soon (Pantheon - 9 Agents)**:
+- **Validator** - Output verification and safety checks
+- **Learner** - Pattern recognition and skill improvement
+- **Memory Manager** - Persistent context with flash attention
+- **Executor** - Specialized action execution with retry logic
+- **Analyzer** - Performance metrics and optimization
+- **Improver** - Self-improvement on past sessions
+
+See [trinity.md](trinity.md) for Pantheon architecture details.
 
 ### Tools & Utilities
 - 🔧 **Browser Control** - Selenium automation
 - 📊 **Streamlit Dashboard** - Web UI for monitoring swarms
-- 💾 **Save Game** - Automated progress backups
+- 💾 **Save Game** - Automated progress backups (optimized: 5GB → 1MB)
 - 🧪 **Testing Suite** - 32+ unit tests for agents and core systems
 - 📝 **Session Viewer** - Analyze past executions
+- 🔒 **Autonomous Security Scanner** - AI-powered vulnerability detection with fix proposals
+- ⚡ **AsyncIO Architecture** - Non-blocking concurrent operations for swarm efficiency
 
 ---
 
@@ -290,32 +301,43 @@ python main.py --swarm --debug --task "complex task"
 
 ## 📈 Development Status
 
-**Version:** 1.5 - Multi-Agent Swarm (Phase 1 - 70% Complete)
+**Version:** 1.6 - AsyncIO Conversion + Pantheon Architecture (Phase 2 - 40% Complete)
 
-### ✅ Completed
+### ✅ Recently Completed (Nov 10, 2025)
+- **AsyncIO Conversion**: GrokClient and ScreenObserver now fully async
+- **Security Hardening**: Fixed 5 critical vulnerabilities (shell injection, unsafe eval detection)
+- **Autonomous Improvement**: AI-powered code scanner with proposal generation
+- **Model Migration**: Updated to grok-4-fast-reasoning (from deprecated grok-beta)
+- Interactive menu mode with 8 options
+- Session Improver - Analyze past sessions and get recommendations
+- Offline Mode - Use cached responses and local knowledge base
+- Community Vault Sync - Share tools and agents
+- Save game functionality (optimized backups: 5GB → 1MB)
+
+### ✅ Core Features (Phase 1)
 - Single-agent observe-reason-act loop
 - Multi-agent swarm infrastructure (Coordinator, Observer, Actor)
-- Claude-Grok collaboration system
+- Claude-Grok collaboration system (-mb mode)
 - Database with performance tracking
 - Session logging and analysis
 - 32/32 unit tests passing
-- Interactive menu mode with 8 options
-- Save game functionality (optimized backups)
-- **NEW:** Session Improver - Analyze past sessions and get recommendations
-- **NEW:** Offline Mode - Use cached responses and local knowledge base
-- **NEW:** Community Vault Sync - Share tools and agents
 
-### 🚧 In Progress (Phase 1)
-- Duo/trio validation testing
+### 🚧 In Progress (Phase 2)
+- **Pantheon Architecture**: Expanding from 3 to 9 specialized agents
+  - Core ORA: Observer, Reasoner, Actor
+  - New roles: Validator, Coordinator, Learner, Memory Manager, Executor, Analyzer
+- **Memory System**: SQLite/Redis hybrid with flash attention
+- **Async Migration**: Converting main.py and remaining sync components
 - Enhanced error recovery
 - OCR integration
-- Screenshot perceptual hashing cache
 
-### 📅 Roadmap (Phase 2+)
+### 📅 Roadmap (Phase 3+)
+- Full 9-agent Pantheon deployment
 - Validator agent for output verification
 - Browser automation enhancements
 - Advanced swarm patterns
 - Remote community vault repository
+- Vulkan/GPU optimization for memory-intensive tasks
 
 See [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md) for detailed roadmap.
 
