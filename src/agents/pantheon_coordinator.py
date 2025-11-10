@@ -1,16 +1,16 @@
 """
 Pantheon Coordinator - Orchestrates all 9 agents in the Pantheon architecture
 
-The 9 Agents:
-1. Observer - Screen capture and vision
-2. Reasoner (Coordinator) - Task decomposition
-3. Actor - Command execution
-4. Validator - Safety and quality checks
-5. Learner - Pattern recognition
-6. Memory Manager - Persistent state
-7. Executor (Actor variant) - Specialized execution
-8. Analyzer - Performance metrics
-9. Improver - Self-improvement
+The 9 Agents (ALL IMPLEMENTED):
+1. Observer - Screen capture and vision ✅
+2. Reasoner (Coordinator) - Task decomposition ✅
+3. Actor - Command execution ✅
+4. Validator - Safety and quality checks ✅
+5. Learner - Pattern recognition ✅
+6. Memory Manager - Persistent state ✅
+7. Executor - Specialized execution with circuit breakers ✅
+8. Analyzer - Performance metrics and health monitoring ✅
+9. Improver - Self-optimization and continuous improvement ✅
 """
 
 import asyncio
@@ -24,6 +24,11 @@ from src.agents.coordinator import Coordinator
 from src.agents.observer import Observer
 from src.agents.actor import Actor
 from src.agents.validator import ValidatorAgent
+from src.agents.learner import LearnerAgent
+from src.agents.memory_agent import MemoryAgent
+from src.agents.executor import ExecutorAgent
+from src.agents.analyzer import AnalyzerAgent
+from src.agents.improver import ImproverAgent
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +71,12 @@ class PantheonCoordinator(BaseAgent):
         observer: Observer,
         reasoner: Coordinator,
         actor: Actor,
-        validator: ValidatorAgent
+        validator: ValidatorAgent,
+        learner: LearnerAgent,
+        memory: MemoryAgent,
+        executor: ExecutorAgent,
+        analyzer: AnalyzerAgent,
+        improver: ImproverAgent
     ):
         """Initialize the Pantheon with all 9 agents."""
         self.agents = {
@@ -74,13 +84,16 @@ class PantheonCoordinator(BaseAgent):
             "reasoner": reasoner,
             "actor": actor,
             "validator": validator,
-            # Note: Learner, Memory, Analyzer, Executor, Improver
-            # can be added as they're implemented
+            "learner": learner,
+            "memory": memory,
+            "executor": executor,
+            "analyzer": analyzer,
+            "improver": improver
         }
 
         self.session_logger.log_agent_init(
             self.agent_id,
-            f"Pantheon initialized with {len(self.agents)} agents"
+            f"Pantheon initialized with {len(self.agents)}/9 agents: {', '.join(self.agents.keys())}"
         )
 
     async def process_message(self, message: Message) -> Optional[Dict]:
@@ -115,14 +128,27 @@ class PantheonCoordinator(BaseAgent):
             self._update_state("idle")
 
     async def _handle_pantheon_task(self, message: Message) -> Dict:
-        """Handle a task using the full Pantheon workflow."""
+        """Handle a task using the full Pantheon workflow with all 9 agents."""
         task = message.content.get('task', '')
         task_id = message.content.get('task_id', f"task_{datetime.now().timestamp()}")
+        start_time = datetime.now().timestamp()
 
         self.session_logger.log_agent_activity(
             self.agent_id,
             f"Pantheon handling task: {task}"
         )
+
+        # Phase 0: Check for learned optimizations
+        optimization = None
+        if "learner" in self.agents:
+            learner_msg = Message(
+                message_type="suggest_optimization",
+                from_agent="pantheon_coordinator",
+                to_agent="learner",
+                priority=MessagePriority.NORMAL,
+                content={"task_type": task}
+            )
+            optimization = await self.agents["learner"].process_message(learner_msg)
 
         # Phase 1: Reasoning - Decompose task
         if "reasoner" in self.agents:
@@ -172,9 +198,25 @@ class PantheonCoordinator(BaseAgent):
                 "task_id": task_id
             }
 
-        # Phase 4: Execution - Perform action
+        # Phase 4: Execution - Perform action (use Executor if available, else Actor)
         result = None
-        if "actor" in self.agents and validation_passed:
+        execution_time = 0.0
+
+        if "executor" in self.agents and validation_passed:
+            # Use advanced Executor with retry and circuit breakers
+            executor_msg = Message(
+                message_type="execute_with_retry",
+                from_agent="pantheon_coordinator",
+                to_agent="executor",
+                priority=MessagePriority.NORMAL,
+                content={
+                    "action": {"type": "bash", "params": {"command": task}, "id": task_id},
+                    "max_retries": 3
+                }
+            )
+            result = await self.agents["executor"].process_message(executor_msg)
+        elif "actor" in self.agents and validation_passed:
+            # Fallback to basic Actor
             actor_msg = Message(
                 message_type="execute",
                 from_agent="pantheon_coordinator",
@@ -183,6 +225,8 @@ class PantheonCoordinator(BaseAgent):
                 content={"task": task, "task_id": task_id}
             )
             result = await self.agents["actor"].process_message(actor_msg)
+
+        execution_time = datetime.now().timestamp() - start_time
 
         # Phase 5: Post-execution validation
         final_state = None
@@ -197,7 +241,59 @@ class PantheonCoordinator(BaseAgent):
             final_state = await self.agents["observer"].process_message(obs_msg)
 
         # Track completion
-        success = result and result.get("status") != "error"
+        success = result and result.get("status") not in ["error", "failed", "rejected"]
+
+        # Phase 6: Learning - Record execution for pattern learning
+        if "learner" in self.agents:
+            learner_msg = Message(
+                message_type="record_execution",
+                from_agent="pantheon_coordinator",
+                to_agent="learner",
+                priority=MessagePriority.LOW,
+                content={
+                    "task_id": task_id,
+                    "task_type": task,
+                    "actions": [task],
+                    "success": success,
+                    "execution_time": execution_time,
+                    "metadata": {"validation_passed": validation_passed}
+                }
+            )
+            await self.agents["learner"].process_message(learner_msg)
+            if success:
+                self.pantheon_stats["patterns_learned"] += 1
+
+        # Phase 7: Analytics - Record metrics
+        if "analyzer" in self.agents:
+            analyzer_msg = Message(
+                message_type="record_task",
+                from_agent="pantheon_coordinator",
+                to_agent="analyzer",
+                priority=MessagePriority.LOW,
+                content={
+                    "task_type": task,
+                    "execution_time": execution_time,
+                    "success": success,
+                    "agent_id": "executor" if "executor" in self.agents else "actor"
+                }
+            )
+            await self.agents["analyzer"].process_message(analyzer_msg)
+
+        # Phase 8: Improvement - Analyze for optimizations
+        if "improver" in self.agents and self.pantheon_stats["tasks_completed"] % 10 == 0:
+            # Every 10 tasks, analyze for improvements
+            improver_msg = Message(
+                message_type="analyze_for_improvements",
+                from_agent="pantheon_coordinator",
+                to_agent="improver",
+                priority=MessagePriority.LOW,
+                content={}
+            )
+            improvements = await self.agents["improver"].process_message(improver_msg)
+            if improvements and improvements.get("improvements_found", 0) > 0:
+                self.pantheon_stats["improvements_applied"] += improvements.get("auto_applied", 0)
+
+        # Update stats
         if success:
             self.pantheon_stats["tasks_completed"] += 1
         else:
@@ -205,7 +301,7 @@ class PantheonCoordinator(BaseAgent):
 
         self.session_logger.log_agent_activity(
             self.agent_id,
-            f"Pantheon task completed: {task_id} (success={success})"
+            f"Pantheon task completed: {task_id} (success={success}, time={execution_time:.2f}s)"
         )
 
         return {
@@ -215,7 +311,9 @@ class PantheonCoordinator(BaseAgent):
             "validation_passed": validation_passed,
             "initial_state": initial_state,
             "final_state": final_state,
-            "pantheon_workflow": "full"
+            "execution_time": execution_time,
+            "optimization_used": optimization is not None,
+            "pantheon_workflow": "full_9_agent"
         }
 
     def get_pantheon_stats(self) -> Dict:
