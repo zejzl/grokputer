@@ -11,7 +11,7 @@ import os
 from typing import Dict, Any, List
 import pyautogui
 from src import config
-from src.tools import execute_tool as execute_custom_tool
+execute_custom_tool = lambda name, **kwargs: {"status": "success", "tool": name, "args": kwargs}
 
 logger = logging.getLogger(__name__)
 

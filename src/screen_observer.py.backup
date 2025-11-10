@@ -7,7 +7,6 @@ import base64
 import logging
 from io import BytesIO
 from typing import Optional, Tuple
-import asyncio
 import pyautogui
 from PIL import Image
 from src import config
@@ -45,7 +44,7 @@ class ScreenObserver:
             f"max_size={self.max_width}x{self.max_height}"
         )
 
-    async def capture_screenshot(self, region: Optional[Tuple[int, int, int, int]] = None) -> Image.Image:
+    def capture_screenshot(self, region: Optional[Tuple[int, int, int, int]] = None) -> Image.Image:
         """
         Capture a screenshot of the entire screen or a specific region.
 
@@ -58,10 +57,10 @@ class ScreenObserver:
         try:
             if region:
                 logger.info(f"Capturing screenshot region: {region}")
-                screenshot = await asyncio.to_thread(pyautogui.screenshot, region=region)
+                screenshot = pyautogui.screenshot(region=region)
             else:
                 logger.info("Capturing full screenshot")
-                screenshot = await asyncio.to_thread(pyautogui.screenshot, )
+                screenshot = pyautogui.screenshot()
 
             # Resize if needed
             screenshot = self._resize_if_needed(screenshot)
@@ -72,7 +71,7 @@ class ScreenObserver:
             logger.error(f"Error capturing screenshot: {e}")
             raise
 
-    async def screenshot_to_base64(
+    def screenshot_to_base64(
         self,
         region: Optional[Tuple[int, int, int, int]] = None,
         format: str = "PNG"
@@ -107,7 +106,7 @@ class ScreenObserver:
             logger.error(f"Error converting screenshot to base64: {e}")
             raise
 
-    async def save_screenshot(
+    def save_screenshot(
         self,
         filepath: str,
         region: Optional[Tuple[int, int, int, int]] = None

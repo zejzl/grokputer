@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-\"\"\"
+"""
 Tools for Grokputer - Including dynamic code generation and execution.
-\"\"\"
+"""
 
 import ast
 import subprocess
@@ -10,13 +10,13 @@ from pathlib import Path
 from typing import Dict, Any, List
 
 def invoke_prayer() -> Dict[str, Any]:
-    \"\"\"
+    """
     Invoke the server prayer.
-    \"\"\"
-    return {\"status\": \"success\", \"message\": \"ETERNAL | INFINITE\"}
+    """
+    return {"status": "success", "message": "ETERNAL | INFINITE"}
 
-def generate_code(filename: str, code_content: str, sandbox_dir: str = \"outputs\") -> Dict[str, Any]:
-    \"\"\"
+def generate_code(filename: str, code_content: str, sandbox_dir: str = "outputs") -> Dict[str, Any]:
+    """
     Generate a Python script file with the provided code content.
     
     Args:
@@ -26,7 +26,7 @@ def generate_code(filename: str, code_content: str, sandbox_dir: str = \"outputs
     
     Returns:
         Dict with status, path, and any errors.
-    \"\"\"
+    """
     try:
         # Validate syntax before writing
         ast.parse(code_content)
@@ -43,17 +43,17 @@ def generate_code(filename: str, code_content: str, sandbox_dir: str = \"outputs
             f.write(code_content)
         
         return {
-            \"status\": \"success\",
-            \"path\": str(file_path),
-            \"message\": f\"Generated script at {file_path}\"
+            "status": "success",
+            "path": str(file_path),
+            "message": f"Generated script at {file_path}"
         }
     except SyntaxError as e:
-        return {\"status\": \"error\", \"message\": f\"Syntax error in generated code: {e}\"}
+        return {"status": "error", "message": f"Syntax error in generated code: {e}"}
     except Exception as e:
-        return {\"status\": \"error\", \"message\": f\"Failed to generate script: {e}\"}
+        return {"status": "error", "message": f"Failed to generate script: {e}"}
 
-def execute_generated_code(filename: str, sandbox_dir: str = \"outputs\") -> Dict[str, Any]:
-    \"\"\"
+def execute_generated_code(filename: str, sandbox_dir: str = "outputs") -> Dict[str, Any]:
+    """
     Execute the generated Python script and capture output.
     
     Args:
@@ -62,12 +62,12 @@ def execute_generated_code(filename: str, sandbox_dir: str = \"outputs\") -> Dic
     
     Returns:
         Dict with status, output, and any errors.
-    \"\"\"
+    """
     try:
         file_path = Path(sandbox_dir) / filename
         
         if not file_path.exists():
-            return {\"status\": \"error\", \"message\": f\"Script {file_path} not found\"}
+            return {"status": "error", "message": f"Script {file_path} not found"}
         
         # Run the script, capture stdout/stderr
         result = subprocess.run(
@@ -77,23 +77,23 @@ def execute_generated_code(filename: str, sandbox_dir: str = \"outputs\") -> Dic
             timeout=30  # 30s timeout for safety
         )
         
-        output = result.stdout if result.stdout else \"No output.\"
+        output = result.stdout if result.stdout else "No output."
         error = result.stderr if result.stderr else None
         
         if result.returncode == 0:
             return {
-                \"status\": \"success\",
-                \"output\": output,
-                \"message\": f\"Executed {filename} successfully\"
+                "status": "success",
+                "output": output,
+                "message": f"Executed {filename} successfully"
             }
         else:
             return {
-                \"status\": \"error\",
-                \"output\": output,
-                \"error\": error,
-                \"message\": f\"Script failed with code {result.returncode}\"
+                "status": "error",
+                "output": output,
+                "error": error,
+                "message": f"Script failed with code {result.returncode}"
             }
     except subprocess.TimeoutExpired:
-        return {\"status\": \"error\", \"message\": \"Script execution timed out (30s limit)\"}
+        return {"status": "error", "message": "Script execution timed out (30s limit)"}
     except Exception as e:
-        return {\"status\": \"error\", \"message\": f\"Failed to execute script: {e}\"}
+        return {"status": "error", "message": f"Failed to execute script: {e}"}

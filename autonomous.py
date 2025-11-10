@@ -33,6 +33,8 @@ from rich.panel import Panel
 from rich.syntax import Syntax
 from rich.markdown import Markdown
 import json
+import random
+import redis
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
