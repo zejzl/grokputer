@@ -4,12 +4,8 @@ import asyncio
 import time
 import logging
 from dataclasses import dataclass
-<<<<<<< Updated upstream
 from datetime import datetime
-
-=======
 from .message_bus import Message, MessagePriority
->>>>>>> Stashed changes
 
 @dataclass
 class AgentState:
@@ -58,11 +54,7 @@ class BaseAgent(ABC):
         self.message_bus.register_agent(self.agent_id)
 
     @abstractmethod
-<<<<<<< Updated upstream
-    async def process_message(self, message) -> Optional[Dict[str, Any]]:
-=======
     async def process_message(self, message: Message) -> Optional[Dict[str, Any]]:
->>>>>>> Stashed changes
         """
         Process incoming message and return response or None.
         Must be implemented by subclasses.
@@ -88,17 +80,12 @@ class BaseAgent(ABC):
         self.state.status = status
         if last_activity is not None:
             self.state.last_activity = last_activity
-<<<<<<< Updated upstream
-
-=======
         else:
             self.state.last_activity = time.time()
         if error is not None:
             self.state.error = error
         elif status != "error":
             self.state.error = None  # Clear error when not in error state
-        
->>>>>>> Stashed changes
         # Notify deadlock detector
         if self.deadlock_detector:
             self.deadlock_detector.update_activity(self.agent_id)

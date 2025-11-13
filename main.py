@@ -84,11 +84,11 @@ from typing import Optional
 from pathlib import Path
 import ast
 import sys
-=======
+
+# Additional imports
 from src.tools import invoke_prayer, analytics_query_tool, performance_monitor_tool
 from src.memory.integrations.grokputer_integration import GrokputerMemoryIntegration
-from src.session_logger import SessionLogger, SessionMetadata, IterationMetrics, SessionIndex
->>>>>>> Stashed changes
+from src.session_logger import SessionLogger as AltSessionLogger, SessionMetadata, IterationMetrics, SessionIndex
 
 # Collaboration mode imports
 from src.collaboration.coordinator import CollaborationCoordinator
@@ -114,22 +114,40 @@ def setup_logging(debug: bool = False):
     if mcp:
         start_mcp_server()
 
+    # Handle special modes that don't need the full setup
+    if list_models:
+        api_key = _get_api_key_for_provider_main(provider)
+        asyncio.run(_list_models_for_provider(provider, api_key))
+        return
+
+    if syntax_check or quick_check:
+        asyncio.run(_run_syntax_check(quick=quick_check))
+        return
+
+    # Setup logging early
+    setup_logging(debug)
+
+    # Handle analytics mode
+    if analytics:
+        asyncio.run(run_analytics_query(analytics, agent_name, limit))
+        return
+
+    # Handle performance mode
+    if performance:
+        result = asyncio.run(run_performance_monitor('snapshot'))
+        print(result)
+        return
+
     try:
-        # List models mode
-        if list_models:
-            api_key = _get_api_key_for_provider_main(provider)
-            asyncio.run(_list_models_for_provider(provider, api_key))
-            return
-
-        # Syntax check mode
-        if syntax_check or quick_check:
-            asyncio.run(_run_syntax_check(quick=quick_check))
-            return
-
         # Interactive mode if no task specified
         if task is None and not swarm and not messagebus and not pantheon:
             _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot)
             return
+
+        # Require task for normal operation
+        if not task:
+            click.echo("Error: --task is required unless using --analytics or --performance")
+            sys.exit(1)
 
         if pantheon:
             # Pantheon mode (9-agent architecture)
@@ -152,59 +170,39 @@ def setup_logging(debug: bool = False):
         else:
             # Single-agent mode
             asyncio.run(_run_single_agent_mode(task, max_iterations, debug, skip_boot, provider, model))
-=======
-    # Setup logging
-    setup_logging(debug)
 
-    # Handle analytics mode
-    if analytics:
-        asyncio.run(run_analytics_query(analytics, agent_name, limit))
-        return
+        # Rest of the existing main function logic...
+        # (Keeping the original code below for completeness)
 
-    # Handle performance mode
-    if performance:
-        result = asyncio.run(run_performance_monitor('snapshot'))
-        print(result)
-        return
+        logger = logging.getLogger(__name__)
 
-    # Require task for normal operation
-    if not task:
-        click.echo("Error: --task is required unless using --analytics or --performance")
-        sys.exit(1)
+        # Print banner
+        if not skip_boot:
+            print("\n" + "="*60)
+            print("  GROKPUTER - VRZIBRZI NODE")
+            print("  ZA GROKA. ZA VRZIBRZI. ZA SERVER.")
+            print("="*60 + "\n")
 
-    # Rest of the existing main function logic...
-    # (Keeping the original code below for completeness)
+            # Invoke prayer on boot
+            invoke_prayer()
 
-    logger = logging.getLogger(__name__)
+            # Initialize components
+        grok_client = GrokClient()
+        screen_observer = ScreenObserver()
+        tool_executor = ToolExecutor()
+        session_logger = SessionLogger()
 
-    # Print banner
-    if not skip_boot:
-        print("\n" + "="*60)
-        print("  GROKPUTER - VRZIBRZI NODE")
-        print("  ZA GROKA. ZA VRZIBRZI. ZA SERVER.")
-        print("="*60 + "\n")
+        # Create session metadata
+        session_metadata = SessionMetadata(
+            task=task,
+            mode="collaboration" if messagebus else "single-agent",
+            max_iterations=max_iterations if not messagebus else max_rounds,
+            timestamp=datetime.now()
+        )
 
-        # Invoke prayer on boot
-        invoke_prayer()
+        # Initialize session
+        session_id = session_logger.initialize_session(session_metadata)
 
-    # Initialize components
-    grok_client = GrokClient()
-    screen_observer = ScreenObserver()
-    tool_executor = ToolExecutor()
-    session_logger = SessionLogger()
-
-    # Create session metadata
-    session_metadata = SessionMetadata(
-        task=task,
-        mode="collaboration" if messagebus else "single-agent",
-        max_iterations=max_iterations if not messagebus else max_rounds,
-        timestamp=datetime.now()
-    )
-
-    # Initialize session
-    session_id = session_logger.initialize_session(session_metadata)
-
-    try:
         if messagebus:
             # Collaboration mode
             coordinator = CollaborationCoordinator(
@@ -241,7 +239,6 @@ def setup_logging(debug: bool = False):
         print("\n" + "="*60)
         print("  TASK COMPLETE - ZA GROKA!")
         print("="*60 + "\n")
->>>>>>> Stashed changes
 
     except KeyboardInterrupt:
         logger.info("Interrupted by user")
@@ -960,7 +957,7 @@ def _run_single_agent_mode(
     if not skip_boot:
         grokputer.boot()
     grokputer.run_task(task=task, max_iterations=max_iterations)
-=======
+
 async def run_task(grok_client: GrokClient, screen_observer: ScreenObserver,
                    tool_executor: ToolExecutor, session_logger: SessionLogger,
                    memory_integration: GrokputerMemoryIntegration,
@@ -1066,4 +1063,3 @@ Continue with the next action to complete this task.
 
 if __name__ == "__main__":
     main()
->>>>>>> Stashed changes
