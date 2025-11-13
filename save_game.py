@@ -99,7 +99,7 @@ def dump_redis():
             db_info = {
                 "timestamp": datetime.now().isoformat(),
                 "keys": r.dbsize(),
-                "lastsave": r.lastsave()
+                "lastsave": r.lastsave().timestamp() if hasattr(r.lastsave(), "timestamp") else str(r.lastsave())
             }
             
             vault_dir = Path("vault")
