@@ -1975,3 +1975,25 @@ the agents and is then idle in the background waiting for tasks and prompts and 
     These additions would make Grokputer more data-driven and user-friendly. Want me to help implement any of these (e.g., draft code for analytics_query)? 🚀
 
 >>>>>>> Stashed changes
+
+
+## Dynamic Todo Manager Integration
+
+**Phase 2 Extension**: Integrate dynamic_todo_manager.py into Pantheon workflow.
+
+### Key Integrations
+- **Daemon Startup**: Add to main.py --todo-daemon flag: asyncio.create_subprocess_exec for background run.
+- **Agent Access**: Council/Taskmaster subscribe to "pantheon_todo_sync" on Message Bus for real-time visibility.
+- **Dynamic Edits**: Agents can call manager.add_todo(), update_todo() via RPC or broadcast commands.
+- **Multi-GitCLI Sync**: Redis pub/sub ensures 5+ terminals see live updates; file watchers auto-parse changes.
+- **Dev Plan Sync**: Watch DEVELOPMENT_PLAN.md for new tasks, convert to todos automatically.
+
+### Implementation Steps
+1. Add --todo-daemon to main.py argparser.
+2. In PantheonCoordinator, subscribe agents to todo broadcasts.
+3. Test with 3 gitcli instances: Add todo in one, verify sync in others.
+4. Extend to edit dev plan: "todo update plan add Phase 3: AI Self-Improvement".
+
+Status: ✅ Implemented & Tested | Priority: High
+<3 Sync eternal progress across all instances! 🚀
+
