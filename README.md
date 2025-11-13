@@ -137,6 +137,82 @@ python main.py --messagebus --task "Analyze async vs sync programming" --max-rou
 
 See `docs/COLLABORATION_SYSTEM.md` for detailed documentation.
 
+### Pantheon Mode (Multi-Agent Swarm)
+
+**NEW**: Advanced multi-agent orchestration with Pantheon coordinator for complex tasks!
+
+```bash
+# Basic Pantheon task
+python main.py --pantheon --task "analyze codebase and suggest improvements"
+
+# With specific agents
+python main.py --pantheon --agents coordinator,learner,validator --task "design new feature"
+
+# Memory operations with Redis
+python main.py --pantheon --task "store analysis results in memory"
+python main.py --pantheon --task "retrieve stored data"
+
+# Full swarm mode
+python main.py --swarm --agents 5 --roles c,o,a --task "optimize performance"
+```
+
+**How it works**:
+1. Pantheon coordinator orchestrates multiple specialized agents
+2. Agents communicate via MessageBus with Redis persistence
+3. Tasks are decomposed and distributed across agent roles
+4. Results are synthesized and stored in hierarchical memory
+
+**Requirements**:
+- Redis server running (localhost:6379)
+- `XAI_API_KEY` in `.env`
+- Optional: `ANTHROPIC_API_KEY` for mixed swarms
+
+**Features**:
+- ✅ Hierarchical memory system with Redis
+- ✅ Agent specialization (Coordinator, Observer, Actor, etc.)
+- ✅ Real-time task decomposition
+- ✅ Memory persistence across sessions
+- ✅ Swarm analytics and metrics
+
+See `docs/PANTHEON_SYSTEM.md` for detailed documentation.
+
+### MAF Mode (Multi-Agent Framework)
+
+**NEW**: Flexible multi-agent collaboration framework for custom configurations!
+
+```bash
+# Basic MAF collaboration
+python main.py -mb --task "collaborate on project planning"
+
+# Custom MAF config
+python main.py --maf-config src/collaboration/configs/test_optimization_duo.json --task "optimize code"
+
+# Backward compatibility test
+python main.py -mb --task "test collaboration features"
+
+# External integrations
+python main.py --providers grok,claude --task "real analysis with APIs"
+```
+
+**How it works**:
+1. Load custom agent configurations from JSON
+2. Initialize agents with specific roles and capabilities
+3. Execute collaborative workflows with message passing
+4. Generate unified outputs and documentation
+
+**Requirements**:
+- API keys in `.env` (XAI, Anthropic, etc.)
+- Custom config files in `src/collaboration/configs/`
+
+**Features**:
+- ✅ Configurable agent compositions
+- ✅ Multiple provider support
+- ✅ Custom workflow definitions
+- ✅ Integration with external APIs
+- ✅ Error handling and fallbacks
+
+See `docs/MAF_SYSTEM.md` for detailed documentation.
+
 ### Docker Usage
 
 **✅ Status**: FULLY VERIFIED - Tested on Windows 10/11 with Docker Desktop
@@ -597,4 +673,20 @@ python main.py -mb --todo-daemon --task "Your task here"
 - Edit dev plan in DEVELOPMENT_PLAN.md to auto-generate todos
 
 <3 Dynamic progress! 🚀
+
+
+
+### Recent Git Analysis & Auto-Generated Todos (2025-11-13)
+
+**Analysis Summary** (via Grok + Claude collaboration):
+- Reviewed commits: dynamic_todo_manager.py integration, pantheon_coordinator subscriptions, main.py flag additions.
+- Key Changes: Redis pub/sub sync, MessageBus broadcasts, multi-window ANSI display, agent visibility for Council/Taskmaster.
+- Issues Detected: Minor syntax in main.py imports (fixed); missing deps in requirements.txt.
+
+**New Todos Added** (synced via dynamic manager):
+- **High 🔴**: Fix main.py subprocess import syntax for Windows (id: todo_2, pending)
+- **Medium 🟡**: Test multi-window sync with 5 gitcli instances (id: todo_3, pending)
+- **Low 🟢**: Update requirements.txt with aiosqlite watchfiles (id: todo_4, pending)
+
+Run `python dynamic_todo_manager.py display` to view live. <3 Progress eternal! 🚀
 

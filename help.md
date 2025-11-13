@@ -131,6 +131,47 @@ python main.py --pantheon --task "execute complex task with safety validation"
 python main.py -p --task "scan files and create report" --debug
 ```
 
+### MAF Mode (Multi-Agent Framework)
+```bash
+# Load custom MAF configuration
+python main.py --maf-config src/collaboration/configs/test_optimization_duo.json --task "optimize code"
+
+# Use multiple providers
+python main.py --providers grok,claude --task "collaborative analysis"
+
+# Backward compatibility test
+python main.py -mb --task "test MAF features"
+```
+
+#### MAF Configuration Files
+Create custom configs in `src/collaboration/configs/`:
+```json
+{
+  "agents": [
+    {
+      "name": "optimizer",
+      "provider": "grok",
+      "role": "code_optimizer",
+      "model": "grok-4-fast-reasoning"
+    },
+    {
+      "name": "reviewer",
+      "provider": "claude",
+      "role": "code_reviewer",
+      "model": "claude-3-sonnet-20240229"
+    }
+  ],
+  "workflow": "optimization_pipeline",
+  "max_rounds": 3
+}
+```
+
+#### MAF Troubleshooting
+- **Config not found**: Ensure config file exists in `src/collaboration/configs/`
+- **Provider errors**: Check API keys in `.env` for all specified providers
+- **Workflow failures**: Verify agent roles match expected workflow steps
+- **Performance issues**: Reduce max_rounds or use fewer agents
+
 ### Autonomous Security
 ```bash
 python autonomous.py scan src/
