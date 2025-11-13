@@ -318,3 +318,4 @@ TOOLS = [
         },
     },
 ]
+-e "\n# Redis Configuration\nREDIS_URL = os.getenv(\"REDIS_URL\", \"redis://localhost:6379/0\")\nREDIS_ENABLED = bool(REDIS_URL and REDIS_URL != \"redis://localhost:6379/0\")" 

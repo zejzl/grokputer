@@ -13,6 +13,27 @@ import time
 from datetime import datetime
 from pathlib import Path
 import logging
+try:
+    import redis
+    REDIS_AVAILABLE = True
+except ImportError:
+    REDIS_AVAILABLE = False
+
+# Load environment variables from .env file if it exists
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass  # dotenv not available, use system env vars
+
+# Setup logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
+logger = logging.getLogger(__name__)
+import json
+import time
+from datetime import datetime
+from pathlib import Path
+import logging
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
@@ -63,16 +84,40 @@ def sync_vault():
 
 def dump_redis():
     """Dump Redis state (if enabled)."""
-    if os.getenv("REDIS_URL"):
-        success, out = run_command("redis-cli SAVE && redis-cli BGSAVE")
-        if success:
-            logger.info("Redis dumped to vault/redis.rdb")
-            # Copy to vault
-            shutil.copy("redis.rdb", "vault/redis_backup.rdb")
+    redis_url = os.getenv("REDIS_URL")
+    if redis_url and REDIS_AVAILABLE:
+        try:
+            # Use Python Redis client instead of shell commands
+            r = redis.from_url(redis_url)
+            r.ping()  # Test connection
+            
+            # Trigger background save
+            r.bgsave()
+            logger.info("Redis background save triggered")
+            
+            # Save database info to vault
+            db_info = {
+                "timestamp": datetime.now().isoformat(),
+                "keys": r.dbsize(),
+                "lastsave": r.lastsave()
+            }
+            
+            vault_dir = Path("vault")
+            vault_dir.mkdir(exist_ok=True)
+            with open(vault_dir / "redis_backup_info.json", "w") as f:
+                json.dump(db_info, f, indent=2)
+            
+            logger.info(f"Redis backup info saved: {db_info["keys"]} keys")
+            return True
+        except Exception as e:
+            logger.warning(f"Redis dump failed: {e}")
+            return False
+    elif redis_url and not REDIS_AVAILABLE:
+        logger.warning("Redis URL configured but redis-py not available")
+        return False
     else:
-        logger.info("No Redis; skipped.")
-    return True
-
+        logger.info("No Redis configured; skipped.")
+        return True
 
 def update_documentation():
     """Update documentation based on session changes."""
