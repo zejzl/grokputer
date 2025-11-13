@@ -18,6 +18,7 @@ Grokputer enables xAI's Grok to control your computer through screen observation
 - 🧠 **Grok Reasoning**: Uncensored AI decision-making
 - 🐳 **Docker Sandbox**: Safe execution environment
 - ⚡ **VRZIBRZI Speed**: 80 WPM automation capability
+- 🐍 **Python-Native Data**: All data files converted from JSON to Python dicts for better performance and reliability (no more JSON parsing errors)
 
 ---
 
