@@ -34,14 +34,10 @@ class GrokClient:
         self.model = model or config.GROK_MODEL
 
         # Initialize AsyncOpenAI client pointing to xAI
-<<<<<<< Updated upstream
-        self.client = AsyncOpenAI(api_key=self.api_key, base_url=self.base_url)
-=======
         self.client = AsyncOpenAI(
             api_key=self.api_key,
             base_url=self.base_url
         )
->>>>>>> Stashed changes
 
         logger.info(f"Initialized async Grok client: model={self.model}, base_url={self.base_url}")
 
@@ -143,13 +139,9 @@ class GrokClient:
             return {"status": "error", "error": f"Failed to parse response: {e}"}
 
     async def continue_conversation(
-<<<<<<< Updated upstream
-        self, tool_results: List[Dict[str, Any]], conversation_history: List[Dict[str, Any]]
-=======
         self,
         tool_results: List[Dict[str, Any]],
         conversation_history: List[Dict[str, Any]]
->>>>>>> Stashed changes
     ) -> Dict[str, Any]:
         """
         Continue the conversation after tool execution (async).
@@ -177,10 +169,7 @@ class GrokClient:
 
             logger.info(f"Continuing conversation with {len(tool_results)} tool results")
 
-<<<<<<< Updated upstream
             # Make async API call
-=======
->>>>>>> Stashed changes
             response = await self.client.chat.completions.create(
                 model=self.model,
                 messages=messages,
@@ -210,10 +199,7 @@ class GrokClient:
         try:
             logger.info("Testing Grok API connection...")
 
-<<<<<<< Updated upstream
             # Make async API call with timeout
-=======
->>>>>>> Stashed changes
             response = await self.client.chat.completions.create(
                 model=self.model,
                 messages=[{"role": "user", "content": "Hello, Grok. This is a connection test."}],

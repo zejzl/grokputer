@@ -59,26 +59,6 @@ class ActionHistory:
 
 class ActionExecutor:
     """
-<<<<<<< Updated upstream
-    Production-ready single-threaded executor for PyAutoGUI operations.
-
-    Features:
-    - Priority queuing (HIGH/NORMAL/LOW)
-    - Batch action support (execute multiple actions atomically)
-    - Action history tracking (for debugging and potential rollback)
-    - Timeout handling per action
-    - Statistics tracking (execution counts, timings)
-    - Thread-safe async interface for agents
-
-    Usage:
-        executor = ActionExecutor()
-
-        # Single action
-        result = await executor.execute_async(
-            agent_id="actor",
-            action={"type": "click", "x": 100, "y": 200},
-            priority=ActionPriority.HIGH
-=======
     Single-threaded executor for PyAutoGUI operations to ensure thread safety.
     Agents submit actions via queue; executor processes serially in a dedicated thread.
     Provides async interface for non-blocking calls from asyncio agents.
@@ -90,19 +70,9 @@ class ActionExecutor:
         self.executor_thread = threading.Thread(
             target=self._executor_loop,
             daemon=True
->>>>>>> Stashed changes
         )
 
-        # Batch actions
-        results = await executor.execute_batch_async(
-            agent_id="actor",
-            actions=[
-                {"type": "click", "x": 100, "y": 200},
-                {"type": "type", "text": "Hello"},
-                {"type": "key", "key": "enter"}
-            ]
-        )
-    """
+        self.executor_thread.start()
 
     def __init__(self, max_queue_size: int = 100, history_size: int = 100, default_timeout: float = 10.0):
         """
@@ -136,19 +106,12 @@ class ActionExecutor:
         self._shutdown = False
         self.executor_thread = threading.Thread(target=self._executor_loop, daemon=True, name="ActionExecutor")
         self.executor_thread.start()
-<<<<<<< Updated upstream
 
         logger.info("[ActionExecutor] Started with priority queuing")
 
     def _executor_loop(self):
         """Dedicated thread: Dequeue and execute actions serially."""
-        while not self._shutdown:
-=======
-
-    def _executor_loop(self):
-        """Dedicated thread: Dequeue and execute actions serially."""
         while not self._shutdown_flag:
->>>>>>> Stashed changes
             try:
                 # Get highest priority action
                 action = self.action_queue.get(timeout=1.0)
@@ -465,14 +428,8 @@ class ActionExecutor:
 
     def shutdown(self):
         """Graceful shutdown: Stop executor thread."""
-<<<<<<< Updated upstream
         logger.info("[ActionExecutor] Shutting down...")
-        self._shutdown = True
-
-=======
         self._shutdown_flag = True
->>>>>>> Stashed changes
         if self.executor_thread.is_alive():
             self.executor_thread.join(timeout=5.0)
-
         logger.info("[ActionExecutor] Shutdown complete")

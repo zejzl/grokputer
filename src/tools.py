@@ -1,15 +1,5 @@
 #!/usr/bin/env python3
 """
-<<<<<<< Updated upstream
-Tools for Grokputer - Including dynamic code generation and execution.
-"""
-
-import ast
-import subprocess
-import sys
-from pathlib import Path
-from typing import Dict, Any, List
-=======
 Custom tools for Grokputer.
 Implements vault scanning, prayer invocation, analytics queries, performance monitoring, and other VRZIBRZI-specific functions.
 """
@@ -314,9 +304,6 @@ def invoke_prayer() -> Dict[str, Any]:
 
 def generate_code(filename: str, code_content: str, sandbox_dir: str = "outputs") -> Dict[str, Any]:
     """
-<<<<<<< Updated upstream
-    Generate a Python script file with the provided code content.
-=======
     Get statistics about the vault contents.
 
     Returns:
@@ -506,7 +493,6 @@ def execute_tool(tool_name: str, **kwargs) -> Dict[str, Any]:
     except SyntaxError as e:
         return {"status": "error", "message": f"Syntax error in generated code: {e}"}
     except Exception as e:
-<<<<<<< Updated upstream
         return {"status": "error", "message": f"Failed to generate script: {e}"}
 
 

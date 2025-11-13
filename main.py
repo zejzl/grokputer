@@ -86,9 +86,9 @@ import ast
 import sys
 
 # Additional imports
-from src.tools import invoke_prayer, analytics_query_tool, performance_monitor_tool
+from src import tools
 from src.memory.integrations.grokputer_integration import GrokputerMemoryIntegration
-from src.session_logger import SessionLogger as AltSessionLogger, SessionMetadata, IterationMetrics, SessionIndex
+from superagent.src.session_logger import SessionLogger as AltSessionLogger, SessionMetadata, IterationMetrics, SessionIndex
 
 # Collaboration mode imports
 from src.collaboration.coordinator import CollaborationCoordinator
@@ -184,7 +184,7 @@ def setup_logging(debug: bool = False):
             print("="*60 + "\n")
 
             # Invoke prayer on boot
-            invoke_prayer()
+            tools.invoke_prayer()
 
             # Initialize components
         grok_client = GrokClient()

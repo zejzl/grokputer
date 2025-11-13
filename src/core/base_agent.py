@@ -137,12 +137,6 @@ class BaseAgent(ABC):
 
                     # Send response if any
                     if response:
-<<<<<<< Updated upstream
-                        await self.message_bus.send(
-                            response.get("to", "coordinator"), response.get("content", response)
-                        )
-
-=======
                         # Create Message object from response dict
                         to_agent = response.get("to", "coordinator")
                         msg_type = response.get("type", "response")
@@ -159,8 +153,6 @@ class BaseAgent(ABC):
                             correlation_id=correlation_id
                         )
                         await self.message_bus.send(msg)
-                    
->>>>>>> Stashed changes
                     self._update_state("idle")
 
                 except asyncio.TimeoutError:
