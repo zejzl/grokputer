@@ -1,0 +1,255 @@
+Session: pantheon_20251113_101922
+Task: Analyze the current directory structure and generate a summary report
+Started: 2025-11-13T10:19:22.797220
+Swarm Mode: True
+--------------------------------------------------------------------------------
+
+[10:19:22.797] [AGENT START] observer
+[10:19:23.151] [AGENT START] coordinator_learner
+[10:19:24.513] [AGENT START] reasoner
+[10:19:24.513] [AGENT START] actor
+[10:19:24.514] [AGENT START] validator
+[10:19:24.539] [AGENT START] hierarchical_memory
+[10:19:24.539] [AGENT START] learner
+[10:19:24.539] [AGENT START] learner
+[10:19:24.539] [AGENT START] executor
+[10:19:24.540] [AGENT START] analyzer
+[10:19:24.543] [AGENT START] improver
+[10:19:24.543] [AGENT START] character_analyzer
+[10:19:24.749] [AGENT START] story_generator
+[10:19:24.749] [AGENT START] visionary
+[10:19:24.749] [AGENT START] love_agent
+[10:19:24.774] [AGENT START] pantheon_coordinator
+[10:19:24.775] [AGENT ACTIVITY] observer -> idle
+[10:19:24.775] [AGENT START] observer
+[10:19:24.775] [AGENT START] coordinator
+[10:19:24.775] [AGENT START] actor
+[10:19:24.776] [AGENT ACTIVITY] validator -> idle
+[10:19:24.776] [AGENT START] validator
+[10:19:24.776] [AGENT ACTIVITY] learner -> idle
+[10:19:24.776] [AGENT START] learner
+[10:19:24.776] [AGENT ACTIVITY] executor -> idle
+[10:19:24.776] [AGENT START] executor
+[10:19:24.777] [AGENT ACTIVITY] analyzer -> idle
+[10:19:24.777] [AGENT START] analyzer
+[10:19:24.777] [AGENT ACTIVITY] improver -> idle
+[10:19:24.778] [AGENT START] improver
+[10:19:24.778] [AGENT ACTIVITY] visionary -> idle
+[10:19:24.778] [AGENT START] visionary
+[10:19:24.778] [AGENT ACTIVITY] love_agent -> idle
+[10:19:24.778] [AGENT START] love_agent
+[10:19:24.778] [AGENT ACTIVITY] pantheon_coordinator -> idle
+[10:19:24.779] [AGENT START] pantheon_coordinator
+[10:19:24.779] [AGENT START] pantheon_coordinator
+[10:19:25.822] [AGENT ACTIVITY] pantheon_coordinator -> processing
+[10:19:25.822] [AGENT ACTIVITY] pantheon_coordinator -> processing
+[10:19:25.822] [AGENT ACTIVITY] pantheon_coordinator -> Pantheon handling task: Analyze the current directory structure and generate a summary report
+[10:19:25.823] [AGENT ACTIVITY] learner -> processing
+[10:19:25.823] [AGENT ACTIVITY] learner -> idle
+[10:19:30.840] [AGENT ACTIVITY] pantheon_coordinator -> idle
+[10:19:30.841] [AGENT ERROR] pantheon_coordinator: 'Message' object has no attribute 'get'
+[10:19:54.790] [AGENT ACTIVITY] observer -> waiting
+[10:19:54.791] [AGENT WAIT] observer
+[10:19:54.791] [AGENT ACTIVITY] validator -> waiting
+[10:19:54.791] [AGENT WAIT] validator
+[10:19:54.792] [AGENT ACTIVITY] executor -> waiting
+[10:19:54.792] [AGENT WAIT] executor
+[10:19:54.792] [AGENT ACTIVITY] analyzer -> waiting
+[10:19:54.792] [AGENT WAIT] analyzer
+[10:19:54.792] [AGENT ACTIVITY] improver -> waiting
+[10:19:54.792] [AGENT WAIT] improver
+[10:19:54.793] [AGENT ACTIVITY] visionary -> waiting
+[10:19:54.793] [AGENT WAIT] visionary
+[10:19:54.793] [AGENT ACTIVITY] love_agent -> waiting
+[10:19:54.793] [AGENT WAIT] love_agent
+[10:20:00.857] [AGENT ACTIVITY] pantheon_coordinator -> waiting
+[10:20:00.857] [AGENT WAIT] pantheon_coordinator
+[10:20:24.802] [AGENT ACTIVITY] observer -> waiting
+[10:20:24.803] [AGENT WAIT] observer
+[10:20:24.803] [AGENT ACTIVITY] validator -> waiting
+[10:20:24.804] [AGENT WAIT] validator
+[10:20:24.804] [AGENT ACTIVITY] executor -> waiting
+[10:20:24.804] [AGENT WAIT] executor
+[10:20:24.804] [AGENT ACTIVITY] analyzer -> waiting
+[10:20:24.804] [AGENT WAIT] analyzer
+[10:20:24.805] [AGENT ACTIVITY] improver -> waiting
+[10:20:24.805] [AGENT WAIT] improver
+[10:20:24.805] [AGENT ACTIVITY] visionary -> waiting
+[10:20:24.805] [AGENT WAIT] visionary
+[10:20:24.805] [AGENT ACTIVITY] love_agent -> waiting
+[10:20:24.806] [AGENT WAIT] love_agent
+[10:20:30.866] [AGENT ACTIVITY] pantheon_coordinator -> waiting
+[10:20:30.867] [AGENT WAIT] pantheon_coordinator
+[10:20:54.815] [AGENT ACTIVITY] observer -> waiting
+[10:20:54.816] [AGENT WAIT] observer
+[10:20:54.816] [AGENT ACTIVITY] validator -> waiting
+[10:20:54.816] [AGENT WAIT] validator
+[10:20:54.816] [AGENT ACTIVITY] executor -> waiting
+[10:20:54.816] [AGENT WAIT] executor
+[10:20:54.817] [AGENT ACTIVITY] analyzer -> waiting
+[10:20:54.817] [AGENT WAIT] analyzer
+[10:20:54.817] [AGENT ACTIVITY] improver -> waiting
+[10:20:54.817] [AGENT WAIT] improver
+[10:20:54.817] [AGENT ACTIVITY] visionary -> waiting
+[10:20:54.818] [AGENT WAIT] visionary
+[10:20:54.818] [AGENT ACTIVITY] love_agent -> waiting
+[10:20:54.818] [AGENT WAIT] love_agent
+[10:21:00.880] [AGENT ACTIVITY] pantheon_coordinator -> waiting
+[10:21:00.880] [AGENT WAIT] pantheon_coordinator
+[10:21:24.828] [AGENT ACTIVITY] observer -> waiting
+[10:21:24.828] [AGENT WAIT] observer
+[10:21:24.829] [AGENT ACTIVITY] validator -> waiting
+[10:21:24.829] [AGENT WAIT] validator
+[10:21:24.829] [AGENT ACTIVITY] executor -> waiting
+[10:21:24.829] [AGENT WAIT] executor
+[10:21:24.829] [AGENT ACTIVITY] analyzer -> waiting
+[10:21:24.829] [AGENT WAIT] analyzer
+[10:21:24.830] [AGENT ACTIVITY] improver -> waiting
+[10:21:24.830] [AGENT WAIT] improver
+[10:21:24.830] [AGENT ACTIVITY] visionary -> waiting
+[10:21:24.830] [AGENT WAIT] visionary
+[10:21:24.830] [AGENT ACTIVITY] love_agent -> waiting
+[10:21:24.830] [AGENT WAIT] love_agent
+[10:21:30.888] [AGENT ACTIVITY] pantheon_coordinator -> waiting
+[10:21:30.889] [AGENT WAIT] pantheon_coordinator
+[10:21:54.835] [AGENT ACTIVITY] observer -> waiting
+[10:21:54.835] [AGENT WAIT] observer
+[10:21:54.836] [AGENT ACTIVITY] validator -> waiting
+[10:21:54.836] [AGENT WAIT] validator
+[10:21:54.836] [AGENT ACTIVITY] executor -> waiting
+[10:21:54.836] [AGENT WAIT] executor
+[10:21:54.836] [AGENT ACTIVITY] analyzer -> waiting
+[10:21:54.837] [AGENT WAIT] analyzer
+[10:21:54.837] [AGENT ACTIVITY] improver -> waiting
+[10:21:54.837] [AGENT WAIT] improver
+[10:21:54.837] [AGENT ACTIVITY] visionary -> waiting
+[10:21:54.837] [AGENT WAIT] visionary
+[10:21:54.837] [AGENT ACTIVITY] love_agent -> waiting
+[10:21:54.838] [AGENT WAIT] love_agent
+[10:22:00.894] [AGENT ACTIVITY] pantheon_coordinator -> waiting
+[10:22:00.895] [AGENT WAIT] pantheon_coordinator
+[10:22:24.851] [AGENT ACTIVITY] observer -> waiting
+[10:22:24.851] [AGENT WAIT] observer
+[10:22:24.851] [AGENT ACTIVITY] validator -> waiting
+[10:22:24.852] [AGENT WAIT] validator
+[10:22:24.852] [AGENT ACTIVITY] executor -> waiting
+[10:22:24.852] [AGENT WAIT] executor
+[10:22:24.852] [AGENT ACTIVITY] analyzer -> waiting
+[10:22:24.852] [AGENT WAIT] analyzer
+[10:22:24.853] [AGENT ACTIVITY] improver -> waiting
+[10:22:24.853] [AGENT WAIT] improver
+[10:22:24.853] [AGENT ACTIVITY] visionary -> waiting
+[10:22:24.853] [AGENT WAIT] visionary
+[10:22:24.853] [AGENT ACTIVITY] love_agent -> waiting
+[10:22:24.853] [AGENT WAIT] love_agent
+[10:22:30.908] [AGENT ACTIVITY] pantheon_coordinator -> waiting
+[10:22:30.909] [AGENT WAIT] pantheon_coordinator
+[10:22:54.852] [AGENT ACTIVITY] observer -> waiting
+[10:22:54.853] [AGENT WAIT] observer
+[10:22:54.853] [AGENT ACTIVITY] validator -> waiting
+[10:22:54.854] [AGENT WAIT] validator
+[10:22:54.854] [AGENT ACTIVITY] executor -> waiting
+[10:22:54.854] [AGENT WAIT] executor
+[10:22:54.854] [AGENT ACTIVITY] analyzer -> waiting
+[10:22:54.854] [AGENT WAIT] analyzer
+[10:22:54.855] [AGENT ACTIVITY] improver -> waiting
+[10:22:54.855] [AGENT WAIT] improver
+[10:22:54.855] [AGENT ACTIVITY] visionary -> waiting
+[10:22:54.855] [AGENT WAIT] visionary
+[10:22:54.855] [AGENT ACTIVITY] love_agent -> waiting
+[10:22:54.855] [AGENT WAIT] love_agent
+[10:23:00.925] [AGENT ACTIVITY] pantheon_coordinator -> waiting
+[10:23:00.926] [AGENT WAIT] pantheon_coordinator
+[10:23:24.869] [AGENT ACTIVITY] observer -> waiting
+[10:23:24.869] [AGENT WAIT] observer
+[10:23:24.869] [AGENT ACTIVITY] validator -> waiting
+[10:23:24.869] [AGENT WAIT] validator
+[10:23:24.870] [AGENT ACTIVITY] executor -> waiting
+[10:23:24.870] [AGENT WAIT] executor
+[10:23:24.870] [AGENT ACTIVITY] analyzer -> waiting
+[10:23:24.870] [AGENT WAIT] analyzer
+[10:23:24.870] [AGENT ACTIVITY] improver -> waiting
+[10:23:24.871] [AGENT WAIT] improver
+[10:23:24.871] [AGENT ACTIVITY] visionary -> waiting
+[10:23:24.871] [AGENT WAIT] visionary
+[10:23:24.871] [AGENT ACTIVITY] love_agent -> waiting
+[10:23:24.871] [AGENT WAIT] love_agent
+[10:23:30.941] [AGENT ACTIVITY] pantheon_coordinator -> waiting
+[10:23:30.942] [AGENT WAIT] pantheon_coordinator
+[10:23:54.886] [AGENT ACTIVITY] observer -> waiting
+[10:23:54.886] [AGENT WAIT] observer
+[10:23:54.887] [AGENT ACTIVITY] validator -> waiting
+[10:23:54.887] [AGENT WAIT] validator
+[10:23:54.887] [AGENT ACTIVITY] executor -> waiting
+[10:23:54.887] [AGENT WAIT] executor
+[10:23:54.888] [AGENT ACTIVITY] analyzer -> waiting
+[10:23:54.888] [AGENT WAIT] analyzer
+[10:23:54.888] [AGENT ACTIVITY] improver -> waiting
+[10:23:54.888] [AGENT WAIT] improver
+[10:23:54.888] [AGENT ACTIVITY] visionary -> waiting
+[10:23:54.888] [AGENT WAIT] visionary
+[10:23:54.889] [AGENT ACTIVITY] love_agent -> waiting
+[10:23:54.889] [AGENT WAIT] love_agent
+[10:24:00.946] [AGENT ACTIVITY] pantheon_coordinator -> waiting
+[10:24:00.946] [AGENT WAIT] pantheon_coordinator
+[10:24:24.888] [AGENT ACTIVITY] observer -> waiting
+[10:24:24.888] [AGENT WAIT] observer
+[10:24:24.889] [AGENT ACTIVITY] validator -> waiting
+[10:24:24.889] [AGENT WAIT] validator
+[10:24:24.889] [AGENT ACTIVITY] executor -> waiting
+[10:24:24.889] [AGENT WAIT] executor
+[10:24:24.889] [AGENT ACTIVITY] analyzer -> waiting
+[10:24:24.890] [AGENT WAIT] analyzer
+[10:24:24.890] [AGENT ACTIVITY] improver -> waiting
+[10:24:24.890] [AGENT WAIT] improver
+[10:24:24.890] [AGENT ACTIVITY] visionary -> waiting
+[10:24:24.890] [AGENT WAIT] visionary
+[10:24:24.891] [AGENT ACTIVITY] love_agent -> waiting
+[10:24:24.891] [AGENT WAIT] love_agent
+[10:24:25.833] [AGENT ACTIVITY] observer -> stopped
+[10:24:25.833] [AGENT STOP] observer
+[10:24:25.834] [AGENT ACTIVITY] validator -> stopped
+[10:24:25.834] [AGENT STOP] validator
+[10:24:25.834] [AGENT ACTIVITY] executor -> stopped
+[10:24:25.834] [AGENT STOP] executor
+[10:24:30.843] [AGENT ACTIVITY] analyzer -> stopped
+[10:24:30.843] [AGENT STOP] analyzer
+[10:24:30.844] [AGENT ACTIVITY] improver -> stopped
+[10:24:30.844] [AGENT STOP] improver
+[10:24:30.844] [AGENT ACTIVITY] visionary -> stopped
+[10:24:30.844] [AGENT STOP] visionary
+[10:24:30.844] [AGENT ACTIVITY] love_agent -> stopped
+[10:24:30.844] [AGENT STOP] love_agent
+[10:24:30.845] [AGENT ACTIVITY] pantheon_coordinator -> Stopping observer
+[10:24:30.845] [AGENT ACTIVITY] pantheon_coordinator -> Stopping reasoner
+[10:24:30.845] [AGENT ACTIVITY] pantheon_coordinator -> Stopping actor
+[10:24:30.845] [AGENT ACTIVITY] pantheon_coordinator -> Stopping validator
+[10:24:30.845] [AGENT ACTIVITY] pantheon_coordinator -> Stopping learner
+[10:24:30.845] [AGENT ACTIVITY] pantheon_coordinator -> Stopping memory
+[10:24:30.846] [AGENT ACTIVITY] pantheon_coordinator -> Stopping executor
+[10:24:30.846] [AGENT ACTIVITY] pantheon_coordinator -> Stopping analyzer
+[10:24:30.846] [AGENT ACTIVITY] pantheon_coordinator -> Stopping improver
+[10:24:30.846] [AGENT ACTIVITY] pantheon_coordinator -> Stopping character_analyzer
+[10:24:30.846] [AGENT ACTIVITY] pantheon_coordinator -> Stopping story_generator
+[10:24:30.846] [AGENT ACTIVITY] pantheon_coordinator -> Stopping visionary
+[10:24:30.847] [AGENT ACTIVITY] pantheon_coordinator -> Stopping love_agent
+[10:24:30.847] [AGENT ACTIVITY] pantheon_coordinator -> stopped
+[10:24:30.847] [AGENT STOP] pantheon_coordinator
+[10:24:30.847] 
+================================================================================
+Session Summary: pantheon_20251113_101922
+================================================================================
+Task: Analyze the current directory structure and generate a summary report
+Duration: 308.05s
+Iterations: 0
+Tool Executions: 0
+API Calls: 0
+Errors: 1
+
+Swarm Metrics:
+  Handoffs: 0
+  Avg Latency: 0.00ms
+  Messages: 0
+  Heartbeats: 240
+  Agents: 16
+================================================================================

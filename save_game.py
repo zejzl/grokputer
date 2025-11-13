@@ -87,23 +87,74 @@ class GameSaver:
         return saves
 
 # Example usage
-if __name__ == "__main__":
+def main():
+    import argparse
+    import time
+    import threading
+
+    parser = argparse.ArgumentParser(description="Grokputer Game Saver")
+    parser.add_argument("--auto", action="store_true", help="Auto-save with default data")
+    parser.add_argument("--interval", type=int, help="Auto-save interval in minutes (runs as daemon)")
+    parser.add_argument("--daemon", action="store_true", help="Run as daemon with default 15min interval")
+
+    args = parser.parse_args()
+
     saver = GameSaver()
-    
-    # Sample game data
-    sample_data = {
-        "level": 5,
-        "score": 1500,
-        "inventory": ["sword", "potion"],
-        "position": {"x": 10, "y": 20}
-    }
-    
-    # Save
-    save_path = saver.save_state(sample_data, "hero")
-    
-    # List saves
-    saver.list_saves("hero")
-    
-    # Load (example)
-    # loaded_data = saver.load_state(save_path)
-    # print("Loaded:", loaded_data)
+
+    if args.daemon or args.interval:
+        interval_minutes = args.interval or 15
+        interval_seconds = interval_minutes * 60
+
+        def backup_daemon():
+            while True:
+                try:
+                    # Sample game data (in real usage, this would collect actual state)
+                    sample_data = {
+                        "level": 5,
+                        "score": 1500,
+                        "inventory": ["sword", "potion"],
+                        "position": {"x": 10, "y": 20},
+                        "timestamp": time.time(),
+                        "auto_backup": True
+                    }
+
+                    save_path = saver.save_state(sample_data, "auto_backup")
+                    print(f"[AUTO-BACKUP] Saved at {time.strftime('%Y-%m-%d %H:%M:%S')}: {save_path}")
+
+                except Exception as e:
+                    print(f"[AUTO-BACKUP] Error: {e}")
+
+                time.sleep(interval_seconds)
+
+        print(f"[AUTO-BACKUP] Starting daemon with {interval_minutes}min intervals...")
+        daemon_thread = threading.Thread(target=backup_daemon, daemon=True)
+        daemon_thread.start()
+
+        try:
+            # Keep main thread alive
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            print("[AUTO-BACKUP] Stopped by user")
+
+    else:
+        # Manual save mode
+        sample_data = {
+            "level": 5,
+            "score": 1500,
+            "inventory": ["sword", "potion"],
+            "position": {"x": 10, "y": 20}
+        }
+
+        # Save
+        save_path = saver.save_state(sample_data, "hero")
+
+        # List saves
+        saver.list_saves("hero")
+
+        # Load (example)
+        # loaded_data = saver.load_state(save_path)
+        # print("Loaded:", loaded_data)
+
+if __name__ == "__main__":
+    main()

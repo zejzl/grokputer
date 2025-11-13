@@ -70,7 +70,7 @@ class AnalyzerAgent(BaseAgent):
         except Exception as e:
             logger.error(f"Failed to trigger bottleneck alert: {e}")
 
-    async def process_message(self, message: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    async def process_message(self, message: Message) -> Optional[Dict[str, Any]]:
         """
         Process performance analysis and monitoring requests.
 
@@ -82,7 +82,7 @@ class AnalyzerAgent(BaseAgent):
         - start_monitoring: Start continuous performance monitoring
         - stop_monitoring: Stop continuous performance monitoring
         """
-        msg_type = message.get("type")
+        msg_type = message.message_type
 
         if msg_type == "get_system_metrics":
             return await self._handle_get_system_metrics(message)
@@ -114,14 +114,15 @@ class AnalyzerAgent(BaseAgent):
         await super().on_stop()
         logger.info(f"[{self.agent_id}] Performance monitoring stopped")
 
-    async def _handle_get_system_metrics(self, message: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_get_system_metrics(self, message: Message) -> Dict[str, Any]:
         """Handle system metrics request."""
         metrics = self._collect_system_metrics()
         return {"status": "success", "metrics": metrics, "timestamp": datetime.now().isoformat()}
 
-    async def _handle_get_agent_performance(self, message: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_get_agent_performance(self, message: Message) -> Dict[str, Any]:
         """Handle agent performance request."""
-        agent_id = message.get("agent_id")
+        content = message.content
+        agent_id = content.get("agent_id")
         if agent_id:
             performance = self.agent_performance.get(agent_id, {})
         else:
@@ -129,7 +130,7 @@ class AnalyzerAgent(BaseAgent):
 
         return {"status": "success", "agent_performance": performance, "timestamp": datetime.now().isoformat()}
 
-    async def _handle_analyze_bottlenecks(self, message: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_analyze_bottlenecks(self, message: Message) -> Dict[str, Any]:
         """Handle bottleneck analysis request."""
         bottlenecks = self._analyze_system_bottlenecks()
         return {
@@ -139,12 +140,12 @@ class AnalyzerAgent(BaseAgent):
             "timestamp": datetime.now().isoformat(),
         }
 
-    async def _handle_get_health_status(self, message: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_get_health_status(self, message: Message) -> Dict[str, Any]:
         """Handle health status request."""
         health_status = self._assess_system_health()
         return {"status": "success", "health": health_status, "timestamp": datetime.now().isoformat()}
 
-    async def _handle_start_monitoring(self, message: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_start_monitoring(self, message: Message) -> Dict[str, Any]:
         """Handle start monitoring request."""
         if not self.monitoring_active:
             self._start_monitoring_thread()
@@ -152,7 +153,7 @@ class AnalyzerAgent(BaseAgent):
         else:
             return {"status": "info", "message": "Monitoring already active"}
 
-    async def _handle_stop_monitoring(self, message: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_stop_monitoring(self, message: Message) -> Dict[str, Any]:
         """Handle stop monitoring request."""
         if self.monitoring_active:
             self._stop_monitoring_thread()

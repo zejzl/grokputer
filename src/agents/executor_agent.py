@@ -47,7 +47,7 @@ class ExecutorAgent(BaseAgent):
 
         logger.info(f"[{self.agent_id}] Executor agent initialized")
 
-    async def process_message(self, message: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    async def process_message(self, message: Message) -> Optional[Dict[str, Any]]:
         """
         Process workflow execution requests.
 
@@ -56,7 +56,7 @@ class ExecutorAgent(BaseAgent):
         - get_workflow_status: Get status of a running workflow
         - cancel_workflow: Cancel a running workflow
         """
-        msg_type = message.get("type")
+        msg_type = message.message_type
 
         if msg_type == "execute_workflow":
             return await self._handle_execute_workflow(message)
@@ -65,16 +65,18 @@ class ExecutorAgent(BaseAgent):
         elif msg_type == "cancel_workflow":
             return await self._handle_cancel_workflow(message)
         elif msg_type == "rollback_workflow":
-            return await self.rollback_workflow(message.get("workflow_id"))
+            content = message.content
+            return await self.rollback_workflow(content.get("workflow_id"))
         else:
             logger.warning(f"[{self.agent_id}] Unknown message type: {msg_type}")
             return {"status": "error", "reason": f"Unknown message type: {msg_type}"}
 
-    async def _handle_execute_workflow(self, message: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_execute_workflow(self, message: Message) -> Dict[str, Any]:
         """Handle workflow execution request."""
-        workflow_id = message.get("workflow_id") or f"workflow_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-        steps = message.get("steps", [])
-        context = message.get("context", {})
+        content = message.content
+        workflow_id = content.get("workflow_id") or f"workflow_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        steps = content.get("steps", [])
+        context = content.get("context", {})
 
         if not steps:
             return {"status": "error", "reason": "No steps provided"}
@@ -98,9 +100,10 @@ class ExecutorAgent(BaseAgent):
 
         return {"status": "started", "workflow_id": workflow_id}
 
-    async def _handle_get_status(self, message: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_get_status(self, message: Message) -> Dict[str, Any]:
         """Handle workflow status request."""
-        workflow_id = message.get("workflow_id")
+        content = message.content
+        workflow_id = content.get("workflow_id")
         if not workflow_id or workflow_id not in self.active_workflows:
             return {"status": "error", "reason": "Workflow not found"}
 
@@ -115,9 +118,10 @@ class ExecutorAgent(BaseAgent):
             "errors": workflow["errors"],
         }
 
-    async def _handle_cancel_workflow(self, message: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_cancel_workflow(self, message: Message) -> Dict[str, Any]:
         """Handle workflow cancellation request."""
-        workflow_id = message.get("workflow_id")
+        content = message.content
+        workflow_id = content.get("workflow_id")
         if not workflow_id or workflow_id not in self.active_workflows:
             return {"status": "error", "reason": "Workflow not found"}
 

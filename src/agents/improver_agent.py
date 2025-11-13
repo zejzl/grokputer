@@ -60,7 +60,7 @@ class ImproverAgent(BaseAgent):
 
         logger.info(f"[{self.agent_id}] Improver agent initialized - Self-optimization and continuous improvement")
 
-    async def process_message(self, message: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    async def process_message(self, message: Message) -> Optional[Dict[str, Any]]:
         """
         Process improvement and optimization requests.
 
@@ -70,7 +70,7 @@ class ImproverAgent(BaseAgent):
         - reset_learning: Reset learning state for a task
         - get_improvement_stats: Get improvement statistics
         """
-        msg_type = message.get("type")
+        msg_type = message.message_type
 
         if msg_type == "apply_improvements":
             return await self._handle_apply_improvements(message)
@@ -84,11 +84,12 @@ class ImproverAgent(BaseAgent):
             logger.warning(f"[{self.agent_id}] Unknown message type: {msg_type}")
             return {"status": "error", "reason": f"Unknown message type: {msg_type}"}
 
-    async def _handle_apply_improvements(self, message: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_apply_improvements(self, message: Message) -> Dict[str, Any]:
         """Handle improvement application request."""
-        task = message.get("task", "")
-        recommendations = message.get("recommendations", [])
-        context = message.get("context", {})
+        content = message.content
+        task = content.get("task", "")
+        recommendations = content.get("recommendations", [])
+        context = content.get("context", {})
 
         if not task or not recommendations:
             return {"status": "error", "reason": "Task and recommendations required"}
@@ -120,18 +121,20 @@ class ImproverAgent(BaseAgent):
             "timestamp": datetime.now().isoformat(),
         }
 
-    async def _handle_get_learning_state(self, message: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_get_learning_state(self, message: Message) -> Dict[str, Any]:
         """Handle learning state retrieval request."""
-        task = message.get("task", "")
+        content = message.content
+        task = content.get("task", "")
         if not task:
             return {"status": "error", "reason": "Task required"}
 
         learning_state = self._load_learning_state(task)
         return {"status": "success", "learning_state": learning_state}
 
-    async def _handle_reset_learning(self, message: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_reset_learning(self, message: Message) -> Dict[str, Any]:
         """Handle learning state reset request."""
-        task = message.get("task", "")
+        content = message.content
+        task = content.get("task", "")
         if not task:
             return {"status": "error", "reason": "Task required"}
 
@@ -147,7 +150,7 @@ class ImproverAgent(BaseAgent):
 
         return {"status": "success", "message": f"Learning state reset for task: {task}"}
 
-    async def _handle_get_improvement_stats(self, message: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_get_improvement_stats(self, message: Message) -> Dict[str, Any]:
         """Handle improvement statistics request."""
         stats = {
             "total_tasks_learned": len(self.learning_states),
