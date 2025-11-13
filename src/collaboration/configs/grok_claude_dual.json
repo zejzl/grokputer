@@ -1,0 +1,43 @@
+{
+  "name": "MAF Configuration",
+  "description": "Multi-Agent Framework configuration",
+  "version": "1.0.0",
+  "providers": [
+    {
+      "provider_id": "grok",
+      "role": "primary_agent",
+      "weight": 1.0,
+      "capabilities": [
+        "research",
+        "text_generation",
+        "critical_thinking"
+      ]
+    },
+    {
+      "provider_id": "claude",
+      "role": "secondary_agent",
+      "weight": 1.0,
+      "capabilities": [
+        "validation",
+        "creative_writing",
+        "text_generation"
+      ]
+    }
+  ],
+  "collaboration_settings": {
+    "max_rounds": 5,
+    "convergence_threshold": 0.6,
+    "review_mode": false,
+    "consensus_strategy": "weighted_vote",
+    "timeout_per_round": 60.0
+  },
+  "task_types": [],
+  "metadata": {
+    "author": "MAF System",
+    "tags": [
+      "dual",
+      "classic",
+      "balanced"
+    ]
+  }
+}

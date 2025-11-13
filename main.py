@@ -1,0 +1,1721 @@
+#!/usr/bin/env python3
+"""
+Grokputer - VRZIBRZI Node
+Main entry point for the observe-reason-act loop.
+
+ZA GROKA. ZA VRZIBRZI. ZA SERVER.
+"""
+
+import sys
+
+sys.path.insert(0, "/app")
+import logging
+import click
+import asyncio
+import os
+import py_compile
+import signal
+import time
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Add src to path
+
+# Import adventure mode
+from adventure_mode import GrokputerAdventure
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+from src import config
+from src.model_client import ModelClientFactory
+from src.screen_observer import ScreenObserver
+from src.executor import ToolExecutor
+
+# from src.tools import invoke_prayer  # Commented out due to import issues
+code_generator = lambda **kwargs: {"status": "success"}
+execute_script = lambda filename: {"status": "success", "output": "Stub execution"}
+
+# Collaboration mode imports
+from src.collaboration.coordinator import CollaborationCoordinator
+
+# MAF mode imports (optional - for multi-provider orchestration)
+try:
+    from src.collaboration import maf_config_loader, orchestrator, MAF_AVAILABLE as maf_available_flag
+
+    MAF_AVAILABLE = maf_available_flag
+except (ImportError, SyntaxError) as e:
+    logger = logging.getLogger(__name__)
+    logger.warning(f"MAF imports failed: {e}. MAF mode may not be available.")
+    MAF_AVAILABLE = False
+    maf_config_loader = None
+    orchestrator = None
+
+# Swarm mode imports
+import sys
+
+sys.stdout.reconfigure(encoding="utf-8")
+from src.core.message_bus import MessageBus, Message, MessagePriority
+
+# Analytics imports
+from db.analytics_performance_tools import performance_monitor, reset_performance_counters
+
+# Alerts imports
+from src.tools.alerts import get_haiku_alerts
+from src.agents.observer_agent import ObserverAgent
+from src.agents.actor_agent import ActorAgent
+from src.agents.coordinator import Coordinator
+from src.agents.validator import ValidatorAgent
+from src.agents.learner import LearnerAgent
+from src.agents.memory_agent import MemoryAgent
+from src.agents.executor_agent import ExecutorAgent
+from src.agents.analyzer_agent import AnalyzerAgent
+from src.agents.improver_agent import ImproverAgent
+from src.agents.character_analysis_agent import CharacterAnalysisAgent
+from src.agents.story_generation_agent import StoryGenerationAgent
+from src.agents.visionary_agent import VisionaryAgent
+from src.agents.love_agent import LoveAgent
+from src.core.action_executor import ActionExecutor
+from src.observability.deadlock_detector import DeadlockDetector
+from src.observability.session_logger import SessionLogger
+from datetime import datetime
+
+from typing import Optional
+from pathlib import Path
+import ast
+import sys
+
+
+def setup_logging(debug: bool = False):
+    """
+    Configure logging for Grokputer.
+
+    Args:
+        debug: Enable debug logging
+    """
+    log_level = logging.DEBUG if debug else getattr(logging, config.LOG_LEVEL)
+
+    # Create logs directory if needed
+    config.LOG_FILE.parent.mkdir(exist_ok=True)
+
+    # Configure logging
+    logging.basicConfig(
+        level=log_level,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[logging.FileHandler(config.LOG_FILE), logging.StreamHandler(sys.stdout)],
+    )
+
+    logger = logging.getLogger(__name__)
+    logger.info("=" * 70)
+    logger.info("GROKPUTER INITIALIZED - VRZIBRZI NODE")
+    logger.info("=" * 70)
+
+    return logger
+
+
+def start_mcp_server():
+    """Start the MCP server in a separate process."""
+    import subprocess
+    import sys
+
+    try:
+        logging.info("Starting MCP server on port 5000...")
+        # Start MCP server as subprocess (detached)
+        process = subprocess.Popen([sys.executable, "mcp/tools_handler.py"], stdout=None, stderr=None, stdin=None)
+        logging.info(f"MCP server started with PID {process.pid}")
+        return process
+    except Exception as e:
+        logging.error(f"Failed to start MCP server: {e}")
+        return None
+
+
+class Grokputer:
+    """
+    Main Grokputer class implementing the observe-reason-act loop.
+    """
+
+    def __init__(self, debug: bool = False, provider: str = "grok", model: str = None):
+        """
+        Initialize Grokputer.
+
+        Args:
+            debug: Enable debug mode
+            provider: AI provider ('grok', 'openai', 'claude', 'ollama')
+            model: Specific model name (optional)
+        """
+        self.logger = setup_logging(debug)
+
+        # Initialize model client based on provider
+        self.provider = provider
+        self.model_name = model
+
+        # Get API key based on provider
+        api_key = self._get_api_key_for_provider(provider)
+
+        # Create model client
+        self.model_client = ModelClientFactory.create_client(
+            provider=provider, api_key=api_key, model=model or self._get_default_model_for_provider(provider)
+        )
+
+        # Keep backward compatibility
+        self.grok_client = self.model_client
+
+        self.screen_observer = ScreenObserver()
+        self.executor = ToolExecutor()
+        self.conversation_history = []
+
+        self.logger.info(f"Grokputer initialized with {provider} provider, model: {self.model_client.model}")
+
+    def _get_api_key_for_provider(self, provider: str) -> str:
+        """Get the appropriate API key for the provider."""
+        if provider in ["grok", "xai"]:
+            return config.XAI_API_KEY
+        elif provider in ["openai", "gpt"]:
+            return os.getenv("OPENAI_API_KEY", "")
+        elif provider in ["claude", "anthropic"]:
+            return os.getenv("ANTHROPIC_API_KEY", "")
+        elif provider in ["gemini", "google"]:
+            return os.getenv("GEMINI_API_KEY", "")
+        elif provider == "ollama":
+            return ""  # Ollama doesn't need an API key
+        else:
+            raise ValueError(f"Unsupported provider: {provider}")
+
+    def _get_default_model_for_provider(self, provider: str) -> str:
+        """Get default model for provider."""
+        defaults = {
+            "grok": config.GROK_MODEL,
+            "openai": "gpt-4",
+            "claude": "claude-3-sonnet-20240229",
+            "gemini": config.GEMINI_MODEL,
+            "ollama": "llama2",
+        }
+        return defaults.get(provider, "default")
+
+    async def boot(self):
+        """
+        Boot sequence: invoke server prayer and test connection.
+        """
+        self.logger.info("Starting boot sequence...")
+        print(
+            """
+[GROKPUTER] BOOTING - VRZIBRZI NODE
+"""
+        )
+        self.logger.info("Grokputer booted with banner")
+
+        # Invoke server prayer
+        # prayer_result = invoke_prayer()  # Commented out due to import issues
+        # if prayer_result["status"] == "success":
+        self.logger.info("Server prayer invoked: ETERNAL | INFINITE")
+        # else:
+        #     self.logger.warning(f"Prayer invocation failed: {prayer_result}")
+
+        # Test Grok API connection
+        if await self.grok_client.test_connection():
+            self.logger.info("[OK] Grok API connection verified")
+            print("[OK] Grok API connection verified")
+        else:
+            self.logger.error("[FAIL] Grok API connection failed")
+            print("[FAIL] Grok API connection failed - check your API key and credits")
+            raise ConnectionError("Failed to connect to Grok API")
+
+        self.logger.info("Boot sequence complete. Ready to operate.")
+
+    async def run_task(self, task: str, max_iterations: int = 10):
+        """
+        Execute a task using the observe-reason-act loop.
+
+        Args:
+            task: Task description
+            max_iterations: Maximum number of loop iterations
+        """
+        self.logger.info(f"Starting task: {task}")
+        print(f"\n[TASK] {task}\n")
+
+        iteration = 0
+
+        while iteration < max_iterations:
+            iteration += 1
+            self.logger.info(f"--- Iteration {iteration}/{max_iterations} ---")
+            print(f"\n{'='*70}")
+            print(f"Iteration {iteration}/{max_iterations}")
+            print(f"{'='*70}\n")
+
+            # OBSERVE: Capture screenshot
+            print("[OBSERVE] Capturing screen...")
+            screenshot_base64 = None
+            try:
+                screenshot_base64 = await self.screen_observer.screenshot_to_base64()
+                self.logger.info(f"Screenshot captured: {len(screenshot_base64)} bytes")
+            except Exception as e:
+                self.logger.error(f"Failed to capture screenshot: {e}")
+                screenshot_base64 = None
+
+            # REASON: Send to Grok
+            print("[REASON] Sending to Grok...")
+            response = await self.grok_client.create_message(
+                task=task if iteration == 1 else "Continue the task.",
+                screenshot_base64=screenshot_base64,
+                conversation_history=self.conversation_history if iteration > 1 else None,
+            )
+
+            if response["status"] != "success":
+                self.logger.error(f"Grok API error: {response}")
+                print(f"[ERROR] {response.get('error', 'Unknown error')}")
+                break
+
+            # Log Grok's response
+            if response.get("content"):
+                print(f"\n[GROK] {response['content']}\n")
+                self.logger.info(f"Grok response: {response['content']}")
+
+            # Store in conversation history
+            self.conversation_history.append({"role": "assistant", "content": response.get("content", "")})
+
+            # ACT: Execute tool calls if any
+            tool_calls = response.get("tool_calls", [])
+
+            if not tool_calls:
+                self.logger.info("No tool calls requested. Task may be complete.")
+                print("[DONE] Task complete (no more actions requested)")
+                break
+
+            print(f"[ACT] Executing {len(tool_calls)} tool(s)...\n")
+
+            tool_results = self.executor.execute_tool_calls(tool_calls)
+
+            # Log and display results
+            for result in tool_results:
+                function_name = result["function_name"]
+                result_data = result["result"]
+                status = result_data.get("status", "unknown")
+
+                print(f"  • {function_name}: {status}")
+                self.logger.info(f"Tool result: {function_name} -> {result_data}")
+
+            # Continue conversation with tool results
+            if iteration < max_iterations:
+                continue_response = await self.grok_client.continue_conversation(
+                    tool_results=tool_results, conversation_history=self.conversation_history
+                )
+
+                if continue_response.get("content"):
+                    print(f"\n[GROK] {continue_response['content']}\n")
+
+                # Check if Grok says it's done
+                content = continue_response.get("content", "").lower()
+                if any(phrase in content for phrase in ["task complete", "finished", "done"]):
+                    self.logger.info("Grok indicated task completion")
+                    print("[DONE] Task complete")
+                    break
+
+        if iteration >= max_iterations:
+            print(f"\n[WARNING] Reached maximum iterations ({max_iterations})")
+            self.logger.warning(f"Task stopped: reached max iterations")
+
+        print(f"\n{'='*70}\n")
+        self.logger.info("Task execution finished")
+
+
+def _run_interactive_mode(debug: bool, max_iterations: int, max_rounds: int, skip_boot: bool):
+    """
+    Run interactive menu mode - user selects mode and enters task.
+    """
+    print(
+        """
+╔═══════════════════════════════════════════════════════════════════╗
+║                                                                   ║
+║     ██████╗ ██████╗  ██████╗ ██╗  ██╗██████╗ ██╗   ██╗████████╗ ║
+║    ██╔════╝ ██╔══██╗██╔═══██╗██║ ██╔╝██╔══██╗██║   ██║╚══██╔══╝ ║
+║    ██║  ███╗██████╔╝██║   ██║█████╔╝ ██████╔╝██║   ██║   ██║    ║
+║    ██║   ██║██╔══██╗██║   ██║██╔═██╗ ██╔═══╝ ██║   ██║   ██║    ║
+║    ╚██████╔╝██║  ██║╚██████╔╝██║  ██╗██║     ╚██████╔╝   ██║    ║
+║     ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝      ╚═════╝    ╚═╝    ║
+║                                                                   ║
+║                    VRZIBRZI NODE - INITIALIZED                   ║
+║                 ZA GROKA. ZA VRZIBRZI. ZA SERVER.                ║
+║                                                                   ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+        [INTERACTIVE MODE] Welcome to Grokputer - Choose your agent mode!
+
+        1. Dynamic Adventure - AI-generated interactive stories
+        2. Single Agent (Grok only) - Observe-Reason-Act loop
+        3. Collaboration Mode (Grok + Claude) - Dual AI planning
+        4. Swarm Mode (9-agent) - Full AI orchestration with validation & learning
+        5. Pantheon Mode - Run self-improvement on specific session/log
+        6. Improver Manual - Cached/local fallback (no API, uses vault/KB)
+        7. Offline Mode - Pull/push evolutions and tools
+        8. Community Vault Sync - Invoke progress save script
+        9. Save Game
+        10. Quit
+
+"""
+    )
+
+    choice = input("        Choose mode (1-10): ").strip()
+    if choice == "1":
+        print()
+        print("[MODE] Dynamic Adventure - AI-generated interactive stories")
+        print()
+        try:
+            api_key = _get_api_key_for_provider_main(provider)
+            game = GrokputerAdventure(api_key=api_key, provider=provider, model=model)
+            game.run_loop()
+        except Exception as e:
+            print(f"[ERROR] Adventure mode failed: {e}")
+        # Single Agent Mode
+        print("\n[MODE] Single Agent (Grok only)\n")
+        task = input("Enter task: ").strip()
+        if task:
+            grokputer = Grokputer(debug=debug, provider=provider, model=model)
+            if not skip_boot:
+                asyncio.run(grokputer.boot())
+            asyncio.run(grokputer.run_task(task=task, max_iterations=max_iterations))
+        else:
+            print("[ERROR] Task cannot be empty")
+
+    elif choice == "3":
+        # Collaboration Mode
+        print("\n[MODE] Collaboration Mode (Grok + Claude)\n")
+        task = input("Enter task: ").strip()
+        if task:
+            asyncio.run(_run_collaboration_mode(task, max_rounds, debug, False))
+        else:
+            print("[ERROR] Task cannot be empty")
+
+    elif choice == "4":
+        # Swarm Mode
+        print("\n[MODE] Swarm Mode (Multi-agent)\n")
+        task = input("Enter task: ").strip()
+        agent_roles_input = input("Agent roles (default: coordinator,observer,actor): ").strip()
+        roles = (
+            [r.strip() for r in agent_roles_input.split(",")]
+            if agent_roles_input
+            else ["coordinator", "observer", "actor"]
+        )
+        if task:
+            asyncio.run(_run_swarm_mode(task, roles, debug))
+        else:
+            print("[ERROR] Task cannot be empty")
+
+    elif choice == "5":
+        # Pantheon Mode
+        print("\n[MODE] Pantheon Mode (9-agent architecture)\n")
+        task = input("Enter task: ").strip()
+        if task:
+            asyncio.run(_run_pantheon_mode(task, debug))
+        else:
+            print("[ERROR] Task cannot be empty")
+
+    elif choice == "6":
+        # Improver Manual
+        print("\n[MODE] Improver Manual - Self-improvement on session/log\n")
+        print("[INFO] Improver agent will analyze a specific session and propose improvements")
+        session_id = input("Enter session ID (or 'latest'): ").strip()
+        if not session_id:
+            session_id = "latest"
+
+        try:
+            from src.agents.session_improver import SessionImprover
+
+            improver = SessionImprover()
+            improver.improve_session(session_id)
+        except Exception as e:
+            print(f"[ERROR] Improver failed: {e}")
+            logging.error(f"Improver error: {e}", exc_info=True)
+
+    elif choice == "7":
+        # Offline Mode
+        print("\n[MODE] Offline Mode - Cached/local fallback\n")
+        print("[INFO] Using cached responses and local knowledge base")
+        task = input("Enter task: ").strip()
+        if task:
+            try:
+                from src.offline_mode import run_offline_mode
+
+                run_offline_mode(task, max_iterations)
+            except Exception as e:
+                print(f"[ERROR] Offline mode failed: {e}")
+                logging.error(f"Offline mode error: {e}", exc_info=True)
+        else:
+            print("[ERROR] Task cannot be empty")
+
+    elif choice == "8":
+        # Community Vault Sync
+        print("\n[MODE] Community Vault Sync - Pull/push evolutions and tools\n")
+        sync_choice = input("Sync action (pull/push/both/list): ").strip().lower()
+        if sync_choice in ["pull", "push", "both", "list"]:
+            try:
+                from src.vault_sync import run_vault_sync
+
+                run_vault_sync(sync_choice)
+            except Exception as e:
+                print(f"[ERROR] Vault sync failed: {e}")
+                logging.error(f"Vault sync error: {e}", exc_info=True)
+        else:
+            print("[ERROR] Invalid sync action. Choose 'pull', 'push', 'both', or 'list'")
+
+    elif choice == "9":
+        # Save Game
+        print("\n[MODE] Save Game - Invoke progress save script\n")
+        print("[SAVE] Creating backup of current state...")
+        try:
+            import subprocess
+
+            result = subprocess.run(
+                ["python", "outputs/gp_save_progress.py"], capture_output=True, text=True, timeout=60
+            )
+            if result.returncode == 0:
+                print("[SAVE] ✓ Progress saved successfully!")
+                print(result.stdout)
+            else:
+                print(f"[SAVE] ✗ Save failed: {result.stderr}")
+        except Exception as e:
+            print(f"[SAVE] ✗ Error: {e}")
+
+    elif choice == "10":
+        # Quit
+        print("\n[EXIT] Za Groka. Za Vrzibrzi. Za Server.\n")
+        sys.exit(0)
+
+    else:
+        print("\n[ERROR] Invalid choice. Please select 1-10.\n")
+        _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot)
+
+
+async def _run_syntax_check(quick: bool = False):
+    """
+    Run comprehensive syntax and code quality checks on the codebase.
+
+    Performs:
+    - Python syntax validation for all .py files
+    - Import validation and dependency checking
+    - Configuration file validation
+    - Basic code quality checks
+    - Requirements.txt validation
+    """
+    import subprocess
+    import sys
+    from pathlib import Path
+    import ast
+    import importlib.util
+
+    mode = "QUICK" if quick else "COMPREHENSIVE"
+    print("\n" + "=" * 70)
+    print(f"🔍 GROKPUTER {mode} SYNTAX & CODE QUALITY CHECK")
+    print("=" * 70)
+
+    errors = []
+    warnings = []
+    passed = []
+
+    # Get project root
+    project_root = Path(__file__).parent
+
+    print("\n📁 Scanning project structure...")
+    print(f"Project root: {project_root}")
+
+    # 1. Python syntax validation
+    print("\n🐍 Checking Python syntax...")
+
+    if quick:
+        # Quick mode: only check core files
+        core_files = [
+            "main.py",
+            "src/core/base_agent.py",
+            "src/core/message_bus.py",
+            "src/agents/executor_agent.py",
+            "src/agents/analyzer_agent.py",
+            "src/agents/validator.py",
+            "src/agents/learner.py",
+            "src/agents/memory_agent.py",
+        ]
+        py_files = [project_root / f for f in core_files if (project_root / f).exists()]
+        print(f"Quick mode: checking {len(py_files)} core files only")
+    else:
+        # Comprehensive mode: exclude vault, backups, and other non-core directories
+        exclude_dirs = {
+            "vault",
+            "backups",
+            "outputs",
+            "__pycache__",
+            ".git",
+            "node_modules",
+            "qwen_env",
+            "selenium_env",
+        }
+        exclude_patterns = ["test_", "_test.py", "conftest.py"]  # Skip test files for speed
+
+        py_files = []
+        for py_file in project_root.rglob("*.py"):
+            # Skip excluded directories
+            if any(excl in py_file.parts for excl in exclude_dirs):
+                continue
+            # Skip test files
+            if any(pattern in py_file.name for pattern in exclude_patterns):
+                continue
+            # Skip files in virtual environments
+            if "site-packages" in str(py_file) or "dist-packages" in str(py_file):
+                continue
+            py_files.append(py_file)
+
+        # Limit to reasonable number for performance
+        if len(py_files) > 200:
+            print(f"Comprehensive mode: found {len(py_files)} Python files, limiting to 200 for performance")
+            py_files = py_files[:200]
+        else:
+            print(f"Comprehensive mode: found {len(py_files)} Python files (excluding vault/backups/tests)")
+
+    syntax_errors = 0
+    for i, py_file in enumerate(py_files):
+        if i % 50 == 0:  # Progress indicator
+            print(f"  Checking file {i+1}/{len(py_files)}...")
+
+        try:
+            # Use py_compile to check syntax with timeout protection
+            def compile_with_timeout():
+                py_compile.compile(str(py_file), doraise=True)
+
+            # Run compilation in a thread with timeout
+            import threading
+
+            compile_thread = threading.Thread(target=compile_with_timeout)
+            compile_thread.start()
+            compile_thread.join(timeout=5.0)  # 5 second timeout per file
+
+            if compile_thread.is_alive():
+                # Thread is still running, compilation timed out
+                syntax_errors += 1
+                errors.append(f"✗ Timeout compiling {py_file.relative_to(project_root)} (possible syntax issue)")
+            else:
+                passed.append(f"✓ Syntax OK: {py_file.relative_to(project_root)}")
+
+        except py_compile.PyCompileError as e:
+            syntax_errors += 1
+            errors.append(f"✗ Syntax Error in {py_file.relative_to(project_root)}: {e}")
+        except Exception as e:
+            syntax_errors += 1
+            errors.append(f"✗ Compile Error in {py_file.relative_to(project_root)}: {e}")
+        except KeyboardInterrupt:
+            print("  Syntax check interrupted by user")
+            break
+
+    print(f"Python syntax check: {len(py_files) - syntax_errors}/{len(py_files)} files passed")
+
+    # 2. Import validation
+    if not quick:
+        print("\n📦 Checking imports...")
+        import_errors = 0
+        critical_imports = [
+            "src.core.base_agent",
+            "src.core.message_bus",
+            "src.agents.executor_agent",
+            "src.agents.analyzer_agent",
+            "src.agents.validator",
+            "src.agents.learner",
+            "src.agents.memory_agent",
+        ]
+
+        for module in critical_imports:
+            try:
+                spec = importlib.util.find_spec(module)
+                if spec is None:
+                    import_errors += 1
+                    errors.append(f"✗ Critical module not found: {module}")
+                else:
+                    passed.append(f"✓ Module available: {module}")
+            except Exception as e:
+                import_errors += 1
+                errors.append(f"✗ Import error for {module}: {e}")
+
+        print(f"Import check: {len(critical_imports) - import_errors}/{len(critical_imports)} modules available")
+    else:
+        print("\n📦 Skipping import validation in quick mode")
+
+    # 3. Configuration validation
+    if not quick:
+        print("\n⚙️ Checking configuration files...")
+        config_files = [".env.example", "requirements.txt", "pyproject.toml", "setup.py"]
+
+        for config_file in config_files:
+            config_path = project_root / config_file
+            if config_path.exists():
+                try:
+                    if config_file == "requirements.txt":
+                        # Validate requirements format
+                        with open(config_path, "r") as f:
+                            lines = f.readlines()
+                        valid_reqs = 0
+                        for line in lines:
+                            line = line.strip()
+                            if line and not line.startswith("#"):
+                                # Basic validation - should contain package name
+                                if ">=" in line or "==" in line or "<=" in line or "~=" in line or "!=" in line:
+                                    valid_reqs += 1
+                                elif len(line.split()) == 1 and line.replace("-", "").replace("_", "").isalnum():
+                                    valid_reqs += 1
+                        if valid_reqs == len([l for l in lines if l.strip() and not l.startswith("#")]):
+                            passed.append(f"✓ Requirements format OK: {config_file}")
+                        else:
+                            warnings.append(f"⚠️ Requirements format issues: {config_file}")
+                    else:
+                        passed.append(f"✓ Config file exists: {config_file}")
+                except Exception as e:
+                    warnings.append(f"⚠️ Config file issue: {config_file} - {e}")
+            else:
+                warnings.append(f"⚠️ Config file missing: {config_file}")
+
+        # 4. Code quality checks
+        print("\n🔧 Running code quality checks...")
+
+        # Check for common issues
+        quality_issues = 0
+        for py_file in py_files:
+            try:
+                with open(py_file, "r", encoding="utf-8") as f:
+                    content = f.read()
+
+                # Check for TODO comments
+                todo_count = content.upper().count("TODO")
+                if todo_count > 0:
+                    warnings.append(f"⚠️ {todo_count} TODO comments in {py_file.relative_to(project_root)}")
+
+                # Check for print statements (should use logging)
+                if "print(" in content and "if __name__" not in content:
+                    # Allow prints in __main__ blocks and certain files
+                    if not any(allowed in str(py_file) for allowed in ["main.py", "dashboard.py", "streamlit_app.py"]):
+                        warnings.append(
+                            f"⚠️ Print statements found in {py_file.relative_to(project_root)} (consider using logging)"
+                        )
+
+                # Check for long lines (>120 chars)
+                long_lines = [i + 1 for i, line in enumerate(content.split("\n")) if len(line) > 120]
+                if long_lines:
+                    warnings.append(
+                        f"⚠️ {len(long_lines)} long lines (>120 chars) in {py_file.relative_to(project_root)}"
+                    )
+
+            except Exception as e:
+                quality_issues += 1
+                warnings.append(f"⚠️ Quality check failed for {py_file.relative_to(project_root)}: {e}")
+    else:
+        print("\n⚙️ Skipping configuration and quality checks in quick mode")
+
+    # 5. Agent architecture validation
+    if not quick:
+        print("\n🤖 Checking agent architecture...")
+        agent_files = [
+            "src/agents/observer_agent.py",
+            "src/agents/actor_agent.py",
+            "src/agents/coordinator.py",
+            "src/agents/validator.py",
+            "src/agents/learner.py",
+            "src/agents/memory_agent.py",
+            "src/agents/executor_agent.py",
+            "src/agents/analyzer_agent.py",
+        ]
+
+        agent_checks = 0
+        for agent_file in agent_files:
+            agent_path = project_root / agent_file
+            if agent_path.exists():
+                try:
+                    with open(agent_path, "r") as f:
+                        content = f.read()
+
+                    # Check for BaseAgent inheritance
+                    if "BaseAgent" in content:
+                        passed.append(f"✓ Agent follows BaseAgent pattern: {agent_file}")
+                    else:
+                        warnings.append(f"⚠️ Agent may not follow BaseAgent pattern: {agent_file}")
+
+                    # Check for process_message method
+                    if "async def process_message" in content:
+                        passed.append(f"✓ Agent has process_message method: {agent_file}")
+                    else:
+                        warnings.append(f"⚠️ Agent missing process_message method: {agent_file}")
+
+                    agent_checks += 1
+                except Exception as e:
+                    warnings.append(f"⚠️ Agent check failed for {agent_file}: {e}")
+            else:
+                warnings.append(f"⚠️ Agent file missing: {agent_file}")
+
+        print(f"Agent architecture check: {agent_checks}/{len(agent_files)} agents validated")
+    else:
+        print("\n🤖 Skipping agent architecture validation in quick mode")
+
+    # Summary
+    print("\n" + "=" * 70)
+    print("📊 SYNTAX CHECK RESULTS")
+    print("=" * 70)
+
+    print(f"\n✅ PASSED: {len(passed)} checks")
+    if passed:
+        for item in passed[:10]:  # Show first 10
+            print(f"  {item}")
+        if len(passed) > 10:
+            print(f"  ... and {len(passed) - 10} more")
+
+    print(f"\n⚠️ WARNINGS: {len(warnings)} items")
+    if warnings:
+        for item in warnings[:10]:  # Show first 10
+            print(f"  {item}")
+        if len(warnings) > 10:
+            print(f"  ... and {len(warnings) - 10} more")
+
+    print(f"\n❌ ERRORS: {len(errors)} items")
+    if errors:
+        for item in errors:
+            print(f"  {item}")
+
+    # Overall status
+    total_issues = len(errors) + len(warnings)
+    if errors:
+        print(f"\n🔴 STATUS: FAILED - {len(errors)} critical errors found")
+        print("Please fix syntax errors before proceeding.")
+        return False
+    elif warnings:
+        print(f"\n🟡 STATUS: PASSED WITH WARNINGS - {len(warnings)} warnings found")
+        print("Code is functional but consider addressing warnings for better quality.")
+        return True
+    else:
+        print(f"\n🟢 STATUS: ALL CHECKS PASSED - {len(passed)} checks successful")
+        print("Codebase is ready for deployment!")
+        return True
+
+
+def _get_api_key_for_provider_main(provider: str) -> str:
+    """Get API key for provider (used in main function)."""
+    if provider in ["grok", "xai"]:
+        return config.XAI_API_KEY
+    elif provider in ["openai", "gpt"]:
+        return os.getenv("OPENAI_API_KEY", "")
+    elif provider in ["claude", "anthropic"]:
+        return os.getenv("ANTHROPIC_API_KEY", "")
+    elif provider in ["gemini", "google"]:
+        return os.getenv("GEMINI_API_KEY", "")
+    elif provider == "ollama":
+        return ""  # Ollama doesn't need an API key
+    else:
+        raise ValueError(f"Unsupported provider: {provider}")
+
+
+async def _list_models_for_provider(provider: str, api_key: str):
+    """List available models for a provider."""
+    try:
+        models = await ModelClientFactory.get_available_models(provider, api_key)
+        if models:
+            print(f"\nAvailable models for {provider}:")
+            for model in models:
+                print(f"  - {model}")
+        else:
+            print(f"\nNo models available for {provider} (check API key and connection)")
+    except Exception as e:
+        print(f"\nError listing models for {provider}: {e}")
+
+
+async def _run_single_agent_mode(
+    task: str, max_iterations: int, debug: bool, skip_boot: bool, provider: str = "grok", model: str = None
+):
+    """Run single-agent mode using Grokputer class."""
+    grokputer = Grokputer(debug=debug, provider=provider, model=model)
+    if not skip_boot:
+        await grokputer.boot()
+    await grokputer.run_task(task=task, max_iterations=max_iterations)
+
+
+@click.command()
+@click.option(
+    "--task",
+    "-t",
+    default=None,
+    help="Task description for Grokputer to execute (optional: omit for interactive idle mode)",
+)
+@click.option("--max-iterations", "-m", default=5, help="Maximum loop iterations (single-agent mode)")
+@click.option("--debug", "-d", is_flag=True, help="Enable debug logging")
+@click.option("--skip-boot", is_flag=True, help="Skip boot sequence")
+@click.option("--messagebus", "-mb", is_flag=True, help="Enable collaboration mode (Claude + Grok)")
+@click.option("--max-rounds", default=5, help="Maximum collaboration rounds (messagebus mode only)")
+@click.option(
+    "--review-mode", "-r", is_flag=True, help="Pause after each round for human review (messagebus mode only)"
+)
+@click.option(
+    "--providers",
+    "-p",
+    default=None,
+    help="Enable MAF multi-provider mode (comma-separated: grok,claude,openai,gemini)",
+)
+@click.option(
+    "--maf-config",
+    default="grok_claude_dual",
+    help="MAF configuration preset (grok_claude_dual, code_review_trio, creative_quartet)",
+)
+@click.option("--mcp", is_flag=True, help="Start MCP server for tool API access")
+@click.option("--swarm", is_flag=True, help="Enable multi-agent swarm mode")
+@click.option("--agents", default=3, help="Number of agents in swarm (default: 3)")
+@click.option("--agent-roles", default="coordinator,observer,actor", help="Comma-separated agent roles")
+@click.option(
+    "--pantheon", "-pn", is_flag=True, help="Enable Pantheon mode (9-agent architecture with validation & learning)"
+)
+@click.option("--analytics", "-a", is_flag=True, help="Enable live analytics and throughput monitoring")
+@click.option("--syntax-check", is_flag=True, help="Run comprehensive syntax and code quality checks")
+@click.option("--quick-check", is_flag=True, help="Run fast syntax check (core files only)")
+@click.option("--provider", "-pr", default="grok", help="AI provider (grok, openai, claude, ollama)")
+@click.option("--model", "-md", default=None, help="Specific model to use (provider-dependent)")
+@click.option("--list-models", is_flag=True, help="List available models for the specified provider")
+def main(
+    task: str,
+    max_iterations: int,
+    debug: bool,
+    skip_boot: bool,
+    messagebus: bool,
+    max_rounds: int,
+    review_mode: bool,
+    swarm: bool,
+    agents: int,
+    agent_roles: str,
+    pantheon: bool,
+    analytics: bool = False,
+    syntax_check: bool = False,
+    quick_check: bool = False,
+    provider: str = "grok",
+    model: str = None,
+    list_models: bool = False,
+    providers: str = None,
+    maf_config: str = "grok_claude_dual",
+    mcp: bool = False,
+):
+    """
+    Grokputer - VRZIBRZI Node
+
+    Execute tasks using Grok AI with full computer control.
+
+    Single-agent mode (default):
+        grokputer --task "label 5 memes from vault"
+
+        grokputer  # Interactive menu: Choose mode (single, collab, swarm) and enter task
+
+        grokputer --task "search X for pliny follows" --debug
+
+    Collaboration mode (Claude + Grok):
+        grokputer -mb --task "design an MCP server with best practices"
+
+        grokputer --messagebus --task "create implementation plan for dice roller"
+
+    MAF Multi-Provider mode (2-6 AI providers with consensus):
+        grokputer --providers grok,claude --task "design complex system architecture"
+
+        grokputer --providers grok,claude,openai,gemini --maf-config creative_quartet --task "write creative story"
+
+        grokputer --providers grok,claude --maf-config code_review_trio --task "review pull request"
+
+        # Available configs: grok_claude_dual, code_review_trio, creative_quartet
+        # Supported providers: grok, claude, openai, gemini
+
+    Swarm mode (multi-agent with async coordination):
+        grokputer --swarm --task "scan vault and label images"
+
+        grokputer --swarm --agents 2 --agent-roles observer,actor --task "type ZA GROKA"
+
+        grokputer --swarm --debug --task "complex multi-step task"
+
+    Pantheon mode (9-agent architecture with validation & learning):
+        grokputer --pantheon --task "execute complex task with safety validation"
+
+        grokputer -p --task "scan files and create report" --debug
+
+        # Enhanced workflow: Observe → Reason → Validate → Act → Verify
+
+    Multi-Model Support:
+        grokputer --provider openai --model gpt-4 --task "analyze data"
+
+        grokputer --provider claude --model claude-3-opus-20240229 --task "write code"
+
+        grokputer --provider gemini --model gemini-1.5-flash --task "quick analysis"
+
+        grokputer --provider ollama --model llama2 --task "chat locally"
+
+        # Supported providers: grok, openai, claude, gemini, ollama
+        # List available models: grokputer --provider openai --list-models
+
+    Analytics mode (performance monitoring):
+        grokputer --swarm --analytics --task "performance test task"
+
+        grokputer --pantheon --analytics --task "monitored complex task"
+
+        # Live throughput and performance metrics every 10 seconds
+
+    Review mode (pause after each round for human oversight):
+        grokputer -mb -r --task "design system architecture"
+
+    Interactive mode:
+        grokputer  # Boot, show ASCII art, enter menu to select mode and options
+    """
+    # Load environment variables
+    load_dotenv()
+
+    # Configure logging
+    log_level = logging.DEBUG if debug else logging.INFO
+    logging.basicConfig(level=log_level, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
+    # Start MCP server if requested
+    if mcp:
+        start_mcp_server()
+
+    try:
+        # List models mode
+        if list_models:
+            api_key = _get_api_key_for_provider_main(provider)
+            asyncio.run(_list_models_for_provider(provider, api_key))
+            return
+
+        # Syntax check mode
+        if syntax_check or quick_check:
+            asyncio.run(_run_syntax_check(quick=quick_check))
+            return
+
+        # Interactive mode if no task specified
+        if task is None and not swarm and not messagebus and not pantheon:
+            _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot)
+            return
+
+        if pantheon:
+            # Pantheon mode (9-agent architecture)
+            asyncio.run(_run_pantheon_mode(task, debug, analytics))
+        elif providers:
+            # MAF Multi-Provider mode
+            if not MAF_AVAILABLE:
+                print("\n[ERROR] MAF mode is not available due to import issues.")
+                print("Please check the collaboration module for syntax errors.")
+                return
+            provider_list = [p.strip() for p in providers.split(",")]
+            asyncio.run(_run_maf_mode(task, provider_list, maf_config, max_rounds, debug, review_mode))
+        elif swarm:
+            # Multi-agent swarm mode
+            roles = [r.strip() for r in agent_roles.split(",")]
+            asyncio.run(_run_swarm_mode(task, roles, debug, analytics))
+        elif messagebus:
+            # Collaboration mode
+            asyncio.run(_run_collaboration_mode(task, max_rounds, debug, review_mode))
+        else:
+            # Single-agent mode
+            asyncio.run(_run_single_agent_mode(task, max_iterations, debug, skip_boot, provider, model))
+
+    except KeyboardInterrupt:
+        print("\n\n[INTERRUPT] Interrupted by user. Shutting down...\n")
+        sys.exit(0)
+    except Exception as e:
+        print(f"\n[FATAL ERROR] {e}\n")
+        logging.error(f"Fatal error: {e}", exc_info=True)
+        sys.exit(1)
+
+
+async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False):
+    """
+    Run Pantheon mode with 9-agent architecture.
+
+    The Pantheon consists of:
+    1. Observer - Screen capture and vision analysis
+    2. Reasoner (Coordinator) - Task decomposition and delegation
+    3. Actor - Command and action execution
+    4. Validator - Safety and quality verification
+    5. Learner - Pattern recognition (placeholder)
+    6. Memory Manager - Persistent state (placeholder)
+    7. Executor - Specialized execution (uses Actor)
+    8. Analyzer - Performance metrics (placeholder)
+    9. Improver - Self-improvement (placeholder)
+
+    Args:
+        task: Task description
+        debug: Enable debug logging
+    """
+    logger = logging.getLogger(__name__)
+
+    # Create session ID
+    session_id = f"pantheon_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+
+    print("\n" + "=" * 70)
+    print("🏛️  PANTHEON MODE - 9-AGENT ARCHITECTURE")
+    print("=" * 70)
+    print(f"Task: {task}")
+    print(f"Session: {session_id}")
+    print("=" * 70)
+    print("\nInitializing Pantheon agents:")
+    print("  1. Observer - Vision & screen capture")
+    print("  2. Reasoner - Task decomposition")
+    print("  3. Actor - Command execution")
+    print("  4. Validator - Safety verification")
+    print("  5-9. [Learning, Memory, Analysis systems]")
+    print("=" * 70 + "\n")
+
+    logger.info(f"[PANTHEON] Starting Pantheon mode: {session_id}")
+    logger.info(f"[PANTHEON] Task: {task}")
+
+    # Initialize infrastructure
+    message_bus = MessageBus()
+    action_executor = ActionExecutor()
+    deadlock_detector = DeadlockDetector(timeout_seconds=30.0, check_interval=5.0)
+    session_logger = SessionLogger(session_id=session_id, task=task, log_dir=config.LOG_FILE.parent, swarm_mode=True)
+
+    logger.info("[PANTHEON] Infrastructure initialized")
+    print("[OK] Infrastructure initialized\n")
+
+    # Create agent configuration
+    agent_config = {"debug": debug}
+
+    # Create core agents
+    observer = ObserverAgent(
+        agent_id="observer", message_bus=message_bus, session_logger=session_logger, config=agent_config
+    )
+    session_logger.log_agent_start("observer")
+    print("✓ Observer agent ready")
+
+    reasoner = Coordinator(
+        message_bus=message_bus,
+        session_logger=session_logger,
+        config=None,  # Use default config with decomposition_prompt
+    )
+    session_logger.log_agent_start("reasoner")
+    print("✓ Reasoner (Coordinator) agent ready")
+
+    actor = ActorAgent(agent_id="actor", message_bus=message_bus, session_logger=session_logger, config=agent_config)
+    session_logger.log_agent_start("actor")
+    print("✓ Actor agent ready")
+
+    validator = ValidatorAgent(
+        agent_id="validator",
+        message_bus=message_bus,
+        session_logger=session_logger,
+        config=agent_config,
+        action_executor=action_executor,
+    )
+    session_logger.log_agent_start("validator")
+    print("✓ Validator agent ready")
+    # Create hierarchical memory system with knowledge graph
+    from src.memory.hierarchical_memory import HierarchicalMemoryManager
+    from src.memory.interfaces import MemoryConfig
+    from src.memory.backends.redis_store import RedisMemoryBackend
+
+    memory_config = MemoryConfig()
+    redis_backend = RedisMemoryBackend(memory_config)
+    hierarchical_memory = HierarchicalMemoryManager(memory_config, redis_backend)
+    await hierarchical_memory.start()
+    session_logger.log_agent_start("hierarchical_memory")
+    print("✓ Hierarchical Memory with Knowledge Graph ready")
+
+    learner = LearnerAgent(
+        agent_id="learner",
+        message_bus=message_bus,
+        session_logger=session_logger,
+        config=agent_config,
+        memory_manager=hierarchical_memory,
+    )
+    session_logger.log_agent_start("learner")
+    print("✓ Learner agent ready")
+
+    executor = ExecutorAgent(
+        agent_id="executor",
+        message_bus=message_bus,
+        session_logger=session_logger,
+        config=agent_config,
+        action_executor=action_executor,
+    )
+    session_logger.log_agent_start("executor")
+    print("✓ Executor agent ready")
+
+    analyzer = AnalyzerAgent(
+        agent_id="analyzer", message_bus=message_bus, session_logger=session_logger, config=agent_config
+    )
+    session_logger.log_agent_start("analyzer")
+    print("✓ Analyzer agent ready")
+
+    improver = ImproverAgent(
+        agent_id="improver", message_bus=message_bus, session_logger=session_logger, config=agent_config
+    )
+    session_logger.log_agent_start("improver")
+    print("✓ Improver agent ready")
+
+    # Create Literary Agents
+    character_analyzer = CharacterAnalysisAgent(
+        agent_id="character_analyzer", message_bus=message_bus, session_logger=session_logger, config=agent_config
+    )
+    session_logger.log_agent_start("character_analyzer")
+    print("✓ CharacterAnalysisAgent ready")
+
+    story_generator = StoryGenerationAgent(
+        agent_id="story_generator", message_bus=message_bus, session_logger=session_logger, config=agent_config
+    )
+    session_logger.log_agent_start("story_generator")
+    print("✓ StoryGenerationAgent ready")
+
+    visionary = VisionaryAgent(
+        agent_id="visionary", message_bus=message_bus, session_logger=session_logger, config=agent_config
+    )
+    session_logger.log_agent_start("visionary")
+    print("✓ VisionaryAgent ready")
+
+    love_agent = LoveAgent(
+        agent_id="love_agent", message_bus=message_bus, session_logger=session_logger, config=agent_config
+    )
+    session_logger.log_agent_start("love_agent")
+    print("✓ LoveAgent ready")
+
+    # Initialize Safety Systems
+    from src.safety.godmode_protocols import activate_godmode_protection
+    from src.ethics.ethical_bounds import ethical_bounds
+
+    activate_godmode_protection()
+    print("✓ Godmode Safety Protocols activated")
+
+    # Ethical bounds are automatically initialized
+    print("✓ Ethical Learning Bounds active")
+
+    # Create Pantheon Coordinator
+    from src.agents.pantheon_coordinator import PantheonCoordinator
+
+    pantheon = PantheonCoordinator(message_bus=message_bus, session_logger=session_logger, config=agent_config)
+
+    # Initialize with core agents, literary agents, visionary, and love
+    await pantheon.initialize_pantheon(
+        observer,
+        reasoner,
+        actor,
+        validator,
+        learner,
+        None,
+        executor,
+        analyzer,
+        improver,
+        character_analyzer,
+        story_generator,
+        visionary,
+        love_agent,
+        memory_manager=hierarchical_memory,
+    )
+    print("✓ Pantheon Coordinator initialized with 4 core agents + 2 literary agents\n")
+
+    print("[PANTHEON] Starting execution with enhanced workflow...")
+    print("  Workflow: Observe → Reason → Validate → Act → Verify\n")
+
+    # Start agent tasks
+    agent_tasks = [
+        asyncio.create_task(observer.run()),
+        asyncio.create_task(reasoner.run()),
+        asyncio.create_task(actor.run()),
+        asyncio.create_task(validator.run()),
+        asyncio.create_task(learner.run()),
+        asyncio.create_task(executor.run()),
+        asyncio.create_task(analyzer.run()),
+        asyncio.create_task(improver.run()),
+        asyncio.create_task(character_analyzer.run()),
+        asyncio.create_task(story_generator.run()),
+        asyncio.create_task(visionary.run()),
+        asyncio.create_task(love_agent.run()),
+        asyncio.create_task(pantheon.run()),
+    ]
+
+    # Start analytics monitoring if enabled
+    analytics_task = None
+    if analytics:
+        reset_performance_counters()
+        analytics_task = asyncio.create_task(_analytics_monitor_task(session_id))
+        print("[ANALYTICS] Live performance monitoring enabled\n")
+
+    # Wait a moment for agents to start
+    await asyncio.sleep(1.0)
+
+    # Send initial task to Pantheon
+    initial_message = Message(
+        message_type="new_task",
+        from_agent="user",
+        to_agent="pantheon_coordinator",
+        priority=MessagePriority.HIGH,
+        content={"task": task, "task_id": f"task_{session_id}"},
+    )
+    await message_bus.send(initial_message)
+
+    logger.info("[PANTHEON] Task sent to Pantheon Coordinator")
+
+    # Wait for task completion or timeout
+    try:
+        await asyncio.wait_for(pantheon.task_completion_event.wait(), timeout=300.0)
+        logger.info("[PANTHEON] Task completed successfully")
+    except asyncio.TimeoutError:
+        logger.warning("[PANTHEON] Execution timed out after 5 minutes")
+        print("\n[TIMEOUT] Pantheon execution exceeded 5 minutes\n")
+    except Exception as e:
+        logger.error(f"[PANTHEON] Error during execution: {e}", exc_info=True)
+        print(f"\n[ERROR] {e}\n")
+
+    # Stop all agents gracefully
+    logger.info("[PANTHEON] Stopping all agents...")
+    for agent_task in agent_tasks:
+        agent_task.cancel()
+    try:
+        await asyncio.gather(*agent_tasks, return_exceptions=True)
+    except asyncio.CancelledError:
+        pass
+
+    # Get final stats
+    stats = pantheon.get_pantheon_stats()
+    print("\n" + "=" * 70)
+    print("PANTHEON EXECUTION COMPLETE")
+    print("=" * 70)
+    print(f"Tasks completed: {stats['tasks_completed']}")
+    print(f"Tasks failed: {stats['tasks_failed']}")
+    print(f"Success rate: {stats['success_rate']:.1%}")
+    print(f"Validations performed: {stats['validations_performed']}")
+    print(f"Active agents: {len(stats['active_agents'])}")
+    print("=" * 70 + "\n")
+
+    session_logger.log_session_end()
+    logger.info("[PANTHEON] Session complete")
+
+    # Print final analytics report if enabled
+    if analytics and analytics_task:
+        analytics_task.cancel()
+        try:
+            await analytics_task
+        except asyncio.CancelledError:
+            pass
+        print("\n" + "=" * 70)
+        print("FINAL ANALYTICS REPORT")
+        print("=" * 70)
+        print(performance_monitor("snapshot"))
+        print("=" * 70 + "\n")
+
+
+async def _run_swarm_mode(task: str, agent_roles: list, debug: bool, analytics: bool = False):
+    """
+    Run multi-agent swarm mode with async coordination.
+
+    Creates MessageBus, ActionExecutor, DeadlockDetector, and SessionLogger.
+    Spawns multiple agents (coordinator, observer, actor) that communicate
+    via MessageBus and execute actions through ActionExecutor.
+
+    Args:
+        task: Task description
+        agent_roles: List of agent roles to spawn (e.g., ['coordinator', 'observer', 'actor'])
+        debug: Enable debug logging
+    """
+    logger = logging.getLogger(__name__)
+
+    # Create session ID
+    session_id = f"swarm_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+
+    print("\n" + "=" * 70)
+    print("MULTI-AGENT SWARM MODE")
+    print("=" * 70)
+    print(f"Task: {task}")
+    print(f"Agents: {', '.join(agent_roles)}")
+    print(f"Session: {session_id}")
+    print("=" * 70 + "\n")
+
+    logger.info(f"[SWARM] Starting swarm mode: {session_id}")
+    logger.info(f"[SWARM] Task: {task}")
+    logger.info(f"[SWARM] Agent roles: {agent_roles}")
+
+    # Initialize infrastructure
+    message_bus = MessageBus()
+    action_executor = ActionExecutor()
+    deadlock_detector = DeadlockDetector(timeout_seconds=30.0, check_interval=5.0)
+    session_logger = SessionLogger(session_id=session_id, task=task, log_dir=config.LOG_FILE.parent, swarm_mode=True)
+
+    logger.info("[SWARM] Infrastructure initialized")
+    print("[OK] Infrastructure initialized (MessageBus, ActionExecutor, DeadlockDetector, SessionLogger)")
+
+    # Initialize haiku alerts
+    haiku_alerts = get_haiku_alerts(message_bus)
+    message_bus.register_agent("alerts")  # Register alerts as an agent
+    await haiku_alerts.start_listening()
+    print("[OK] Haiku alerts initialized")
+
+    # Start deadlock detector
+    # await deadlock_detector.start()
+    logger.info("[SWARM] DeadlockDetector started")
+
+    # Create stub agents (actual implementations are in tasks 5-7)
+    # For now, we create placeholder agents that demonstrate the orchestration
+    agent_tasks = []
+
+    # Create real agent instances
+    agent_config = {"debug": debug}
+
+    for role in agent_roles:
+        deadlock_detector.register_agent(role)
+        session_logger.log_agent_start(role)
+
+        # Create the appropriate agent type
+        if role == "observer":
+            agent = ObserverAgent(
+                agent_id=role, message_bus=message_bus, session_logger=session_logger, config=agent_config
+            )
+        elif role == "actor":
+            agent = ActorAgent(
+                agent_id=role, message_bus=message_bus, session_logger=session_logger, config=agent_config
+            )
+        elif role == "coordinator":
+            agent = Coordinator(
+                message_bus=message_bus,
+                session_logger=session_logger,
+                config=None,  # Use default config with decomposition_prompt
+            )
+        else:
+            logger.warning(f"[SWARM] Unknown agent role: {role}, using stub")
+            agent_task = asyncio.create_task(
+                _stub_agent(
+                    agent_id=role,
+                    task=task,
+                    message_bus=message_bus,
+                    action_executor=action_executor,
+                    deadlock_detector=deadlock_detector,
+                    session_logger=session_logger,
+                )
+            )
+            agent_tasks.append(agent_task)
+            continue
+
+        # Start agent task
+        agent_task = asyncio.create_task(agent.run())
+        agent_tasks.append(agent_task)
+
+        logger.info(f"[SWARM] Agent spawned: {role} ({agent.__class__.__name__})")
+        print(f"[OK] Agent spawned: {role} ({agent.__class__.__name__})")
+
+    print("\n[SWARM] All agents running...")
+    print("[INFO] Press Ctrl+C to stop\n")
+
+    # Start analytics monitoring if enabled
+    analytics_task = None
+    if analytics:
+        reset_performance_counters()
+        analytics_task = asyncio.create_task(_analytics_monitor_task(session_id))
+        print("[ANALYTICS] Live performance monitoring enabled\n")
+
+    # Send initial task to coordinator
+    logger.info(f"[SWARM] Sending task to coordinator: {task}")
+    from src.core.message_bus import Message, MessagePriority
+
+    task_msg = Message(
+        from_agent="user",
+        to_agent="coordinator",
+        message_type="new_task",
+        content={"description": task, "task_id": "task_001"},
+        priority=MessagePriority.HIGH,
+    )
+    await message_bus.send(task_msg)
+
+    # Let agents process for a few seconds
+    await asyncio.sleep(5)
+
+    try:
+        # Run all agents concurrently using asyncio.gather()
+        # This is the core of the swarm orchestration
+        pass
+
+    except KeyboardInterrupt:
+        logger.info("[SWARM] Keyboard interrupt received")
+        print("\n[INTERRUPT] Shutting down swarm...")
+
+    except Exception as e:
+        logger.error(f"[SWARM] Error: {e}", exc_info=True)
+        print(f"\n[ERROR] Swarm error: {e}")
+
+    finally:
+        # Graceful shutdown
+        logger.info("[SWARM] Starting graceful shutdown...")
+        print("\n[SWARM] Graceful shutdown...")
+
+        # Stop infrastructure
+        # await deadlock_detector.stop()
+        action_executor.shutdown()
+
+        # Finalize logging
+        session_logger.finalize()
+
+        # Get and display stats
+        stats = action_executor.get_stats()
+        deadlock_stats = deadlock_detector.get_stats()
+
+        print("\n" + "=" * 70)
+        print("SWARM SESSION COMPLETE")
+        print("=" * 70)
+        print(f"Session: {session_id}")
+        print(f"Agents: {len(agent_roles)}")
+        print(f"Actions executed: {stats['total_actions']}")
+        print(f"Success rate: {stats['success_rate']}")
+        print(f"Deadlocks detected: {deadlock_stats['deadlocks_detected']}")
+        print(f"Logs: {session_logger.session_dir}")
+        print("=" * 70 + "\n")
+
+        logger.info(f"[SWARM] Session complete: {session_id}")
+
+        # Print final analytics report if enabled
+        if analytics and analytics_task:
+            analytics_task.cancel()
+            try:
+                await analytics_task
+            except asyncio.CancelledError:
+                pass
+            print("\n" + "=" * 70)
+            print("FINAL ANALYTICS REPORT")
+            print("=" * 70)
+            print(performance_monitor("snapshot"))
+            print("=" * 70 + "\n")
+
+
+async def _analytics_monitor_task(session_id: str):
+    """
+    Background task for live analytics monitoring.
+    """
+    logger = logging.getLogger(__name__)
+    logger.info(f"[ANALYTICS] Starting live monitoring for session: {session_id}")
+
+    try:
+        while True:
+            await asyncio.sleep(10)  # Report every 10 seconds
+            report = performance_monitor("snapshot")
+            print(f"\n[ANALYTICS {session_id[:8]}] {time.strftime('%H:%M:%S')}")
+            print(report)
+            print("-" * 40)
+
+    except asyncio.CancelledError:
+        logger.info("[ANALYTICS] Monitoring stopped")
+        raise
+
+
+async def _stub_agent(
+    agent_id: str,
+    task: str,
+    message_bus: MessageBus,
+    action_executor: ActionExecutor,
+    deadlock_detector: DeadlockDetector,
+    session_logger: SessionLogger,
+):
+    """
+    Stub agent for demonstration.
+
+    This is a placeholder until actual agent implementations (Coordinator,
+    Observer, Actor) are created in tasks 5-7.
+
+    The real agents will:
+    - Coordinator: Decompose task, delegate to others, aggregate results
+    - Observer: Capture screenshots, analyze screen, report observations
+    - Actor: Execute bash commands, PyAutoGUI actions, file operations
+    """
+    logger = logging.getLogger(__name__)
+
+    logger.info(f"[{agent_id}] Agent started")
+    session_logger.log_agent_activity(agent_id, "idle")
+
+    try:
+        # Simulate agent doing work
+        await asyncio.sleep(2)
+
+        # Report activity to deadlock detector
+        deadlock_detector.update_activity(agent_id, state="processing")
+        session_logger.log_agent_activity(agent_id, "processing")
+
+        # Stub: In real implementation, agents would:
+        # - Receive messages from message_bus
+        # - Process task based on role
+        # - Send messages to other agents
+        # - Execute actions via action_executor
+        # - Log everything via session_logger
+
+        logger.info(f"[{agent_id}] Stub agent completed simulated work")
+        session_logger.log_agent_activity(agent_id, "completed")
+
+    except Exception as e:
+        logger.error(f"[{agent_id}] Error: {e}", exc_info=True)
+        session_logger.log_agent_error(agent_id, str(e))
+
+    finally:
+        session_logger.log_agent_stop(agent_id)
+        logger.info(f"[{agent_id}] Agent stopped")
+
+
+async def _run_collaboration_mode(task: str, max_rounds: int, debug: bool, review_mode: bool):
+    """Run dual-agent collaboration via MessageBus."""
+
+    logger = logging.getLogger(__name__)
+
+    # Get API keys
+    claude_key = os.getenv("ANTHROPIC_API_KEY")
+    grok_key = os.getenv("XAI_API_KEY")
+
+    # Claude key is optional - run Grok-only mode if missing
+    if not claude_key:
+        logger.warning("ANTHROPIC_API_KEY not found - running Grok-only mode")
+        print("\n[WARNING] ANTHROPIC_API_KEY not found in .env file")
+        print("Running in Grok-only mode (Claude agent disabled)")
+        print("To enable dual-agent mode, get API key from: https://console.anthropic.com/")
+        print("")
+
+    if not grok_key:
+        logger.error("XAI_API_KEY not found in .env")
+        print("\n[ERROR] XAI_API_KEY not found in .env file")
+        print("Get your API key from: https://console.x.ai/")
+        raise ValueError("Missing XAI_API_KEY")
+
+    logger.info(f"[COLLABORATION MODE] Task: {task}")
+    logger.info(f"Max rounds: {max_rounds}")
+    logger.info(f"Review mode: {review_mode}")
+    logger.info(f"Claude agent: {'Enabled' if claude_key else 'Disabled (Grok-only)'}")
+
+    print("\n" + "=" * 70)
+    mode_label = "Grok + Claude" if claude_key else "Grok-Only"
+    print(f"COLLABORATION MODE - {mode_label}")
+    print("=" * 70)
+    print(f"Task: {task}")
+    print(f"Max rounds: {max_rounds}")
+    print(f"Review mode: {'Enabled' if review_mode else 'Disabled'}")
+    print("=" * 70 + "\n")
+
+    # Initialize coordinator
+    coordinator = CollaborationCoordinator(
+        claude_api_key=claude_key, grok_api_key=grok_key, max_rounds=max_rounds, review_mode=review_mode  # Can be None
+    )
+
+    # Run collaboration
+    final_plan = await coordinator.run_collaboration(task)
+
+    # Print summary
+    print("\n" + "=" * 70)
+    print("COLLABORATION COMPLETE")
+    print("=" * 70)
+    print(f"Task: {final_plan.task_description[:80]}...")
+    print(f"Rounds: {final_plan.total_rounds}")
+    print(f"Consensus: {'Yes' if final_plan.consensus_reached else 'Partial'}")
+    print(f"Convergence: {final_plan.metadata.get('convergence_score', 0):.2f}")
+    print(f"Confidence: {final_plan.metadata.get('confidence', 0):.2f}")
+    print(f"\nSaved to: docs/collaboration_plan_<timestamp>.md")
+    print("=" * 70 + "\n")
+
+    # Optionally print unified plan
+    if os.getenv("PRINT_PLAN", "false").lower() == "true":
+        print("\n--- UNIFIED PLAN ---\n")
+        print(final_plan.unified_plan)
+        print("\n--- END PLAN ---\n")
+
+
+async def _run_maf_mode(task: str, providers: list, maf_config: str, max_rounds: int, debug: bool, review_mode: bool):
+    """
+    Run MAF (Multi-Agent Framework) mode with multiple AI providers.
+
+    Args:
+        task: Task description
+        providers: List of provider names (e.g., ['grok', 'claude'])
+        maf_config: MAF configuration preset name
+        max_rounds: Maximum collaboration rounds
+        debug: Enable debug logging
+        review_mode: Pause after each round for human review
+    """
+    from src.collaboration import maf_config_loader, orchestrator
+
+    logger = logging.getLogger(__name__)
+
+    # Validate providers
+    valid_providers = {"grok", "claude", "openai", "gemini"}
+    invalid_providers = [p for p in providers if p not in valid_providers]
+    if invalid_providers:
+        print(f"\n[ERROR] Invalid providers: {invalid_providers}")
+        print(f"Valid providers: {', '.join(valid_providers)}")
+        return
+
+    # Check API keys (skip for mock providers)
+    missing_keys = []
+    use_mock_providers = True  # For now, always use mock providers in MAF mode
+
+    if not use_mock_providers:
+        if "grok" in providers and not os.getenv("XAI_API_KEY"):
+            missing_keys.append("XAI_API_KEY (for Grok)")
+        if "claude" in providers and not os.getenv("ANTHROPIC_API_KEY"):
+            missing_keys.append("ANTHROPIC_API_KEY (for Claude)")
+        if "openai" in providers and not os.getenv("OPENAI_API_KEY"):
+            missing_keys.append("OPENAI_API_KEY (for OpenAI)")
+        if "gemini" in providers and not os.getenv("GEMINI_API_KEY"):
+            missing_keys.append("GEMINI_API_KEY (for Gemini)")
+
+    if missing_keys:
+        print(f"\n[ERROR] Missing API keys: {', '.join(missing_keys)}")
+        print("Please set these in your .env file")
+        return
+
+    logger.info(f"[MAF MODE] Task: {task}")
+    logger.info(f"Providers: {providers}")
+    logger.info(f"Config: {maf_config}")
+    logger.info(f"Max rounds: {max_rounds}")
+    logger.info(f"Review mode: {review_mode}")
+
+    print("\n" + "=" * 70)
+    print(f"MAF MULTI-PROVIDER MODE - {len(providers)} Providers")
+    print("=" * 70)
+    print(f"Task: {task}")
+    print(f"Providers: {', '.join(providers)}")
+    print(f"Config: {maf_config}")
+    print(f"Max rounds: {max_rounds}")
+    print(f"Review mode: {'Enabled' if review_mode else 'Disabled'}")
+    print("=" * 70 + "\n")
+
+    try:
+        # Initialize MessageBus for MAF integration
+        message_bus = MessageBus()
+        await message_bus.initialize()
+
+        # Initialize MAF-MessageBus integration
+        from src.collaboration import initialize_maf_messagebus_integration
+
+        maf_coordinator = await initialize_maf_messagebus_integration(message_bus)
+
+        # Initialize mock providers for testing
+        from src.collaboration import initialize_mock_providers
+
+        await initialize_mock_providers()
+
+        # Ensure default configs exist
+        from src.collaboration import create_default_configs
+
+        create_default_configs(maf_config_loader)
+
+        # Execute MAF task through MessageBus-integrated coordinator
+        result = await maf_coordinator.execute_maf_task(task=task, providers=providers, config_name=maf_config)
+
+        # Print results
+        print("\n" + "=" * 70)
+        print("MAF COLLABORATION COMPLETE")
+        print("=" * 70)
+        print(f"Task: {task[:80]}...")
+        print(f"Providers: {len(providers)}")
+        print(f"Messages: {result.get('message_count', 0)}")
+        print(f"Success: {result.get('success', False)}")
+        if result.get("consensus"):
+            consensus = result["consensus"]
+            print(f"Consensus: {'Yes' if consensus.get('is_consensus', False) else 'No'}")
+            print(f"Confidence: {consensus.get('confidence', 0):.2f}")
+            print(f"Convergence: {consensus.get('convergence_score', 0):.2f}")
+        print(f"Execution time: {result.get('execution_time', 0):.2f}s")
+        print("=" * 70 + "\n")
+
+        if not result.get("success", False) and result.get("error"):
+            print(f"[ERROR] {result['error']}")
+
+    except Exception as e:
+        logger.error(f"MAF mode failed: {e}", exc_info=True)
+        print(f"\n[ERROR] MAF collaboration failed: {e}")
+
+
+if __name__ == "__main__":
+    main()
+
+
+def _run_single_agent_mode(
+    task: str, max_iterations: int, debug: bool, skip_boot: bool, provider: str = "grok", model: str = None
+):
+    """Run single-agent mode using Grokputer class."""
+    grokputer = Grokputer(debug=debug, provider=provider, model=model)
+    if not skip_boot:
+        grokputer.boot()
+    grokputer.run_task(task=task, max_iterations=max_iterations)

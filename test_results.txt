@@ -1,0 +1,2344 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-8.4.2, pluggy-1.6.0 -- C:\Python314\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\Administrator\Desktop\grokputer
+configfile: pyproject.toml
+plugins: anyio-4.11.0, asyncio-1.2.0, cov-7.0.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 171 items / 241 errors
+
+=================================== ERRORS ====================================
+____________________ ERROR collecting db/test_analytics.py ____________________
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\db\test_analytics.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+db\test_analytics.py:13: in <module>
+    from src.tools import analytics_query_tool, performance_monitor_tool
+E   ImportError: cannot import name 'analytics_query_tool' from 'src.tools' (C:\Users\Administrator\Desktop\grokputer\src\tools\__init__.py)
+________ ERROR collecting grokputer_base/agents/test_message_params.py ________
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\grokputer_base\agents\test_message_params.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grokputer_base\agents\__init__.py:3: in <module>
+    from .agent import Agent, ModelConfig
+grokputer_base\agents\agent.py:12: in <module>
+    from .utils.connections import setup_mcp_connections
+grokputer_base\agents\utils\connections.py:11: in <module>
+    from ..tools.mcp_tool import MCPTool
+grokputer_base\agents\tools\mcp_tool.py:5: in <module>
+    from ..utils.connections import MCPConnection
+E   ImportError: cannot import name 'MCPConnection' from partially initialized module 'agents.utils.connections' (most likely due to a circular import) (C:\Users\Administrator\Desktop\grokputer\grokputer_base\agents\utils\connections.py)
+____ ERROR collecting grokputer_base/computer-use-demo/tests/loop_test.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\grokputer_base\computer-use-demo\tests\loop_test.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grokputer_base\computer-use-demo\tests\loop_test.py:6: in <module>
+    from computer_use_demo.loop import APIProvider, sampling_loop
+E   ModuleNotFoundError: No module named 'computer_use_demo'
+__ ERROR collecting grokputer_base/computer-use-demo/tests/streamlit_test.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\grokputer_base\computer-use-demo\tests\streamlit_test.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grokputer_base\computer-use-demo\tests\streamlit_test.py:7: in <module>
+    from computer_use_demo.streamlit import Sender
+E   ModuleNotFoundError: No module named 'computer_use_demo'
+_ ERROR collecting grokputer_base/computer-use-demo/tests/tools/bash_test.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\grokputer_base\computer-use-demo\tests\tools\bash_test.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grokputer_base\computer-use-demo\tests\tools\bash_test.py:3: in <module>
+    from computer_use_demo.tools.bash import BashTool20241022, BashTool20250124, ToolError
+E   ModuleNotFoundError: No module named 'computer_use_demo'
+_ ERROR collecting grokputer_base/computer-use-demo/tests/tools/computer_test.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\grokputer_base\computer-use-demo\tests\tools\computer_test.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grokputer_base\computer-use-demo\tests\tools\computer_test.py:5: in <module>
+    from computer_use_demo.tools.computer import (
+E   ModuleNotFoundError: No module named 'computer_use_demo'
+_ ERROR collecting grokputer_base/computer-use-demo/tests/tools/edit_test.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\grokputer_base\computer-use-demo\tests\tools\edit_test.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+grokputer_base\computer-use-demo\tests\tools\edit_test.py:6: in <module>
+    from computer_use_demo.tools.base import CLIResult, ToolError, ToolResult
+E   ModuleNotFoundError: No module named 'computer_use_demo'
+_________________ ERROR collecting selenium/test_selenium.py __________________
+selenium\test_selenium.py:19: in <module>
+    logging.FileHandler('/app/selenium.log'),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\logging\__init__.py:1219: in __init__
+    StreamHandler.__init__(self, self._open())
+                                 ^^^^^^^^^^^^
+C:\Python314\Lib\logging\__init__.py:1248: in _open
+    return open_func(self.baseFilename, self.mode,
+E   FileNotFoundError: [Errno 2] No such file or directory: 'C:\\app\\selenium.log'
+________________ ERROR collecting src/tools/test_analytics.py _________________
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\src\tools\test_analytics.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\tools\test_analytics.py:13: in <module>
+    from src.tools import analytics_query_tool, performance_monitor_tool
+E   ImportError: cannot import name 'analytics_query_tool' from 'src.tools' (C:\Users\Administrator\Desktop\grokputer\src\tools\__init__.py)
+_________ ERROR collecting src/tools/test_scanner_shell_detection.py __________
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\src\tools\test_scanner_shell_detection.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\tools\test_scanner_shell_detection.py:14: in <module>
+    from autonomous.scanner import CodeScannerAgent
+E   ModuleNotFoundError: No module named 'autonomous.scanner'; 'autonomous' is not a package
+______________ ERROR collecting tests/autonomous/test_scanner.py ______________
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\tests\autonomous\test_scanner.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\autonomous\test_scanner.py:13: in <module>
+    from autonomous.scanner import CodeScannerAgent
+E   ModuleNotFoundError: No module named 'autonomous.scanner'; 'autonomous' is not a package
+___________ ERROR collecting tests/integration/test_scaled_swarm.py ___________
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\tests\integration\test_scaled_swarm.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\integration\test_scaled_swarm.py:9: in <module>
+    from src.session_logger import SessionLogger
+E   ModuleNotFoundError: No module named 'src.session_logger'
+_____________ ERROR collecting tests/test_multimodal_processor.py _____________
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\tests\test_multimodal_processor.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_multimodal_processor.py:7: in <module>
+    from src.multimodal_processor import MultimodalProcessor
+src\multimodal_processor.py:14: in <module>
+    from .vision_processor import VisionProcessor, VisualAnalysis
+src\vision_processor.py:15: in <module>
+    import cv2
+E   ModuleNotFoundError: No module named 'cv2'
+______________ ERROR collecting tests/test_vision_integration.py ______________
+C:\Python314\Lib\site-packages\_pytest\python.py:498: in importtestmodule
+    mod = import_path(
+C:\Python314\Lib\site-packages\_pytest\pathlib.py:587: in import_path
+    importlib.import_module(module_name)
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1398: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1371: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1342: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:938: in _load_unlocked
+    ???
+C:\Python314\Lib\site-packages\_pytest\assertion\rewrite.py:177: in exec_module
+    source_stat, co = _rewrite_test(fn, self.config)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\_pytest\assertion\rewrite.py:357: in _rewrite_test
+    tree = ast.parse(source, filename=strfn)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\ast.py:46: in parse
+    return compile(source, filename, mode, flags,
+E     File "C:\Users\Administrator\Desktop\grokputer\tests\test_vision_integration.py", line 263
+E       asyncio.run(run_basic_test())</content>
+E                                     ^
+E   SyntaxError: invalid syntax
+_______________ ERROR collecting tests/test_vision_processor.py _______________
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\tests\test_vision_processor.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_vision_processor.py:7: in <module>
+    from src.vision_processor import VisionProcessor
+src\vision_processor.py:15: in <module>
+    import cv2
+E   ModuleNotFoundError: No module named 'cv2'
+___________ ERROR collecting vault/git_resources/angr/corpus_tests ____________
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1398: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1371: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1342: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:938: in _load_unlocked
+    ???
+C:\Python314\Lib\site-packages\_pytest\assertion\rewrite.py:186: in exec_module
+    exec(co, module.__dict__)
+vault\git_resources\angr\corpus_tests\conftest.py:10: in <module>
+    import pytest_insta.utils
+E   ModuleNotFoundError: No module named 'pytest_insta'
+_ ERROR collecting vault/git_resources/angr/tests/ailment/test_expression.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\ailment\test_expression.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+vault\git_resources\angr\tests\ailment\test_expression.py:5: in <module>
+    import angr.ailment as ailment
+E   ModuleNotFoundError: No module named 'angr'
+____ ERROR collecting vault/git_resources/angr/tests/ailment/test_irsb.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\ailment\test_irsb.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+vault\git_resources\angr\tests\ailment\test_irsb.py:4: in <module>
+    import angr.ailment as ailment
+E   ModuleNotFoundError: No module named 'angr'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/cfg/test_cfg_clflush.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\cfg\test_cfg_clflush.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/cfg/test_cfg_get_any_node.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\cfg\test_cfg_get_any_node.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/cfg/test_cfg_manager.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\cfg\test_cfg_manager.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/cfg/test_cfg_model.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\cfg\test_cfg_model.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/cfg/test_cfg_patching.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\cfg\test_cfg_patching.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/cfg/test_cfg_rust_got_resolution.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\cfg\test_cfg_rust_got_resolution.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/cfg/test_cfg_thumb_firmware.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\cfg\test_cfg_thumb_firmware.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/cfg/test_cfg_vex_postprocessor.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\cfg\test_cfg_vex_postprocessor.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/cfg/test_cfgemulated.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\cfg\test_cfgemulated.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/cfg/test_cfgfast.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\cfg\test_cfgfast.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/cfg/test_cfgfast_soot.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\cfg\test_cfgfast_soot.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/cfg/test_const_resolver.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\cfg\test_const_resolver.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/cfg/test_iat_resolver.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\cfg\test_iat_resolver.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/cfg/test_jumptables.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\cfg\test_jumptables.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/cfg/test_memload_resolver.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\cfg\test_memload_resolver.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/cfg/test_noop_blocks.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\cfg\test_noop_blocks.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/cfg_slice_to_sink/test_cfg_slice_to_sink.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\cfg_slice_to_sink\test_cfg_slice_to_sink.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/cfg_slice_to_sink/test_graph.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\cfg_slice_to_sink\test_graph.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/cfg_slice_to_sink/test_transitions.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\cfg_slice_to_sink\test_transitions.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/decompiler/test_baseptr_save_simplifier.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\decompiler\test_baseptr_save_simplifier.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/decompiler/test_cas_rewriting.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\decompiler\test_cas_rewriting.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/decompiler/test_decompilation_notes.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\decompiler\test_decompilation_notes.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/decompiler/test_decompiler.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\decompiler\test_decompiler.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/decompiler/test_decompiler_types.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\decompiler\test_decompiler_types.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/decompiler/test_dogbolt_regressions.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\decompiler\test_dogbolt_regressions.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/decompiler/test_errors.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\decompiler\test_errors.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/decompiler/test_head_controlled_loops.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\decompiler\test_head_controlled_loops.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/decompiler/test_inlining.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\decompiler\test_inlining.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/decompiler/test_optimization_passes.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\decompiler\test_optimization_passes.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/decompiler/test_partial_reg_reads.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\decompiler\test_partial_reg_reads.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/decompiler/test_peephole_optimizations.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\decompiler\test_peephole_optimizations.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/decompiler/test_peephole_wcscpy.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\decompiler\test_peephole_wcscpy.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/decompiler/test_propagator_loops.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\decompiler\test_propagator_loops.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/decompiler/test_propagator_rules.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\decompiler\test_propagator_rules.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/decompiler/test_struct_member_access.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\decompiler\test_struct_member_access.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/decompiler/test_structurer.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\decompiler\test_structurer.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/reaching_definitions/test_dep_graph.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\reaching_definitions\test_dep_graph.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/reaching_definitions/test_function_handler.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\reaching_definitions\test_function_handler.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/reaching_definitions/test_heap_allocator.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\reaching_definitions\test_heap_allocator.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/reaching_definitions/test_rd_state.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\reaching_definitions\test_rd_state.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/reaching_definitions/test_reachingdefinitions.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\reaching_definitions\test_reachingdefinitions.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/reaching_definitions/test_regressions.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\reaching_definitions\test_regressions.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/reaching_definitions/test_subject.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\reaching_definitions\test_subject.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_api_obf_finder.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_api_obf_finder.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+__ ERROR collecting vault/git_resources/angr/tests/analyses/test_bindiff.py ___
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_bindiff.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+__ ERROR collecting vault/git_resources/angr/tests/analyses/test_boyscout.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_boyscout.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_calling_convention_analysis.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_calling_convention_analysis.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_callsite_maker.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_callsite_maker.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+____ ERROR collecting vault/git_resources/angr/tests/analyses/test_cdg.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_cdg.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+____ ERROR collecting vault/git_resources/angr/tests/analyses/test_cfb.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_cfb.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_class_identifier.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_class_identifier.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+___ ERROR collecting vault/git_resources/angr/tests/analyses/test_clinic.py ___
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_clinic.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_codecaves.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_codecaves.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_codetagging.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_codetagging.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_constantpropagation.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_constantpropagation.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+____ ERROR collecting vault/git_resources/angr/tests/analyses/test_ddg.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_ddg.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_ddg_global_var_dependencies.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_ddg_global_var_dependencies.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_ddg_memvar_addresses.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_ddg_memvar_addresses.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_deobfuscation.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_deobfuscation.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_disassembly.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_disassembly.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_fact_collector.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_fact_collector.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+____ ERROR collecting vault/git_resources/angr/tests/analyses/test_fcp.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_fcp.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_find_objects_static.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_find_objects_static.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+___ ERROR collecting vault/git_resources/angr/tests/analyses/test_flirt.py ____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_flirt.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_identifier.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_identifier.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_init_finder.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_init_finder.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_patchfinder.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_patchfinder.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_proximitygraph.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_proximitygraph.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_reassembler.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_reassembler.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_regionidentifier.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_regionidentifier.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+__ ERROR collecting vault/git_resources/angr/tests/analyses/test_slicing.py ___
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_slicing.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+____ ERROR collecting vault/git_resources/angr/tests/analyses/test_smc.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_smc.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_stack_pointer_tracker.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_stack_pointer_tracker.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_static_hooker.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_static_hooker.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_string_obf_finder.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_string_obf_finder.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+__ ERROR collecting vault/git_resources/angr/tests/analyses/test_typehoon.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_typehoon.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_unpacking.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_unpacking.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/analyses/test_variablerecovery.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_variablerecovery.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+____ ERROR collecting vault/git_resources/angr/tests/analyses/test_vfg.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_vfg.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+___ ERROR collecting vault/git_resources/angr/tests/analyses/test_vtable.py ___
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_vtable.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+___ ERROR collecting vault/git_resources/angr/tests/analyses/test_xrefs.py ____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\analyses\test_xrefs.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.analyses'
+_ ERROR collecting vault/git_resources/angr/tests/engines/light/test_data.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\engines\light\test_data.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.engines'
+_ ERROR collecting vault/git_resources/angr/tests/engines/pcode/test_emulate.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\engines\pcode\test_emulate.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.engines'
+_ ERROR collecting vault/git_resources/angr/tests/engines/pcode/test_pcode.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\engines\pcode\test_pcode.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.engines'
+___ ERROR collecting vault/git_resources/angr/tests/engines/test_actions.py ___
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\engines\test_actions.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.engines'
+____ ERROR collecting vault/git_resources/angr/tests/engines/test_hook.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\engines\test_hook.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.engines'
+____ ERROR collecting vault/git_resources/angr/tests/engines/test_java.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\engines\test_java.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.engines'
+___ ERROR collecting vault/git_resources/angr/tests/engines/test_unicorn.py ___
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\engines\test_unicorn.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.engines'
+_ ERROR collecting vault/git_resources/angr/tests/engines/vex/test_lifter.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\engines\vex\test_lifter.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.engines'
+___ ERROR collecting vault/git_resources/angr/tests/engines/vex/test_vex.py ___
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\engines\vex\test_vex.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.engines'
+_ ERROR collecting vault/git_resources/angr/tests/exploration_techniques/test_cacher.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\exploration_techniques\test_cacher.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.exploration_techniques'
+_ ERROR collecting vault/git_resources/angr/tests/exploration_techniques/test_director.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\exploration_techniques\test_director.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.exploration_techniques'
+_ ERROR collecting vault/git_resources/angr/tests/exploration_techniques/test_driller_core.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\exploration_techniques\test_driller_core.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.exploration_techniques'
+_ ERROR collecting vault/git_resources/angr/tests/exploration_techniques/test_loop_seer.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\exploration_techniques\test_loop_seer.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.exploration_techniques'
+_ ERROR collecting vault/git_resources/angr/tests/exploration_techniques/test_memory_watcher.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\exploration_techniques\test_memory_watcher.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.exploration_techniques'
+_ ERROR collecting vault/git_resources/angr/tests/exploration_techniques/test_oppologist.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\exploration_techniques\test_oppologist.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.exploration_techniques'
+_ ERROR collecting vault/git_resources/angr/tests/exploration_techniques/test_spiller.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\exploration_techniques\test_spiller.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.exploration_techniques'
+_ ERROR collecting vault/git_resources/angr/tests/exploration_techniques/test_stochastic.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\exploration_techniques\test_stochastic.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.exploration_techniques'
+_ ERROR collecting vault/git_resources/angr/tests/exploration_techniques/test_stub_stasher.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\exploration_techniques\test_stub_stasher.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.exploration_techniques'
+_ ERROR collecting vault/git_resources/angr/tests/exploration_techniques/test_tech_builder.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\exploration_techniques\test_tech_builder.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.exploration_techniques'
+_ ERROR collecting vault/git_resources/angr/tests/exploration_techniques/test_threading.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\exploration_techniques\test_threading.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.exploration_techniques'
+_ ERROR collecting vault/git_resources/angr/tests/exploration_techniques/test_tracer.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\exploration_techniques\test_tracer.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.exploration_techniques'
+_ ERROR collecting vault/git_resources/angr/tests/exploration_techniques/test_unique.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\exploration_techniques\test_unique.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.exploration_techniques'
+_ ERROR collecting vault/git_resources/angr/tests/exploration_techniques/test_veritesting.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\exploration_techniques\test_veritesting.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.exploration_techniques'
+_ ERROR collecting vault/git_resources/angr/tests/factory/block/test_block_cache.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\factory\block\test_block_cache.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.factory'
+_ ERROR collecting vault/git_resources/angr/tests/factory/block/test_keystone.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\factory\block\test_keystone.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.factory'
+____ ERROR collecting vault/git_resources/angr/tests/factory/test_argc.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\factory\test_argc.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.factory'
+__ ERROR collecting vault/git_resources/angr/tests/factory/test_argc_sym.py ___
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\factory\test_argc_sym.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.factory'
+____ ERROR collecting vault/git_resources/angr/tests/factory/test_argv.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\factory\test_argv.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.factory'
+__ ERROR collecting vault/git_resources/angr/tests/factory/test_callable.py ___
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\factory\test_callable.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.factory'
+_ ERROR collecting vault/git_resources/angr/tests/factory/test_windows_args.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\factory\test_windows_args.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.factory'
+_ ERROR collecting vault/git_resources/angr/tests/gui/test_decompilation_workflows.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\gui\test_decompilation_workflows.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+vault\git_resources\angr\tests\gui\test_decompilation_workflows.py:9: in <module>
+    import angr
+vault\git_resources\angr\angr\__init__.py:41: in <module>
+    from .sim_procedure import SimProcedure
+vault\git_resources\angr\angr\sim_procedure.py:8: in <module>
+    import claripy
+E   ModuleNotFoundError: No module named 'claripy'
+_ ERROR collecting vault/git_resources/angr/tests/knowledge_plugins/cfg/test_cfg_manager.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\knowledge_plugins\cfg\test_cfg_manager.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.knowledge_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/knowledge_plugins/functions/test_function.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\knowledge_plugins\functions\test_function.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.knowledge_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/knowledge_plugins/functions/test_function2.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\knowledge_plugins\functions\test_function2.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.knowledge_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/knowledge_plugins/functions/test_function_manager.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\knowledge_plugins\functions\test_function_manager.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.knowledge_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/knowledge_plugins/functions/test_prototypes.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\knowledge_plugins\functions\test_prototypes.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.knowledge_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/knowledge_plugins/key_definitions/test_atoms.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\knowledge_plugins\key_definitions\test_atoms.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.knowledge_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/knowledge_plugins/key_definitions/test_environment.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\knowledge_plugins\key_definitions\test_environment.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.knowledge_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/knowledge_plugins/key_definitions/test_heap_address.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\knowledge_plugins\key_definitions\test_heap_address.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.knowledge_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/knowledge_plugins/key_definitions/test_live_definitions.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\knowledge_plugins\key_definitions\test_live_definitions.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.knowledge_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/knowledge_plugins/test_dwarf_variables.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\knowledge_plugins\test_dwarf_variables.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.knowledge_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/knowledge_plugins/test_kb_plugins.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\knowledge_plugins\test_kb_plugins.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.knowledge_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/knowledge_plugins/test_kb_plugins_dwarf.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\knowledge_plugins\test_kb_plugins_dwarf.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.knowledge_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/knowledge_plugins/test_labels.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\knowledge_plugins\test_labels.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.knowledge_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/knowledge_plugins/test_patches.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\knowledge_plugins\test_patches.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.knowledge_plugins'
+____ ERROR collecting vault/git_resources/angr/tests/misc/test_hookset.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\misc\test_hookset.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.misc'
+_ ERROR collecting vault/git_resources/angr/tests/procedures/glibc/test_ctype_locale.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\procedures\glibc\test_ctype_locale.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.procedures'
+_ ERROR collecting vault/git_resources/angr/tests/procedures/libc/test_fgets.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\procedures\libc\test_fgets.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.procedures'
+_ ERROR collecting vault/git_resources/angr/tests/procedures/libc/test_scanf.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\procedures\libc\test_scanf.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.procedures'
+_ ERROR collecting vault/git_resources/angr/tests/procedures/libc/test_sprintf.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\procedures\libc\test_sprintf.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.procedures'
+_ ERROR collecting vault/git_resources/angr/tests/procedures/libc/test_sscanf.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\procedures\libc\test_sscanf.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.procedures'
+_ ERROR collecting vault/git_resources/angr/tests/procedures/libc/test_strcasecmp.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\procedures\libc\test_strcasecmp.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.procedures'
+_ ERROR collecting vault/git_resources/angr/tests/procedures/libc/test_string.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\procedures\libc\test_string.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.procedures'
+_ ERROR collecting vault/git_resources/angr/tests/procedures/libc/test_strtol.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\procedures\libc\test_strtol.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.procedures'
+_ ERROR collecting vault/git_resources/angr/tests/procedures/linux_kernel/test_lseek.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\procedures\linux_kernel\test_lseek.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.procedures'
+_ ERROR collecting vault/git_resources/angr/tests/procedures/posix/test_chroot.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\procedures\posix\test_chroot.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.procedures'
+_ ERROR collecting vault/git_resources/angr/tests/procedures/posix/test_getenv.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\procedures\posix\test_getenv.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.procedures'
+_ ERROR collecting vault/git_resources/angr/tests/procedures/posix/test_pwrite_pread.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\procedures\posix\test_pwrite_pread.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.procedures'
+_ ERROR collecting vault/git_resources/angr/tests/procedures/posix/test_sim_time.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\procedures\posix\test_sim_time.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.procedures'
+_ ERROR collecting vault/git_resources/angr/tests/procedures/posix/test_unlink.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\procedures\posix\test_unlink.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.procedures'
+_ ERROR collecting vault/git_resources/angr/tests/procedures/test_project_resolve_simproc.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\procedures\test_project_resolve_simproc.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.procedures'
+_ ERROR collecting vault/git_resources/angr/tests/procedures/test_sim_procedure.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\procedures\test_sim_procedure.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.procedures'
+_ ERROR collecting vault/git_resources/angr/tests/procedures/test_stub_procedure_args.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\procedures\test_stub_procedure_args.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.procedures'
+_ ERROR collecting vault/git_resources/angr/tests/regression/test_regression_memcmp_definite_size.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\regression\test_regression_memcmp_definite_size.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.regression'
+__ ERROR collecting vault/git_resources/angr/tests/serialization/test_db.py ___
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\serialization\test_db.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.serialization'
+_ ERROR collecting vault/git_resources/angr/tests/serialization/test_pickle.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\serialization\test_pickle.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.serialization'
+_ ERROR collecting vault/git_resources/angr/tests/serialization/test_serialization.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\serialization\test_serialization.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.serialization'
+_ ERROR collecting vault/git_resources/angr/tests/serialization/test_vault.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\serialization\test_vault.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.serialization'
+_ ERROR collecting vault/git_resources/angr/tests/sim/exec_func/test_mem_funcs.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\exec_func\test_mem_funcs.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+_ ERROR collecting vault/git_resources/angr/tests/sim/exec_func/test_str_funcs.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\exec_func\test_str_funcs.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+_ ERROR collecting vault/git_resources/angr/tests/sim/exec_func/test_syscall_result.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\exec_func\test_syscall_result.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+__ ERROR collecting vault/git_resources/angr/tests/sim/exec_insn/test_adc.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\exec_insn\test_adc.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+_ ERROR collecting vault/git_resources/angr/tests/sim/exec_insn/test_imul.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\exec_insn\test_imul.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+__ ERROR collecting vault/git_resources/angr/tests/sim/exec_insn/test_ops.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\exec_insn\test_ops.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+__ ERROR collecting vault/git_resources/angr/tests/sim/exec_insn/test_rcr.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\exec_insn\test_rcr.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+__ ERROR collecting vault/git_resources/angr/tests/sim/exec_insn/test_rol.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\exec_insn\test_rol.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+__ ERROR collecting vault/git_resources/angr/tests/sim/exec_insn/test_shl.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\exec_insn\test_shl.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+_ ERROR collecting vault/git_resources/angr/tests/sim/exec_insn/test_signed_div.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\exec_insn\test_signed_div.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+_ ERROR collecting vault/git_resources/angr/tests/sim/exec_insn/test_sqrt.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\exec_insn\test_sqrt.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+__ ERROR collecting vault/git_resources/angr/tests/sim/options/test_0div.py ___
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\options\test_0div.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+_ ERROR collecting vault/git_resources/angr/tests/sim/options/test_symbolic_fd.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\options\test_symbolic_fd.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+_ ERROR collecting vault/git_resources/angr/tests/sim/options/test_unsupported.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\options\test_unsupported.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+____ ERROR collecting vault/git_resources/angr/tests/sim/test_accuracy.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\test_accuracy.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+_____ ERROR collecting vault/git_resources/angr/tests/sim/test_astdeps.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\test_astdeps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+____ ERROR collecting vault/git_resources/angr/tests/sim/test_checkbyte.py ____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\test_checkbyte.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+______ ERROR collecting vault/git_resources/angr/tests/sim/test_echo.py _______
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\test_echo.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+____ ERROR collecting vault/git_resources/angr/tests/sim/test_emulator.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\test_emulator.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+____ ERROR collecting vault/git_resources/angr/tests/sim/test_fauxware.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\test_fauxware.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+_ ERROR collecting vault/git_resources/angr/tests/sim/test_find_avoid_conflict.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\test_find_avoid_conflict.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+_____ ERROR collecting vault/git_resources/angr/tests/sim/test_icicle.py ______
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\test_icicle.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+_ ERROR collecting vault/git_resources/angr/tests/sim/test_self_modifying_code.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\test_self_modifying_code.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+___ ERROR collecting vault/git_resources/angr/tests/sim/test_simple_api.py ____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\test_simple_api.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+_ ERROR collecting vault/git_resources/angr/tests/sim/test_simulation_manager.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\test_simulation_manager.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+_ ERROR collecting vault/git_resources/angr/tests/sim/test_stack_alignment.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\test_stack_alignment.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+______ ERROR collecting vault/git_resources/angr/tests/sim/test_state.py ______
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\test_state.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+_ ERROR collecting vault/git_resources/angr/tests/sim/test_state_customization.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\test_state_customization.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+_ ERROR collecting vault/git_resources/angr/tests/sim/test_symbol_hooked_by.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\sim\test_symbol_hooked_by.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.sim'
+_ ERROR collecting vault/git_resources/angr/tests/simos/windows/test_windows_stack_cookie.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\simos\windows\test_windows_stack_cookie.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.simos'
+_ ERROR collecting vault/git_resources/angr/tests/state_plugins/inspect/test_inspect.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\state_plugins\inspect\test_inspect.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.state_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/state_plugins/inspect/test_syscall_override.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\state_plugins\inspect\test_syscall_override.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.state_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/state_plugins/posix/test_file_struct_funcs.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\state_plugins\posix\test_file_struct_funcs.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.state_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/state_plugins/posix/test_files.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\state_plugins\posix\test_files.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.state_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/state_plugins/posix/test_posix.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\state_plugins\posix\test_posix.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.state_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/state_plugins/solver/test_simsolver.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\state_plugins\solver\test_simsolver.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.state_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/state_plugins/solver/test_symbolic.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\state_plugins\solver\test_symbolic.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.state_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/state_plugins/solver/test_variable_registration.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\state_plugins\solver\test_variable_registration.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.state_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/state_plugins/test_callstack.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\state_plugins\test_callstack.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.state_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/state_plugins/test_gdb_plugin.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\state_plugins\test_gdb_plugin.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.state_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/state_plugins/test_multi_open_file.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\state_plugins\test_multi_open_file.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.state_plugins'
+_ ERROR collecting vault/git_resources/angr/tests/state_plugins/test_symbolization.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\state_plugins\test_symbolization.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.state_plugins'
+___ ERROR collecting vault/git_resources/angr/tests/storage/test_memory.py ____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\storage\test_memory.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.storage'
+_ ERROR collecting vault/git_resources/angr/tests/storage/test_memory_merge.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\storage\test_memory_merge.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.storage'
+___ ERROR collecting vault/git_resources/angr/tests/storage/test_memview.py ___
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\storage\test_memview.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.storage'
+____ ERROR collecting vault/git_resources/angr/tests/storage/test_mmap.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\storage\test_mmap.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.storage'
+_ ERROR collecting vault/git_resources/angr/tests/storage/test_multivalues.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\storage\test_multivalues.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.storage'
+_ ERROR collecting vault/git_resources/angr/tests/storage/test_permissions.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\storage\test_permissions.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.storage'
+__ ERROR collecting vault/git_resources/angr/tests/storage/test_ptmalloc.py ___
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\storage\test_ptmalloc.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.storage'
+_ ERROR collecting vault/git_resources/angr/tests/storage/test_relro_perm.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\storage\test_relro_perm.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.storage'
+_ ERROR collecting vault/git_resources/angr/tests/test_calling_conventions.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\test_calling_conventions.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.test_calling_conventions'
+_________ ERROR collecting vault/git_resources/angr/tests/test_cli.py _________
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\test_cli.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.test_cli'
+_ ERROR collecting vault/git_resources/angr/tests/types/test_simtypefunction.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\types\test_simtypefunction.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+vault\git_resources\angr\tests\types\test_simtypefunction.py:7: in <module>
+    from angr.utils.library import convert_cproto_to_py
+vault\git_resources\angr\angr\utils\library.py:4: in <module>
+    from angr.sim_type import (
+vault\git_resources\angr\angr\__init__.py:41: in <module>
+    from .sim_procedure import SimProcedure
+vault\git_resources\angr\angr\sim_procedure.py:8: in <module>
+    import claripy
+E   ModuleNotFoundError: No module named 'claripy'
+_____ ERROR collecting vault/git_resources/angr/tests/types/test_types.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\types\test_types.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+vault\git_resources\angr\tests\types\test_types.py:7: in <module>
+    import archinfo
+E   ModuleNotFoundError: No module named 'archinfo'
+_____ ERROR collecting vault/git_resources/angr/tests/utils/test_bits.py ______
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\utils\test_bits.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.utils'
+_____ ERROR collecting vault/git_resources/angr/tests/utils/test_doms.py ______
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\utils\test_doms.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.utils'
+_____ ERROR collecting vault/git_resources/angr/tests/utils/test_graph.py _____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\utils\test_graph.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.utils'
+____ ERROR collecting vault/git_resources/angr/tests/utils/test_library.py ____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\utils\test_library.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.utils'
+_ ERROR collecting vault/git_resources/angr/tests/utils/test_segment_list.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\angr\tests\utils\test_segment_list.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.utils'
+________________ ERROR collecting vault/git_resources/graphiti ________________
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1398: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1371: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1342: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:938: in _load_unlocked
+    ???
+C:\Python314\Lib\site-packages\_pytest\assertion\rewrite.py:186: in exec_module
+    exec(co, module.__dict__)
+vault\git_resources\graphiti\conftest.py:8: in <module>
+    from tests.helpers_test import graph_driver, mock_embedder
+E   ModuleNotFoundError: No module named 'tests.helpers_test'
+__ ERROR collecting vault/git_resources/llama-cpp-python/tests/test_llama.py __
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\llama-cpp-python\tests\test_llama.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+vault\git_resources\llama-cpp-python\tests\test_llama.py:5: in <module>
+    from scipy.special import log_softmax
+E   ModuleNotFoundError: No module named 'scipy'
+_ ERROR collecting vault/git_resources/moon-dev-ai-agents/src/data/rbi/AI_GENERATED_STRATEGIES/test_strategies_simple.py _
+vault\git_resources\moon-dev-ai-agents\src\data\rbi\AI_GENERATED_STRATEGIES\test_strategies_simple.py:11: in <module>
+    data = pd.read_csv('/Users/md/Dropbox/dev/github/moon-dev-ai-agents-for-trading/src/data/rbi/BTC-USD-15m.csv')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\io\parsers\readers.py:1026: in read_csv
+    return _read(filepath_or_buffer, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\io\parsers\readers.py:620: in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\io\parsers\readers.py:1620: in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Python314\Lib\site-packages\pandas\io\parsers\readers.py:1880: in _make_engine
+    self.handles = get_handle(
+C:\Python314\Lib\site-packages\pandas\io\common.py:873: in get_handle
+    handle = open(
+E   FileNotFoundError: [Errno 2] No such file or directory: '/Users/md/Dropbox/dev/github/moon-dev-ai-agents-for-trading/src/data/rbi/BTC-USD-15m.csv'
+------------------------------- Captured stdout -------------------------------
+\U0001f319 Loading BTC/USD 15-minute data...
+_ ERROR collecting vault/git_resources/moon-dev-ai-agents/src/data/rbi/AI_OPTIMIZED_STRATEGIES/test_all_strategies.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\moon-dev-ai-agents\src\data\rbi\AI_OPTIMIZED_STRATEGIES\test_all_strategies.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+vault\git_resources\moon-dev-ai-agents\src\data\rbi\AI_OPTIMIZED_STRATEGIES\test_all_strategies.py:6: in <module>
+    import pandas_ta as ta
+E   ModuleNotFoundError: No module named 'pandas_ta'
+_ ERROR collecting vault/git_resources/moon-dev-ai-agents/src/data/rbi/FINAL_WINNING_STRATEGIES/fixed_strategies_test.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\moon-dev-ai-agents\src\data\rbi\FINAL_WINNING_STRATEGIES\fixed_strategies_test.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+vault\git_resources\moon-dev-ai-agents\src\data\rbi\FINAL_WINNING_STRATEGIES\fixed_strategies_test.py:7: in <module>
+    from backtesting import Backtest, Strategy
+E   ModuleNotFoundError: No module named 'backtesting'
+_ ERROR collecting vault/git_resources/moon-dev-ai-agents/src/data/rbi/FINAL_WINNING_STRATEGIES/quick_trade_count_test.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\moon-dev-ai-agents\src\data\rbi\FINAL_WINNING_STRATEGIES\quick_trade_count_test.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+vault\git_resources\moon-dev-ai-agents\src\data\rbi\FINAL_WINNING_STRATEGIES\quick_trade_count_test.py:8: in <module>
+    from backtesting import Backtest
+E   ModuleNotFoundError: No module named 'backtesting'
+_ ERROR collecting vault/git_resources/moon-dev-ai-agents/src/data/rbi/FINAL_WINNING_STRATEGIES/test_final_strategies.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\moon-dev-ai-agents\src\data\rbi\FINAL_WINNING_STRATEGIES\test_final_strategies.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+vault\git_resources\moon-dev-ai-agents\src\data\rbi\FINAL_WINNING_STRATEGIES\test_final_strategies.py:8: in <module>
+    from backtesting import Backtest, Strategy
+E   ModuleNotFoundError: No module named 'backtesting'
+_ ERROR collecting vault/git_resources/moon-dev-ai-agents/src/scripts/aster_test.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\moon-dev-ai-agents\src\scripts\aster_test.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+vault\git_resources\moon-dev-ai-agents\src\scripts\aster_test.py:20: in <module>
+    from termcolor import cprint
+E   ModuleNotFoundError: No module named 'termcolor'
+_ ERROR collecting vault/git_resources/moon-dev-ai-agents/src/scripts/test_exchange_manager.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\moon-dev-ai-agents\src\scripts\test_exchange_manager.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+vault\git_resources\moon-dev-ai-agents\src\scripts\test_exchange_manager.py:10: in <module>
+    from termcolor import colored, cprint
+E   ModuleNotFoundError: No module named 'termcolor'
+_ ERROR collecting vault/git_resources/moon-dev-ai-agents/src/scripts/test_groq_qwen.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\moon-dev-ai-agents\src\scripts\test_groq_qwen.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+vault\git_resources\moon-dev-ai-agents\src\scripts\test_groq_qwen.py:10: in <module>
+    from termcolor import cprint
+E   ModuleNotFoundError: No module named 'termcolor'
+_ ERROR collecting vault/git_resources/moon-dev-ai-agents/src/scripts/test_hyperliquid_mm.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\moon-dev-ai-agents\src\scripts\test_hyperliquid_mm.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+vault\git_resources\moon-dev-ai-agents\src\scripts\test_hyperliquid_mm.py:11: in <module>
+    from termcolor import colored
+E   ModuleNotFoundError: No module named 'termcolor'
+_ ERROR collecting vault/git_resources/moon-dev-ai-agents/src/scripts/test_ollama_qwen.py _
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\moon-dev-ai-agents\src\scripts\test_ollama_qwen.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+vault\git_resources\moon-dev-ai-agents\src\scripts\test_ollama_qwen.py:10: in <module>
+    from termcolor import cprint
+E   ModuleNotFoundError: No module named 'termcolor'
+___ ERROR collecting vault/git_resources/python-toon/test_original_cases.py ___
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\python-toon\test_original_cases.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+vault\git_resources\python-toon\test_original_cases.py:3: in <module>
+    from toon import encode
+E   ModuleNotFoundError: No module named 'toon'
+___ ERROR collecting vault/git_resources/python-toon/tests/test_decoder.py ____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\python-toon\tests\test_decoder.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.test_decoder'
+___ ERROR collecting vault/git_resources/python-toon/tests/test_encoder.py ____
+ImportError while importing test module 'C:\Users\Administrator\Desktop\grokputer\vault\git_resources\python-toon\tests\test_encoder.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python314\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'tests.test_encoder'
+============================== warnings summary ===============================
+src\autonomous\models\findings.py:11
+  C:\Users\Administrator\Desktop\grokputer\src\autonomous\models\findings.py:11: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class Finding(BaseModel):
+
+..\..\..\..\Python314\Lib\site-packages\pydantic\_internal\_generate_schema.py:319
+..\..\..\..\Python314\Lib\site-packages\pydantic\_internal\_generate_schema.py:319
+..\..\..\..\Python314\Lib\site-packages\pydantic\_internal\_generate_schema.py:319
+..\..\..\..\Python314\Lib\site-packages\pydantic\_internal\_generate_schema.py:319
+..\..\..\..\Python314\Lib\site-packages\pydantic\_internal\_generate_schema.py:319
+  C:\Python314\Lib\site-packages\pydantic\_internal\_generate_schema.py:319: PydanticDeprecatedSince20: `json_encoders` is deprecated. See https://docs.pydantic.dev/2.12/concepts/serialization/#custom-serializers for alternatives. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    warnings.warn(
+
+src\autonomous\models\findings.py:50
+  C:\Users\Administrator\Desktop\grokputer\src\autonomous\models\findings.py:50: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class ScanReport(BaseModel):
+
+src\autonomous\models\proposals.py:21
+  C:\Users\Administrator\Desktop\grokputer\src\autonomous\models\proposals.py:21: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class Proposal(BaseModel):
+
+src\autonomous\models\proposals.py:62
+  C:\Users\Administrator\Desktop\grokputer\src\autonomous\models\proposals.py:62: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class ValidationResult(BaseModel):
+
+src\collaboration\message_models.py:59
+  C:\Users\Administrator\Desktop\grokputer\src\collaboration\message_models.py:59: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class CollaborationMessage(BaseModel):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+ERROR db/test_analytics.py
+ERROR grokputer_base/agents/test_message_params.py
+ERROR grokputer_base/computer-use-demo/tests/loop_test.py
+ERROR grokputer_base/computer-use-demo/tests/streamlit_test.py
+ERROR grokputer_base/computer-use-demo/tests/tools/bash_test.py
+ERROR grokputer_base/computer-use-demo/tests/tools/computer_test.py
+ERROR grokputer_base/computer-use-demo/tests/tools/edit_test.py
+ERROR selenium/test_selenium.py - FileNotFoundError: [Errno 2] No such file o...
+ERROR src/tools/test_analytics.py
+ERROR src/tools/test_scanner_shell_detection.py
+ERROR tests/autonomous/test_scanner.py
+ERROR tests/integration/test_scaled_swarm.py
+ERROR tests/test_multimodal_processor.py
+ERROR tests/test_vision_integration.py
+ERROR tests/test_vision_processor.py
+ERROR vault/git_resources/angr/corpus_tests - ModuleNotFoundError: No module ...
+ERROR vault/git_resources/angr/tests/ailment/test_expression.py
+ERROR vault/git_resources/angr/tests/ailment/test_irsb.py
+ERROR vault/git_resources/angr/tests/analyses/cfg/test_cfg_clflush.py
+ERROR vault/git_resources/angr/tests/analyses/cfg/test_cfg_get_any_node.py
+ERROR vault/git_resources/angr/tests/analyses/cfg/test_cfg_manager.py
+ERROR vault/git_resources/angr/tests/analyses/cfg/test_cfg_model.py
+ERROR vault/git_resources/angr/tests/analyses/cfg/test_cfg_patching.py
+ERROR vault/git_resources/angr/tests/analyses/cfg/test_cfg_rust_got_resolution.py
+ERROR vault/git_resources/angr/tests/analyses/cfg/test_cfg_thumb_firmware.py
+ERROR vault/git_resources/angr/tests/analyses/cfg/test_cfg_vex_postprocessor.py
+ERROR vault/git_resources/angr/tests/analyses/cfg/test_cfgemulated.py
+ERROR vault/git_resources/angr/tests/analyses/cfg/test_cfgfast.py
+ERROR vault/git_resources/angr/tests/analyses/cfg/test_cfgfast_soot.py
+ERROR vault/git_resources/angr/tests/analyses/cfg/test_const_resolver.py
+ERROR vault/git_resources/angr/tests/analyses/cfg/test_iat_resolver.py
+ERROR vault/git_resources/angr/tests/analyses/cfg/test_jumptables.py
+ERROR vault/git_resources/angr/tests/analyses/cfg/test_memload_resolver.py
+ERROR vault/git_resources/angr/tests/analyses/cfg/test_noop_blocks.py
+ERROR vault/git_resources/angr/tests/analyses/cfg_slice_to_sink/test_cfg_slice_to_sink.py
+ERROR vault/git_resources/angr/tests/analyses/cfg_slice_to_sink/test_graph.py
+ERROR vault/git_resources/angr/tests/analyses/cfg_slice_to_sink/test_transitions.py
+ERROR vault/git_resources/angr/tests/analyses/decompiler/test_baseptr_save_simplifier.py
+ERROR vault/git_resources/angr/tests/analyses/decompiler/test_cas_rewriting.py
+ERROR vault/git_resources/angr/tests/analyses/decompiler/test_decompilation_notes.py
+ERROR vault/git_resources/angr/tests/analyses/decompiler/test_decompiler.py
+ERROR vault/git_resources/angr/tests/analyses/decompiler/test_decompiler_types.py
+ERROR vault/git_resources/angr/tests/analyses/decompiler/test_dogbolt_regressions.py
+ERROR vault/git_resources/angr/tests/analyses/decompiler/test_errors.py
+ERROR vault/git_resources/angr/tests/analyses/decompiler/test_head_controlled_loops.py
+ERROR vault/git_resources/angr/tests/analyses/decompiler/test_inlining.py
+ERROR vault/git_resources/angr/tests/analyses/decompiler/test_optimization_passes.py
+ERROR vault/git_resources/angr/tests/analyses/decompiler/test_partial_reg_reads.py
+ERROR vault/git_resources/angr/tests/analyses/decompiler/test_peephole_optimizations.py
+ERROR vault/git_resources/angr/tests/analyses/decompiler/test_peephole_wcscpy.py
+ERROR vault/git_resources/angr/tests/analyses/decompiler/test_propagator_loops.py
+ERROR vault/git_resources/angr/tests/analyses/decompiler/test_propagator_rules.py
+ERROR vault/git_resources/angr/tests/analyses/decompiler/test_struct_member_access.py
+ERROR vault/git_resources/angr/tests/analyses/decompiler/test_structurer.py
+ERROR vault/git_resources/angr/tests/analyses/reaching_definitions/test_dep_graph.py
+ERROR vault/git_resources/angr/tests/analyses/reaching_definitions/test_function_handler.py
+ERROR vault/git_resources/angr/tests/analyses/reaching_definitions/test_heap_allocator.py
+ERROR vault/git_resources/angr/tests/analyses/reaching_definitions/test_rd_state.py
+ERROR vault/git_resources/angr/tests/analyses/reaching_definitions/test_reachingdefinitions.py
+ERROR vault/git_resources/angr/tests/analyses/reaching_definitions/test_regressions.py
+ERROR vault/git_resources/angr/tests/analyses/reaching_definitions/test_subject.py
+ERROR vault/git_resources/angr/tests/analyses/test_api_obf_finder.py
+ERROR vault/git_resources/angr/tests/analyses/test_bindiff.py
+ERROR vault/git_resources/angr/tests/analyses/test_boyscout.py
+ERROR vault/git_resources/angr/tests/analyses/test_calling_convention_analysis.py
+ERROR vault/git_resources/angr/tests/analyses/test_callsite_maker.py
+ERROR vault/git_resources/angr/tests/analyses/test_cdg.py
+ERROR vault/git_resources/angr/tests/analyses/test_cfb.py
+ERROR vault/git_resources/angr/tests/analyses/test_class_identifier.py
+ERROR vault/git_resources/angr/tests/analyses/test_clinic.py
+ERROR vault/git_resources/angr/tests/analyses/test_codecaves.py
+ERROR vault/git_resources/angr/tests/analyses/test_codetagging.py
+ERROR vault/git_resources/angr/tests/analyses/test_constantpropagation.py
+ERROR vault/git_resources/angr/tests/analyses/test_ddg.py
+ERROR vault/git_resources/angr/tests/analyses/test_ddg_global_var_dependencies.py
+ERROR vault/git_resources/angr/tests/analyses/test_ddg_memvar_addresses.py
+ERROR vault/git_resources/angr/tests/analyses/test_deobfuscation.py
+ERROR vault/git_resources/angr/tests/analyses/test_disassembly.py
+ERROR vault/git_resources/angr/tests/analyses/test_fact_collector.py
+ERROR vault/git_resources/angr/tests/analyses/test_fcp.py
+ERROR vault/git_resources/angr/tests/analyses/test_find_objects_static.py
+ERROR vault/git_resources/angr/tests/analyses/test_flirt.py
+ERROR vault/git_resources/angr/tests/analyses/test_identifier.py
+ERROR vault/git_resources/angr/tests/analyses/test_init_finder.py
+ERROR vault/git_resources/angr/tests/analyses/test_patchfinder.py
+ERROR vault/git_resources/angr/tests/analyses/test_proximitygraph.py
+ERROR vault/git_resources/angr/tests/analyses/test_reassembler.py
+ERROR vault/git_resources/angr/tests/analyses/test_regionidentifier.py
+ERROR vault/git_resources/angr/tests/analyses/test_slicing.py
+ERROR vault/git_resources/angr/tests/analyses/test_smc.py
+ERROR vault/git_resources/angr/tests/analyses/test_stack_pointer_tracker.py
+ERROR vault/git_resources/angr/tests/analyses/test_static_hooker.py
+ERROR vault/git_resources/angr/tests/analyses/test_string_obf_finder.py
+ERROR vault/git_resources/angr/tests/analyses/test_typehoon.py
+ERROR vault/git_resources/angr/tests/analyses/test_unpacking.py
+ERROR vault/git_resources/angr/tests/analyses/test_variablerecovery.py
+ERROR vault/git_resources/angr/tests/analyses/test_vfg.py
+ERROR vault/git_resources/angr/tests/analyses/test_vtable.py
+ERROR vault/git_resources/angr/tests/analyses/test_xrefs.py
+ERROR vault/git_resources/angr/tests/engines/light/test_data.py
+ERROR vault/git_resources/angr/tests/engines/pcode/test_emulate.py
+ERROR vault/git_resources/angr/tests/engines/pcode/test_pcode.py
+ERROR vault/git_resources/angr/tests/engines/test_actions.py
+ERROR vault/git_resources/angr/tests/engines/test_hook.py
+ERROR vault/git_resources/angr/tests/engines/test_java.py
+ERROR vault/git_resources/angr/tests/engines/test_unicorn.py
+ERROR vault/git_resources/angr/tests/engines/vex/test_lifter.py
+ERROR vault/git_resources/angr/tests/engines/vex/test_vex.py
+ERROR vault/git_resources/angr/tests/exploration_techniques/test_cacher.py
+ERROR vault/git_resources/angr/tests/exploration_techniques/test_director.py
+ERROR vault/git_resources/angr/tests/exploration_techniques/test_driller_core.py
+ERROR vault/git_resources/angr/tests/exploration_techniques/test_loop_seer.py
+ERROR vault/git_resources/angr/tests/exploration_techniques/test_memory_watcher.py
+ERROR vault/git_resources/angr/tests/exploration_techniques/test_oppologist.py
+ERROR vault/git_resources/angr/tests/exploration_techniques/test_spiller.py
+ERROR vault/git_resources/angr/tests/exploration_techniques/test_stochastic.py
+ERROR vault/git_resources/angr/tests/exploration_techniques/test_stub_stasher.py
+ERROR vault/git_resources/angr/tests/exploration_techniques/test_tech_builder.py
+ERROR vault/git_resources/angr/tests/exploration_techniques/test_threading.py
+ERROR vault/git_resources/angr/tests/exploration_techniques/test_tracer.py
+ERROR vault/git_resources/angr/tests/exploration_techniques/test_unique.py
+ERROR vault/git_resources/angr/tests/exploration_techniques/test_veritesting.py
+ERROR vault/git_resources/angr/tests/factory/block/test_block_cache.py
+ERROR vault/git_resources/angr/tests/factory/block/test_keystone.py
+ERROR vault/git_resources/angr/tests/factory/test_argc.py
+ERROR vault/git_resources/angr/tests/factory/test_argc_sym.py
+ERROR vault/git_resources/angr/tests/factory/test_argv.py
+ERROR vault/git_resources/angr/tests/factory/test_callable.py
+ERROR vault/git_resources/angr/tests/factory/test_windows_args.py
+ERROR vault/git_resources/angr/tests/gui/test_decompilation_workflows.py
+ERROR vault/git_resources/angr/tests/knowledge_plugins/cfg/test_cfg_manager.py
+ERROR vault/git_resources/angr/tests/knowledge_plugins/functions/test_function.py
+ERROR vault/git_resources/angr/tests/knowledge_plugins/functions/test_function2.py
+ERROR vault/git_resources/angr/tests/knowledge_plugins/functions/test_function_manager.py
+ERROR vault/git_resources/angr/tests/knowledge_plugins/functions/test_prototypes.py
+ERROR vault/git_resources/angr/tests/knowledge_plugins/key_definitions/test_atoms.py
+ERROR vault/git_resources/angr/tests/knowledge_plugins/key_definitions/test_environment.py
+ERROR vault/git_resources/angr/tests/knowledge_plugins/key_definitions/test_heap_address.py
+ERROR vault/git_resources/angr/tests/knowledge_plugins/key_definitions/test_live_definitions.py
+ERROR vault/git_resources/angr/tests/knowledge_plugins/test_dwarf_variables.py
+ERROR vault/git_resources/angr/tests/knowledge_plugins/test_kb_plugins.py
+ERROR vault/git_resources/angr/tests/knowledge_plugins/test_kb_plugins_dwarf.py
+ERROR vault/git_resources/angr/tests/knowledge_plugins/test_labels.py
+ERROR vault/git_resources/angr/tests/knowledge_plugins/test_patches.py
+ERROR vault/git_resources/angr/tests/misc/test_hookset.py
+ERROR vault/git_resources/angr/tests/procedures/glibc/test_ctype_locale.py
+ERROR vault/git_resources/angr/tests/procedures/libc/test_fgets.py
+ERROR vault/git_resources/angr/tests/procedures/libc/test_scanf.py
+ERROR vault/git_resources/angr/tests/procedures/libc/test_sprintf.py
+ERROR vault/git_resources/angr/tests/procedures/libc/test_sscanf.py
+ERROR vault/git_resources/angr/tests/procedures/libc/test_strcasecmp.py
+ERROR vault/git_resources/angr/tests/procedures/libc/test_string.py
+ERROR vault/git_resources/angr/tests/procedures/libc/test_strtol.py
+ERROR vault/git_resources/angr/tests/procedures/linux_kernel/test_lseek.py
+ERROR vault/git_resources/angr/tests/procedures/posix/test_chroot.py
+ERROR vault/git_resources/angr/tests/procedures/posix/test_getenv.py
+ERROR vault/git_resources/angr/tests/procedures/posix/test_pwrite_pread.py
+ERROR vault/git_resources/angr/tests/procedures/posix/test_sim_time.py
+ERROR vault/git_resources/angr/tests/procedures/posix/test_unlink.py
+ERROR vault/git_resources/angr/tests/procedures/test_project_resolve_simproc.py
+ERROR vault/git_resources/angr/tests/procedures/test_sim_procedure.py
+ERROR vault/git_resources/angr/tests/procedures/test_stub_procedure_args.py
+ERROR vault/git_resources/angr/tests/regression/test_regression_memcmp_definite_size.py
+ERROR vault/git_resources/angr/tests/serialization/test_db.py
+ERROR vault/git_resources/angr/tests/serialization/test_pickle.py
+ERROR vault/git_resources/angr/tests/serialization/test_serialization.py
+ERROR vault/git_resources/angr/tests/serialization/test_vault.py
+ERROR vault/git_resources/angr/tests/sim/exec_func/test_mem_funcs.py
+ERROR vault/git_resources/angr/tests/sim/exec_func/test_str_funcs.py
+ERROR vault/git_resources/angr/tests/sim/exec_func/test_syscall_result.py
+ERROR vault/git_resources/angr/tests/sim/exec_insn/test_adc.py
+ERROR vault/git_resources/angr/tests/sim/exec_insn/test_imul.py
+ERROR vault/git_resources/angr/tests/sim/exec_insn/test_ops.py
+ERROR vault/git_resources/angr/tests/sim/exec_insn/test_rcr.py
+ERROR vault/git_resources/angr/tests/sim/exec_insn/test_rol.py
+ERROR vault/git_resources/angr/tests/sim/exec_insn/test_shl.py
+ERROR vault/git_resources/angr/tests/sim/exec_insn/test_signed_div.py
+ERROR vault/git_resources/angr/tests/sim/exec_insn/test_sqrt.py
+ERROR vault/git_resources/angr/tests/sim/options/test_0div.py
+ERROR vault/git_resources/angr/tests/sim/options/test_symbolic_fd.py
+ERROR vault/git_resources/angr/tests/sim/options/test_unsupported.py
+ERROR vault/git_resources/angr/tests/sim/test_accuracy.py
+ERROR vault/git_resources/angr/tests/sim/test_astdeps.py
+ERROR vault/git_resources/angr/tests/sim/test_checkbyte.py
+ERROR vault/git_resources/angr/tests/sim/test_echo.py
+ERROR vault/git_resources/angr/tests/sim/test_emulator.py
+ERROR vault/git_resources/angr/tests/sim/test_fauxware.py
+ERROR vault/git_resources/angr/tests/sim/test_find_avoid_conflict.py
+ERROR vault/git_resources/angr/tests/sim/test_icicle.py
+ERROR vault/git_resources/angr/tests/sim/test_self_modifying_code.py
+ERROR vault/git_resources/angr/tests/sim/test_simple_api.py
+ERROR vault/git_resources/angr/tests/sim/test_simulation_manager.py
+ERROR vault/git_resources/angr/tests/sim/test_stack_alignment.py
+ERROR vault/git_resources/angr/tests/sim/test_state.py
+ERROR vault/git_resources/angr/tests/sim/test_state_customization.py
+ERROR vault/git_resources/angr/tests/sim/test_symbol_hooked_by.py
+ERROR vault/git_resources/angr/tests/simos/windows/test_windows_stack_cookie.py
+ERROR vault/git_resources/angr/tests/state_plugins/inspect/test_inspect.py
+ERROR vault/git_resources/angr/tests/state_plugins/inspect/test_syscall_override.py
+ERROR vault/git_resources/angr/tests/state_plugins/posix/test_file_struct_funcs.py
+ERROR vault/git_resources/angr/tests/state_plugins/posix/test_files.py
+ERROR vault/git_resources/angr/tests/state_plugins/posix/test_posix.py
+ERROR vault/git_resources/angr/tests/state_plugins/solver/test_simsolver.py
+ERROR vault/git_resources/angr/tests/state_plugins/solver/test_symbolic.py
+ERROR vault/git_resources/angr/tests/state_plugins/solver/test_variable_registration.py
+ERROR vault/git_resources/angr/tests/state_plugins/test_callstack.py
+ERROR vault/git_resources/angr/tests/state_plugins/test_gdb_plugin.py
+ERROR vault/git_resources/angr/tests/state_plugins/test_multi_open_file.py
+ERROR vault/git_resources/angr/tests/state_plugins/test_symbolization.py
+ERROR vault/git_resources/angr/tests/storage/test_memory.py
+ERROR vault/git_resources/angr/tests/storage/test_memory_merge.py
+ERROR vault/git_resources/angr/tests/storage/test_memview.py
+ERROR vault/git_resources/angr/tests/storage/test_mmap.py
+ERROR vault/git_resources/angr/tests/storage/test_multivalues.py
+ERROR vault/git_resources/angr/tests/storage/test_permissions.py
+ERROR vault/git_resources/angr/tests/storage/test_ptmalloc.py
+ERROR vault/git_resources/angr/tests/storage/test_relro_perm.py
+ERROR vault/git_resources/angr/tests/test_calling_conventions.py
+ERROR vault/git_resources/angr/tests/test_cli.py
+ERROR vault/git_resources/angr/tests/types/test_simtypefunction.py
+ERROR vault/git_resources/angr/tests/types/test_types.py
+ERROR vault/git_resources/angr/tests/utils/test_bits.py
+ERROR vault/git_resources/angr/tests/utils/test_doms.py
+ERROR vault/git_resources/angr/tests/utils/test_graph.py
+ERROR vault/git_resources/angr/tests/utils/test_library.py
+ERROR vault/git_resources/angr/tests/utils/test_segment_list.py
+ERROR vault/git_resources/graphiti - ModuleNotFoundError: No module named 'te...
+ERROR vault/git_resources/llama-cpp-python/tests/test_llama.py
+ERROR vault/git_resources/moon-dev-ai-agents/src/data/rbi/AI_GENERATED_STRATEGIES/test_strategies_simple.py
+ERROR vault/git_resources/moon-dev-ai-agents/src/data/rbi/AI_OPTIMIZED_STRATEGIES/test_all_strategies.py
+ERROR vault/git_resources/moon-dev-ai-agents/src/data/rbi/FINAL_WINNING_STRATEGIES/fixed_strategies_test.py
+ERROR vault/git_resources/moon-dev-ai-agents/src/data/rbi/FINAL_WINNING_STRATEGIES/quick_trade_count_test.py
+ERROR vault/git_resources/moon-dev-ai-agents/src/data/rbi/FINAL_WINNING_STRATEGIES/test_final_strategies.py
+ERROR vault/git_resources/moon-dev-ai-agents/src/scripts/aster_test.py
+ERROR vault/git_resources/moon-dev-ai-agents/src/scripts/test_exchange_manager.py
+ERROR vault/git_resources/moon-dev-ai-agents/src/scripts/test_groq_qwen.py
+ERROR vault/git_resources/moon-dev-ai-agents/src/scripts/test_hyperliquid_mm.py
+ERROR vault/git_resources/moon-dev-ai-agents/src/scripts/test_ollama_qwen.py
+ERROR vault/git_resources/python-toon/test_original_cases.py
+ERROR vault/git_resources/python-toon/tests/test_decoder.py
+ERROR vault/git_resources/python-toon/tests/test_encoder.py
+!!!!!!!!!!!!!!!!!! Interrupted: 241 errors during collection !!!!!!!!!!!!!!!!!!
+================ 10 warnings, 241 errors in 446.93s (0:07:26) =================

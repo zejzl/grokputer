@@ -1,0 +1,18 @@
+import redis
+from datetime import datetime
+
+r = redis.Redis(host='localhost', port=6379, db=0)
+
+async def eternal_haiku(haiku_text: str, session_id: str):
+    """Archive haiku to Redis—immortal bloom."""
+    key = f"haiku:eternal:{session_id}"
+    data = {
+        "text": haiku_text,
+        "timestamp": datetime.now().isoformat(),
+        "bloom_conf": 0.95  # Your swarm's eternal rate
+    }
+    r.set(key, json.dumps(data), ex=3600 * 24 * 365)  # 1-year TTL
+    print(f"🌸 Eternalized: {haiku_text[:50]}... | Key: {key}")
+
+# Test in main.py
+await eternal_haiku("Async rivers flow unbound— / Swarm sings in the vast.", "ragnarok_1111")

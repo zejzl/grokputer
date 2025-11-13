@@ -1,0 +1,19 @@
+# Autonomous agent system dependencies
+# Install with: pip install -r autonomous-requirements.txt
+
+# Core dependencies (inherit from main requirements.txt)
+openai>=1.0.0
+pydantic>=2.0.0
+click>=8.1.0
+rich>=13.0.0
+
+# Code analysis
+astroid>=3.0.0
+radon>=6.0.0
+
+# Security scanning
+bandit>=1.7.0
+
+# For development/testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0

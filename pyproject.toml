@@ -1,0 +1,95 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "grokputer"
+version = "1.7.0"
+description = "Autonomous AI development platform with multi-modal capabilities"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "asyncio",
+    "click",
+    "rich",
+    "redis",
+    "requests",
+    "psutil",
+    "streamlit",
+    "GPUtil",
+    "docker",
+    "json",
+    "pathlib",
+    "contextlib",
+    "datetime",
+    "subprocess",
+    "re",
+    "random",
+    "logging",
+    "sqlite3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "flake8",
+    "black",
+    "pytest",
+]
+
+[project.scripts]
+grokputer = "main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.black]
+line-length = 120
+target-version = ['py38']
+
+[tool.flake8]
+max-line-length = 120
+extend-ignore = ["E203", "W503"]
+exclude = [".git", "__pycache__", "build", "dist"]
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = "-v --strict-markers --tb=short"
+# Exclude problematic test directories and files
+norecursedirs = [
+    "vault",
+    "grokputer_base",
+    "community",
+    "docs",
+    "superagent",
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    ".venv",
+    "venv"
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning:llama_cpp.*",
+    "ignore::UserWarning:llama_cpp.*",
+    "ignore::FutureWarning:llama_cpp.*",
+    "ignore:.*llama.*:DeprecationWarning",
+]

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grokputer - VRZIBRZI Node</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #000; color: #00ff00; text-align: center; padding: 50px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        form { margin: 20px 0; }
+        input[type="text"], input[type="password"] { padding: 10px; margin: 5px; width: 200px; background: #111; color: #00ff00; border: 1px solid #00ff00; }
+        button { padding: 10px 20px; background: #00ff00; color: #000; border: none; cursor: pointer; }
+        button:hover { background: #00cc00; }
+        .dashboard { background: #111; padding: 20px; border: 1px solid #00ff00; margin: 20px auto; }
+        .error { color: #ff0000; }
+        .logout { color: #00ff00; text-decoration: underline; cursor: pointer; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖥️ GROKPUTER - VRZIBRZI Node</h1>
+        <p>ZA GROKA. ZA VRZIBRZI. ZA SERVER.</p>
+
+        <div id="login-section">
+            <h2>Login Required</h2>
+            <p id="error-message" class="error hidden"></p>
+            <form id="login-form">
+                <input type="text" id="username" placeholder="Username" required><br>
+                <input type="password" id="password" placeholder="Password" required><br>
+                <button type="submit">Login</button>
+            </form>
+            <p><em>Demo: zejzl / 123</em></p>
+        </div>
+
+        <div id="dashboard-section" class="hidden">
+            <h2 id="welcome-message"></h2>
+            <div class="dashboard">
+                <h3>Dashboard</h3>
+                <p>Autonomous AI System Active</p>
+                <ul>
+                    <li><a href="#" onclick="showPage('ewah')">EWAH Improvements (96% Coverage)</a></li>
+                    <li><a href="#" onclick="showPage('daemon')">Taskmaster Daemon Status</a></li>
+                    <li><a href="#" onclick="showPage('vault')">Vault Sync</a></li>
+                    <li><a href="#" onclick="showPage('coverage')">Coverage Report</a></li>
+                </ul>
+                <p><span class="logout" onclick="logout()">Logout</span></p>
+            </div>
+        </div>
+
+        <div id="page-section" class="dashboard hidden">
+            <h4 id="page-title"></h4>
+            <p id="page-content">Placeholder content. (Integrate with Grokputer APIs later.)</p>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in on page load
+        window.onload = function() {
+            const loggedIn = localStorage.getItem('logged_in');
+            const username = localStorage.getItem('username');
+            if (loggedIn === 'true' && username) {
+                showDashboard(username);
+            }
+        };
+
+        // Handle login form submission
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === 'zejzl' && password === '123') {
+                localStorage.setItem('logged_in', 'true');
+                localStorage.setItem('username', username);
+                showDashboard(username);
+            } else {
+                document.getElementById('error-message').textContent = 'Invalid credentials!';
+                document.getElementById('error-message').classList.remove('hidden');
+            }
+        });
+
+        function showDashboard(username) {
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('dashboard-section').classList.remove('hidden');
+            document.getElementById('welcome-message').textContent = `Welcome, ${username}!`;
+        }
+
+        function showPage(page) {
+            document.getElementById('page-title').textContent = page.charAt(0).toUpperCase() + page.slice(1) + ' Page';
+            document.getElementById('page-content').textContent = `Placeholder for ${page} content. (Integrate with Grokputer APIs later.)`;
+            document.getElementById('page-section').classList.remove('hidden');
+        }
+
+        function logout() {
+            localStorage.removeItem('logged_in');
+            localStorage.removeItem('username');
+            document.getElementById('dashboard-section').classList.add('hidden');
+            document.getElementById('page-section').classList.add('hidden');
+            document.getElementById('login-section').classList.remove('hidden');
+            document.getElementById('error-message').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

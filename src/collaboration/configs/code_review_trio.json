@@ -1,0 +1,50 @@
+{
+  "name": "MAF Configuration",
+  "description": "Multi-Agent Framework configuration",
+  "version": "1.0.0",
+  "providers": [
+    {
+      "provider_id": "grok",
+      "role": "analyzer",
+      "weight": 1.2,
+      "capabilities": [
+        "critical_thinking",
+        "code_analysis"
+      ]
+    },
+    {
+      "provider_id": "claude",
+      "role": "validator",
+      "weight": 1.0,
+      "capabilities": [
+        "validation",
+        "code_analysis"
+      ]
+    },
+    {
+      "provider_id": "gemini",
+      "role": "researcher",
+      "weight": 0.8,
+      "capabilities": [
+        "research",
+        "text_generation"
+      ]
+    }
+  ],
+  "collaboration_settings": {
+    "max_rounds": 4,
+    "convergence_threshold": 0.7,
+    "review_mode": true,
+    "consensus_strategy": "expert_consensus",
+    "timeout_per_round": 45.0
+  },
+  "task_types": [],
+  "metadata": {
+    "author": "MAF System",
+    "tags": [
+      "code",
+      "review",
+      "trio"
+    ]
+  }
+}

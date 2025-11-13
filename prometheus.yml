@@ -1,0 +1,45 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - "alert_rules.yml"
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'daemon'
+    static_configs:
+      - targets: ['host.docker.internal:9101']  # Daemon metrics on 9101
+
+  - job_name: 'grokputer'
+    static_configs:
+      - targets: ['host.docker.internal:9100']  # Grokputer if exposing
+
+  - job_name: 'node'
+    static_configs:
+      - targets: ['localhost:9100']  # Node exporter if added
+
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:9121']  # Redis exporter if added
+
+  - job_name: 'grokputer_performance'
+    static_configs:
+      - targets: ['localhost:8001']  # Custom performance metrics endpoint
+    scrape_interval: 10s
+    metrics_path: '/metrics'
+
+  - job_name: 'agent_metrics'
+    static_configs:
+      - targets: ['localhost:8002']  # Agent performance metrics
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'maf_orchestration'
+    static_configs:
+      - targets: ['localhost:8003']  # MAF orchestration metrics
+    scrape_interval: 5s
+    metrics_path: '/metrics'

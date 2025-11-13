@@ -1,0 +1,87 @@
+# Alert Rules for Grokputer Performance Monitoring
+
+groups:
+  - name: grokputer_alerts
+    rules:
+      - alert: HighCPUUsage
+        expr: cpu_usage_percent > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is {{ $value }}% for more than 5 minutes"
+
+      - alert: HighMemoryUsage
+        expr: memory_usage_percent > 85
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is {{ $value }}% for more than 3 minutes"
+
+      - alert: LowDiskSpace
+        expr: disk_usage_percent > 90
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low disk space"
+          description: "Disk usage is {{ $value }}%"
+
+      - alert: AgentFailureRate
+        expr: rate(agent_failures_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High agent failure rate"
+          description: "Agent failure rate is {{ $value }} failures per second"
+
+      - alert: MAFOrchestrationTimeout
+        expr: maf_orchestration_duration_seconds > 300
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "MAF orchestration timeout"
+          description: "MAF orchestration took {{ $value }} seconds"
+
+      - alert: APIResponseTimeSpike
+        expr: histogram_quantile(0.95, rate(api_request_duration_seconds_bucket[5m])) > 10
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API response time spike"
+          description: "95th percentile API response time is {{ $value }} seconds"
+
+  - name: grokputer_anomaly_detection
+    rules:
+      - alert: CPUAnomaly
+        expr: abs(cpu_usage_percent - cpu_usage_percent_avg_1h) > 2 * cpu_usage_percent_stddev_1h
+        for: 1m
+        labels:
+          severity: info
+        annotations:
+          summary: "CPU usage anomaly detected"
+          description: "CPU usage deviated significantly from normal pattern"
+
+      - alert: MemoryAnomaly
+        expr: abs(memory_usage_percent - memory_usage_percent_avg_1h) > 2 * memory_usage_percent_stddev_1h
+        for: 1m
+        labels:
+          severity: info
+        annotations:
+          summary: "Memory usage anomaly detected"
+          description: "Memory usage deviated significantly from normal pattern"
+
+      - alert: AgentThroughputDrop
+        expr: rate(agent_requests_total[10m]) < 0.5 * rate(agent_requests_total[1h])
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Agent throughput drop"
+          description: "Agent throughput dropped significantly"

@@ -1,0 +1,37 @@
+  ⏺ ### Concise Plan Summary from DEVELOPMENT_PLAN.md
+
+    The DEVELOPMENT_PLAN.md outlines a phased approach to building "Grokputer," an
+    AI-powered autonomous development environment. Key phases include:
+
+    1. **Core Infrastructure (Phase 1 - Complete)**: Set up message bus, agent registry,
+    Redis for state, and basic tools (e.g., file ops, bash). Tests for message bus passed.
+
+    2. **Agent Architecture (Phase 2 - In Progress)**: Implement multi-agent system with
+    roles (e.g., planner, coder, tester). Integrate LangGraph for workflows, Qwen backend
+    for local inference.
+
+    3. **Tooling & Integration (Phase 3 - Next)**: Enhance MCP tools (file edit, search,
+    bash), add screen observation/OCR, VNC for GUI interaction. Dockerize fully with Redis
+    persistence.
+
+    4. **Autonomy & Testing (Phase 4)**: Enable self-improving agents, full integration
+    tests, security hardening (e.g., sandboxing).
+
+    5. **Deployment & Scaling (Phase 5)**: Web UI, API endpoints, multi-user support.
+
+    Current status: Core messaging and basic agents are functional. Next focus: Complete
+    Phase 3 tooling, fix Redis integration issues (e.g., persistent container), and run
+    integration tests.
+
+  ⏺ Created Todo
+    ⎿ ○ Restart and persist Redis container (use docker-compose for grokputer-redis to
+    avoid manual test-redis)
+      ○ Update docker-compose.yml to include persistent Redis volume and ensure message bus
+     connects reliably
+      ○ Implement/enhance screen observer with OCR (integrate Tesseract or EasyOCR in
+    tools/)
+      ○ Run integration tests in tests/integration/ and fix any failures related to message
+     bus or agents
+      ○ Add VNC debugging profile to docker-compose and test GUI interactions
+      ○ Review and apply security fixes from SECURITY_FIX_REPORT.md (e.g., input
+    sanitization in bash tool)

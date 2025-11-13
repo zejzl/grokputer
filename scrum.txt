@@ -1,0 +1,131 @@
+Transcription of the Image
+The image appears to be a screenshot or excerpt from a document/blog post describing a two-phase AI-assisted development workflow. It's structured as a numbered list with bold headings, explaining how dedicated AI agents collaborate to create detailed PRDs (Product Requirements Documents) and architecture docs, followed by transforming plans into hyper-detailed development stories. Here's the full, verbatim transcription (cleaned for readability, preserving original formatting and typos like "inconcistency" for "inconsistency"):
+
+
+Agentic Planning: Dedicated agents (Analyst, PM, Architect) collaborate with you to create detailed, consistent PRDs and Architecture documents. Through advanced prompt engineering and human-in-the-loop refinement, these planning agents produce comprehensive specifications that go far beyond generic AI task generation.
+Context-Engineered Development: The Scrum Master agent then transforms these detailed plans into hyper-detailed development stories that contain everything the Dev agent needs – full context, implementation details, and architectural guidance embedded directly in story files.
+
+This two-phase approach eliminates both planning inconcistency and context loss – the biggest problems in AI-assisted development. Your Dev agent starts with a story file with complete understanding of what to build, how to build it, and why.
+
+The text cuts off slightly at the end (repeating "how to build it, and why."), but that's the core content. It emphasizes a structured, agentic workflow to overcome common AI dev pitfalls like vague plans and lost context.
+Python Code Integration for Grokputer
+This workflow fits perfectly into your Grokputer's ORA(M) Pantheon—enhance Phase 2's immortality mode by adding Agentic Planning (Phase 1: Analyst/PM/Architect as Reasoner extensions) and Context-Engineered Development (Phase 2: Scrum Master as a new Actor stub). Below is a drop-in Python module (src/agents/ai_dev_workflow.py) that implements this two-phase system. It uses your async/Redis setup for persistence, Qwen-Coder (or Grok API) for agent "collaboration," and human-in-loop via CLI prompts.
+
+Key Features:
+Phase 1: Spawns Analyst/PM/Architect agents to generate PRD/Arch docs (stored in Redis for eternal recall).
+Phase 2: Scrum Master transforms into "story files" (Markdown with embedded context/impl details).
+Integration: Ties to your Memory Agent (FAISS recall for refinement), Watchdog (Mode 9 monitoring), and Swarm Mode 3 (parallel testing).
+Human-in-Loop: Prompts you for refinements—keeps it auditable.
+Output: Generates prd.md + arch.md + dev_stories.md files; exports metrics to Redis.
+
+
+Drop this into src/agents/, then run via python main.py --ai-dev-workflow "Build Redis MCP integration". Scales to your 9-agent pantheon (e.g., Validator critiques outputs).
+python# src/agents/ai_dev_workflow.py
+import asyncio
+import json
+import os
+from datetime import datetime
+from typing import Dict, List, Any
+import redis  # Your eternal vault
+from llama_cpp import Llama  # Qwen/Grok wrapper (from your setup)
+from pathlib import Path
+
+# Redis for persistence (your immortality mode)
+r = redis.Redis(host='localhost', port=6379, db=0)
+
+# Qwen/Grok LLM wrapper (async from your conversion)
+async def query_llm(prompt: str, role: str = "reasoner") -> str:
+    llm = Llama(model_path="~/models/qwen-coder.gguf", n_ctx=8192, chat_format="chatml")
+    full_prompt = f"<|im_start|>system\nYou are {role} in Grokputer's AI Dev Workflow. Be detailed, consistent.\n<|im_end|>\n<|im_start|>user\n{prompt}<|im_end|>\n"
+    output = llm(full_prompt, max_tokens=1024, temperature=0.2)
+    return output["choices"][0]["text"].strip()
+
+class AIDevWorkflow:
+    def __init__(self):
+        self.session_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+        self.project_dir = Path("output/ai_dev_session") / self.session_id
+        self.project_dir.mkdir(parents=True, exist_ok=True)
+        self.memory_key = f"ai_dev:{self.session_id}"
+
+    async def phase_1_agentic_planning(self, user_input: str) -> Dict[str, str]:
+        """Phase 1: Analyst/PM/Architect collaborate on PRD/Arch docs."""
+        agents = {
+            "analyst": "Analyze requirements: Break down user input into detailed specs.",
+            "pm": "Prioritize features: Create PRD with timelines, risks, and human-in-loop notes.",
+            "architect": "Design architecture: Embed guidance for scalability (e.g., Redis MCP)."
+        }
+        
+        docs = {}
+        for role, prompt_base in agents.items():
+            prompt = f"{prompt_base}\nUser Input: {user_input}\nOutput as Markdown."
+            response = await query_llm(prompt, role)
+            
+            # Human-in-loop: Refine?
+            print(f"\n--- {role.upper()} OUTPUT ---\n{response}\nRefine? (y/n): ")
+            refine = input().lower() == 'y'
+            if refine:
+                refine_prompt = input("Refinement notes: ")
+                response = await query_llm(f"{response}\nRefine: {refine_prompt}", role)
+            
+            doc_name = "prd.md" if role == "pm" else "arch.md"
+            docs[doc_name] = response
+            self._save_doc(doc_name, response)
+        
+        # Memory: Archive for Phase 2
+        r.set(self.memory_key, json.dumps(docs))
+        return docs
+
+    async def phase_2_context_engineered_dev(self, phase1_docs: Dict[str, str]) -> List[str]:
+        """Phase 2: Scrum Master transforms plans into hyper-detailed stories."""
+        scrum_prompt = f"""
+Transform these docs into development stories with full context, impl details, arch guidance:
+PRD: {phase1_docs.get('prd.md', '')}
+Arch: {phase1_docs.get('arch.md', '')}
+
+Output 3-5 Markdown stories (e.g., 'As a user, I want Redis persistence so that...').
+Embed: Context, Steps, Code Snippets, Tests.
+"""
+        stories_raw = await query_llm(scrum_prompt, "scrum_master")
+        
+        # Parse into list of stories (simple split by headers)
+        stories = stories_raw.split("### Story ")[1:]  # Assume H3 headers
+        story_files = []
+        for i, story in enumerate(stories, 1):
+            story_md = f"### Story {i}\n{story.strip()}"
+            file_path = self.project_dir / f"dev_story_{i}.md"
+            with open(file_path, "w") as f:
+                f.write(story_md)
+            story_files.append(str(file_path))
+        
+        # Export metrics to Redis (analytics integration)
+        metrics = {"stories_generated": len(stories), "session_id": self.session_id}
+        r.hset("ai_dev_metrics", self.session_id, json.dumps(metrics))
+        
+        return story_files
+
+    def _save_doc(self, name: str, content: str):
+        """Save to project dir + Redis."""
+        file_path = self.project_dir / name
+        with open(file_path, "w") as f:
+            f.write(content)
+        r.hset(self.memory_key, name, content)
+
+# Usage in main.py (async integration)
+async def run_ai_dev_workflow(user_input: str):
+    workflow = AIDevWorkflow()
+    print("Phase 1: Agentic Planning...")
+    phase1 = await workflow.phase_1_agentic_planning(user_input)
+    print("Phase 2: Context-Engineered Dev...")
+    stories = await workflow.phase_2_context_engineered_dev(phase1)
+    print(f"Eternal Bloom: {len(stories)} stories generated in {workflow.project_dir}")
+    return stories
+
+# Example: asyncio.run(run_ai_dev_workflow("Integrate Redis + MCP for eternal haikus"))
+How to Integrate in Grokputer:
+
+Swarm Mode 3 Tie-In: Run parallel: asyncio.gather(phase_1, test_redis_migration()).
+Watchdog (Mode 9): Monitor output/ai_dev_session/ for changes—auto-refine low-conf stories.
+Immortality Mode: All docs/stories auto-archive to Redis (TTL=1 year)—haikus persist!
+Test: python main.py --ai-dev-workflow "Build Pantheon Validator Agent"—outputs PRD/arch + 3-5 stories w/ code snippets.
+
+This slots into your Pantheon stubs (e.g., Analyst as Reasoner child)—human-in-loop keeps it collaborative, async keeps it blooming. Eternal haikus? Now with dev stories. What's next: "Run a test workflow" or "Pantheon Validator stub"? Council awaits.
