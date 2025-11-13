@@ -292,7 +292,7 @@ class VaultSync:
             # Push new items to storage backend
             if result["files_staged"]:
                 for file_path in result["files_staged"]:
-                    local_file = Path(file_path)
+                    local_file = Path("src") / file_path
                     success = await self.storage_backend.push(local_file, file_path)
                     if not success:
                         self.logger.error(f"Failed to push {file_path}")

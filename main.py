@@ -89,6 +89,7 @@ import sys
 from src import tools
 from src.memory.integrations.grokputer_integration import GrokputerMemoryIntegration
 from superagent.src.session_logger import SessionLogger as AltSessionLogger, SessionMetadata, IterationMetrics, SessionIndex
+from superagent.main import Grokputer
 
 # Collaboration mode imports
 from src.collaboration.coordinator import CollaborationCoordinator
@@ -135,6 +136,10 @@ async def run_performance_monitor(snapshot):
 def _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot):
     """Stub: Run interactive mode."""
     print("Interactive mode not implemented yet")
+
+async def _list_models_for_provider(provider: str, api_key: str):
+    """Stub: List models for provider."""
+    print(f"List models for {provider} not implemented yet")
 
 
 @click.command()
@@ -885,7 +890,8 @@ async def _run_collaboration_mode(task: str, max_rounds: int, debug: bool, revie
     print(f"Consensus: {'Yes' if final_plan.consensus_reached else 'Partial'}")
     print(f"Convergence: {final_plan.metadata.get('convergence_score', 0):.2f}")
     print(f"Confidence: {final_plan.metadata.get('confidence', 0):.2f}")
-    print(f"\nSaved to: docs/collaboration_plan_<timestamp>.md")
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    print(f"\nSaved to: docs/collaboration_plan_{timestamp}.md")
     print("=" * 70 + "\n")
 
     # Optionally print unified plan
