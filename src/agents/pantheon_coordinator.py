@@ -109,7 +109,7 @@ class PantheonCoordinator(BaseAgent):
 
         self.agents = {
             "observer": observer,
-            "reasoner": reasoner,
+            "coordinator": reasoner,
             "actor": actor,
             "validator": validator,
             "learner": learner,
@@ -181,15 +181,15 @@ class PantheonCoordinator(BaseAgent):
             optimization = await self.agents["learner"].process_message(learner_msg)
 
         # Phase 1: Reasoning - Decompose task
-        if "reasoner" in self.agents:
+        if "coordinator" in self.agents:
             reasoner_msg = Message(
                 message_type="decompose_task",
                 from_agent="pantheon_coordinator",
-                to_agent="reasoner",
+                to_agent="coordinator",
                 priority=MessagePriority.NORMAL,
                 content={"task": task, "task_id": task_id},
             )
-            decomposed = await self.agents["reasoner"].process_message(reasoner_msg)
+            decomposed = await self.agents["coordinator"].process_message(reasoner_msg)
         else:
             # Fallback: Simple decomposition
             decomposed = {"subtasks": [{"type": "execute", "content": task}]}

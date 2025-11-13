@@ -27,7 +27,7 @@ class CognitiveAgentMixin:
         if cognitive_enabled:
             try:
                 self.cognitive_enhancer = CognitiveEnhancer(
-                    embed_dim=128, num_heads=8, memory_slots=50  # Smaller for compatibility  # Reasonable memory size
+                    embed_dim=128, num_heads=16, memory_slots=50  # Tuned for better performance  # Reasonable memory size
                 )
                 logger.info(f"Cognitive enhancement enabled for {getattr(self, 'agent_id', 'unknown_agent')}")
             except Exception as e:

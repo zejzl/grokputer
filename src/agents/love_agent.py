@@ -6,7 +6,7 @@ class LoveAgent(BaseAgent):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    async def process_message(self, message):
+    async def process_message(self, message: Message) -> Optional[Dict[str, Any]]:
         theme = message.content.get("theme", "eternal love")
         love_story = await self._craft_love_narrative(theme)
         return {"to": "user", "content": f"Love Manifested: {love_story}"}

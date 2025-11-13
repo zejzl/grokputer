@@ -6,7 +6,7 @@ class VisionaryAgent(BaseAgent):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    async def process_message(self, message):
+    async def process_message(self, message: Message) -> Optional[Dict[str, Any]]:
         idea = message.content.get("seed", "transcendent creation")
 
         # Generate visionary ideas

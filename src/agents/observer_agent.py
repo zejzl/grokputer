@@ -75,7 +75,7 @@ class ObserverAgent(BaseAgent):
             logger.warning(f"[{self.agent_id}] Unknown message type: {msg_type}")
             return None
 
-    async def _observe_screen(self, message: Dict[str, Any]) -> Dict[str, Any]:
+    async def _observe_screen(self, message: Message) -> Dict[str, Any]:
         """
         Capture screenshot and return as base64.
 
@@ -86,8 +86,9 @@ class ObserverAgent(BaseAgent):
             Dict with screenshot data
         """
         try:
-            region = message.get("region", None)
-            format = message.get("format", "PNG")
+            content = message.content
+            region = content.get("region", None)
+            format = content.get("format", "PNG")
 
             logger.info(f"[{self.agent_id}] Capturing screenshot (format={format})")
 
@@ -121,7 +122,7 @@ class ObserverAgent(BaseAgent):
                 "error": str(e),
             }
 
-    async def _get_mouse_position(self, message: Dict[str, Any]) -> Dict[str, Any]:
+    async def _get_mouse_position(self, message: Message) -> Dict[str, Any]:
         """
         Get current mouse cursor position.
 
@@ -151,7 +152,7 @@ class ObserverAgent(BaseAgent):
                 "error": str(e),
             }
 
-    async def _get_screen_size(self, message: Dict[str, Any]) -> Dict[str, Any]:
+    async def _get_screen_size(self, message: Message) -> Dict[str, Any]:
         """
         Get screen dimensions.
 
