@@ -111,7 +111,7 @@ class ActionExecutor:
 
     def _executor_loop(self):
         """Dedicated thread: Dequeue and execute actions serially."""
-        while not self._shutdown_flag:
+        while not self._shutdown:
             try:
                 # Get highest priority action
                 action = self.action_queue.get(timeout=1.0)

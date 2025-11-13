@@ -1,6 +1,10 @@
 import pytest
 import sys
+import warnings
 from unittest.mock import Mock, patch
+
+# Suppress llama_cpp warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="llama_cpp")
 
 
 # Global mocks for common deps

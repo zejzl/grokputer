@@ -17,7 +17,7 @@ from collections import defaultdict
 # Existing imports
 from src.core.base_agent import BaseAgent
 from src.core.message_bus import MessageBus, Message, MessagePriority
-from src.grok_client import GrokClient
+from src.grok_client import GrokClient, FallbackGrokClient
 from src.observability.session_logger import SessionLogger
 from src.observability.deadlock_detector import DeadlockDetector
 from src.cognitive.agent_integration import CognitiveCoordinatorMixin

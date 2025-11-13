@@ -170,6 +170,10 @@ class GrokClient:
         if self.session:
             await self.session.close()
 
+class FallbackGrokClient(GrokClient):
+    """Simple alias for GrokClient with fallback capabilities."""
+    pass
+
 # Usage
 async def main():
     client = FallbackGrokClient()

@@ -354,4 +354,3 @@ class UIUnderstandingModule:
             "content_areas": [element_to_dict(elem) for elem in understanding.content_areas],
             "accessibility_issues": understanding.accessibility_issues
         }
-<parameter name="filePath">src/ui_understanding.py

@@ -192,6 +192,7 @@ def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, sw
 
     # Setup logging early
     setup_logging(debug)
+    logger = logging.getLogger(__name__)
 
     # Handle analytics mode
     if analytics:

@@ -460,7 +460,8 @@ class PantheonCoordinator(BaseAgent):
 
     async def on_start(self):
         """Pantheon-specific startup."""
-        await super().on_start()\n        self.message_bus.subscribe("pantheon_todo_sync", self._handle_todo_sync)\n
+        await super().on_start()
+        self.message_bus.subscribe("pantheon_todo_sync", self._handle_todo_sync)
         self.session_logger.log_agent_start(self.agent_id)
 
     async def on_stop(self):
@@ -475,4 +476,28 @@ class PantheonCoordinator(BaseAgent):
             await self.agents["memory"].stop()
 
         await super().on_stop()
-\n\n    async def _handle_todo_sync(self, message: Message):\n        """Handle todo sync messages from dynamic todo manager."""\n        logger.info(f"[PANTHEON] Todo update received: {{message.content}}")\n\n        # Forward to reasoner (Council proxy)\n        if "reasoner" in self.agents:\n            todo_msg = Message(\n                message_type="todo_update",\n                from_agent="todo_manager",\n                to_agent="reasoner",\n                content=message.content\n            )\n            await self.agents["reasoner"].process_message(todo_msg)\n\n        # Forward to learner (Taskmaster proxy)\n        if "learner" in self.agents:\n            todo_msg = Message(\n                message_type="todo_update",\n                from_agent="todo_manager",\n                to_agent="learner",\n                content=message.content\n            )\n            await self.agents["learner"].process_message(todo_msg)\n\n        # Agents can publish edits back via message_bus
+    async def _handle_todo_sync(self, message: Message):
+        """Handle todo sync messages from dynamic todo manager."""
+        logger.info(f"[PANTHEON] Todo update received: {message.content}")
+
+        # Forward to reasoner (Council proxy)
+        if "reasoner" in self.agents:
+            todo_msg = Message(
+                message_type="todo_update",
+                from_agent="todo_manager",
+                to_agent="reasoner",
+                content=message.content
+            )
+            await self.agents["reasoner"].process_message(todo_msg)
+
+        # Forward to learner (Taskmaster proxy)
+        if "learner" in self.agents:
+            todo_msg = Message(
+                message_type="todo_update",
+                from_agent="todo_manager",
+                to_agent="learner",
+                content=message.content
+            )
+            await self.agents["learner"].process_message(todo_msg)
+
+        # Agents can publish edits back via message_bus

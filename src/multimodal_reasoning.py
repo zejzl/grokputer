@@ -614,4 +614,3 @@ class MultiModalReasoningEngine:
             "risks_assessment": result.risks_assessment,
             "processing_time": result.processing_time
         }
-<parameter name="filePath">src/multimodal_reasoning.py

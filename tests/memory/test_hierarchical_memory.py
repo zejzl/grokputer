@@ -20,6 +20,17 @@ def memory_config():
 
 
 @pytest.fixture
+def mock_redis_backend():
+    """Mock Redis backend for offline testing."""
+    mock_redis = Mock()
+    mock_redis.store_episode = Mock()
+    mock_redis.retrieve_context = Mock(return_value=[])
+    mock_redis.consolidate = Mock(return_value={"redis": "stats"})
+    mock_redis.get_connection = Mock(return_value=True)
+    mock_redis.close = Mock()
+    return mock_redis
+
+@pytest.fixture
 def hierarchical_memory(memory_config):
     """Create hierarchical memory manager for testing."""
     # Mock long-term backend
@@ -29,6 +40,12 @@ def hierarchical_memory(memory_config):
     mock_long_term.consolidate = Mock(return_value={"long_term": "stats"})
 
     memory = HierarchicalMemoryManager(memory_config, mock_long_term)
+    return memory
+
+@pytest.fixture
+def hierarchical_memory_redis(memory_config, mock_redis_backend):
+    """Create hierarchical memory manager with Redis backend for testing."""
+    memory = HierarchicalMemoryManager(memory_config, mock_redis_backend)
     return memory
 
 
