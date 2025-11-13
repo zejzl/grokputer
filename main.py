@@ -28,7 +28,7 @@ from adventure_mode import GrokputerAdventure
 sys.path.insert(0, str(Path(__file__).parent))
 
 from src import config
-from src.model_client import ModelClientFactory
+from src.model_client import ModelClientFactory, GrokClient
 from src.screen_observer import ScreenObserver
 from src.executor import ToolExecutor
 
@@ -109,6 +109,62 @@ def setup_logging(debug: bool = False):
     # Configure logging
     log_level = logging.DEBUG if debug else logging.INFO
     logging.basicConfig(level=log_level, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
+
+# Stub functions for missing implementations
+def start_mcp_server():
+    """Stub: Start MCP server."""
+    print("MCP server not implemented yet")
+
+def _get_api_key_for_provider_main(provider):
+    """Stub: Get API key for provider."""
+    return None
+
+async def _run_syntax_check(quick=False):
+    """Stub: Run syntax check."""
+    print("Syntax check not implemented yet")
+
+async def run_analytics_query(analytics, agent_name, limit):
+    """Stub: Run analytics query."""
+    print("Analytics query not implemented yet")
+
+async def run_performance_monitor(snapshot):
+    """Stub: Run performance monitor."""
+    return "Performance monitor not implemented yet"
+
+def _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot):
+    """Stub: Run interactive mode."""
+    print("Interactive mode not implemented yet")
+
+
+@click.command()
+@click.option("--task", help="Task description for the agent to execute")
+@click.option("--max-iterations", default=10, help="Maximum iterations for single-agent mode")
+@click.option("--max-rounds", default=5, help="Maximum rounds for collaboration modes")
+@click.option("--debug", is_flag=True, help="Enable debug logging")
+@click.option("--skip-boot", is_flag=True, help="Skip boot sequence and banner")
+@click.option("--provider", default="grok", help="AI provider (grok, claude, openai)")
+@click.option("--model", help="Specific model to use")
+@click.option("--swarm", is_flag=True, help="Run in multi-agent swarm mode")
+@click.option("--agent-roles", default="coordinator,observer,actor", help="Agent roles for swarm mode")
+@click.option("--messagebus", is_flag=True, help="Run in collaboration mode")
+@click.option("--pantheon", is_flag=True, help="Run in Pantheon 9-agent mode")
+@click.option("--providers", help="Comma-separated list of providers for MAF mode")
+@click.option("--maf-config", default="balanced", help="MAF configuration preset")
+@click.option("--review-mode", is_flag=True, help="Enable review mode for collaboration")
+@click.option("--analytics", is_flag=True, help="Enable analytics monitoring")
+@click.option("--agent-name", help="Agent name for analytics queries")
+@click.option("--limit", default=10, help="Limit for analytics queries")
+@click.option("--performance", is_flag=True, help="Show performance snapshot")
+@click.option("--list-models", is_flag=True, help="List available models for provider")
+@click.option("--syntax-check", is_flag=True, help="Run syntax check on codebase")
+@click.option("--quick-check", is_flag=True, help="Run quick syntax check")
+@click.option("--mcp", is_flag=True, help="Start MCP server")
+def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, swarm, agent_roles, messagebus, pantheon, providers, maf_config, review_mode, analytics, agent_name, limit, performance, list_models, syntax_check, quick_check, mcp):
+    """
+    Grokputer - VRZIBRZI Node
+    Main entry point for the observe-reason-act loop.
+    """
 
     # Start MCP server if requested
     if mcp:
@@ -943,10 +999,6 @@ async def _run_maf_mode(task: str, providers: list, maf_config: str, max_rounds:
     except Exception as e:
         logger.error(f"MAF mode failed: {e}", exc_info=True)
         print(f"\n[ERROR] MAF collaboration failed: {e}")
-
-
-if __name__ == "__main__":
-    main()
 
 
 def _run_single_agent_mode(

@@ -288,20 +288,6 @@ def daemon(target: str, interval: int, evolve_chance: float, no_redis: bool):
     asyncio.run(_daemon(target, interval, evolve_chance, no_redis))
 
 
-@cli.command()
-@click.argument("target", type=click.Path(exists=True))
-@click.option("--interval", type=int, default=60, help="Cycle interval in seconds")
-@click.option("--evolve-chance", type=float, default=0.3, help="Chance of param evolution")
-@click.option("--no-redis", is_flag=True, help="Disable Redis persistence")
-def daemon(target: str, interval: int, evolve_chance: float, no_redis: bool):
-    """
-    Run daemon mode for continuous code monitoring and evolution.
-
-    TARGET is the directory or file to monitor.
-    """
-    asyncio.run(_daemon(target, interval, evolve_chance, no_redis))
-
-
 async def _improve(
     target: str, category: str, severity: str, auto_approve_safe: bool, dangerously_skip_permissions: bool
 ):

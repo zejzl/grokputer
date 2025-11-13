@@ -13,6 +13,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 import logging
+
 try:
     import redis
     REDIS_AVAILABLE = True
@@ -25,15 +26,6 @@ try:
     load_dotenv()
 except ImportError:
     pass  # dotenv not available, use system env vars
-
-# Setup logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
-logger = logging.getLogger(__name__)
-import json
-import time
-from datetime import datetime
-from pathlib import Path
-import logging
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
