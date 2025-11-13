@@ -1,0 +1,25 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteCond %{HTTP_USER_AGENT} (facebookexternalhit|Facebot|Meta-ExternalFetcher) [NC]
+RewriteRule .* - [F,L]
+</IfModule>
+
+#
+# LIMIT HTTP POST ACCESS TO URL(s)
+#
+# Throw a 403/Forbidden for HTTP POST requests:
+# - containing specified string(s) in REQUEST_URI (before ? in URL) and
+# - made from outside allowed country zones or
+# - made from IP addresses not allowed.
+#
+<IfModule mod_maxminddb.c>
+    RewriteEngine on
+    MaxMindDBEnable on
+    RewriteCond %{REQUEST_METHOD} POST
+    RewriteCond %{REQUEST_URI} (feedback|contact-us|contactus|newsletter/subscriber/new)
+    # Allowed country zones (CC|CC|etc.)
+    RewriteCond %{ENV:GEOIP_COUNTRY_CODE} !^(SI|HR|HU|IT)$
+    # Allowed IP addresses (IP|IP|etc.)
+    RewriteCond %{REMOTE_ADDR} !(127.0.0.1)
+    RewriteRule ^ - [F]
+</IfModule>
