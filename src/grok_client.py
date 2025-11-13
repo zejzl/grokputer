@@ -1,220 +1,182 @@
+#!/usr/bin/env python3
 """
-Grok API client wrapper for Grokputer.
-Uses xAI's OpenAI-compatible API to communicate with Grok.
-
-Async-ready for multi-agent swarm operations.
+Grok Client with Provider Fallbacks
+Primary: Grok (xAI). Fallbacks: Claude (Anthropic), Gemini (Google).
+Async client with error handling and rate limiting.
+Integrates with analytics for fallback tracking.
 """
 
+import os
+import asyncio
+import aiohttp
+from typing import Optional, Dict, Any
+from dataclasses import dataclass
 import logging
-from typing import List, Dict, Any, Optional
-from openai import AsyncOpenAI
-from src import config
+from datetime import datetime
+
+# Analytics integration
+try:
+    from analytics import log_api_call, start_session, end_session
+    ANALYTICS_ENABLED = True
+except ImportError:
+    ANALYTICS_ENABLED = False
 
 logger = logging.getLogger(__name__)
 
+@dataclass
+class ProviderConfig:
+    name: str
+    api_key: str
+    base_url: str
+    model: str
+    max_retries: int = 3
+    rate_limit: float = 1.0  # Seconds between calls
 
-class GrokClient:
-    """
-    Async wrapper for xAI's Grok API using OpenAI-compatible interface.
-
-    All methods are async to enable parallel API calls in multi-agent swarms.
-    """
-
-    def __init__(self, api_key: Optional[str] = None, base_url: Optional[str] = None, model: Optional[str] = None):
-        """
-        Initialize the Grok client.
-
-        Args:
-            api_key: xAI API key (defaults to config.XAI_API_KEY)
-            base_url: API base URL (defaults to config.XAI_BASE_URL)
-            model: Model name (defaults to config.GROK_MODEL)
-        """
-        self.api_key = api_key or config.XAI_API_KEY
-        self.base_url = base_url or config.XAI_BASE_URL
-        self.model = model or config.GROK_MODEL
-
-        # Initialize AsyncOpenAI client pointing to xAI
-        self.client = AsyncOpenAI(
-            api_key=self.api_key,
-            base_url=self.base_url
-        )
-
-        logger.info(f"Initialized async Grok client: model={self.model}, base_url={self.base_url}")
-
-    async def create_message(
-        self,
-        task: str,
-        screenshot_base64: Optional[str] = None,
-        conversation_history: Optional[List[Dict[str, Any]]] = None,
-    ) -> Dict[str, Any]:
-        """
-        Send a message to Grok with optional screenshot and get a response (async).
-
-        Args:
-            task: The task description/prompt
-            screenshot_base64: Base64-encoded screenshot (optional)
-            conversation_history: Previous conversation messages (optional)
-
-        Returns:
-            Response from Grok API
-        """
-        try:
-            messages = []
-
-            # Add system prompt
-            messages.append({"role": "system", "content": config.SYSTEM_PROMPT})
-
-            # Add conversation history if provided
-            if conversation_history:
-                messages.extend(conversation_history)
-
-            # Build user message
-            user_content = f"Task: {task}"
-
-            # Add screenshot if provided
-            if screenshot_base64:
-                user_content += f"\n\nScreen observation available (base64): {screenshot_base64[:24]}..."
-
-            messages.append({"role": "user", "content": user_content})
-
-            logger.info(f"Sending async message to Grok: task='{task[:50]}...'")
-
-            # Make async API call
-            response = await self.client.chat.completions.create(
-                model=self.model,
-                messages=messages,
-                tools=config.TOOLS if config.TOOLS else None,
-                temperature=0.7,
-                max_tokens=4096,
-            )
-
-            logger.info(f"Received response from Grok: {response.id}")
-
-            return self._parse_response(response)
-
-        except Exception as e:
-            logger.error(f"Error calling Grok API: {e}")
-            return {"status": "error", "error": str(e)}
-
-    def _parse_response(self, response: Any) -> Dict[str, Any]:
-        """
-        Parse the API response into a standardized format.
-
-        Args:
-            response: Raw API response
-
-        Returns:
-            Parsed response dictionary
-        """
-        try:
-            choice = response.choices[0]
-            message = choice.message
-
-            result = {
-                "status": "success",
-                "response_id": response.id,
-                "model": response.model,
-                "finish_reason": choice.finish_reason,
-                "content": message.content,
-                "tool_calls": [],
+class FallbackGrokClient:
+    """Async client with fallback providers."""
+    def __init__(self):
+        self.providers = self._load_providers()
+        self.session = None
+        self.current_provider_index = 0
+        self.rate_limiter = asyncio.Semaphore(1)  # Simple rate limit
+    
+    def _load_providers(self) -> list[ProviderConfig]:
+        """Load providers from .env (priority: grok > fallbacks)."""
+        priority_provider = os.getenv('PRIORITY_PROVIDER', 'grok')
+        fallback_str = os.getenv('FALLBACK_PROVIDERS', 'claude,gemini')
+        fallbacks = [p.strip() for p in fallback_str.split(',') if p.strip()]
+        
+        providers = []
+        
+        # Priority
+        if priority_provider == 'grok':
+            providers.append(ProviderConfig(
+                name='grok', api_key=os.getenv('XAI_API_KEY'), 
+                base_url=os.getenv('XAI_BASE_URL', 'https://api.x.ai/v1'),
+                model=os.getenv('GROK_MODEL', 'grok-beta')
+            ))
+        elif priority_provider == 'claude':
+            providers.append(ProviderConfig(
+                name='claude', api_key=os.getenv('ANTHROPIC_API_KEY'), 
+                base_url='https://api.anthropic.com/v1', 
+                model=os.getenv('CLAUDE_MODEL', 'claude-3-sonnet-20240229')
+            ))
+        # Add Gemini similarly if priority
+        
+        # Fallbacks
+        for fb in fallbacks:
+            if fb == 'claude' and os.getenv('ANTHROPIC_API_KEY'):
+                if 'claude' not in [p.name for p in providers]:
+                    providers.append(ProviderConfig(
+                        name='claude', api_key=os.getenv('ANTHROPIC_API_KEY'),
+                        base_url='https://api.anthropic.com/v1',
+                        model=os.getenv('CLAUDE_MODEL', 'claude-3-sonnet-20240229')
+                    ))
+            elif fb == 'gemini' and os.getenv('GEMINI_API_KEY'):
+                if 'gemini' not in [p.name for p in providers]:
+                    providers.append(ProviderConfig(
+                        name='gemini', api_key=os.getenv('GEMINI_API_KEY'),
+                        base_url='https://generativelanguage.googleapis.com/v1beta',
+                        model=os.getenv('GEMINI_MODEL', 'gemini-pro')
+                    ))
+        
+        logger.info(f"Loaded providers: {[p.name for p in providers]}")
+        return providers
+    
+    async def _get_session(self):
+        if self.session is None:
+            connector = aiohttp.TCPConnector(limit=10, limit_per_host=2)
+            timeout = aiohttp.ClientTimeout(total=30)
+            self.session = aiohttp.ClientSession(connector=connector, timeout=timeout)
+        return self.session
+    
+    async def _call_provider(self, provider: ProviderConfig, messages: list[Dict[str, str]], session_id: Optional[int] = None) -> Optional[str]:
+        """Call a single provider async."""
+        async with self.rate_limiter:
+            await asyncio.sleep(provider.rate_limit)
+            
+            headers = {'Content-Type': 'application/json'}
+            if provider.name == 'grok':
+                headers['Authorization'] = f'Bearer {provider.api_key}'
+            elif provider.name == 'claude':
+                headers['x-api-key'] = provider.api_key
+                headers['anthropic-version'] = '2023-06-01'
+            elif provider.name == 'gemini':
+                # Gemini uses key in URL
+                
+                url = f"{provider.base_url}/models/{provider.model}:generateContent?key={provider.api_key}"
+            else:
+                url = f"{provider.base_url}/chat/completions"
+            
+            payload = {
+                'model': provider.model,
+                'messages': messages,
+                'max_tokens': 1024,
+                'temperature': 0.7
             }
+            
+            if provider.name == 'claude':
+                payload = {
+                    'model': provider.model,
+                    'max_tokens': 1024,
+                    'messages': messages
+                }
+            elif provider.name == 'gemini':
+                payload = {
+                    'contents': [{'parts': [{'text': m['content'] for m in messages}]}]
+                }
+        
+        async with self._get_session() as session:
+            try:
+                async with session.post(url, json=payload, headers=headers) as response:
+                    response_time = response.connection.transport.get_extra_info('total_time', 0) or 0
+                    if response.status == 200:
+                        data = await response.json()
+                        if provider.name == 'grok' or provider.name == 'claude':
+                            content = data['choices'][0]['message']['content']
+                        elif provider.name == 'gemini':
+                            content = data['candidates'][0]['content']['parts'][0]['text']
+                        
+                        # Log to analytics
+                        if ANALYTICS_ENABLED:
+                            log_api_call(session_id, url, response_time, response.status)
+                        
+                        logger.info(f"{provider.name} success: {response_time:.2f}s")
+                        return content
+                    else:
+                        error_text = await response.text()
+                        logger.warning(f"{provider.name} error {response.status}: {error_text}")
+                        if ANALYTICS_ENABLED:
+                            log_api_call(session_id, url, response_time, response.status)
+                        return None
+            except Exception as e:
+                logger.error(f"{provider.name} exception: {e}")
+                if ANALYTICS_ENABLED:
+                    log_api_call(session_id, f"{provider.base_url}/error", 0, 500)
+                return None
+    
+    async def chat(self, messages: list[Dict[str, str]], session_id: Optional[int] = None) -> str:
+        """Chat with fallback cycling."""
+        for i, provider in enumerate(self.providers):
+            logger.info(f"Trying provider {i+1}/{len(self.providers)}: {provider.name}")
+            response = await self._call_provider(provider, messages, session_id)
+            if response:
+                return response
+        
+        logger.error("All providers failed")
+        return "Error: All AI providers unavailable. Check API keys and connections."
+    
+    async def close(self):
+        if self.session:
+            await self.session.close()
 
-            # Parse tool calls if present
-            if hasattr(message, "tool_calls") and message.tool_calls:
-                for tool_call in message.tool_calls:
-                    result["tool_calls"].append(
-                        {
-                            "id": tool_call.id,
-                            "type": tool_call.type,
-                            "function": {"name": tool_call.function.name, "arguments": tool_call.function.arguments},
-                        }
-                    )
+# Usage
+async def main():
+    client = FallbackGrokClient()
+    messages = [{"role": "user", "content": "Hello!"}]
+    response = await client.chat(messages)
+    print(response)
+    await client.close()
 
-                logger.info(f"Grok requested {len(result['tool_calls'])} tool calls")
-
-            return result
-
-        except Exception as e:
-            logger.error(f"Error parsing Grok response: {e}")
-            return {"status": "error", "error": f"Failed to parse response: {e}"}
-
-    async def continue_conversation(
-        self,
-        tool_results: List[Dict[str, Any]],
-        conversation_history: List[Dict[str, Any]]
-    ) -> Dict[str, Any]:
-        """
-        Continue the conversation after tool execution (async).
-
-        Args:
-            tool_results: Results from executed tools
-            conversation_history: Previous conversation messages
-
-        Returns:
-            Next response from Grok
-        """
-        try:
-            messages = [{"role": "system", "content": config.SYSTEM_PROMPT}]
-            messages.extend(conversation_history)
-
-            # Add tool results as assistant messages
-            for result in tool_results:
-                messages.append(
-                    {
-                        "role": "tool",
-                        "tool_call_id": result.get("tool_call_id", ""),
-                        "content": str(result.get("result", "")),
-                    }
-                )
-
-            logger.info(f"Continuing conversation with {len(tool_results)} tool results")
-
-            # Make async API call
-            response = await self.client.chat.completions.create(
-                model=self.model,
-                messages=messages,
-                tools=config.TOOLS if config.TOOLS else None,
-                temperature=0.7,
-                max_tokens=4096,
-            )
-
-            return self._parse_response(response)
-
-        except Exception as e:
-            logger.error(f"Error continuing conversation: {e}")
-            return {"status": "error", "error": str(e)}
-
-    async def test_connection(self) -> bool:
-        """
-        Test the connection to Grok API (async).
-
-        Returns:
-            True if connection is successful, False otherwise
-        """
-        # Basic validation first
-        if not self.api_key or not self.api_key.startswith("xai-"):
-            logger.error("Invalid or missing xAI API key")
-            return False
-
-        try:
-            logger.info("Testing Grok API connection...")
-
-            # Make async API call with timeout
-            response = await self.client.chat.completions.create(
-                model=self.model,
-                messages=[{"role": "user", "content": "Hello, Grok. This is a connection test."}],
-                max_tokens=50,
-                timeout=10.0,  # 10 second timeout
-            )
-
-            logger.info("Grok API connection successful")
-            return True
-
-        except Exception as e:
-            logger.error(f"Grok API connection failed: {e}")
-            # For development, return True if we have a valid-looking key
-            # In production, this should return False
-            if "timeout" in str(e).lower() or "connection" in str(e).lower():
-                logger.warning("API timeout/connection error, but key appears valid - allowing for development")
-                return True
-            return False
+if __name__ == '__main__':
+    asyncio.run(main())
