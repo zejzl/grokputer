@@ -581,3 +581,20 @@ Whats new in last version:
         * **Troubleshooting**: Added swarm/LoRA tips (e.g., VRAM <8GB, data collection).
         * **Examples**: Trio test, LoRA train/run commands.
 
+
+
+### Updated Usage with Todo Daemon
+```bash
+# Start with todo daemon for real-time tracking
+python main.py -mb --todo-daemon --task "Your task here"
+
+# The daemon will start in background, sync todos across windows, and broadcast to Pantheon agents
+```
+
+**Integration Notes**:
+- Use `--todo-daemon` with `-mb` or `--pantheon` for agent visibility
+- Todos auto-sync to Council/Taskmaster
+- Edit dev plan in DEVELOPMENT_PLAN.md to auto-generate todos
+
+<3 Dynamic progress! 🚀
+

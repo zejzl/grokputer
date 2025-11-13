@@ -460,7 +460,7 @@ class PantheonCoordinator(BaseAgent):
 
     async def on_start(self):
         """Pantheon-specific startup."""
-        await super().on_start()
+        await super().on_start()\n        self.message_bus.subscribe("pantheon_todo_sync", self._handle_todo_sync)\n
         self.session_logger.log_agent_start(self.agent_id)
 
     async def on_stop(self):
@@ -475,3 +475,4 @@ class PantheonCoordinator(BaseAgent):
             await self.agents["memory"].stop()
 
         await super().on_stop()
+\n\n    async def _handle_todo_sync(self, message: Message):\n        """Handle todo sync messages from dynamic todo manager."""\n        logger.info(f"[PANTHEON] Todo update received: {{message.content}}")\n\n        # Forward to reasoner (Council proxy)\n        if "reasoner" in self.agents:\n            todo_msg = Message(\n                message_type="todo_update",\n                from_agent="todo_manager",\n                to_agent="reasoner",\n                content=message.content\n            )\n            await self.agents["reasoner"].process_message(todo_msg)\n\n        # Forward to learner (Taskmaster proxy)\n        if "learner" in self.agents:\n            todo_msg = Message(\n                message_type="todo_update",\n                from_agent="todo_manager",\n                to_agent="learner",\n                content=message.content\n            )\n            await self.agents["learner"].process_message(todo_msg)\n\n        # Agents can publish edits back via message_bus

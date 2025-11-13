@@ -32,7 +32,7 @@ class ProviderConfig:
     max_retries: int = 3
     rate_limit: float = 1.0  # Seconds between calls
 
-class FallbackGrokClient:
+class GrokClient:
     """Async client with fallback providers."""
     def __init__(self):
         self.providers = self._load_providers()

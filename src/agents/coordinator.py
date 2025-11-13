@@ -165,7 +165,7 @@ class Coordinator(BaseAgent, CognitiveCoordinatorMixin):
     def __init__(
         self,
         message_bus: MessageBus = None,
-        grok_client: GrokClient = None,
+        grok_client: FallbackGrokClient = None,
         session_logger: SessionLogger = None,
         deadlock_detector: DeadlockDetector = None,
         config: Dict[str, Any] = None,
@@ -199,7 +199,7 @@ Example format:
         # Initialize cognitive capabilities
         CognitiveCoordinatorMixin.__init__(self, cognitive_enabled=cognitive_enabled)
 
-        self.grok_client = grok_client or GrokClient()
+        self.grok_client = grok_client or FallbackGrokClient()
         self.deadlock_detector = deadlock_detector
 
         # Enable TaskClient integration
@@ -1337,7 +1337,7 @@ if __name__ == "__main__":
     bus = MessageBus()
     logger = SessionLogger(session_id="test", task="coord_test", log_dir=Path("./logs"), swarm_mode=True)
     detector = DeadlockDetector()
-    grok = GrokClient()
+    grok = FallbackGrokClient()
 
     coord = Coordinator(
         message_bus=bus, grok_client=grok, session_logger=logger, deadlock_detector=detector, config={"debug": True}

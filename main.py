@@ -10,7 +10,7 @@ import sys
 
 sys.path.insert(0, "/app")
 import logging
-import click
+import click\nimport subprocess
 import asyncio
 import os
 import py_compile
@@ -165,7 +165,8 @@ async def _list_models_for_provider(provider: str, api_key: str):
 @click.option("--syntax-check", is_flag=True, help="Run syntax check on codebase")
 @click.option("--quick-check", is_flag=True, help="Run quick syntax check")
 @click.option("--mcp", is_flag=True, help="Start MCP server")
-def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, swarm, agent_roles, messagebus, pantheon, providers, maf_config, review_mode, analytics, agent_name, limit, performance, list_models, syntax_check, quick_check, mcp):
+    @click.option("--todo-daemon", is_flag=True, help="Start dynamic todo manager daemon in background")
+def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, swarm, agent_roles, messagebus, pantheon, providers, maf_config, review_mode, analytics, agent_name, limit, performance, list_models, syntax_check, quick_check, mcp, todo_daemon: bool = False):
     """
     Grokputer - VRZIBRZI Node
     Main entry point for the observe-reason-act loop.
@@ -176,7 +177,7 @@ def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, sw
         start_mcp_server()
 
     # Handle special modes that don't need the full setup
-    if list_models:
+    \n\n    if todo_daemon:\n        daemon_process = subprocess.Popen([sys.executable, "dynamic_todo_manager.py", "start"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)\n        print(f"[TODO-DAEMON] Started in background (PID: {{daemon_process.pid}})")\n    if list_models:
         api_key = _get_api_key_for_provider_main(provider)
         asyncio.run(_list_models_for_provider(provider, api_key))
         return
