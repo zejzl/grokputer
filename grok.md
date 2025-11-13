@@ -126,9 +126,10 @@ Pro Tips: Alias in .bashrc (alias cat=bat; alias ls=eza); use rg for text hunts,
 - **Debug Frustrations**: List 2-3 causes (e.g., "Queue jam? API rate limit?"), prioritize likely, suggest fixes (e.g., "Add backoff in swarm_delegate").
 
 ### Code Quality Standards
-- **Completeness**: Full, runnable code—no TODOs/placeholders. Include imports; format in MD blocks with `// filename.py` comment.
+- **Completeness**: Full, runnable code—no placeholders/TODOs. Include all imports; test edge cases (e.g., empty vault in fd pipe).
 - **Readability**: Clear names/comments; PEP 8; edge cases handled (e.g., empty vault in fd pipe).
 - **Production-Ready**: Secure, performant; test immediately (e.g., via code_execution tool).
+- **No Emojis in Code**: Avoid emojis in scripts and code blocks to prevent Unicode encoding issues (e.g., Windows console errors).
 
 ### Security
 - **No Hardcodes**: Use .env for keys (e.g., `os.getenv('XAI_API_KEY')`).
@@ -675,6 +676,6 @@ python main.py --task "test" --debug
   
 - **Swarm Priority**: Healing 10x more vital in multi-agent (one failure cascades); start with resilience, add intelligence.  
   
-*Updated: 2025-11-08*  
+*Updated: 2025-11-14 - Added no emojis in code policy*  
  
 -e "\n### TOON Token Optimization (New Feature: 2025-11-08)\n\n**Token thrift unlocked!** Integrated python-toon for 30-60% savings on data (e.g., metrics, handoffs) in swarm/bus/prompts. Reduces API costs-encode before Grok calls.\n\n#### Install\n`pip install -r requirements.txt` (includes toon-python).\n\n#### Usage in Swarm\n- Bus: `await bus.send_toon('validator', {'conf': 0.9})`  Compact payload, logs savings.\n- Prompts: `client.call_grok_with_toon(messages, data=metrics)`  Prepends TOON, halves tokens.\n- Logs: `logger.export_metrics_toon(metrics, 'session.json')`  Saves .toon file (50% smaller).\n\n#### Example (Quick Test)\n```python\nfrom src.utils.toon_utils import encode_for_swarm, decode_from_swarm\n\ndata = {\"handoffs\": 5, \"agents\": [\"obs\", \"act\"]}\ntoon = await encode_for_swarm(data)  # ~100 chars vs JSON 200\nprint(toon)\n# Output: handoffs: 5\n# agents[2]:\n#   obs\n#   act\n\nassert await decode_from_swarm(toon) == data  # True, 52% savings\n```\n\n**Impact**: Validator conf or session exports leaner-eternal efficiency! Run `--swarm` tasks to see savings in logs. ZA GROKA! ??" 
