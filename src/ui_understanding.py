@@ -353,5 +353,5 @@ class UIUnderstandingModule:
             "navigation_elements": [element_to_dict(elem) for elem in understanding.navigation_elements],
             "content_areas": [element_to_dict(elem) for elem in understanding.content_areas],
             "accessibility_issues": understanding.accessibility_issues
-        }</content>
+        }
 <parameter name="filePath">src/ui_understanding.py

@@ -5,7 +5,7 @@ import re
 from src.ethics.ethical_bounds import ethical_bounds
 
 class GuardianAgent(BaseAgent):
-    \"\"\"Guardian Agent: Safety scanning for actions before execution.
+    """Guardian Agent: Safety scanning for actions before execution.
 
     Intercepts proposed actions from other agents, assesses risks, and approves/rejects.
     Uses regex for dangerous commands, ethical checks, and context analysis.

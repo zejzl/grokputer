@@ -518,5 +518,5 @@ class AgentLifecycleManager:
 
     def set_health_change_callback(self, callback: Callable[[str], None]):
         """Set callback for system health changes."""
-        self.on_system_health_change = callback</content>
+        self.on_system_health_change = callback
 <parameter name="filePath">src/core/agent_lifecycle_manager.py

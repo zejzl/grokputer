@@ -70,7 +70,8 @@ class MetricsHandler(BaseHTTPRequestHandler):
         # Agent-specific API calls
         for agent, calls in data['api']['calls_per_agent'].items():
             lines.append(f"# HELP agent_api_calls_total Total API calls for agent {agent}")
-            lines.append("# TYPE agent_api_calls_total counter"            lines.append(f"agent_api_calls_total{{agent=\"{agent}\"}} {calls}")
+            lines.append("# TYPE agent_api_calls_total counter")
+            lines.append(f"agent_api_calls_total{{agent=\"{agent}\"}} {calls}")
 
         # MAF metrics
         lines.append("# HELP maf_orchestrations_total Total number of MAF orchestrations")

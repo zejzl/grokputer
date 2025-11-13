@@ -812,5 +812,5 @@ class MultiModalReasoningEngine:
             } if result.final_decision else None,
             "confidence_score": result.confidence_score,
             "reasoning_time": result.reasoning_time
-        }</content>
+        }
 <parameter name="filePath">src/multimodal_reasoning_engine.py
