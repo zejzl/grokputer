@@ -1,0 +1,27 @@
+{
+  "name": "Test Optimization Duo",
+  "description": "Dual-agent configuration for code optimization tasks",
+  "agents": [
+    {
+      "name": "optimizer",
+      "provider": "grok",
+      "role": "code_optimizer",
+      "model": "grok-4-fast-reasoning",
+      "capabilities": ["code_analysis", "optimization", "refactoring"],
+      "temperature": 0.3
+    },
+    {
+      "name": "reviewer",
+      "provider": "claude",
+      "role": "code_reviewer",
+      "model": "claude-3-sonnet-20240229",
+      "capabilities": ["code_review", "best_practices", "security"],
+      "temperature": 0.1
+    }
+  ],
+  "workflow": "optimization_pipeline",
+  "max_rounds": 3,
+  "consensus_threshold": 0.7,
+  "task_types": ["code_optimization", "performance_improvement", "refactoring"],
+  "output_format": "structured_markdown"
+}

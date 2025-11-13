@@ -15,6 +15,7 @@ import threading
 
 from src.core.base_agent import BaseAgent
 from src.core.message_bus import MessageBus, Message, MessagePriority
+from src.tools.alerts import get_haiku_alerts
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +45,30 @@ class AnalyzerAgent(BaseAgent):
         self.monitoring_thread: Optional[threading.Thread] = None
         self.monitoring_active = False
 
+        # Initialize haiku alerts
+        self.alerts = get_haiku_alerts(self.message_bus)
+
         logger.info(f"[{self.agent_id}] Analyzer agent initialized - Performance monitoring & bottleneck detection")
+
+    async def _trigger_bottleneck_alert(self, bottleneck: Dict[str, Any]):
+        """Trigger haiku alert for system bottleneck."""
+        try:
+            alert_message = Message(
+                from_agent=self.agent_id,
+                to_agent="alerts",
+                message_type="system_alert",
+                content={
+                    "alert_type": "bottleneck",
+                    "bottleneck": bottleneck,
+                    "task_name": f"System {bottleneck['type']} Monitor",
+                    "task_type": "monitoring",
+                    "task_id": f"bottleneck_{bottleneck['type']}_{int(time.time())}"
+                },
+                priority=MessagePriority.HIGH
+            )
+            await self.message_bus.send(alert_message)
+        except Exception as e:
+            logger.error(f"Failed to trigger bottleneck alert: {e}")
 
     async def process_message(self, message: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
@@ -80,11 +104,13 @@ class AnalyzerAgent(BaseAgent):
         """Initialize performance monitoring."""
         await super().on_start()
         self._start_monitoring_thread()
+        await self.alerts.start_listening()
         logger.info(f"[{self.agent_id}] Performance monitoring started")
 
     async def on_stop(self):
         """Cleanup monitoring resources."""
         self._stop_monitoring_thread()
+        await self.alerts.stop_listening()
         await super().on_stop()
         logger.info(f"[{self.agent_id}] Performance monitoring stopped")
 
@@ -227,7 +253,11 @@ class AnalyzerAgent(BaseAgent):
             return {"error": str(e), "timestamp": datetime.now().isoformat()}
 
     def _analyze_system_bottlenecks(self) -> List[Dict[str, Any]]:
-        """Analyze system for performance bottlenecks."""
+        """
+        Analyze current system metrics for bottlenecks.
+        Returns list of detected bottlenecks.
+        Triggers haiku alerts for critical issues.
+        """
         bottlenecks = []
 
         if not self.metrics_history:
@@ -238,16 +268,33 @@ class AnalyzerAgent(BaseAgent):
 
         # CPU bottleneck detection
         if latest.get("cpu", {}).get("percent", 0) > self.config["alert_cpu_threshold"]:
-            bottlenecks.append(
-                {
-                    "type": "cpu",
-                    "severity": "high" if latest["cpu"]["percent"] > 95 else "medium",
-                    "metric": "CPU Usage",
-                    "value": latest["cpu"]["percent"],
-                    "threshold": self.config["alert_cpu_threshold"],
-                    "description": f"High CPU usage: {latest['cpu']['percent']:.1f}%",
-                }
-            )
+            bottleneck = {
+                "type": "cpu",
+                "severity": "high" if latest["cpu"]["percent"] > 95 else "medium",
+                "metric": "CPU Usage",
+                "value": latest["cpu"]["percent"],
+                "threshold": self.config["alert_cpu_threshold"],
+                "description": f"High CPU usage: {latest['cpu']['percent']:.1f}%",
+            }
+            bottlenecks.append(bottleneck)
+
+            # Trigger haiku alert for CPU bottleneck
+            asyncio.create_task(self._trigger_bottleneck_alert(bottleneck))
+
+        # Memory bottleneck detection
+        if latest.get("memory", {}).get("percent", 0) > self.config["alert_memory_threshold"]:
+            bottleneck = {
+                "type": "memory",
+                "severity": "high" if latest["memory"]["percent"] > 95 else "medium",
+                "metric": "Memory Usage",
+                "value": latest["memory"]["percent"],
+                "threshold": self.config["alert_memory_threshold"],
+                "description": f"High memory usage: {latest['memory']['percent']:.1f}%",
+            }
+            bottlenecks.append(bottleneck)
+
+            # Trigger haiku alert for memory bottleneck
+            asyncio.create_task(self._trigger_bottleneck_alert(bottleneck))
 
         # Memory bottleneck detection
         if latest.get("memory", {}).get("percent", 0) > self.config["alert_memory_threshold"]:
