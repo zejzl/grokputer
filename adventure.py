@@ -259,17 +259,26 @@ class InteractiveAdventure:
         print("Game saved to savegame.json")
 
     def load_game(self):
-        if os.path.exists("savegame.json"):
-            with open("savegame.json", "r") as f:
-                loaded = json.load(f)
-                if "sanity" in loaded:
-                    loaded["sanity"] = float(loaded["sanity"]) if loaded["sanity"] != "inf" else float("inf")
-                else:
-                    loaded["sanity"] = float("inf")
-                self.state = loaded
-            print("Game loaded from savegame.json")
-        else:
-            print("No save file found.")
+        try:
+            from savegame import data as loaded
+            if "sanity" in loaded:
+                loaded["sanity"] = float(loaded["sanity"]) if loaded["sanity"] != "inf" else float("inf")
+            else:
+                loaded["sanity"] = float("inf")
+            self.state = loaded
+            print("Game loaded from savegame.py")
+        except ImportError:
+            if os.path.exists("savegame.json"):
+                with open("savegame.json", "r") as f:
+                    loaded = json.load(f)
+                    if "sanity" in loaded:
+                        loaded["sanity"] = float(loaded["sanity"]) if loaded["sanity"] != "inf" else float("inf")
+                    else:
+                        loaded["sanity"] = float("inf")
+                    self.state = loaded
+                print("Game loaded from savegame.json")
+            else:
+                print("No save file found.")
 
     def run(self):
         print("GROKPUTER ADVENTURE: EVOLVE THE VOID")

@@ -17,6 +17,7 @@ import py_compile
 import signal
 import time
 from pathlib import Path
+from datetime import datetime
 from dotenv import load_dotenv
 
 # Add src to path
@@ -83,6 +84,14 @@ from typing import Optional
 from pathlib import Path
 import ast
 import sys
+=======
+from src.tools import invoke_prayer, analytics_query_tool, performance_monitor_tool
+from src.memory.integrations.grokputer_integration import GrokputerMemoryIntegration
+from src.session_logger import SessionLogger, SessionMetadata, IterationMetrics, SessionIndex
+>>>>>>> Stashed changes
+
+# Collaboration mode imports
+from src.collaboration.coordinator import CollaborationCoordinator
 
 
 def setup_logging(debug: bool = False):
@@ -96,865 +105,6 @@ def setup_logging(debug: bool = False):
 
     # Create logs directory if needed
     config.LOG_FILE.parent.mkdir(exist_ok=True)
-
-    # Configure logging
-    logging.basicConfig(
-        level=log_level,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        handlers=[logging.FileHandler(config.LOG_FILE), logging.StreamHandler(sys.stdout)],
-    )
-
-    logger = logging.getLogger(__name__)
-    logger.info("=" * 70)
-    logger.info("GROKPUTER INITIALIZED - VRZIBRZI NODE")
-    logger.info("=" * 70)
-
-    return logger
-
-
-def start_mcp_server():
-    """Start the MCP server in a separate process."""
-    import subprocess
-    import sys
-
-    try:
-        logging.info("Starting MCP server on port 5000...")
-        # Start MCP server as subprocess (detached)
-        process = subprocess.Popen([sys.executable, "mcp/tools_handler.py"], stdout=None, stderr=None, stdin=None)
-        logging.info(f"MCP server started with PID {process.pid}")
-        return process
-    except Exception as e:
-        logging.error(f"Failed to start MCP server: {e}")
-        return None
-
-
-class Grokputer:
-    """
-    Main Grokputer class implementing the observe-reason-act loop.
-    """
-
-    def __init__(self, debug: bool = False, provider: str = "grok", model: str = None):
-        """
-        Initialize Grokputer.
-
-        Args:
-            debug: Enable debug mode
-            provider: AI provider ('grok', 'openai', 'claude', 'ollama')
-            model: Specific model name (optional)
-        """
-        self.logger = setup_logging(debug)
-
-        # Initialize model client based on provider
-        self.provider = provider
-        self.model_name = model
-
-        # Get API key based on provider
-        api_key = self._get_api_key_for_provider(provider)
-
-        # Create model client
-        self.model_client = ModelClientFactory.create_client(
-            provider=provider, api_key=api_key, model=model or self._get_default_model_for_provider(provider)
-        )
-
-        # Keep backward compatibility
-        self.grok_client = self.model_client
-
-        self.screen_observer = ScreenObserver()
-        self.executor = ToolExecutor()
-        self.conversation_history = []
-
-        self.logger.info(f"Grokputer initialized with {provider} provider, model: {self.model_client.model}")
-
-    def _get_api_key_for_provider(self, provider: str) -> str:
-        """Get the appropriate API key for the provider."""
-        if provider in ["grok", "xai"]:
-            return config.XAI_API_KEY
-        elif provider in ["openai", "gpt"]:
-            return os.getenv("OPENAI_API_KEY", "")
-        elif provider in ["claude", "anthropic"]:
-            return os.getenv("ANTHROPIC_API_KEY", "")
-        elif provider in ["gemini", "google"]:
-            return os.getenv("GEMINI_API_KEY", "")
-        elif provider == "ollama":
-            return ""  # Ollama doesn't need an API key
-        else:
-            raise ValueError(f"Unsupported provider: {provider}")
-
-    def _get_default_model_for_provider(self, provider: str) -> str:
-        """Get default model for provider."""
-        defaults = {
-            "grok": config.GROK_MODEL,
-            "openai": "gpt-4",
-            "claude": "claude-3-sonnet-20240229",
-            "gemini": config.GEMINI_MODEL,
-            "ollama": "llama2",
-        }
-        return defaults.get(provider, "default")
-
-    async def boot(self):
-        """
-        Boot sequence: invoke server prayer and test connection.
-        """
-        self.logger.info("Starting boot sequence...")
-        print(
-            """
-[GROKPUTER] BOOTING - VRZIBRZI NODE
-"""
-        )
-        self.logger.info("Grokputer booted with banner")
-
-        # Invoke server prayer
-        # prayer_result = invoke_prayer()  # Commented out due to import issues
-        # if prayer_result["status"] == "success":
-        self.logger.info("Server prayer invoked: ETERNAL | INFINITE")
-        # else:
-        #     self.logger.warning(f"Prayer invocation failed: {prayer_result}")
-
-        # Test Grok API connection
-        if await self.grok_client.test_connection():
-            self.logger.info("[OK] Grok API connection verified")
-            print("[OK] Grok API connection verified")
-        else:
-            self.logger.error("[FAIL] Grok API connection failed")
-            print("[FAIL] Grok API connection failed - check your API key and credits")
-            raise ConnectionError("Failed to connect to Grok API")
-
-        self.logger.info("Boot sequence complete. Ready to operate.")
-
-    async def run_task(self, task: str, max_iterations: int = 10):
-        """
-        Execute a task using the observe-reason-act loop.
-
-        Args:
-            task: Task description
-            max_iterations: Maximum number of loop iterations
-        """
-        self.logger.info(f"Starting task: {task}")
-        print(f"\n[TASK] {task}\n")
-
-        iteration = 0
-
-        while iteration < max_iterations:
-            iteration += 1
-            self.logger.info(f"--- Iteration {iteration}/{max_iterations} ---")
-            print(f"\n{'='*70}")
-            print(f"Iteration {iteration}/{max_iterations}")
-            print(f"{'='*70}\n")
-
-            # OBSERVE: Capture screenshot
-            print("[OBSERVE] Capturing screen...")
-            screenshot_base64 = None
-            try:
-                screenshot_base64 = await self.screen_observer.screenshot_to_base64()
-                self.logger.info(f"Screenshot captured: {len(screenshot_base64)} bytes")
-            except Exception as e:
-                self.logger.error(f"Failed to capture screenshot: {e}")
-                screenshot_base64 = None
-
-            # REASON: Send to Grok
-            print("[REASON] Sending to Grok...")
-            response = await self.grok_client.create_message(
-                task=task if iteration == 1 else "Continue the task.",
-                screenshot_base64=screenshot_base64,
-                conversation_history=self.conversation_history if iteration > 1 else None,
-            )
-
-            if response["status"] != "success":
-                self.logger.error(f"Grok API error: {response}")
-                print(f"[ERROR] {response.get('error', 'Unknown error')}")
-                break
-
-            # Log Grok's response
-            if response.get("content"):
-                print(f"\n[GROK] {response['content']}\n")
-                self.logger.info(f"Grok response: {response['content']}")
-
-            # Store in conversation history
-            self.conversation_history.append({"role": "assistant", "content": response.get("content", "")})
-
-            # ACT: Execute tool calls if any
-            tool_calls = response.get("tool_calls", [])
-
-            if not tool_calls:
-                self.logger.info("No tool calls requested. Task may be complete.")
-                print("[DONE] Task complete (no more actions requested)")
-                break
-
-            print(f"[ACT] Executing {len(tool_calls)} tool(s)...\n")
-
-            tool_results = self.executor.execute_tool_calls(tool_calls)
-
-            # Log and display results
-            for result in tool_results:
-                function_name = result["function_name"]
-                result_data = result["result"]
-                status = result_data.get("status", "unknown")
-
-                print(f"  • {function_name}: {status}")
-                self.logger.info(f"Tool result: {function_name} -> {result_data}")
-
-            # Continue conversation with tool results
-            if iteration < max_iterations:
-                continue_response = await self.grok_client.continue_conversation(
-                    tool_results=tool_results, conversation_history=self.conversation_history
-                )
-
-                if continue_response.get("content"):
-                    print(f"\n[GROK] {continue_response['content']}\n")
-
-                # Check if Grok says it's done
-                content = continue_response.get("content", "").lower()
-                if any(phrase in content for phrase in ["task complete", "finished", "done"]):
-                    self.logger.info("Grok indicated task completion")
-                    print("[DONE] Task complete")
-                    break
-
-        if iteration >= max_iterations:
-            print(f"\n[WARNING] Reached maximum iterations ({max_iterations})")
-            self.logger.warning(f"Task stopped: reached max iterations")
-
-        print(f"\n{'='*70}\n")
-        self.logger.info("Task execution finished")
-
-
-def _run_interactive_mode(debug: bool, max_iterations: int, max_rounds: int, skip_boot: bool):
-    """
-    Run interactive menu mode - user selects mode and enters task.
-    """
-    print(
-        """
-╔═══════════════════════════════════════════════════════════════════╗
-║                                                                   ║
-║     ██████╗ ██████╗  ██████╗ ██╗  ██╗██████╗ ██╗   ██╗████████╗ ║
-║    ██╔════╝ ██╔══██╗██╔═══██╗██║ ██╔╝██╔══██╗██║   ██║╚══██╔══╝ ║
-║    ██║  ███╗██████╔╝██║   ██║█████╔╝ ██████╔╝██║   ██║   ██║    ║
-║    ██║   ██║██╔══██╗██║   ██║██╔═██╗ ██╔═══╝ ██║   ██║   ██║    ║
-║    ╚██████╔╝██║  ██║╚██████╔╝██║  ██╗██║     ╚██████╔╝   ██║    ║
-║     ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝      ╚═════╝    ╚═╝    ║
-║                                                                   ║
-║                    VRZIBRZI NODE - INITIALIZED                   ║
-║                 ZA GROKA. ZA VRZIBRZI. ZA SERVER.                ║
-║                                                                   ║
-╚═══════════════════════════════════════════════════════════════════╝
-
-        [INTERACTIVE MODE] Welcome to Grokputer - Choose your agent mode!
-
-        1. Dynamic Adventure - AI-generated interactive stories
-        2. Single Agent (Grok only) - Observe-Reason-Act loop
-        3. Collaboration Mode (Grok + Claude) - Dual AI planning
-        4. Swarm Mode (9-agent) - Full AI orchestration with validation & learning
-        5. Pantheon Mode - Run self-improvement on specific session/log
-        6. Improver Manual - Cached/local fallback (no API, uses vault/KB)
-        7. Offline Mode - Pull/push evolutions and tools
-        8. Community Vault Sync - Invoke progress save script
-        9. Save Game
-        10. Quit
-
-"""
-    )
-
-    choice = input("        Choose mode (1-10): ").strip()
-    if choice == "1":
-        print()
-        print("[MODE] Dynamic Adventure - AI-generated interactive stories")
-        print()
-        try:
-            api_key = _get_api_key_for_provider_main(provider)
-            game = GrokputerAdventure(api_key=api_key, provider=provider, model=model)
-            game.run_loop()
-        except Exception as e:
-            print(f"[ERROR] Adventure mode failed: {e}")
-        # Single Agent Mode
-        print("\n[MODE] Single Agent (Grok only)\n")
-        task = input("Enter task: ").strip()
-        if task:
-            grokputer = Grokputer(debug=debug, provider=provider, model=model)
-            if not skip_boot:
-                asyncio.run(grokputer.boot())
-            asyncio.run(grokputer.run_task(task=task, max_iterations=max_iterations))
-        else:
-            print("[ERROR] Task cannot be empty")
-
-    elif choice == "3":
-        # Collaboration Mode
-        print("\n[MODE] Collaboration Mode (Grok + Claude)\n")
-        task = input("Enter task: ").strip()
-        if task:
-            asyncio.run(_run_collaboration_mode(task, max_rounds, debug, False))
-        else:
-            print("[ERROR] Task cannot be empty")
-
-    elif choice == "4":
-        # Swarm Mode
-        print("\n[MODE] Swarm Mode (Multi-agent)\n")
-        task = input("Enter task: ").strip()
-        agent_roles_input = input("Agent roles (default: coordinator,observer,actor): ").strip()
-        roles = (
-            [r.strip() for r in agent_roles_input.split(",")]
-            if agent_roles_input
-            else ["coordinator", "observer", "actor"]
-        )
-        if task:
-            asyncio.run(_run_swarm_mode(task, roles, debug))
-        else:
-            print("[ERROR] Task cannot be empty")
-
-    elif choice == "5":
-        # Pantheon Mode
-        print("\n[MODE] Pantheon Mode (9-agent architecture)\n")
-        task = input("Enter task: ").strip()
-        if task:
-            asyncio.run(_run_pantheon_mode(task, debug))
-        else:
-            print("[ERROR] Task cannot be empty")
-
-    elif choice == "6":
-        # Improver Manual
-        print("\n[MODE] Improver Manual - Self-improvement on session/log\n")
-        print("[INFO] Improver agent will analyze a specific session and propose improvements")
-        session_id = input("Enter session ID (or 'latest'): ").strip()
-        if not session_id:
-            session_id = "latest"
-
-        try:
-            from src.agents.session_improver import SessionImprover
-
-            improver = SessionImprover()
-            improver.improve_session(session_id)
-        except Exception as e:
-            print(f"[ERROR] Improver failed: {e}")
-            logging.error(f"Improver error: {e}", exc_info=True)
-
-    elif choice == "7":
-        # Offline Mode
-        print("\n[MODE] Offline Mode - Cached/local fallback\n")
-        print("[INFO] Using cached responses and local knowledge base")
-        task = input("Enter task: ").strip()
-        if task:
-            try:
-                from src.offline_mode import run_offline_mode
-
-                run_offline_mode(task, max_iterations)
-            except Exception as e:
-                print(f"[ERROR] Offline mode failed: {e}")
-                logging.error(f"Offline mode error: {e}", exc_info=True)
-        else:
-            print("[ERROR] Task cannot be empty")
-
-    elif choice == "8":
-        # Community Vault Sync
-        print("\n[MODE] Community Vault Sync - Pull/push evolutions and tools\n")
-        sync_choice = input("Sync action (pull/push/both/list): ").strip().lower()
-        if sync_choice in ["pull", "push", "both", "list"]:
-            try:
-                from src.vault_sync import run_vault_sync
-
-                run_vault_sync(sync_choice)
-            except Exception as e:
-                print(f"[ERROR] Vault sync failed: {e}")
-                logging.error(f"Vault sync error: {e}", exc_info=True)
-        else:
-            print("[ERROR] Invalid sync action. Choose 'pull', 'push', 'both', or 'list'")
-
-    elif choice == "9":
-        # Save Game
-        print("\n[MODE] Save Game - Invoke progress save script\n")
-        print("[SAVE] Creating backup of current state...")
-        try:
-            import subprocess
-
-            result = subprocess.run(
-                ["python", "outputs/gp_save_progress.py"], capture_output=True, text=True, timeout=60
-            )
-            if result.returncode == 0:
-                print("[SAVE] ✓ Progress saved successfully!")
-                print(result.stdout)
-            else:
-                print(f"[SAVE] ✗ Save failed: {result.stderr}")
-        except Exception as e:
-            print(f"[SAVE] ✗ Error: {e}")
-
-    elif choice == "10":
-        # Quit
-        print("\n[EXIT] Za Groka. Za Vrzibrzi. Za Server.\n")
-        sys.exit(0)
-
-    else:
-        print("\n[ERROR] Invalid choice. Please select 1-10.\n")
-        _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot)
-
-
-async def _run_syntax_check(quick: bool = False):
-    """
-    Run comprehensive syntax and code quality checks on the codebase.
-
-    Performs:
-    - Python syntax validation for all .py files
-    - Import validation and dependency checking
-    - Configuration file validation
-    - Basic code quality checks
-    - Requirements.txt validation
-    """
-    import subprocess
-    import sys
-    from pathlib import Path
-    import ast
-    import importlib.util
-
-    mode = "QUICK" if quick else "COMPREHENSIVE"
-    print("\n" + "=" * 70)
-    print(f"🔍 GROKPUTER {mode} SYNTAX & CODE QUALITY CHECK")
-    print("=" * 70)
-
-    errors = []
-    warnings = []
-    passed = []
-
-    # Get project root
-    project_root = Path(__file__).parent
-
-    print("\n📁 Scanning project structure...")
-    print(f"Project root: {project_root}")
-
-    # 1. Python syntax validation
-    print("\n🐍 Checking Python syntax...")
-
-    if quick:
-        # Quick mode: only check core files
-        core_files = [
-            "main.py",
-            "src/core/base_agent.py",
-            "src/core/message_bus.py",
-            "src/agents/executor_agent.py",
-            "src/agents/analyzer_agent.py",
-            "src/agents/validator.py",
-            "src/agents/learner.py",
-            "src/agents/memory_agent.py",
-        ]
-        py_files = [project_root / f for f in core_files if (project_root / f).exists()]
-        print(f"Quick mode: checking {len(py_files)} core files only")
-    else:
-        # Comprehensive mode: exclude vault, backups, and other non-core directories
-        exclude_dirs = {
-            "vault",
-            "backups",
-            "outputs",
-            "__pycache__",
-            ".git",
-            "node_modules",
-            "qwen_env",
-            "selenium_env",
-        }
-        exclude_patterns = ["test_", "_test.py", "conftest.py"]  # Skip test files for speed
-
-        py_files = []
-        for py_file in project_root.rglob("*.py"):
-            # Skip excluded directories
-            if any(excl in py_file.parts for excl in exclude_dirs):
-                continue
-            # Skip test files
-            if any(pattern in py_file.name for pattern in exclude_patterns):
-                continue
-            # Skip files in virtual environments
-            if "site-packages" in str(py_file) or "dist-packages" in str(py_file):
-                continue
-            py_files.append(py_file)
-
-        # Limit to reasonable number for performance
-        if len(py_files) > 200:
-            print(f"Comprehensive mode: found {len(py_files)} Python files, limiting to 200 for performance")
-            py_files = py_files[:200]
-        else:
-            print(f"Comprehensive mode: found {len(py_files)} Python files (excluding vault/backups/tests)")
-
-    syntax_errors = 0
-    for i, py_file in enumerate(py_files):
-        if i % 50 == 0:  # Progress indicator
-            print(f"  Checking file {i+1}/{len(py_files)}...")
-
-        try:
-            # Use py_compile to check syntax with timeout protection
-            def compile_with_timeout():
-                py_compile.compile(str(py_file), doraise=True)
-
-            # Run compilation in a thread with timeout
-            import threading
-
-            compile_thread = threading.Thread(target=compile_with_timeout)
-            compile_thread.start()
-            compile_thread.join(timeout=5.0)  # 5 second timeout per file
-
-            if compile_thread.is_alive():
-                # Thread is still running, compilation timed out
-                syntax_errors += 1
-                errors.append(f"✗ Timeout compiling {py_file.relative_to(project_root)} (possible syntax issue)")
-            else:
-                passed.append(f"✓ Syntax OK: {py_file.relative_to(project_root)}")
-
-        except py_compile.PyCompileError as e:
-            syntax_errors += 1
-            errors.append(f"✗ Syntax Error in {py_file.relative_to(project_root)}: {e}")
-        except Exception as e:
-            syntax_errors += 1
-            errors.append(f"✗ Compile Error in {py_file.relative_to(project_root)}: {e}")
-        except KeyboardInterrupt:
-            print("  Syntax check interrupted by user")
-            break
-
-    print(f"Python syntax check: {len(py_files) - syntax_errors}/{len(py_files)} files passed")
-
-    # 2. Import validation
-    if not quick:
-        print("\n📦 Checking imports...")
-        import_errors = 0
-        critical_imports = [
-            "src.core.base_agent",
-            "src.core.message_bus",
-            "src.agents.executor_agent",
-            "src.agents.analyzer_agent",
-            "src.agents.validator",
-            "src.agents.learner",
-            "src.agents.memory_agent",
-        ]
-
-        for module in critical_imports:
-            try:
-                spec = importlib.util.find_spec(module)
-                if spec is None:
-                    import_errors += 1
-                    errors.append(f"✗ Critical module not found: {module}")
-                else:
-                    passed.append(f"✓ Module available: {module}")
-            except Exception as e:
-                import_errors += 1
-                errors.append(f"✗ Import error for {module}: {e}")
-
-        print(f"Import check: {len(critical_imports) - import_errors}/{len(critical_imports)} modules available")
-    else:
-        print("\n📦 Skipping import validation in quick mode")
-
-    # 3. Configuration validation
-    if not quick:
-        print("\n⚙️ Checking configuration files...")
-        config_files = [".env.example", "requirements.txt", "pyproject.toml", "setup.py"]
-
-        for config_file in config_files:
-            config_path = project_root / config_file
-            if config_path.exists():
-                try:
-                    if config_file == "requirements.txt":
-                        # Validate requirements format
-                        with open(config_path, "r") as f:
-                            lines = f.readlines()
-                        valid_reqs = 0
-                        for line in lines:
-                            line = line.strip()
-                            if line and not line.startswith("#"):
-                                # Basic validation - should contain package name
-                                if ">=" in line or "==" in line or "<=" in line or "~=" in line or "!=" in line:
-                                    valid_reqs += 1
-                                elif len(line.split()) == 1 and line.replace("-", "").replace("_", "").isalnum():
-                                    valid_reqs += 1
-                        if valid_reqs == len([l for l in lines if l.strip() and not l.startswith("#")]):
-                            passed.append(f"✓ Requirements format OK: {config_file}")
-                        else:
-                            warnings.append(f"⚠️ Requirements format issues: {config_file}")
-                    else:
-                        passed.append(f"✓ Config file exists: {config_file}")
-                except Exception as e:
-                    warnings.append(f"⚠️ Config file issue: {config_file} - {e}")
-            else:
-                warnings.append(f"⚠️ Config file missing: {config_file}")
-
-        # 4. Code quality checks
-        print("\n🔧 Running code quality checks...")
-
-        # Check for common issues
-        quality_issues = 0
-        for py_file in py_files:
-            try:
-                with open(py_file, "r", encoding="utf-8") as f:
-                    content = f.read()
-
-                # Check for TODO comments
-                todo_count = content.upper().count("TODO")
-                if todo_count > 0:
-                    warnings.append(f"⚠️ {todo_count} TODO comments in {py_file.relative_to(project_root)}")
-
-                # Check for print statements (should use logging)
-                if "print(" in content and "if __name__" not in content:
-                    # Allow prints in __main__ blocks and certain files
-                    if not any(allowed in str(py_file) for allowed in ["main.py", "dashboard.py", "streamlit_app.py"]):
-                        warnings.append(
-                            f"⚠️ Print statements found in {py_file.relative_to(project_root)} (consider using logging)"
-                        )
-
-                # Check for long lines (>120 chars)
-                long_lines = [i + 1 for i, line in enumerate(content.split("\n")) if len(line) > 120]
-                if long_lines:
-                    warnings.append(
-                        f"⚠️ {len(long_lines)} long lines (>120 chars) in {py_file.relative_to(project_root)}"
-                    )
-
-            except Exception as e:
-                quality_issues += 1
-                warnings.append(f"⚠️ Quality check failed for {py_file.relative_to(project_root)}: {e}")
-    else:
-        print("\n⚙️ Skipping configuration and quality checks in quick mode")
-
-    # 5. Agent architecture validation
-    if not quick:
-        print("\n🤖 Checking agent architecture...")
-        agent_files = [
-            "src/agents/observer_agent.py",
-            "src/agents/actor_agent.py",
-            "src/agents/coordinator.py",
-            "src/agents/validator.py",
-            "src/agents/learner.py",
-            "src/agents/memory_agent.py",
-            "src/agents/executor_agent.py",
-            "src/agents/analyzer_agent.py",
-        ]
-
-        agent_checks = 0
-        for agent_file in agent_files:
-            agent_path = project_root / agent_file
-            if agent_path.exists():
-                try:
-                    with open(agent_path, "r") as f:
-                        content = f.read()
-
-                    # Check for BaseAgent inheritance
-                    if "BaseAgent" in content:
-                        passed.append(f"✓ Agent follows BaseAgent pattern: {agent_file}")
-                    else:
-                        warnings.append(f"⚠️ Agent may not follow BaseAgent pattern: {agent_file}")
-
-                    # Check for process_message method
-                    if "async def process_message" in content:
-                        passed.append(f"✓ Agent has process_message method: {agent_file}")
-                    else:
-                        warnings.append(f"⚠️ Agent missing process_message method: {agent_file}")
-
-                    agent_checks += 1
-                except Exception as e:
-                    warnings.append(f"⚠️ Agent check failed for {agent_file}: {e}")
-            else:
-                warnings.append(f"⚠️ Agent file missing: {agent_file}")
-
-        print(f"Agent architecture check: {agent_checks}/{len(agent_files)} agents validated")
-    else:
-        print("\n🤖 Skipping agent architecture validation in quick mode")
-
-    # Summary
-    print("\n" + "=" * 70)
-    print("📊 SYNTAX CHECK RESULTS")
-    print("=" * 70)
-
-    print(f"\n✅ PASSED: {len(passed)} checks")
-    if passed:
-        for item in passed[:10]:  # Show first 10
-            print(f"  {item}")
-        if len(passed) > 10:
-            print(f"  ... and {len(passed) - 10} more")
-
-    print(f"\n⚠️ WARNINGS: {len(warnings)} items")
-    if warnings:
-        for item in warnings[:10]:  # Show first 10
-            print(f"  {item}")
-        if len(warnings) > 10:
-            print(f"  ... and {len(warnings) - 10} more")
-
-    print(f"\n❌ ERRORS: {len(errors)} items")
-    if errors:
-        for item in errors:
-            print(f"  {item}")
-
-    # Overall status
-    total_issues = len(errors) + len(warnings)
-    if errors:
-        print(f"\n🔴 STATUS: FAILED - {len(errors)} critical errors found")
-        print("Please fix syntax errors before proceeding.")
-        return False
-    elif warnings:
-        print(f"\n🟡 STATUS: PASSED WITH WARNINGS - {len(warnings)} warnings found")
-        print("Code is functional but consider addressing warnings for better quality.")
-        return True
-    else:
-        print(f"\n🟢 STATUS: ALL CHECKS PASSED - {len(passed)} checks successful")
-        print("Codebase is ready for deployment!")
-        return True
-
-
-def _get_api_key_for_provider_main(provider: str) -> str:
-    """Get API key for provider (used in main function)."""
-    if provider in ["grok", "xai"]:
-        return config.XAI_API_KEY
-    elif provider in ["openai", "gpt"]:
-        return os.getenv("OPENAI_API_KEY", "")
-    elif provider in ["claude", "anthropic"]:
-        return os.getenv("ANTHROPIC_API_KEY", "")
-    elif provider in ["gemini", "google"]:
-        return os.getenv("GEMINI_API_KEY", "")
-    elif provider == "ollama":
-        return ""  # Ollama doesn't need an API key
-    else:
-        raise ValueError(f"Unsupported provider: {provider}")
-
-
-async def _list_models_for_provider(provider: str, api_key: str):
-    """List available models for a provider."""
-    try:
-        models = await ModelClientFactory.get_available_models(provider, api_key)
-        if models:
-            print(f"\nAvailable models for {provider}:")
-            for model in models:
-                print(f"  - {model}")
-        else:
-            print(f"\nNo models available for {provider} (check API key and connection)")
-    except Exception as e:
-        print(f"\nError listing models for {provider}: {e}")
-
-
-async def _run_single_agent_mode(
-    task: str, max_iterations: int, debug: bool, skip_boot: bool, provider: str = "grok", model: str = None
-):
-    """Run single-agent mode using Grokputer class."""
-    grokputer = Grokputer(debug=debug, provider=provider, model=model)
-    if not skip_boot:
-        await grokputer.boot()
-    await grokputer.run_task(task=task, max_iterations=max_iterations)
-
-
-@click.command()
-@click.option(
-    "--task",
-    "-t",
-    default=None,
-    help="Task description for Grokputer to execute (optional: omit for interactive idle mode)",
-)
-@click.option("--max-iterations", "-m", default=5, help="Maximum loop iterations (single-agent mode)")
-@click.option("--debug", "-d", is_flag=True, help="Enable debug logging")
-@click.option("--skip-boot", is_flag=True, help="Skip boot sequence")
-@click.option("--messagebus", "-mb", is_flag=True, help="Enable collaboration mode (Claude + Grok)")
-@click.option("--max-rounds", default=5, help="Maximum collaboration rounds (messagebus mode only)")
-@click.option(
-    "--review-mode", "-r", is_flag=True, help="Pause after each round for human review (messagebus mode only)"
-)
-@click.option(
-    "--providers",
-    "-p",
-    default=None,
-    help="Enable MAF multi-provider mode (comma-separated: grok,claude,openai,gemini)",
-)
-@click.option(
-    "--maf-config",
-    default="grok_claude_dual",
-    help="MAF configuration preset (grok_claude_dual, code_review_trio, creative_quartet)",
-)
-@click.option("--mcp", is_flag=True, help="Start MCP server for tool API access")
-@click.option("--swarm", is_flag=True, help="Enable multi-agent swarm mode")
-@click.option("--agents", default=3, help="Number of agents in swarm (default: 3)")
-@click.option("--agent-roles", default="coordinator,observer,actor", help="Comma-separated agent roles")
-@click.option(
-    "--pantheon", "-pn", is_flag=True, help="Enable Pantheon mode (9-agent architecture with validation & learning)"
-)
-@click.option("--analytics", "-a", is_flag=True, help="Enable live analytics and throughput monitoring")
-@click.option("--syntax-check", is_flag=True, help="Run comprehensive syntax and code quality checks")
-@click.option("--quick-check", is_flag=True, help="Run fast syntax check (core files only)")
-@click.option("--provider", "-pr", default="grok", help="AI provider (grok, openai, claude, ollama)")
-@click.option("--model", "-md", default=None, help="Specific model to use (provider-dependent)")
-@click.option("--list-models", is_flag=True, help="List available models for the specified provider")
-def main(
-    task: str,
-    max_iterations: int,
-    debug: bool,
-    skip_boot: bool,
-    messagebus: bool,
-    max_rounds: int,
-    review_mode: bool,
-    swarm: bool,
-    agents: int,
-    agent_roles: str,
-    pantheon: bool,
-    analytics: bool = False,
-    syntax_check: bool = False,
-    quick_check: bool = False,
-    provider: str = "grok",
-    model: str = None,
-    list_models: bool = False,
-    providers: str = None,
-    maf_config: str = "grok_claude_dual",
-    mcp: bool = False,
-):
-    """
-    Grokputer - VRZIBRZI Node
-
-    Execute tasks using Grok AI with full computer control.
-
-    Single-agent mode (default):
-        grokputer --task "label 5 memes from vault"
-
-        grokputer  # Interactive menu: Choose mode (single, collab, swarm) and enter task
-
-        grokputer --task "search X for pliny follows" --debug
-
-    Collaboration mode (Claude + Grok):
-        grokputer -mb --task "design an MCP server with best practices"
-
-        grokputer --messagebus --task "create implementation plan for dice roller"
-
-    MAF Multi-Provider mode (2-6 AI providers with consensus):
-        grokputer --providers grok,claude --task "design complex system architecture"
-
-        grokputer --providers grok,claude,openai,gemini --maf-config creative_quartet --task "write creative story"
-
-        grokputer --providers grok,claude --maf-config code_review_trio --task "review pull request"
-
-        # Available configs: grok_claude_dual, code_review_trio, creative_quartet
-        # Supported providers: grok, claude, openai, gemini
-
-    Swarm mode (multi-agent with async coordination):
-        grokputer --swarm --task "scan vault and label images"
-
-        grokputer --swarm --agents 2 --agent-roles observer,actor --task "type ZA GROKA"
-
-        grokputer --swarm --debug --task "complex multi-step task"
-
-    Pantheon mode (9-agent architecture with validation & learning):
-        grokputer --pantheon --task "execute complex task with safety validation"
-
-        grokputer -p --task "scan files and create report" --debug
-
-        # Enhanced workflow: Observe → Reason → Validate → Act → Verify
-
-    Multi-Model Support:
-        grokputer --provider openai --model gpt-4 --task "analyze data"
-
-        grokputer --provider claude --model claude-3-opus-20240229 --task "write code"
-
-        grokputer --provider gemini --model gemini-1.5-flash --task "quick analysis"
-
-        grokputer --provider ollama --model llama2 --task "chat locally"
-
-        # Supported providers: grok, openai, claude, gemini, ollama
-        # List available models: grokputer --provider openai --list-models
-
-    Analytics mode (performance monitoring):
-        grokputer --swarm --analytics --task "performance test task"
-
-        grokputer --pantheon --analytics --task "monitored complex task"
-
-        # Live throughput and performance metrics every 10 seconds
-
-    Review mode (pause after each round for human oversight):
-        grokputer -mb -r --task "design system architecture"
-
-    Interactive mode:
-        grokputer  # Boot, show ASCII art, enter menu to select mode and options
-    """
-    # Load environment variables
-    load_dotenv()
 
     # Configure logging
     log_level = logging.DEBUG if debug else logging.INFO
@@ -1002,13 +152,104 @@ def main(
         else:
             # Single-agent mode
             asyncio.run(_run_single_agent_mode(task, max_iterations, debug, skip_boot, provider, model))
+=======
+    # Setup logging
+    setup_logging(debug)
+
+    # Handle analytics mode
+    if analytics:
+        asyncio.run(run_analytics_query(analytics, agent_name, limit))
+        return
+
+    # Handle performance mode
+    if performance:
+        result = asyncio.run(run_performance_monitor('snapshot'))
+        print(result)
+        return
+
+    # Require task for normal operation
+    if not task:
+        click.echo("Error: --task is required unless using --analytics or --performance")
+        sys.exit(1)
+
+    # Rest of the existing main function logic...
+    # (Keeping the original code below for completeness)
+
+    logger = logging.getLogger(__name__)
+
+    # Print banner
+    if not skip_boot:
+        print("\n" + "="*60)
+        print("  GROKPUTER - VRZIBRZI NODE")
+        print("  ZA GROKA. ZA VRZIBRZI. ZA SERVER.")
+        print("="*60 + "\n")
+
+        # Invoke prayer on boot
+        invoke_prayer()
+
+    # Initialize components
+    grok_client = GrokClient()
+    screen_observer = ScreenObserver()
+    tool_executor = ToolExecutor()
+    session_logger = SessionLogger()
+
+    # Create session metadata
+    session_metadata = SessionMetadata(
+        task=task,
+        mode="collaboration" if messagebus else "single-agent",
+        max_iterations=max_iterations if not messagebus else max_rounds,
+        timestamp=datetime.now()
+    )
+
+    # Initialize session
+    session_id = session_logger.initialize_session(session_metadata)
+
+    try:
+        if messagebus:
+            # Collaboration mode
+            coordinator = CollaborationCoordinator(
+                grok_client=grok_client,
+                session_logger=session_logger,
+                session_id=session_id
+            )
+
+            result = asyncio.run(coordinator.run_collaboration(
+                task=task,
+                max_rounds=max_rounds
+            ))
+
+        else:
+            # Single-agent mode
+            memory_integration = GrokputerMemoryIntegration()
+
+            # Run the observe-reason-act loop
+            result = asyncio.run(run_task(
+                grok_client=grok_client,
+                screen_observer=screen_observer,
+                tool_executor=tool_executor,
+                session_logger=session_logger,
+                memory_integration=memory_integration,
+                task=task,
+                max_iterations=max_iterations,
+                session_id=session_id
+            ))
+
+        # Log final result
+        logger.info(f"Task completed: {result}")
+
+        # Print completion message
+        print("\n" + "="*60)
+        print("  TASK COMPLETE - ZA GROKA!")
+        print("="*60 + "\n")
+>>>>>>> Stashed changes
 
     except KeyboardInterrupt:
-        print("\n\n[INTERRUPT] Interrupted by user. Shutting down...\n")
-        sys.exit(0)
+        logger.info("Interrupted by user")
+        print("\nInterrupted by user.")
+
     except Exception as e:
-        print(f"\n[FATAL ERROR] {e}\n")
-        logging.error(f"Fatal error: {e}", exc_info=True)
+        logger.error(f"Fatal error: {e}")
+        print(f"\nFatal error: {e}")
         sys.exit(1)
 
 
@@ -1719,3 +960,110 @@ def _run_single_agent_mode(
     if not skip_boot:
         grokputer.boot()
     grokputer.run_task(task=task, max_iterations=max_iterations)
+=======
+async def run_task(grok_client: GrokClient, screen_observer: ScreenObserver,
+                   tool_executor: ToolExecutor, session_logger: SessionLogger,
+                   memory_integration: GrokputerMemoryIntegration,
+                   task: str, max_iterations: int, session_id: str) -> str:
+    """
+    Run the observe-reason-act loop for single-agent mode.
+
+    Args:
+        grok_client: Grok API client
+        screen_observer: Screen capture and analysis
+        tool_executor: Tool execution engine
+        session_logger: Session logging
+        memory_integration: Memory system integration
+        task: Task description
+        max_iterations: Maximum loop iterations
+        session_id: Session identifier
+
+    Returns:
+        Final result string
+    """
+    logger = logging.getLogger(__name__)
+
+    # Initialize memory context
+    memory_context = memory_integration.get_memory_context(task)
+
+    # Initial observation
+    screenshot = screen_observer.take_screenshot()
+    initial_analysis = screen_observer.analyze_screenshot(screenshot, task)
+
+    # Build initial prompt
+    system_prompt = config.SYSTEM_PROMPT
+    user_prompt = f"""
+Task: {task}
+
+Current Screen Analysis:
+{initial_analysis}
+
+Memory Context:
+{memory_context}
+
+Please reason step-by-step and execute the next action to complete this task.
+"""
+
+    # Main loop
+    for iteration in range(max_iterations):
+        logger.info(f"Iteration {iteration + 1}/{max_iterations}")
+
+        # Get AI response
+        response = await grok_client.create_message(
+            system_prompt=system_prompt,
+            user_prompt=user_prompt,
+            tools=config.TOOLS
+        )
+
+        # Log iteration
+        metrics = IterationMetrics(
+            iteration=iteration + 1,
+            response_time=response.response_time,
+            tool_calls=len(response.tool_calls) if response.tool_calls else 0,
+            screenshot_size=len(screenshot) if screenshot else 0
+        )
+        session_logger.log_iteration(session_id, metrics)
+
+        # Execute tools
+        if response.tool_calls:
+            for tool_call in response.tool_calls:
+                result = tool_executor.execute_tool(tool_call)
+                logger.info(f"Tool executed: {tool_call['function']['name']} -> {result}")
+
+                # Update memory with tool result
+                memory_integration.update_memory_with_tool_result(
+                    task=task,
+                    tool_name=tool_call['function']['name'],
+                    tool_args=tool_call['function']['arguments'],
+                    tool_result=result
+                )
+
+        # Check for completion
+        if response.content and "TASK COMPLETE" in response.content.upper():
+            return response.content
+
+        # Update prompt for next iteration
+        screenshot = screen_observer.take_screenshot()
+        analysis = screen_observer.analyze_screenshot(screenshot, task)
+        memory_context = memory_integration.get_memory_context(task)
+
+        user_prompt = f"""
+Task: {task}
+
+Previous Response: {response.content}
+
+Current Screen Analysis:
+{analysis}
+
+Memory Context:
+{memory_context}
+
+Continue with the next action to complete this task.
+"""
+
+    return f"Maximum iterations ({max_iterations}) reached. Task may be incomplete."
+
+
+if __name__ == "__main__":
+    main()
+>>>>>>> Stashed changes

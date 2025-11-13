@@ -59,6 +59,7 @@ class ActionHistory:
 
 class ActionExecutor:
     """
+<<<<<<< Updated upstream
     Production-ready single-threaded executor for PyAutoGUI operations.
 
     Features:
@@ -77,6 +78,19 @@ class ActionExecutor:
             agent_id="actor",
             action={"type": "click", "x": 100, "y": 200},
             priority=ActionPriority.HIGH
+=======
+    Single-threaded executor for PyAutoGUI operations to ensure thread safety.
+    Agents submit actions via queue; executor processes serially in a dedicated thread.
+    Provides async interface for non-blocking calls from asyncio agents.
+    """
+    def __init__(self, max_queue_size: int = 100):
+        self.action_queue: Queue = Queue(maxsize=max_queue_size)
+        self.result_queues: Dict[str, Queue] = {}
+        self._shutdown_flag = False  # Set flag BEFORE starting thread
+        self.executor_thread = threading.Thread(
+            target=self._executor_loop,
+            daemon=True
+>>>>>>> Stashed changes
         )
 
         # Batch actions
@@ -122,12 +136,19 @@ class ActionExecutor:
         self._shutdown = False
         self.executor_thread = threading.Thread(target=self._executor_loop, daemon=True, name="ActionExecutor")
         self.executor_thread.start()
+<<<<<<< Updated upstream
 
         logger.info("[ActionExecutor] Started with priority queuing")
 
     def _executor_loop(self):
         """Dedicated thread: Dequeue and execute actions serially."""
         while not self._shutdown:
+=======
+
+    def _executor_loop(self):
+        """Dedicated thread: Dequeue and execute actions serially."""
+        while not self._shutdown_flag:
+>>>>>>> Stashed changes
             try:
                 # Get highest priority action
                 action = self.action_queue.get(timeout=1.0)
@@ -444,9 +465,13 @@ class ActionExecutor:
 
     def shutdown(self):
         """Graceful shutdown: Stop executor thread."""
+<<<<<<< Updated upstream
         logger.info("[ActionExecutor] Shutting down...")
         self._shutdown = True
 
+=======
+        self._shutdown_flag = True
+>>>>>>> Stashed changes
         if self.executor_thread.is_alive():
             self.executor_thread.join(timeout=5.0)
 

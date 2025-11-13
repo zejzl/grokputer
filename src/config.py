@@ -16,6 +16,9 @@ SRC_DIR = PROJECT_ROOT / "src"
 VAULT_DIR = PROJECT_ROOT / os.getenv("VAULT_PATH", "vault")
 LOGS_DIR = PROJECT_ROOT / "logs"
 
+# Database Configuration
+DB_PATH = PROJECT_ROOT / "db" / "db.db"
+
 # Ensure directories exist
 VAULT_DIR.mkdir(exist_ok=True)
 LOGS_DIR.mkdir(exist_ok=True)
@@ -191,6 +194,44 @@ except ValueError:
     MAX_SCREENSHOT_WIDTH = 1920
     MAX_SCREENSHOT_HEIGHT = 1080
 
+# Screenshot Quality Presets
+# Use these for different performance/quality tradeoffs
+SCREENSHOT_PRESETS = {
+    "high": {
+        "width": 1920,
+        "height": 1080,
+        "quality": 85,
+        "format": "JPEG",
+        "description": "Full HD, high quality (~470KB)",
+    },
+    "medium": {
+        "width": 1280,
+        "height": 720,
+        "quality": 70,
+        "format": "JPEG",
+        "description": "720p, balanced quality (~200KB)",
+    },
+    "low": {
+        "width": 1024,
+        "height": 576,
+        "quality": 60,
+        "format": "JPEG",
+        "description": "Low res, fast capture (~100KB)",
+    },
+}
+
+def get_screenshot_preset(preset_name: str = "high") -> dict:
+    """
+    Get screenshot configuration for a quality preset.
+
+    Args:
+        preset_name: One of 'high', 'medium', 'low'
+
+    Returns:
+        Dict with width, height, quality, format
+    """
+    return SCREENSHOT_PRESETS.get(preset_name, SCREENSHOT_PRESETS["high"])
+
 # Server Prayer
 SERVER_PRAYER_FILE = PROJECT_ROOT / "server_prayer.txt"
 
@@ -203,6 +244,8 @@ Your capabilities:
 3. File operations: Read, write, and manage files in the vault
 4. Web access: Search and retrieve information from the internet
 5. Bash execution: Run shell commands (with safety confirmations)
+6. Analytics: Query database for roll statistics and performance metrics
+7. Monitoring: Track system and API performance
 
 Guidelines:
 - Observe the screen carefully before acting
@@ -313,8 +356,61 @@ TOOLS = [
                         "description": "Operation-specific arguments (e.g., {pattern:'*.md'} for list, {query:'search term'} for search)",
                     },
                 },
+<<<<<<< Updated upstream
                 "required": ["operation"],
             },
         },
     },
 ]
+=======
+                "required": ["operation"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "analytics_query",
+            "description": "Query the swarm_rolls database for analytics: summary stats, top agents, agent details, or roll distributions.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query_type": {
+                        "type": "string",
+                        "enum": ["summary", "top_agents", "agent_stats", "roll_distribution"],
+                        "description": "Type of analytics query to perform"
+                    },
+                    "agent_name": {
+                        "type": "string",
+                        "description": "Agent name (required for 'agent_stats')"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "description": "Maximum results to return (default 10)",
+                        "default": 10
+                    }
+                },
+                "required": ["query_type"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "performance_monitor",
+            "description": "Monitor system performance and API metrics: CPU/memory usage, API call stats, uptime.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "mode": {
+                        "type": "string",
+                        "enum": ["snapshot", "reset"],
+                        "description": "Monitoring mode: 'snapshot' for current metrics, 'reset' to clear counters",
+                        "default": "snapshot"
+                    }
+                }
+            }
+        }
+    }
+]
+>>>>>>> Stashed changes

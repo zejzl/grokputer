@@ -1,6 +1,11 @@
 """
 Screen observation module for Grokputer.
 Captures screenshots and converts them to base64 for Grok analysis.
+
+IMPORTANT: PyAutoGUI is NOT thread-safe. This class should be called via
+asyncio.to_thread() to safely integrate with async code:
+
+    screenshot = await asyncio.to_thread(screen_observer.screenshot_to_base64)
 """
 
 import base64
@@ -191,3 +196,24 @@ class ScreenObserver:
         except Exception as e:
             logger.error(f"Error locating template: {e}")
             return None
+
+    # Async wrapper methods for use with asyncio
+    async def capture_screenshot_async(self, region: Optional[Tuple[int, int, int, int]] = None) -> Image.Image:
+        """
+        Async wrapper for capture_screenshot().
+        Uses asyncio.to_thread() for thread-safe execution.
+        """
+        import asyncio
+        return await asyncio.to_thread(self.capture_screenshot, region)
+
+    async def screenshot_to_base64_async(
+        self,
+        region: Optional[Tuple[int, int, int, int]] = None,
+        format: str = "PNG"
+    ) -> str:
+        """
+        Async wrapper for screenshot_to_base64().
+        Uses asyncio.to_thread() for thread-safe execution.
+        """
+        import asyncio
+        return await asyncio.to_thread(self.screenshot_to_base64, region, format)

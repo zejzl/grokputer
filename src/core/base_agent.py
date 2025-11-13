@@ -4,8 +4,12 @@ import asyncio
 import time
 import logging
 from dataclasses import dataclass
+<<<<<<< Updated upstream
 from datetime import datetime
 
+=======
+from .message_bus import Message, MessagePriority
+>>>>>>> Stashed changes
 
 @dataclass
 class AgentState:
@@ -54,7 +58,11 @@ class BaseAgent(ABC):
         self.message_bus.register_agent(self.agent_id)
 
     @abstractmethod
+<<<<<<< Updated upstream
     async def process_message(self, message) -> Optional[Dict[str, Any]]:
+=======
+    async def process_message(self, message: Message) -> Optional[Dict[str, Any]]:
+>>>>>>> Stashed changes
         """
         Process incoming message and return response or None.
         Must be implemented by subclasses.
@@ -75,12 +83,22 @@ class BaseAgent(ABC):
         self.session_logger.log_agent_error(self.agent_id, str(error))
         self.state = AgentState(status="error", error=str(error))
 
-    def _update_state(self, status: str, last_activity: Optional[float] = None):
+    def _update_state(self, status: str, last_activity: Optional[float] = None, error: Optional[str] = None):
         """Update agent state and notify detector if available."""
         self.state.status = status
         if last_activity is not None:
             self.state.last_activity = last_activity
+<<<<<<< Updated upstream
 
+=======
+        else:
+            self.state.last_activity = time.time()
+        if error is not None:
+            self.state.error = error
+        elif status != "error":
+            self.state.error = None  # Clear error when not in error state
+        
+>>>>>>> Stashed changes
         # Notify deadlock detector
         if self.deadlock_detector:
             self.deadlock_detector.update_activity(self.agent_id)
@@ -132,10 +150,30 @@ class BaseAgent(ABC):
 
                     # Send response if any
                     if response:
+<<<<<<< Updated upstream
                         await self.message_bus.send(
                             response.get("to", "coordinator"), response.get("content", response)
                         )
 
+=======
+                        # Create Message object from response dict
+                        to_agent = response.get("to", "coordinator")
+                        msg_type = response.get("type", "response")
+                        content = response.get("content", response)
+                        priority = response.get("priority", MessagePriority.NORMAL)
+                        correlation_id = response.get("correlation_id")
+
+                        msg = Message(
+                            from_agent=self.agent_id,
+                            to_agent=to_agent,
+                            message_type=msg_type,
+                            content=content,
+                            priority=priority,
+                            correlation_id=correlation_id
+                        )
+                        await self.message_bus.send(msg)
+                    
+>>>>>>> Stashed changes
                     self._update_state("idle")
 
                 except asyncio.TimeoutError:
