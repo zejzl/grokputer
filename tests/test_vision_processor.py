@@ -14,8 +14,7 @@ class TestVisionProcessor:
         assert processor is not None
 
     @patch("src.vision_processor.cv2")
-    @patch("src.vision_processor.PIL")
-    def test_process_image(self, mock_pil, mock_cv2):
+    def test_process_image(self, mock_cv2):
         """Test image processing."""
         mock_image = MagicMock()
         mock_cv2.imread.return_value = mock_image

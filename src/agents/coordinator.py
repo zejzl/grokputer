@@ -172,6 +172,13 @@ class Coordinator(BaseAgent, CognitiveCoordinatorMixin):
         cognitive_enabled: bool = True,
     ):
         # Initialize BaseAgent first
+        super().__init__(
+            agent_id="coordinator",
+            message_bus=message_bus,
+            session_logger=session_logger,
+            config=config
+        )
+
         config = config or {
             "debug": False,
             "max_subtasks": 10,
@@ -262,8 +269,7 @@ Output as JSON list only, no extra text: [{{"id": "sub1", "type": "...", "target
         self.dpo_optimizer = AgentDPO(param_space)
         self.preference_collector = PreferenceCollector(self.dpo_optimizer, self.grok_client)
 
-        # Register with message bus
-        self.message_bus.register_agent("coordinator")
+        # Already registered by BaseAgent
 
         self.logger = logging.getLogger(__name__)
         self.running = False

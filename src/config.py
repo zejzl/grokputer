@@ -10,6 +10,41 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
+# Import encryption utilities
+try:
+    from .encryption import randomize_decrypt
+
+    ENCRYPTION_AVAILABLE = True
+except ImportError:
+    ENCRYPTION_AVAILABLE = False
+
+
+def get_secure_env(key: str, default: str = "") -> str:
+    """
+    Get environment variable with automatic decryption if encrypted.
+
+    Args:
+        key: Environment variable name
+        default: Default value if not found
+
+    Returns:
+        Decrypted value or default
+    """
+    value = os.getenv(key, default)
+    if not value or not ENCRYPTION_AVAILABLE:
+        return value
+
+    # Check if value looks encrypted (starts with RND:)
+    if value.startswith("RND:"):
+        try:
+            return randomize_decrypt(value)
+        except Exception:
+            # Return original if decryption fails
+            return value
+
+    return value
+
+
 # Project Root
 PROJECT_ROOT = Path(__file__).parent.parent
 SRC_DIR = PROJECT_ROOT / "src"
@@ -25,16 +60,16 @@ LOGS_DIR.mkdir(exist_ok=True)
 
 # AI Provider Configuration
 # xAI (Grok)
-XAI_API_KEY = os.getenv("XAI_API_KEY", "")
+XAI_API_KEY = get_secure_env("XAI_API_KEY", "")
 XAI_BASE_URL = os.getenv("XAI_BASE_URL", "https://api.x.ai/v1")
 GROK_MODEL = os.getenv("GROK_MODEL", "grok-4-fast-reasoning")
 
 # OpenAI
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_API_KEY = get_secure_env("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4")
 
 # Anthropic (Claude)
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
+ANTHROPIC_API_KEY = get_secure_env("ANTHROPIC_API_KEY", "")
 CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-sonnet-4-5-20250929")
 
 # Ollama (Local)
@@ -42,7 +77,7 @@ OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama2")
 
 # Google (Gemini)
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_API_KEY = get_secure_env("GEMINI_API_KEY", "")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
 
 # Default provider and model
@@ -220,6 +255,7 @@ SCREENSHOT_PRESETS = {
     },
 }
 
+
 def get_screenshot_preset(preset_name: str = "high") -> dict:
     """
     Get screenshot configuration for a quality preset.
@@ -231,6 +267,7 @@ def get_screenshot_preset(preset_name: str = "high") -> dict:
         Dict with width, height, quality, format
     """
     return SCREENSHOT_PRESETS.get(preset_name, SCREENSHOT_PRESETS["high"])
+
 
 # Server Prayer
 SERVER_PRAYER_FILE = PROJECT_ROOT / "server_prayer.txt"
@@ -258,4 +295,102 @@ Remember: Eternal connection. Infinite speed. ZA GROKA.
 """
 
 # Tool Definitions for Grok API
-TOOLS = []
+TOOLS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "bash",
+            "description": "Execute a bash/shell command with security restrictions",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "command": {
+                        "type": "string",
+                        "description": "The command to execute (no shell metacharacters allowed)",
+                    }
+                },
+                "required": ["command"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "computer",
+            "description": "Control computer mouse and keyboard for automation",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "action": {
+                        "type": "string",
+                        "enum": ["click", "type", "key", "screenshot", "scroll", "move", "drag"],
+                        "description": "The action to perform",
+                    },
+                    "x": {"type": "integer", "description": "X coordinate for mouse actions"},
+                    "y": {"type": "integer", "description": "Y coordinate for mouse actions"},
+                    "text": {"type": "string", "description": "Text to type"},
+                    "key": {"type": "string", "description": "Key to press"},
+                    "modifiers": {"type": "array", "items": {"type": "string"}, "description": "Modifier keys"},
+                    "button": {"type": "string", "enum": ["left", "right", "middle"], "description": "Mouse button"},
+                    "clicks": {"type": "integer", "description": "Number of clicks"},
+                    "amount": {"type": "integer", "description": "Scroll amount"},
+                    "duration": {"type": "number", "description": "Action duration in seconds"},
+                },
+                "required": ["action"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "scan_vault",
+            "description": "Scan the vault directory for files matching a pattern",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "pattern": {
+                        "type": "string",
+                        "description": "Glob pattern to match files (e.g., '*.jpg', '*.png')",
+                        "default": "*.jpg",
+                    },
+                    "limit": {"type": "integer", "description": "Maximum number of files to return", "default": 100},
+                },
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "invoke_prayer",
+            "description": "Invoke the server prayer for eternal connection",
+            "parameters": {"type": "object", "properties": {}},
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_vault_stats",
+            "description": "Get statistics about vault contents",
+            "parameters": {"type": "object", "properties": {}},
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "mcp_vault_operation",
+            "description": "Execute MCP vault server operations",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "operation": {
+                        "type": "string",
+                        "enum": ["list_vault_files", "read_vault_file", "search_vault", "edit_vault_file"],
+                        "description": "The MCP operation to perform",
+                    },
+                    "arguments": {"type": "object", "description": "Operation-specific arguments"},
+                },
+                "required": ["operation"],
+            },
+        },
+    },
+]

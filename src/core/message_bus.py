@@ -15,6 +15,9 @@ from datetime import datetime
 from enum import IntEnum
 from collections import deque
 
+# Standardized error handling
+from ..exceptions import MessageBusError, handle_error
+
 logger = logging.getLogger(__name__)
 
 
@@ -112,18 +115,27 @@ class MessageBus:
         )
     """
 
-    def __init__(self, default_timeout: float = 30.0, history_size: int = 100):
+    def __init__(self, default_timeout: float = 30.0, history_size: int = 100, max_concurrent: int = 1000):
         """
         Initialize the message bus.
 
         Args:
             default_timeout: Default timeout for receive operations (seconds)
             history_size: Number of messages to keep in history
+            max_concurrent: Maximum concurrent message operations
         """
         self.queues: Dict[str, asyncio.PriorityQueue] = {}
         self.default_timeout = default_timeout
         self.message_count = 0
         self.start_time = time.time()
+
+        # Concurrency control
+        self.concurrency_semaphore = asyncio.Semaphore(max_concurrent)
+
+        # Analytics for concurrency monitoring
+        self.concurrency_acquired = 0
+        self.concurrency_released = 0
+        self.concurrency_wait_time = 0.0
 
         # Message history for debugging
         self.message_history: deque = deque(maxlen=history_size)
@@ -134,7 +146,39 @@ class MessageBus:
         # Pending requests for request-response pattern
         self.pending_requests: Dict[str, asyncio.Future] = {}
 
-        logger.info(f"MessageBus initialized with default timeout: {default_timeout}s, history: {history_size}")
+        logger.info(
+            f"MessageBus initialized with default timeout: {default_timeout}s, history: {history_size}, max_concurrent: {max_concurrent}"
+        )
+
+    async def _acquire_concurrency(self) -> None:
+        """Acquire concurrency semaphore with analytics tracking."""
+        start_time = time.time()
+        await self.concurrency_semaphore.acquire()
+        wait_time = time.time() - start_time
+        self.concurrency_acquired += 1
+        self.concurrency_wait_time += wait_time
+
+        if wait_time > 0.1:  # Log significant waits
+            logger.warning(
+                f"[CONCURRENCY] Waited {wait_time:.3f}s for semaphore (acquired: {self.concurrency_acquired})"
+            )
+
+    def _release_concurrency(self) -> None:
+        """Release concurrency semaphore with analytics tracking."""
+        self.concurrency_semaphore.release()
+        self.concurrency_released += 1
+
+    def get_concurrency_stats(self) -> Dict[str, float]:
+        """Get concurrency analytics with proper typing."""
+        active = self.concurrency_acquired - self.concurrency_released
+        return {
+            "acquired": float(self.concurrency_acquired),
+            "released": float(self.concurrency_released),
+            "active": float(active),
+            "total_wait_time": self.concurrency_wait_time,
+            "avg_wait_time": self.concurrency_wait_time / max(1, self.concurrency_acquired),
+            "semaphore_limit": float(getattr(self.concurrency_semaphore, "_value", 0) + active),
+        }
 
     def register_agent(self, agent_id: str, queue_size: int = 0):
         """
@@ -175,9 +219,13 @@ class MessageBus:
             ValueError: If target agent is not registered
         """
         if message.to_agent not in self.queues:
-            raise ValueError(f"Unknown agent: {message.to_agent}")
+            error_msg = f"Unknown agent: {message.to_agent}"
+            handle_error(ValueError(error_msg), "MessageBus.send", "error")
+            raise MessageBusError(
+                error_msg, {"to_agent": message.to_agent, "available_agents": list(self.queues.keys())}
+            )
 
-        # Add to priority queue
+        # Add to priority queue (fast operation, no concurrency limit needed)
         await self.queues[message.to_agent].put(message)
 
         self.message_count += 1
@@ -220,6 +268,9 @@ class MessageBus:
 
         timeout = timeout if timeout is not None else self.default_timeout
 
+        # Acquire concurrency control for receive operations
+        await self._acquire_concurrency()
+
         receive_start = time.time()
 
         try:
@@ -243,6 +294,9 @@ class MessageBus:
         except asyncio.TimeoutError:
             logger.debug(f"Agent {agent_id} receive timeout after {timeout}s")
             raise
+        finally:
+            # Always release concurrency control
+            self._release_concurrency()
 
     async def subscribe(self, agent_id: str):
         """

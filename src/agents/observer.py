@@ -92,16 +92,17 @@ class Observer(BaseAgent):
         self,
         message_bus: MessageBus,
         session_logger: SessionLogger,
-        config_dict: Dict[str, Any],
+        config: Dict[str, Any],
         heartbeat_interval: float = 10.0,
+        agent_id: str = "observer",
     ):
-        super().__init__("observer", message_bus, session_logger, config_dict, heartbeat_interval)
+        super().__init__(agent_id, message_bus, session_logger, config, heartbeat_interval)
 
         # Initialize screen observer
-        quality = config_dict.get("screenshot_quality", config.SCREENSHOT_QUALITY)
+        quality = config.get("screenshot_quality", 85)
         max_size = (
-            config_dict.get("max_screenshot_width", config.MAX_SCREENSHOT_WIDTH),
-            config_dict.get("max_screenshot_height", config.MAX_SCREENSHOT_HEIGHT),
+            config.get("max_screenshot_width", 1920),
+            config.get("max_screenshot_height", 1080),
         )
         self.screen_observer = ScreenObserver(quality=quality, max_size=max_size)
 
@@ -109,7 +110,7 @@ class Observer(BaseAgent):
         self.grok_client = GrokClient()
 
         # Initialize screenshot cache
-        cache_size = config_dict.get("screenshot_cache_size", 10)
+        cache_size = config.get("screenshot_cache_size", 10)
         self.cache = ScreenshotCache(max_size=cache_size)
 
         # Statistics

@@ -58,6 +58,9 @@ import sys
 sys.stdout.reconfigure(encoding="utf-8")
 from src.core.message_bus import MessageBus, Message, MessagePriority
 
+# Distributed communication imports
+from src.core.distributed_communication import get_distributed_bus, connect_processes
+
 # Analytics imports
 from db.analytics_performance_tools import performance_monitor, reset_performance_counters
 
@@ -167,7 +170,10 @@ async def _list_models_for_provider(provider: str, api_key: str):
 @click.option("--quick-check", is_flag=True, help="Run quick syntax check")
 @click.option("--mcp", is_flag=True, help="Start MCP server")
 @click.option("--todo-daemon", is_flag=True, help="Start dynamic todo manager daemon in background")
-def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, swarm, agent_roles, messagebus, pantheon, providers, maf_config, review_mode, analytics, agent_name, limit, performance, list_models, syntax_check, quick_check, mcp, todo_daemon: bool = False):
+@click.option("--distributed", is_flag=True, help="Enable distributed multi-process communication")
+@click.option("--process-id", default="main", help="Process ID for distributed communication")
+@click.option("--connect-to", help="Comma-separated list of process IDs to connect to")
+def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, swarm, agent_roles, messagebus, pantheon, providers, maf_config, review_mode, analytics, agent_name, limit, performance, list_models, syntax_check, quick_check, mcp, todo_daemon: bool = False, distributed: bool = False, process_id: str = "main", connect_to: str = None):
     """
     Grokputer - VRZIBRZI Node
     Main entry point for the observe-reason-act loop.
@@ -317,7 +323,7 @@ def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, sw
         sys.exit(1)
 
 
-async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False):
+async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False, distributed: bool = False, process_id: str = "main", connect_to: str = None):
     """
     Run Pantheon mode with 9-agent architecture.
 
@@ -358,8 +364,28 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False):
     logger.info(f"[PANTHEON] Starting Pantheon mode: {session_id}")
     logger.info(f"[PANTHEON] Task: {task}")
 
+    # Helper function for distributed agent registration
+    def register_agent_if_distributed(agent_id: str):
+        if distributed:
+            message_bus.register_agent(agent_id)
+
     # Initialize infrastructure
-    message_bus = MessageBus()
+    if distributed:
+        message_bus = get_distributed_bus(process_id)
+        await message_bus.start()
+
+        # Connect to other processes if specified
+        if connect_to:
+            other_processes = [p.strip() for p in connect_to.split(",")]
+            for other_process in other_processes:
+                connect_processes(process_id, other_process)
+
+        print(f"[DISTRIBUTED] Connected as process: {process_id}")
+        if connect_to:
+            print(f"[DISTRIBUTED] Connected to processes: {connect_to}")
+    else:
+        message_bus = MessageBus()
+
     action_executor = ActionExecutor()
     deadlock_detector = DeadlockDetector(timeout_seconds=30.0, check_interval=5.0)
     session_logger = SessionLogger(session_id=session_id, task=task, log_dir=config.LOG_FILE.parent, swarm_mode=True)
@@ -374,6 +400,7 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False):
     observer = ObserverAgent(
         agent_id="observer", message_bus=message_bus, session_logger=session_logger, config=agent_config
     )
+    register_agent_if_distributed("observer")
     session_logger.log_agent_start("observer")
     print("✓ Observer agent ready")
 
@@ -382,10 +409,12 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False):
         session_logger=session_logger,
         config=None,  # Use default config with decomposition_prompt
     )
+    register_agent_if_distributed("reasoner")
     session_logger.log_agent_start("reasoner")
     print("✓ Reasoner (Coordinator) agent ready")
 
     actor = ActorAgent(agent_id="actor", message_bus=message_bus, session_logger=session_logger, config=agent_config)
+    register_agent_if_distributed("actor")
     session_logger.log_agent_start("actor")
     print("✓ Actor agent ready")
 
@@ -396,6 +425,7 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False):
         config=agent_config,
         action_executor=action_executor,
     )
+    register_agent_if_distributed("validator")
     session_logger.log_agent_start("validator")
     print("✓ Validator agent ready")
     # Create hierarchical memory system with knowledge graph
@@ -417,6 +447,7 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False):
         config=agent_config,
         memory_manager=hierarchical_memory,
     )
+    register_agent_if_distributed("learner")
     session_logger.log_agent_start("learner")
     print("✓ Learner agent ready")
 
@@ -427,18 +458,21 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False):
         config=agent_config,
         action_executor=action_executor,
     )
+    register_agent_if_distributed("executor")
     session_logger.log_agent_start("executor")
     print("✓ Executor agent ready")
 
     analyzer = AnalyzerAgent(
         agent_id="analyzer", message_bus=message_bus, session_logger=session_logger, config=agent_config
     )
+    register_agent_if_distributed("analyzer")
     session_logger.log_agent_start("analyzer")
     print("✓ Analyzer agent ready")
 
     improver = ImproverAgent(
         agent_id="improver", message_bus=message_bus, session_logger=session_logger, config=agent_config
     )
+    register_agent_if_distributed("improver")
     session_logger.log_agent_start("improver")
     print("✓ Improver agent ready")
 
@@ -446,18 +480,21 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False):
     character_analyzer = CharacterAnalysisAgent(
         agent_id="character_analyzer", message_bus=message_bus, session_logger=session_logger, config=agent_config
     )
+    register_agent_if_distributed("character_analyzer")
     session_logger.log_agent_start("character_analyzer")
     print("✓ CharacterAnalysisAgent ready")
 
     story_generator = StoryGenerationAgent(
         agent_id="story_generator", message_bus=message_bus, session_logger=session_logger, config=agent_config
     )
+    register_agent_if_distributed("story_generator")
     session_logger.log_agent_start("story_generator")
     print("✓ StoryGenerationAgent ready")
 
     visionary = VisionaryAgent(
         agent_id="visionary", message_bus=message_bus, session_logger=session_logger, config=agent_config
     )
+    register_agent_if_distributed("visionary")
     session_logger.log_agent_start("visionary")
     print("✓ VisionaryAgent ready")
 
@@ -1013,14 +1050,14 @@ async def _run_maf_mode(task: str, providers: list, maf_config: str, max_rounds:
         print(f"\n[ERROR] MAF collaboration failed: {e}")
 
 
-def _run_single_agent_mode(
+async def _run_single_agent_mode(
     task: str, max_iterations: int, debug: bool, skip_boot: bool, provider: str = "grok", model: str = None
 ):
     """Run single-agent mode using Grokputer class."""
     grokputer = Grokputer(debug=debug, provider=provider, model=model)
     if not skip_boot:
         grokputer.boot()
-    grokputer.run_task(task=task, max_iterations=max_iterations)
+    await grokputer.run_task(task=task, max_iterations=max_iterations)
 
 async def run_task(grok_client: GrokClient, screen_observer: ScreenObserver,
                    tool_executor: ToolExecutor, session_logger: SessionLogger,

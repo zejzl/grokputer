@@ -366,7 +366,7 @@ class WebDevAgent(BaseAgent):
         return {
             "status": "success",
             "agent_id": self.agent_id,
-            "state": self.state.value,
+            "state": self.state.status,
             "framework": self.framework,
             "database": self.database,
             "auth_method": self.auth_method,

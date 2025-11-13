@@ -11,9 +11,11 @@ Capabilities:
 
 import asyncio
 import logging
+import random
+import numpy as np
 from typing import Dict, List, Optional, Any, Tuple
 from datetime import datetime
-from collections import defaultdict, Counter
+from collections import defaultdict, Counter, deque
 import json
 from dataclasses import dataclass, asdict
 
@@ -54,15 +56,43 @@ class LearningInsight:
     supporting_patterns: List[str]  # Pattern IDs
 
 
+@dataclass
+class RLState:
+    """State representation for reinforcement learning."""
+
+    task_type: str
+    current_step: int
+    previous_actions: Tuple[str, ...]
+    context_features: Dict[str, float]
+
+    def to_key(self) -> str:
+        """Convert state to hashable key."""
+        return f"{self.task_type}_{self.current_step}_{self.previous_actions}_{sorted(self.context_features.items())}"
+
+
+@dataclass
+class RLExperience:
+    """Experience tuple for Q-learning."""
+
+    state: RLState
+    action: str
+    reward: float
+    next_state: RLState
+    done: bool
+
+
 class LearnerAgent(BaseAgent):
     """
-    Learner Agent (Phase 2): Recognizes patterns and improves over time.
+    Learner Agent (Phase 2): Recognizes patterns and improves over time via RL.
 
     Features:
     - Pattern detection in task execution
     - Success/failure analysis
     - Strategy optimization
     - Knowledge base building
+    - Reinforcement Learning for action selection
+    - Q-learning with experience replay
+    - Adaptive decision making
     """
 
     def __init__(
@@ -95,7 +125,26 @@ class LearnerAgent(BaseAgent):
             "insights_generated": 0,
             "optimizations_applied": 0,
             "learning_sessions": 0,
+            "rl_episodes": 0,
+            "rl_steps": 0,
         }
+
+        # Reinforcement Learning components
+        self.q_table: Dict[str, Dict[str, float]] = defaultdict(lambda: defaultdict(float))
+        self.experience_replay: deque = deque(maxlen=config.get("replay_buffer_size", 10000))
+        self.learning_rate = config.get("learning_rate", 0.1)
+        self.discount_factor = config.get("discount_factor", 0.95)
+        self.epsilon = config.get("epsilon", 0.1)  # Exploration rate
+        self.action_space = [
+            "observe_screen",
+            "click_element",
+            "type_text",
+            "execute_command",
+            "wait_for_element",
+            "scroll_page",
+            "navigate_url",
+            "analyze_content",
+        ]
 
         self.session_logger.log_agent_start(self.agent_id)
 
@@ -108,6 +157,8 @@ class LearnerAgent(BaseAgent):
         - analyze_patterns: Trigger pattern analysis
         - get_insights: Return learned insights
         - suggest_optimization: Get optimization for task
+        - rl_decide: Get RL-based action decision
+        - rl_learn: Learn from RL experience
         """
         msg_type = message.message_type
         self._update_state("processing")
@@ -124,6 +175,12 @@ class LearnerAgent(BaseAgent):
 
             elif msg_type == "suggest_optimization":
                 return await self._suggest_optimization(message.content)
+
+            elif msg_type == "rl_learn":
+                return await self._rl_learn(message.content)
+
+            elif msg_type == "rl_decide":
+                return self._rl_decide(message.content)
 
             elif msg_type == "get_stats":
                 return self._get_stats()
@@ -412,6 +469,9 @@ class LearnerAgent(BaseAgent):
             "high_confidence_patterns": sum(
                 1 for p in self.patterns.values() if p.confidence_score >= self.confidence_threshold
             ),
+            "rl_states_learned": len(self.q_table),
+            "experience_buffer_size": len(self.experience_replay),
+            "q_table_size": sum(len(actions) for actions in self.q_table.values()),
         }
 
     async def get_task_patterns(self, task_description: str) -> List[Dict]:
@@ -473,6 +533,101 @@ class LearnerAgent(BaseAgent):
             ]
 
         return success_patterns
+
+    def _rl_decide(self, content: Dict) -> Dict:
+        """Make RL-based decision for next action."""
+        state_data = content.get("state", {})
+        state = RLState(
+            task_type=state_data.get("task_type", "unknown"),
+            current_step=state_data.get("current_step", 0),
+            previous_actions=tuple(state_data.get("previous_actions", [])),
+            context_features=state_data.get("context_features", {}),
+        )
+
+        # Epsilon-greedy action selection
+        if random.random() < self.epsilon:
+            action = random.choice(self.action_space)
+        else:
+            state_key = state.to_key()
+            q_values = self.q_table.get(state_key, {})
+            if q_values:
+                action = max(q_values, key=q_values.get)
+            else:
+                action = random.choice(self.action_space)
+
+        return {
+            "status": "success",
+            "action": action,
+            "state_key": state.to_key(),
+            "exploration": random.random() < self.epsilon,
+        }
+
+    async def _rl_learn(self, content: Dict) -> Dict:
+        """Learn from RL experience."""
+        experience_data = content.get("experience", {})
+        state_data = experience_data.get("state", {})
+        next_state_data = experience_data.get("next_state", {})
+
+        state = RLState(
+            task_type=state_data.get("task_type", "unknown"),
+            current_step=state_data.get("current_step", 0),
+            previous_actions=tuple(state_data.get("previous_actions", [])),
+            context_features=state_data.get("context_features", {}),
+        )
+
+        next_state = RLState(
+            task_type=next_state_data.get("task_type", "unknown"),
+            current_step=next_state_data.get("current_step", 0),
+            previous_actions=tuple(next_state_data.get("previous_actions", [])),
+            context_features=next_state_data.get("context_features", {}),
+        )
+
+        action = experience_data.get("action", "")
+        reward = experience_data.get("reward", 0.0)
+        done = experience_data.get("done", False)
+
+        # Store experience
+        experience = RLExperience(state, action, reward, next_state, done)
+        self.experience_replay.append(experience)
+
+        # Q-learning update
+        state_key = state.to_key()
+        next_state_key = next_state.to_key()
+
+        current_q = self.q_table[state_key][action]
+        next_max_q = max(self.q_table[next_state_key].values()) if self.q_table[next_state_key] else 0.0
+
+        new_q = current_q + self.learning_rate * (reward + self.discount_factor * next_max_q - current_q)
+        self.q_table[state_key][action] = new_q
+
+        self.stats["rl_steps"] += 1
+
+        # Periodic learning session
+        if len(self.experience_replay) >= 100 and self.stats["rl_steps"] % 50 == 0:
+            await self._rl_batch_learn()
+
+        return {"status": "success", "q_value": new_q}
+
+    async def _rl_batch_learn(self):
+        """Batch learning from experience replay."""
+        if len(self.experience_replay) < 32:
+            return
+
+        # Sample batch
+        batch = random.sample(list(self.experience_replay), min(32, len(self.experience_replay)))
+
+        for experience in batch:
+            state_key = experience.state.to_key()
+            next_state_key = experience.next_state.to_key()
+
+            current_q = self.q_table[state_key][experience.action]
+            next_max_q = max(self.q_table[next_state_key].values()) if self.q_table[next_state_key] else 0.0
+
+            new_q = current_q + self.learning_rate * (experience.reward + self.discount_factor * next_max_q - current_q)
+            self.q_table[state_key][experience.action] = new_q
+
+        self.stats["rl_episodes"] += 1
+        self.session_logger.log_agent_activity(self.agent_id, f"RL batch learning: {len(batch)} experiences processed")
 
     async def on_start(self):
         """Learner-specific startup."""

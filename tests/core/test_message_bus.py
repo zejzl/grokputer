@@ -261,6 +261,7 @@ async def test_shutdown():
 # STRESS TESTING - High Concurrency
 # ============================================================================
 
+
 @pytest.mark.asyncio
 @pytest.mark.stress
 async def test_many_agents_concurrent():
@@ -277,15 +278,18 @@ async def test_many_agents_concurrent():
         """Each agent sends messages to all other agents."""
         for msg_num in range(messages_per_agent):
             target = f"agent_{(agent_id + 1) % num_agents}"  # Send to next agent
-            await bus.send(Message(
-                from_agent=f"agent_{agent_id}",
-                to_agent=target,
-                message_type="stress_test",
-                content={"msg_num": msg_num, "from": agent_id}
-            ))
+            await bus.send(
+                Message(
+                    from_agent=f"agent_{agent_id}",
+                    to_agent=target,
+                    message_type="stress_test",
+                    content={"msg_num": msg_num, "from": agent_id},
+                )
+            )
 
     # Run all senders concurrently
     import time
+
     start_time = time.time()
 
     tasks = [agent_sender(i) for i in range(num_agents)]
@@ -312,22 +316,16 @@ async def test_queue_saturation():
 
     # Fill queue to capacity
     for i in range(100):
-        await bus.send(Message(
-            from_agent="sender",
-            to_agent="receiver",
-            message_type="saturation",
-            content={"index": i}
-        ))
+        await bus.send(
+            Message(from_agent="sender", to_agent="receiver", message_type="saturation", content={"index": i})
+        )
 
     assert bus.get_queue_size("receiver") == 100
 
     # Try to send one more (should block briefly but not deadlock)
-    send_task = asyncio.create_task(bus.send(Message(
-        from_agent="sender",
-        to_agent="receiver",
-        message_type="overflow",
-        content={}
-    )))
+    send_task = asyncio.create_task(
+        bus.send(Message(from_agent="sender", to_agent="receiver", message_type="overflow", content={}))
+    )
 
     # Give it a moment to attempt send
     await asyncio.sleep(0.1)
@@ -354,12 +352,14 @@ async def test_bursty_traffic():
     async def send_burst(burst_num: int, size: int):
         """Send a burst of messages."""
         for i in range(size):
-            await bus.send(Message(
-                from_agent="sender",
-                to_agent="receiver",
-                message_type="burst",
-                content={"burst": burst_num, "msg": i}
-            ))
+            await bus.send(
+                Message(
+                    from_agent="sender",
+                    to_agent="receiver",
+                    message_type="burst",
+                    content={"burst": burst_num, "msg": i},
+                )
+            )
 
     async def receive_burst(size: int):
         """Receive a burst of messages."""
@@ -399,6 +399,7 @@ async def test_bursty_traffic():
 async def test_memory_leak_detection():
     """Send 10K messages and check memory growth."""
     import sys
+
     bus = MessageBus()
     bus.register_agent("receiver")
 
@@ -407,12 +408,9 @@ async def test_memory_leak_detection():
 
     # Send 10K messages
     for i in range(10_000):
-        await bus.send(Message(
-            from_agent="sender",
-            to_agent="receiver",
-            message_type="memory_test",
-            content={"index": i}
-        ))
+        await bus.send(
+            Message(from_agent="sender", to_agent="receiver", message_type="memory_test", content={"index": i})
+        )
 
         # Drain every 1000 to prevent queue overflow
         if (i + 1) % 1000 == 0:
@@ -440,6 +438,7 @@ async def test_memory_leak_detection():
 # FAILURE SCENARIOS - Error Handling
 # ============================================================================
 
+
 @pytest.mark.asyncio
 async def test_receive_from_unregistered_agent():
     """Test receiving from an agent that was never registered."""
@@ -456,14 +455,10 @@ async def test_send_to_nonexistent_agent():
     bus = MessageBus()
     bus.register_agent("sender")
 
-    # Send to nonexistent agent - MessageBus raises ValueError
-    with pytest.raises(ValueError, match="Unknown agent"):
-        await bus.send(Message(
-            from_agent="sender",
-            to_agent="nonexistent",
-            message_type="test",
-            content={}
-        ))
+    # Send to nonexistent agent - MessageBus raises MessageBusError
+    from src.exceptions import MessageBusError
+    with pytest.raises(MessageBusError, match="Unknown agent"):
+        await bus.send(Message(from_agent="sender", to_agent="nonexistent", message_type="test", content={}))
 
 
 @pytest.mark.asyncio
@@ -482,12 +477,7 @@ async def test_double_registration():
     assert "agent1" in bus.queues
 
     # Send message and verify it arrives
-    await bus.send(Message(
-        from_agent="sender",
-        to_agent="agent1",
-        message_type="test",
-        content={}
-    ))
+    await bus.send(Message(from_agent="sender", to_agent="agent1", message_type="test", content={}))
 
     msg = await bus.receive("agent1", timeout=1.0)
     assert msg is not None
@@ -501,12 +491,7 @@ async def test_shutdown_with_pending_messages():
 
     # Send messages without receiving
     for i in range(10):
-        await bus.send(Message(
-            from_agent="sender",
-            to_agent="receiver",
-            message_type="pending",
-            content={"index": i}
-        ))
+        await bus.send(Message(from_agent="sender", to_agent="receiver", message_type="pending", content={"index": i}))
 
     assert bus.get_queue_size("receiver") == 10
 
@@ -521,6 +506,7 @@ async def test_shutdown_with_pending_messages():
 async def test_timeout_accuracy():
     """Test that timeouts fire within ±50ms of specified time."""
     import time
+
     bus = MessageBus()
     bus.register_agent("receiver")
 
@@ -534,13 +520,15 @@ async def test_timeout_accuracy():
     actual_duration = time.time() - start
 
     # Should timeout within 500ms ± 50ms
-    assert abs(actual_duration - timeout_duration) < 0.1, \
-        f"Timeout took {actual_duration:.3f}s, expected ~{timeout_duration}s"
+    assert (
+        abs(actual_duration - timeout_duration) < 0.1
+    ), f"Timeout took {actual_duration:.3f}s, expected ~{timeout_duration}s"
 
 
 # ============================================================================
 # WINDOWS ASYNCIO EDGE CASES
 # ============================================================================
+
 
 @pytest.mark.asyncio
 @pytest.mark.windows
@@ -562,12 +550,14 @@ async def test_windows_event_loop_stress():
         # Send phase
         for i in range(messages_per_agent):
             target = f"agent_{(agent_id + 1) % num_agents}"
-            await bus.send(Message(
-                from_agent=f"agent_{agent_id}",
-                to_agent=target,
-                message_type="windows_stress",
-                content={"from": agent_id, "msg": i}
-            ))
+            await bus.send(
+                Message(
+                    from_agent=f"agent_{agent_id}",
+                    to_agent=target,
+                    message_type="windows_stress",
+                    content={"from": agent_id, "msg": i},
+                )
+            )
 
         # Receive phase
         for _ in range(messages_per_agent):
@@ -605,6 +595,7 @@ async def test_concurrent_send_receive_pairs():
 
     async def request_response_pair(pair_id: int):
         """One requester-responder pair."""
+
         async def responder():
             request = await bus.receive(f"responder_{pair_id}", timeout=5.0)
             await bus.send_response(
@@ -612,7 +603,7 @@ async def test_concurrent_send_receive_pairs():
                 to_agent=f"requester_{pair_id}",
                 message_type="response",
                 content={"result": f"response_{pair_id}"},
-                correlation_id=request.correlation_id
+                correlation_id=request.correlation_id,
             )
 
         # Start responder
@@ -624,7 +615,7 @@ async def test_concurrent_send_receive_pairs():
             to_agent=f"responder_{pair_id}",
             message_type="request",
             content={"data": f"request_{pair_id}"},
-            timeout=5.0
+            timeout=5.0,
         )
 
         await responder_task
@@ -643,27 +634,32 @@ async def test_concurrent_send_receive_pairs():
 async def test_priority_inversion_under_load():
     """Test that HIGH priority messages still win at 1000 msg/sec."""
     import time
+
     bus = MessageBus()
     bus.register_agent("receiver")
 
     # Send 1000 LOW priority messages
     for i in range(1000):
-        await bus.send(Message(
-            from_agent="sender",
-            to_agent="receiver",
-            message_type="low_priority",
-            content={"index": i},
-            priority=MessagePriority.LOW
-        ))
+        await bus.send(
+            Message(
+                from_agent="sender",
+                to_agent="receiver",
+                message_type="low_priority",
+                content={"index": i},
+                priority=MessagePriority.LOW,
+            )
+        )
 
     # Now send 1 HIGH priority message
-    await bus.send(Message(
-        from_agent="sender",
-        to_agent="receiver",
-        message_type="high_priority",
-        content={"important": True},
-        priority=MessagePriority.HIGH
-    ))
+    await bus.send(
+        Message(
+            from_agent="sender",
+            to_agent="receiver",
+            message_type="high_priority",
+            content={"important": True},
+            priority=MessagePriority.HIGH,
+        )
+    )
 
     # The HIGH priority message should be received first
     msg = await bus.receive("receiver", timeout=1.0)
@@ -680,22 +676,14 @@ async def test_asyncio_queue_full_behavior():
 
     # Fill queue completely
     for i in range(10):
-        await bus.send(Message(
-            from_agent="sender",
-            to_agent="receiver",
-            message_type="fill",
-            content={"index": i}
-        ))
+        await bus.send(Message(from_agent="sender", to_agent="receiver", message_type="fill", content={"index": i}))
 
     assert bus.get_queue_size("receiver") == 10
 
     # Try to send when full - should block
-    send_task = asyncio.create_task(bus.send(Message(
-        from_agent="sender",
-        to_agent="receiver",
-        message_type="blocked",
-        content={}
-    )))
+    send_task = asyncio.create_task(
+        bus.send(Message(from_agent="sender", to_agent="receiver", message_type="blocked", content={}))
+    )
 
     # Task should be pending
     await asyncio.sleep(0.1)
@@ -712,6 +700,7 @@ async def test_asyncio_queue_full_behavior():
 # PHASE 1 READINESS - Multi-Agent Coordination
 # ============================================================================
 
+
 @pytest.mark.asyncio
 @pytest.mark.phase1
 async def test_trio_coordination_pattern():
@@ -723,26 +712,30 @@ async def test_trio_coordination_pattern():
 
     async def coordinator():
         """Coordinator delegates task to Observer."""
-        await bus.send(Message(
-            from_agent="coordinator",
-            to_agent="observer",
-            message_type="capture_screen",
-            content={"task": "observe"},
-            priority=MessagePriority.HIGH
-        ))
+        await bus.send(
+            Message(
+                from_agent="coordinator",
+                to_agent="observer",
+                message_type="capture_screen",
+                content={"task": "observe"},
+                priority=MessagePriority.HIGH,
+            )
+        )
 
         # Wait for observation
         observation = await bus.receive("coordinator", timeout=5.0)
         assert observation.from_agent == "observer"
 
         # Send action to Actor
-        await bus.send(Message(
-            from_agent="coordinator",
-            to_agent="actor",
-            message_type="perform_action",
-            content={"action": "click", "observation": observation.content},
-            priority=MessagePriority.HIGH
-        ))
+        await bus.send(
+            Message(
+                from_agent="coordinator",
+                to_agent="actor",
+                message_type="perform_action",
+                content={"action": "click", "observation": observation.content},
+                priority=MessagePriority.HIGH,
+            )
+        )
 
         # Wait for action result
         result = await bus.receive("coordinator", timeout=5.0)
@@ -755,12 +748,14 @@ async def test_trio_coordination_pattern():
         assert task.message_type == "capture_screen"
 
         # Send observation back
-        await bus.send(Message(
-            from_agent="observer",
-            to_agent="coordinator",
-            message_type="observation",
-            content={"screenshot": "base64_data", "dimensions": "1920x1080"}
-        ))
+        await bus.send(
+            Message(
+                from_agent="observer",
+                to_agent="coordinator",
+                message_type="observation",
+                content={"screenshot": "base64_data", "dimensions": "1920x1080"},
+            )
+        )
 
     async def actor():
         """Actor performs action and sends result."""
@@ -768,22 +763,21 @@ async def test_trio_coordination_pattern():
         assert action.message_type == "perform_action"
 
         # Send result back
-        await bus.send(Message(
-            from_agent="actor",
-            to_agent="coordinator",
-            message_type="action_result",
-            content={"status": "success", "action": "click"}
-        ))
+        await bus.send(
+            Message(
+                from_agent="actor",
+                to_agent="coordinator",
+                message_type="action_result",
+                content={"status": "success", "action": "click"},
+            )
+        )
 
     import time
+
     start = time.time()
 
     # Run trio
-    results = await asyncio.gather(
-        coordinator(),
-        observer(),
-        actor()
-    )
+    results = await asyncio.gather(coordinator(), observer(), actor())
 
     duration = time.time() - start
 
@@ -807,13 +801,15 @@ async def test_broadcast_to_multiple_subscribers():
         bus.register_agent(f"receiver_{i}")
 
     # Broadcast message
-    await bus.broadcast(Message(
-        from_agent="broadcaster",
-        to_agent="all",
-        message_type="announcement",
-        content={"message": "System update available"},
-        priority=MessagePriority.HIGH
-    ))
+    await bus.broadcast(
+        Message(
+            from_agent="broadcaster",
+            to_agent="all",
+            message_type="announcement",
+            content={"message": "System update available"},
+            priority=MessagePriority.HIGH,
+        )
+    )
 
     # All receivers should get the message
     received_count = 0
@@ -848,7 +844,7 @@ async def test_correlation_id_tracking():
             to_agent="service2",
             message_type="sub_request",
             content={"original": request.content},
-            timeout=5.0
+            timeout=5.0,
         )
 
         # Send final response with original correlation ID
@@ -857,7 +853,7 @@ async def test_correlation_id_tracking():
             to_agent="client",
             message_type="final_response",
             content={"result": response2.content["data"]},
-            correlation_id=original_correlation_id
+            correlation_id=original_correlation_id,
         )
 
     async def service2_handler():
@@ -869,7 +865,7 @@ async def test_correlation_id_tracking():
             to_agent="service1",
             message_type="sub_response",
             content={"data": "processed"},
-            correlation_id=sub_request.correlation_id
+            correlation_id=sub_request.correlation_id,
         )
 
     # Start services
@@ -878,11 +874,7 @@ async def test_correlation_id_tracking():
 
     # Client sends request
     response = await bus.send_request(
-        from_agent="client",
-        to_agent="service1",
-        message_type="initial_request",
-        content={"query": "test"},
-        timeout=5.0
+        from_agent="client", to_agent="service1", message_type="initial_request", content={"query": "test"}, timeout=5.0
     )
 
     await service1_task
@@ -905,12 +897,9 @@ async def test_message_history_under_load():
 
     # Send 1000 messages
     for i in range(1000):
-        await bus.send(Message(
-            from_agent="sender",
-            to_agent="receiver",
-            message_type=f"msg_type_{i % 10}",
-            content={"index": i}
-        ))
+        await bus.send(
+            Message(from_agent="sender", to_agent="receiver", message_type=f"msg_type_{i % 10}", content={"index": i})
+        )
 
     # History should be capped at 100
     history = bus.get_message_history()

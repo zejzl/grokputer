@@ -1,2 +1,3 @@
 .env
 AE.MD-e '\n__pycache__/\n*.pyc\n*.pyo\n*.pyd\n.Python\nbuild/\ndevelop-eggs/\ndist/\ndownloads/\neggs/\n.eggs/\nlib/\nlib64/\nparts/\nsdist/\nvar/\nwheels/\n*.egg-info/\n.installed.cfg\n*.egg\n\n# IDE\n.vscode/\n.idea/\n*.swp\n*.swo\n\n# OS\n.DS_Store\nThumbs.db\n\n# Logs\nlogs/\n*.log\n\n# Env\nvenv/\nenv/\n\n# Temp\n*.tmp\n\n# Docker\n.docker/\n' 
+-e "\n# Vault (sensitive data)\nvault/" 

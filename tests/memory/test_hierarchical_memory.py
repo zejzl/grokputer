@@ -30,6 +30,7 @@ def mock_redis_backend():
     mock_redis.close = Mock()
     return mock_redis
 
+
 @pytest.fixture
 def hierarchical_memory(memory_config):
     """Create hierarchical memory manager for testing."""
@@ -41,6 +42,7 @@ def hierarchical_memory(memory_config):
 
     memory = HierarchicalMemoryManager(memory_config, mock_long_term)
     return memory
+
 
 @pytest.fixture
 def hierarchical_memory_redis(memory_config, mock_redis_backend):

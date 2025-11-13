@@ -14,19 +14,23 @@ from .vision_processor import VisionProcessor
 
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class UIElement:
     """Represents a parsed UI element."""
+
     element_type: str
     label: str = ""
     bbox: Tuple[int, int, int, int] = (0, 0, 0, 0)
     confidence: float = 0.0
     properties: Dict[str, Any] = field(default_factory=dict)
-    children: List['UIElement'] = field(default_factory=list)
+    children: List["UIElement"] = field(default_factory=list)
+
 
 @dataclass
 class UIUnderstanding:
     """Complete UI understanding result."""
+
     screenshot_path: str
     ui_hierarchy: List[UIElement] = field(default_factory=list)
     page_type: str = "unknown"
@@ -34,6 +38,7 @@ class UIUnderstanding:
     navigation_elements: List[UIElement] = field(default_factory=list)
     content_areas: List[UIElement] = field(default_factory=list)
     accessibility_issues: List[str] = field(default_factory=list)
+
 
 class UIUnderstandingModule:
     """
@@ -52,7 +57,7 @@ class UIUnderstandingModule:
             "text_input": self._parse_text_input,
             "navigation": self._parse_navigation,
             "content": self._parse_content_area,
-            "form": self._parse_form
+            "form": self._parse_form,
         }
 
     async def understand_ui(self, screenshot_path: str) -> UIUnderstanding:
@@ -140,7 +145,7 @@ class UIUnderstandingModule:
                 label=associated_text or elem_type,
                 bbox=bbox,
                 confidence=confidence,
-                properties=elem_data
+                properties=elem_data,
             )
 
             # Use specific parser if available
@@ -153,7 +158,9 @@ class UIUnderstandingModule:
             logger.error(f"UI element creation failed: {e}")
             return None
 
-    def _create_interactive_element(self, interactive: Dict[str, Any], text_regions: List[Dict[str, Any]]) -> Optional[UIElement]:
+    def _create_interactive_element(
+        self, interactive: Dict[str, Any], text_regions: List[Dict[str, Any]]
+    ) -> Optional[UIElement]:
         """Create a UIElement for interactive components."""
         try:
             elem_type = interactive["type"]
@@ -167,7 +174,7 @@ class UIUnderstandingModule:
                 label=associated_text or elem_type,
                 bbox=bbox,
                 confidence=confidence,
-                properties={"interactive": True}
+                properties={"interactive": True},
             )
 
             return element
@@ -183,7 +190,7 @@ class UIUnderstandingModule:
         element_center_y = y + h / 2
 
         closest_text = ""
-        min_distance = float('inf')
+        min_distance = float("inf")
 
         for region in text_regions:
             if region.get("bbox"):
@@ -223,9 +230,7 @@ class UIUnderstandingModule:
         ix, iy, iw, ih = inner_bbox
         ox, oy, ow, oh = outer_bbox
 
-        return (ix >= ox and iy >= oy and
-                ix + iw <= ox + ow and
-                iy + ih <= oy + oh)
+        return ix >= ox and iy >= oy and ix + iw <= ox + ow and iy + ih <= oy + oh
 
     def _bbox_area(self, bbox: Tuple[int, int, int, int]) -> int:
         """Calculate bounding box area."""
@@ -293,9 +298,11 @@ class UIUnderstandingModule:
         navigation = []
 
         for element in ui_elements:
-            if ("nav" in element.element_type.lower() or
-                "menu" in element.label.lower() or
-                element.element_type == "sidebar"):
+            if (
+                "nav" in element.element_type.lower()
+                or "menu" in element.label.lower()
+                or element.element_type == "sidebar"
+            ):
                 navigation.append(element)
 
         return navigation
@@ -305,9 +312,11 @@ class UIUnderstandingModule:
         content = []
 
         for element in ui_elements:
-            if ("content" in element.element_type or
-                "panel" in element.element_type or
-                element.element_type == "text_input"):
+            if (
+                "content" in element.element_type
+                or "panel" in element.element_type
+                or element.element_type == "text_input"
+            ):
                 content.append(element)
 
         return content
@@ -335,6 +344,7 @@ class UIUnderstandingModule:
 
     def to_dict(self, understanding: UIUnderstanding) -> Dict[str, Any]:
         """Convert UIUnderstanding to dictionary for serialization."""
+
         def element_to_dict(element: UIElement) -> Dict[str, Any]:
             return {
                 "element_type": element.element_type,
@@ -342,7 +352,7 @@ class UIUnderstandingModule:
                 "bbox": element.bbox,
                 "confidence": element.confidence,
                 "properties": element.properties,
-                "children": [element_to_dict(child) for child in element.children]
+                "children": [element_to_dict(child) for child in element.children],
             }
 
         return {
@@ -352,5 +362,5 @@ class UIUnderstandingModule:
             "primary_actions": understanding.primary_actions,
             "navigation_elements": [element_to_dict(elem) for elem in understanding.navigation_elements],
             "content_areas": [element_to_dict(elem) for elem in understanding.content_areas],
-            "accessibility_issues": understanding.accessibility_issues
+            "accessibility_issues": understanding.accessibility_issues,
         }

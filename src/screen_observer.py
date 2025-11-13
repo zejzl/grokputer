@@ -204,16 +204,16 @@ class ScreenObserver:
         Uses asyncio.to_thread() for thread-safe execution.
         """
         import asyncio
+
         return await asyncio.to_thread(self.capture_screenshot, region)
 
     async def screenshot_to_base64_async(
-        self,
-        region: Optional[Tuple[int, int, int, int]] = None,
-        format: str = "PNG"
+        self, region: Optional[Tuple[int, int, int, int]] = None, format: str = "PNG"
     ) -> str:
         """
         Async wrapper for screenshot_to_base64().
         Uses asyncio.to_thread() for thread-safe execution.
         """
         import asyncio
+
         return await asyncio.to_thread(self.screenshot_to_base64, region, format)

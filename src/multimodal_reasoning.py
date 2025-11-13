@@ -18,9 +18,11 @@ from .vision_processor import VisionProcessor
 
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class ReasoningContext:
     """Context information for reasoning."""
+
     user_intent: str = ""
     task_type: str = ""
     domain_knowledge: Dict[str, Any] = field(default_factory=dict)
@@ -28,9 +30,11 @@ class ReasoningContext:
     constraints: Dict[str, Any] = field(default_factory=dict)
     timestamp: float = field(default_factory=lambda: datetime.now().timestamp())
 
+
 @dataclass
 class ReasoningResult:
     """Result of multi-modal reasoning."""
+
     decision: str
     confidence: float
     reasoning_chain: List[Dict[str, Any]] = field(default_factory=list)
@@ -38,6 +42,7 @@ class ReasoningResult:
     insights: List[str] = field(default_factory=list)
     risks_assessment: Dict[str, Any] = field(default_factory=dict)
     processing_time: float = 0.0
+
 
 class MultiModalReasoningEngine:
     """
@@ -64,27 +69,26 @@ class MultiModalReasoningEngine:
             "ui_interaction": {
                 "required_modalities": ["vision"],
                 "reasoning_steps": ["ui_analysis", "intent_inference", "action_planning"],
-                "decision_criteria": ["accessibility", "efficiency", "safety"]
+                "decision_criteria": ["accessibility", "efficiency", "safety"],
             },
             "content_analysis": {
                 "required_modalities": ["text", "vision"],
                 "reasoning_steps": ["content_extraction", "consistency_check", "insight_generation"],
-                "decision_criteria": ["accuracy", "completeness", "relevance"]
+                "decision_criteria": ["accuracy", "completeness", "relevance"],
             },
             "multimedia_understanding": {
                 "required_modalities": ["text", "vision", "audio"],
                 "reasoning_steps": ["modality_fusion", "context_integration", "semantic_reasoning"],
-                "decision_criteria": ["consistency", "comprehensiveness", "confidence"]
+                "decision_criteria": ["consistency", "comprehensiveness", "confidence"],
             },
             "decision_support": {
                 "required_modalities": ["text"],
                 "reasoning_steps": ["context_analysis", "option_evaluation", "recommendation_generation"],
-                "decision_criteria": ["feasibility", "impact", "risk"]
-            }
+                "decision_criteria": ["feasibility", "impact", "risk"],
+            },
         }
 
-    async def reason_multimodal(self, input_data: MultiModalInput,
-                              context: ReasoningContext) -> ReasoningResult:
+    async def reason_multimodal(self, input_data: MultiModalInput, context: ReasoningContext) -> ReasoningResult:
         """
         Perform multi-modal reasoning with context.
 
@@ -117,9 +121,7 @@ class MultiModalReasoningEngine:
             )
 
             # Generate recommendations
-            recommendations = await self._generate_recommendations(
-                decision, reasoning_chain, context
-            )
+            recommendations = await self._generate_recommendations(decision, reasoning_chain, context)
 
             # Assess risks
             risks = await self._assess_risks(decision, reasoning_chain, context)
@@ -144,8 +146,7 @@ class MultiModalReasoningEngine:
 
         return result
 
-    def _determine_reasoning_scenario(self, input_data: MultiModalInput,
-                                    context: ReasoningContext) -> str:
+    def _determine_reasoning_scenario(self, input_data: MultiModalInput, context: ReasoningContext) -> str:
         """Determine the appropriate reasoning scenario."""
         # Check for UI interaction scenario
         if input_data.image_path and not input_data.text and not input_data.audio_path:
@@ -162,24 +163,21 @@ class MultiModalReasoningEngine:
         # Default to decision support
         return "decision_support"
 
-    async def _execute_reasoning_chain(self, analysis: MultiModalAnalysis,
-                                     context: ReasoningContext,
-                                     reasoning_steps: List[str]) -> List[Dict[str, Any]]:
+    async def _execute_reasoning_chain(
+        self, analysis: MultiModalAnalysis, context: ReasoningContext, reasoning_steps: List[str]
+    ) -> List[Dict[str, Any]]:
         """Execute the reasoning chain step by step."""
         chain = []
 
         for step in reasoning_steps:
             step_result = await self._execute_reasoning_step(step, analysis, context)
-            chain.append({
-                "step": step,
-                "result": step_result,
-                "timestamp": datetime.now().timestamp()
-            })
+            chain.append({"step": step, "result": step_result, "timestamp": datetime.now().timestamp()})
 
         return chain
 
-    async def _execute_reasoning_step(self, step: str, analysis: MultiModalAnalysis,
-                                    context: ReasoningContext) -> Dict[str, Any]:
+    async def _execute_reasoning_step(
+        self, step: str, analysis: MultiModalAnalysis, context: ReasoningContext
+    ) -> Dict[str, Any]:
         """Execute a single reasoning step."""
         if step == "ui_analysis":
             return await self._analyze_ui_context(analysis, context)
@@ -208,27 +206,23 @@ class MultiModalReasoningEngine:
         else:
             return {"error": f"Unknown reasoning step: {step}"}
 
-    async def _analyze_ui_context(self, analysis: MultiModalAnalysis,
-                                context: ReasoningContext) -> Dict[str, Any]:
+    async def _analyze_ui_context(self, analysis: MultiModalAnalysis, context: ReasoningContext) -> Dict[str, Any]:
         """Analyze UI context from visual data."""
         ui_analysis = {}
 
         if analysis.visual_analysis and analysis.visual_analysis.image_path:
             # Use UI understanding module
-            ui_understanding = await self.ui_understanding.understand_ui(
-                analysis.visual_analysis.image_path
-            )
+            ui_understanding = await self.ui_understanding.understand_ui(analysis.visual_analysis.image_path)
             ui_analysis = self.ui_understanding.to_dict(ui_understanding)
 
         return {
             "ui_elements": ui_analysis.get("ui_hierarchy", []),
             "page_type": ui_analysis.get("page_type", "unknown"),
             "primary_actions": ui_analysis.get("primary_actions", []),
-            "accessibility_issues": ui_analysis.get("accessibility_issues", [])
+            "accessibility_issues": ui_analysis.get("accessibility_issues", []),
         }
 
-    async def _infer_user_intent(self, analysis: MultiModalAnalysis,
-                               context: ReasoningContext) -> Dict[str, Any]:
+    async def _infer_user_intent(self, analysis: MultiModalAnalysis, context: ReasoningContext) -> Dict[str, Any]:
         """Infer user intent from multi-modal data."""
         intent = {"primary_intent": "unknown", "confidence": 0.0, "evidence": []}
 
@@ -255,8 +249,7 @@ class MultiModalReasoningEngine:
 
         return intent
 
-    async def _plan_actions(self, analysis: MultiModalAnalysis,
-                          context: ReasoningContext) -> Dict[str, Any]:
+    async def _plan_actions(self, analysis: MultiModalAnalysis, context: ReasoningContext) -> Dict[str, Any]:
         """Plan actions based on analysis and context."""
         actions = []
 
@@ -265,30 +258,15 @@ class MultiModalReasoningEngine:
 
         for action in primary_actions:
             if "click" in action:
-                actions.append({
-                    "action_type": "click",
-                    "target": action.replace("click_", ""),
-                    "confidence": 0.8
-                })
+                actions.append({"action_type": "click", "target": action.replace("click_", ""), "confidence": 0.8})
             elif "input" in action:
-                actions.append({
-                    "action_type": "text_input",
-                    "target": "input_field",
-                    "confidence": 0.7
-                })
+                actions.append({"action_type": "text_input", "target": "input_field", "confidence": 0.7})
 
         return {"planned_actions": actions}
 
-    async def _extract_content(self, analysis: MultiModalAnalysis,
-                             context: ReasoningContext) -> Dict[str, Any]:
+    async def _extract_content(self, analysis: MultiModalAnalysis, context: ReasoningContext) -> Dict[str, Any]:
         """Extract content from multi-modal data."""
-        content = {
-            "text_content": "",
-            "visual_content": "",
-            "audio_content": "",
-            "key_entities": [],
-            "main_topics": []
-        }
+        content = {"text_content": "", "visual_content": "", "audio_content": "", "key_entities": [], "main_topics": []}
 
         if analysis.text_analysis:
             content["text_content"] = analysis.text_analysis.get("content", "")
@@ -303,14 +281,9 @@ class MultiModalReasoningEngine:
 
         return content
 
-    async def _check_consistency(self, analysis: MultiModalAnalysis,
-                               context: ReasoningContext) -> Dict[str, Any]:
+    async def _check_consistency(self, analysis: MultiModalAnalysis, context: ReasoningContext) -> Dict[str, Any]:
         """Check consistency across modalities."""
-        consistency = {
-            "overall_consistency": "unknown",
-            "issues": [],
-            "confidence": 0.0
-        }
+        consistency = {"overall_consistency": "unknown", "issues": [], "confidence": 0.0}
 
         # Use cross-modal insights from analysis
         insights = analysis.cross_modal_insights
@@ -347,8 +320,7 @@ class MultiModalReasoningEngine:
 
         return consistency
 
-    async def _generate_insights(self, analysis: MultiModalAnalysis,
-                               context: ReasoningContext) -> Dict[str, Any]:
+    async def _generate_insights(self, analysis: MultiModalAnalysis, context: ReasoningContext) -> Dict[str, Any]:
         """Generate insights from multi-modal analysis."""
         insights = []
 
@@ -365,14 +337,9 @@ class MultiModalReasoningEngine:
 
         return {"generated_insights": insights}
 
-    async def _fuse_modalities(self, analysis: MultiModalAnalysis,
-                             context: ReasoningContext) -> Dict[str, Any]:
+    async def _fuse_modalities(self, analysis: MultiModalAnalysis, context: ReasoningContext) -> Dict[str, Any]:
         """Fuse information from multiple modalities."""
-        fusion = {
-            "fused_content": "",
-            "confidence_weights": {},
-            "fusion_method": "weighted_average"
-        }
+        fusion = {"fused_content": "", "confidence_weights": {}, "fusion_method": "weighted_average"}
 
         # Simple fusion based on confidence scores
         text_conf = analysis.text_analysis.get("confidence", 0.5) if analysis.text_analysis else 0
@@ -384,7 +351,7 @@ class MultiModalReasoningEngine:
             fusion["confidence_weights"] = {
                 "text": text_conf / total_conf,
                 "visual": visual_conf / total_conf,
-                "audio": audio_conf / total_conf
+                "audio": audio_conf / total_conf,
             }
 
         # Create fused content summary
@@ -400,14 +367,9 @@ class MultiModalReasoningEngine:
 
         return fusion
 
-    async def _integrate_context(self, analysis: MultiModalAnalysis,
-                               context: ReasoningContext) -> Dict[str, Any]:
+    async def _integrate_context(self, analysis: MultiModalAnalysis, context: ReasoningContext) -> Dict[str, Any]:
         """Integrate reasoning with broader context."""
-        integration = {
-            "context_relevance": "unknown",
-            "historical_patterns": [],
-            "adapted_reasoning": {}
-        }
+        integration = {"context_relevance": "unknown", "historical_patterns": [], "adapted_reasoning": {}}
 
         # Check relevance to user intent
         if context.user_intent and analysis.text_analysis:
@@ -424,14 +386,11 @@ class MultiModalReasoningEngine:
 
         return integration
 
-    async def _perform_semantic_reasoning(self, analysis: MultiModalAnalysis,
-                                        context: ReasoningContext) -> Dict[str, Any]:
+    async def _perform_semantic_reasoning(
+        self, analysis: MultiModalAnalysis, context: ReasoningContext
+    ) -> Dict[str, Any]:
         """Perform semantic reasoning across modalities."""
-        reasoning = {
-            "semantic_concepts": [],
-            "relationships_identified": [],
-            "inferences_made": []
-        }
+        reasoning = {"semantic_concepts": [], "relationships_identified": [], "inferences_made": []}
 
         # Extract semantic concepts from content
         content = await self._extract_content(analysis, context)
@@ -458,17 +417,15 @@ class MultiModalReasoningEngine:
 
         return reasoning
 
-    async def _analyze_context(self, analysis: MultiModalAnalysis,
-                             context: ReasoningContext) -> Dict[str, Any]:
+    async def _analyze_context(self, analysis: MultiModalAnalysis, context: ReasoningContext) -> Dict[str, Any]:
         """Analyze context for decision making."""
         return {
             "context_summary": f"User intent: {context.user_intent}, Task: {context.task_type}",
             "available_constraints": context.constraints,
-            "historical_relevance": len(context.historical_context)
+            "historical_relevance": len(context.historical_context),
         }
 
-    async def _evaluate_options(self, analysis: MultiModalAnalysis,
-                              context: ReasoningContext) -> Dict[str, Any]:
+    async def _evaluate_options(self, analysis: MultiModalAnalysis, context: ReasoningContext) -> Dict[str, Any]:
         """Evaluate available options."""
         options = []
 
@@ -476,29 +433,22 @@ class MultiModalReasoningEngine:
         content = await self._extract_content(analysis, context)
 
         if "click" in content["text_content"].lower():
-            options.append({
-                "option": "perform_click_action",
-                "feasibility": 0.8,
-                "expected_impact": "high"
-            })
+            options.append({"option": "perform_click_action", "feasibility": 0.8, "expected_impact": "high"})
 
         if content["key_entities"]:
-            options.append({
-                "option": "analyze_entities",
-                "feasibility": 0.9,
-                "expected_impact": "medium"
-            })
+            options.append({"option": "analyze_entities", "feasibility": 0.9, "expected_impact": "medium"})
 
         return {"evaluated_options": options}
 
-    async def _generate_recommendations_step(self, analysis: MultiModalAnalysis,
-                                           context: ReasoningContext) -> Dict[str, Any]:
+    async def _generate_recommendations_step(
+        self, analysis: MultiModalAnalysis, context: ReasoningContext
+    ) -> Dict[str, Any]:
         """Generate recommendations (separate from main generation)."""
         return {"recommendations": ["Further analysis recommended"]}
 
-    async def _generate_decision(self, reasoning_chain: List[Dict[str, Any]],
-                               context: ReasoningContext,
-                               criteria: List[str]) -> Tuple[str, float]:
+    async def _generate_decision(
+        self, reasoning_chain: List[Dict[str, Any]], context: ReasoningContext, criteria: List[str]
+    ) -> Tuple[str, float]:
         """Generate final decision from reasoning chain."""
         # Analyze reasoning chain to make decision
         decision = "continue_analysis"
@@ -525,43 +475,42 @@ class MultiModalReasoningEngine:
 
         return decision, confidence
 
-    async def _generate_recommendations(self, decision: str,
-                                      reasoning_chain: List[Dict[str, Any]],
-                                      context: ReasoningContext) -> List[Dict[str, Any]]:
+    async def _generate_recommendations(
+        self, decision: str, reasoning_chain: List[Dict[str, Any]], context: ReasoningContext
+    ) -> List[Dict[str, Any]]:
         """Generate recommended actions based on decision."""
         recommendations = []
 
         if decision == "initiate_interaction":
-            recommendations.append({
-                "action": "identify_clickable_elements",
-                "priority": "high",
-                "reason": "User intent indicates interaction"
-            })
+            recommendations.append(
+                {
+                    "action": "identify_clickable_elements",
+                    "priority": "high",
+                    "reason": "User intent indicates interaction",
+                }
+            )
 
         elif decision == "perform_analysis":
-            recommendations.append({
-                "action": "extract_key_information",
-                "priority": "high",
-                "reason": "Analysis intent detected"
-            })
+            recommendations.append(
+                {"action": "extract_key_information", "priority": "high", "reason": "Analysis intent detected"}
+            )
 
         elif decision == "continue_analysis":
-            recommendations.append({
-                "action": "gather_more_data",
-                "priority": "medium",
-                "reason": "Insufficient information for final decision"
-            })
+            recommendations.append(
+                {
+                    "action": "gather_more_data",
+                    "priority": "medium",
+                    "reason": "Insufficient information for final decision",
+                }
+            )
 
         return recommendations
 
-    async def _assess_risks(self, decision: str, reasoning_chain: List[Dict[str, Any]],
-                          context: ReasoningContext) -> Dict[str, Any]:
+    async def _assess_risks(
+        self, decision: str, reasoning_chain: List[Dict[str, Any]], context: ReasoningContext
+    ) -> Dict[str, Any]:
         """Assess risks associated with the decision."""
-        risks = {
-            "risk_level": "low",
-            "identified_risks": [],
-            "mitigation_strategies": []
-        }
+        risks = {"risk_level": "low", "identified_risks": [], "mitigation_strategies": []}
 
         # Check for potential risks
         for step_result in reasoning_chain:
@@ -612,5 +561,5 @@ class MultiModalReasoningEngine:
             "recommended_actions": result.recommended_actions,
             "insights": result.insights,
             "risks_assessment": result.risks_assessment,
-            "processing_time": result.processing_time
+            "processing_time": result.processing_time,
         }

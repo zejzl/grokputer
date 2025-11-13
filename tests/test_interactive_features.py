@@ -128,25 +128,27 @@ class TestVaultSync:
             assert (sync.community_dir / "configs").exists()
             assert (sync.community_dir / "docs").exists()
 
-    def test_pull_operation(self):
+    @pytest.mark.asyncio
+    async def test_pull_operation(self):
         """Test pull operation completes."""
         from src.vault_sync import VaultSync
 
         with tempfile.TemporaryDirectory() as tmpdir:
             sync = VaultSync(community_dir=Path(tmpdir) / "community")
-            result = sync.pull()
+            result = await sync.pull()
 
             assert result["status"] == "success"
             assert isinstance(result["tools_updated"], list)
             assert isinstance(result["agents_updated"], list)
 
-    def test_push_operation(self):
+    @pytest.mark.asyncio
+    async def test_push_operation(self):
         """Test push operation completes."""
         from src.vault_sync import VaultSync
 
         with tempfile.TemporaryDirectory() as tmpdir:
             sync = VaultSync(community_dir=Path(tmpdir) / "community")
-            result = sync.push()
+            result = await sync.push()
 
             assert result["status"] == "success"
             assert isinstance(result["files_staged"], list)

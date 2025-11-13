@@ -16,6 +16,8 @@ from collections import deque, defaultdict
 import threading
 from .interfaces import MemoryConfig, MemoryBackend
 from ..knowledge_graph import KnowledgeGraph, Entity, Relationship
+from ..exceptions import MemoryError, handle_error
+from ..encryption import get_encryptor, randomize_encrypt, randomize_decrypt
 
 logger = logging.getLogger(__name__)
 
@@ -276,7 +278,7 @@ class HierarchicalMemoryManager(MemoryBackend):
                 pass
 
     async def _background_consolidation(self):
-        """Background task for memory consolidation."""
+        """Background task for memory consolidation and cleanup."""
         try:
             while self._running:
                 await asyncio.sleep(300)  # Consolidate every 5 minutes
@@ -290,20 +292,111 @@ class HierarchicalMemoryManager(MemoryBackend):
                         try:
                             self.long_term_backend.store_episode("consolidated_context", entry)
                         except Exception as e:
-                            logger.error(f"Failed to store consolidated entry: {e}")
+                            handle_error(e, "HierarchicalMemory._background_consolidation", "error")
+
+                # Periodic cleanup of expired entries
+                await self._cleanup_expired_entries()
 
         except asyncio.CancelledError:
             logger.info("Background consolidation stopped")
             raise
+
+    async def _cleanup_expired_entries(self) -> int:
+        """Clean up expired entries from memory layers.
+
+        Returns:
+            Number of entries cleaned up
+        """
+        current_time = time.time()
+        cleanup_count = 0
+
+        # Clean short-term memory (remove entries older than 1 hour)
+        expired_short_term = []
+        for key, entry in self.short_term.entries.items():
+            if current_time - entry.timestamp > 3600:  # 1 hour
+                expired_short_term.append(key)
+
+        for key in expired_short_term:
+            del self.short_term.entries[key]
+            cleanup_count += 1
+
+        # Clean context memory (remove entries with very low relevance)
+        expired_context = []
+        for key, entry in self.context.entries.items():
+            relevance = entry.calculate_relevance(current_time)
+            if relevance < 0.1:  # Very low relevance threshold
+                expired_context.append(key)
+
+        for key in expired_context:
+            del self.context.entries[key]
+            cleanup_count += 1
+
+        if cleanup_count > 0:
+            logger.info(f"[MEMORY CLEANUP] Cleaned up {cleanup_count} expired memory entries")
+            # Analytics: track cleanup metrics
+            cleanup_metrics = {
+                "short_term_cleaned": len(expired_short_term),
+                "context_cleaned": len(expired_context),
+                "total_cleaned": cleanup_count,
+                "timestamp": current_time,
+            }
+            # Could integrate with analytics system here
+            logger.debug(f"[MEMORY CLEANUP] Details: {cleanup_metrics}")
+
+        return cleanup_count
+
+    def _encrypt_sensitive_data(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Encrypt sensitive data in memory entries."""
+        encryptor = get_encryptor()
+
+        # Keys that contain sensitive information
+        sensitive_keys = ["api_key", "password", "token", "secret", "key", "auth"]
+
+        encrypted_data = data.copy()
+
+        # Encrypt sensitive string values
+        for key, value in encrypted_data.items():
+            if any(sensitive in key.lower() for sensitive in sensitive_keys):
+                if isinstance(value, str) and len(value) > 10:  # Only encrypt substantial strings
+                    try:
+                        encrypted_data[key] = randomize_encrypt(value)
+                    except Exception as e:
+                        handle_error(e, f"MemoryDataEncryption.{key}", "warning")
+                        # Keep original if encryption fails
+
+        return encrypted_data
+
+    def _decrypt_sensitive_data(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Decrypt sensitive data when retrieving from memory."""
+        encryptor = get_encryptor()
+
+        sensitive_keys = ["api_key", "password", "token", "secret", "key", "auth"]
+
+        decrypted_data = data.copy()
+
+        # Decrypt sensitive values
+        for key, value in decrypted_data.items():
+            if any(sensitive in key.lower() for sensitive in sensitive_keys):
+                if isinstance(value, str) and value.startswith("RND:"):
+                    try:
+                        decrypted_data[key] = randomize_decrypt(value)
+                    except Exception as e:
+                        handle_error(e, f"MemoryDataDecryption.{key}", "warning")
+                        # Keep encrypted if decryption fails
+
+        return decrypted_data
 
     def store_episode(self, agent_id: str, episode_data: Dict[str, Any]) -> None:
         """Store episode across memory hierarchy and extract relationships."""
         importance = episode_data.get("importance", 1.0)
         content_type = episode_data.get("type", "general")
 
+        # Encrypt sensitive data before storage
+        encrypted_data = self._encrypt_sensitive_data(episode_data)
+
         # Store in short-term memory (fast access)
-        short_term_key = f"{agent_id}_{content_type}_{hash(str(episode_data)) % 1000}"
-        self.short_term.store(short_term_key, episode_data, importance)
+        short_term_key = f"{agent_id}_{content_type}_{hash(str(encrypted_data)) % 1000}"
+        self.short_term.store(short_term_key, encrypted_data, importance)
 
         # Store in context memory (session-level)
         context_key = f"context_{agent_id}_{len(self.context.entries)}"
@@ -378,7 +471,13 @@ class HierarchicalMemoryManager(MemoryBackend):
 
         # Sort by fusion score and return top_k
         all_results.sort(key=lambda x: x.get("_fusion_score", 0), reverse=True)
-        return all_results[:top_k]
+
+        # Decrypt sensitive data before returning
+        decrypted_results = []
+        for result in all_results[:top_k]:
+            decrypted_results.append(self._decrypt_sensitive_data(result))
+
+        return decrypted_results
 
     def consolidate(self, agent_id: str) -> Dict[str, Any]:
         """Consolidate memory across all layers including knowledge graph."""

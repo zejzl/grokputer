@@ -9,12 +9,14 @@ from typing import Dict, Any, Optional
 from dataclasses import dataclass
 from pathlib import Path
 
+
 @dataclass
 class SessionMetadata:
     task: str
     mode: str
     max_iterations: int
     timestamp: datetime
+
 
 @dataclass
 class IterationMetrics:
@@ -23,8 +25,10 @@ class IterationMetrics:
     tool_calls: int
     screenshot_size: int
 
+
 class SessionIndex:
-    def __init__(self):
+    def __init__(self, logs_dir=None):
+        self.logs_dir = logs_dir or Path("./logs")
         self.sessions = {}
 
     def add_session(self, session_id: str, metadata: SessionMetadata):
@@ -33,13 +37,14 @@ class SessionIndex:
     def get_session(self, session_id: str) -> Optional[SessionMetadata]:
         return self.sessions.get(session_id)
 
+
 class SessionLogger:
     def __init__(self, session_id: str = None, task: str = None, log_dir: Path = Path("./logs")):
         self.session_id = session_id or f"session_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         self.task = task
         self.log_dir = log_dir
         self.log_dir.mkdir(exist_ok=True)
-        self.index = SessionIndex()
+        self.index = SessionIndex(self.log_dir)
 
     def initialize_session(self, metadata: SessionMetadata) -> str:
         self.index.add_session(self.session_id, metadata)

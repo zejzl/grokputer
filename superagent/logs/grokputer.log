@@ -1,0 +1,37 @@
+2025-11-14 00:24:20,832 - superagent.main - INFO - ======================================================================
+2025-11-14 00:24:20,833 - superagent.main - INFO - GROKPUTER INITIALIZED - VRZIBRZI NODE
+2025-11-14 00:24:20,833 - superagent.main - INFO - ======================================================================
+2025-11-14 00:24:21,328 - src.grok_client - INFO - Initialized Grok client: model=grok-4-fast-reasoning, base_url=https://api.x.ai/v1
+2025-11-14 00:24:21,328 - src.screen_observer - INFO - Screen observer initialized: quality=75, max_size=1920x1080
+2025-11-14 00:24:21,328 - src.executor - INFO - Tool executor initialized: require_confirmation=False
+2025-11-14 00:25:03,142 - superagent.main - INFO - ======================================================================
+2025-11-14 00:25:03,142 - superagent.main - INFO - GROKPUTER INITIALIZED - VRZIBRZI NODE
+2025-11-14 00:25:03,142 - superagent.main - INFO - ======================================================================
+2025-11-14 00:25:03,680 - src.grok_client - INFO - Initialized Grok client: model=grok-4-fast-reasoning, base_url=https://api.x.ai/v1
+2025-11-14 00:25:03,680 - src.screen_observer - INFO - Screen observer initialized: quality=75, max_size=1920x1080
+2025-11-14 00:25:03,680 - src.executor - INFO - Tool executor initialized: require_confirmation=False
+2025-11-14 00:25:13,359 - superagent.main - INFO - ======================================================================
+2025-11-14 00:25:13,359 - superagent.main - INFO - GROKPUTER INITIALIZED - VRZIBRZI NODE
+2025-11-14 00:25:13,359 - superagent.main - INFO - ======================================================================
+2025-11-14 00:25:13,680 - src.grok_client - INFO - Initialized Grok client: model=grok-4-fast-reasoning, base_url=https://api.x.ai/v1
+2025-11-14 00:25:13,680 - src.screen_observer - INFO - Screen observer initialized: quality=75, max_size=1920x1080
+2025-11-14 00:25:13,680 - src.executor - INFO - Tool executor initialized: require_confirmation=False
+2025-11-14 00:25:31,255 - superagent.main - INFO - ======================================================================
+2025-11-14 00:25:31,255 - superagent.main - INFO - GROKPUTER INITIALIZED - VRZIBRZI NODE
+2025-11-14 00:25:31,255 - superagent.main - INFO - ======================================================================
+2025-11-14 00:25:31,663 - src.grok_client - INFO - Initialized Grok client: model=grok-4-fast-reasoning, base_url=https://api.x.ai/v1
+2025-11-14 00:25:31,663 - src.screen_observer - INFO - Screen observer initialized: quality=75, max_size=1920x1080
+2025-11-14 00:25:31,663 - src.executor - INFO - Tool executor initialized: require_confirmation=False
+2025-11-14 00:25:48,673 - superagent.main - INFO - ======================================================================
+2025-11-14 00:25:48,673 - superagent.main - INFO - GROKPUTER INITIALIZED - VRZIBRZI NODE
+2025-11-14 00:25:48,673 - superagent.main - INFO - ======================================================================
+2025-11-14 00:25:49,080 - src.grok_client - INFO - Initialized Grok client: model=grok-4-fast-reasoning, base_url=https://api.x.ai/v1
+2025-11-14 00:25:49,080 - src.screen_observer - INFO - Screen observer initialized: quality=75, max_size=1920x1080
+2025-11-14 00:25:49,080 - src.executor - INFO - Tool executor initialized: require_confirmation=False
+2025-11-14 00:26:17,168 - superagent.main - INFO - ======================================================================
+2025-11-14 00:26:17,168 - superagent.main - INFO - GROKPUTER INITIALIZED - VRZIBRZI NODE
+2025-11-14 00:26:17,169 - superagent.main - INFO - ======================================================================
+2025-11-14 00:26:17,572 - src.grok_client - INFO - Initialized Grok client: model=grok-4-fast-reasoning, base_url=https://api.x.ai/v1
+2025-11-14 00:26:17,572 - src.screen_observer - INFO - Screen observer initialized: quality=75, max_size=1920x1080
+2025-11-14 00:26:17,573 - src.executor - INFO - Tool executor initialized: require_confirmation=False
+2025-11-14 00:26:17,573 - superagent.main - INFO - Grokputer components initialized

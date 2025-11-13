@@ -85,6 +85,7 @@ class PersistentMemoryManager(MemoryBackend):
                 tool_usage[tool] = tool_usage.get(tool, 0) + 1
 
         consolidated = {
+            "status": "success",
             "agent_id": agent_id,
             "total_episodes": total_tasks,
             "success_rate": successful_tasks / total_tasks if total_tasks > 0 else 0,

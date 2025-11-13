@@ -476,6 +476,7 @@ class PantheonCoordinator(BaseAgent):
             await self.agents["memory"].stop()
 
         await super().on_stop()
+
     async def _handle_todo_sync(self, message: Message):
         """Handle todo sync messages from dynamic todo manager."""
         logger.info(f"[PANTHEON] Todo update received: {message.content}")
@@ -483,20 +484,14 @@ class PantheonCoordinator(BaseAgent):
         # Forward to reasoner (Council proxy)
         if "reasoner" in self.agents:
             todo_msg = Message(
-                message_type="todo_update",
-                from_agent="todo_manager",
-                to_agent="reasoner",
-                content=message.content
+                message_type="todo_update", from_agent="todo_manager", to_agent="reasoner", content=message.content
             )
             await self.agents["reasoner"].process_message(todo_msg)
 
         # Forward to learner (Taskmaster proxy)
         if "learner" in self.agents:
             todo_msg = Message(
-                message_type="todo_update",
-                from_agent="todo_manager",
-                to_agent="learner",
-                content=message.content
+                message_type="todo_update", from_agent="todo_manager", to_agent="learner", content=message.content
             )
             await self.agents["learner"].process_message(todo_msg)
 

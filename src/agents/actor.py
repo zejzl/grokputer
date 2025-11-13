@@ -51,10 +51,11 @@ class Actor(BaseAgent):
         message_bus: MessageBus,
         session_logger: SessionLogger,
         config_dict: Dict[str, Any],
-        action_executor: ActionExecutor,
+        action_executor: ActionExecutor = None,
         heartbeat_interval: float = 10.0,
+        agent_id: str = "actor",
     ):
-        super().__init__("actor", message_bus, session_logger, config_dict, heartbeat_interval)
+        super().__init__(agent_id, message_bus, session_logger, config_dict, heartbeat_interval)
         self.action_executor = action_executor
         self.confirmation_timeout = config_dict.get("confirmation_timeout", 30.0)
         self.max_retries = config_dict.get("max_retries", 3)

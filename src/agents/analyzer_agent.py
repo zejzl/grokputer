@@ -62,9 +62,9 @@ class AnalyzerAgent(BaseAgent):
                     "bottleneck": bottleneck,
                     "task_name": f"System {bottleneck['type']} Monitor",
                     "task_type": "monitoring",
-                    "task_id": f"bottleneck_{bottleneck['type']}_{int(time.time())}"
+                    "task_id": f"bottleneck_{bottleneck['type']}_{int(time.time())}",
                 },
-                priority=MessagePriority.HIGH
+                priority=MessagePriority.HIGH,
             )
             await self.message_bus.send(alert_message)
         except Exception as e:

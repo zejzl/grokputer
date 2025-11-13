@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from .message_bus import Message, MessagePriority
 
+
 @dataclass
 class AgentState:
     """Simple state machine for agent status."""
@@ -150,7 +151,7 @@ class BaseAgent(ABC):
                             message_type=msg_type,
                             content=content,
                             priority=priority,
-                            correlation_id=correlation_id
+                            correlation_id=correlation_id,
                         )
                         await self.message_bus.send(msg)
                     self._update_state("idle")

@@ -17,6 +17,8 @@ import pyautogui
 from PIL import Image
 import io
 import base64
+import subprocess
+import shlex
 
 logger = logging.getLogger(__name__)
 
@@ -63,16 +65,6 @@ class ActionExecutor:
     Agents submit actions via queue; executor processes serially in a dedicated thread.
     Provides async interface for non-blocking calls from asyncio agents.
     """
-    def __init__(self, max_queue_size: int = 100):
-        self.action_queue: Queue = Queue(maxsize=max_queue_size)
-        self.result_queues: Dict[str, Queue] = {}
-        self._shutdown_flag = False  # Set flag BEFORE starting thread
-        self.executor_thread = threading.Thread(
-            target=self._executor_loop,
-            daemon=True
-        )
-
-        self.executor_thread.start()
 
     def __init__(self, max_queue_size: int = 100, history_size: int = 100, default_timeout: float = 10.0):
         """
@@ -220,8 +212,73 @@ class ActionExecutor:
             pyautogui.drag(x, y, duration=duration, button=button)
             return {"status": "success", "action": "drag", "coords": (x, y)}
 
+        elif action_type == "bash":
+            command = params.get("command", "")
+            return self._execute_bash_secure(command)
+
         else:
             raise ValueError(f"Unknown action type: {action_type}")
+
+    def _execute_bash_secure(self, command: str) -> Dict[str, Any]:
+        """
+        Execute bash command with security sanitization.
+
+        Args:
+            command: The command string to execute
+
+        Returns:
+            Execution result dictionary
+        """
+        if not command:
+            return {"status": "error", "error": "No command provided"}
+
+        # SECURITY: Sanitize input to prevent shell injection
+        dangerous_chars = [";", "&", "|", "<", ">", "$", "`", "\\", "\n", "\r", "%", "(", ")"]
+        if any(char in command for char in dangerous_chars):
+            logger.error(f"Command contains dangerous shell metacharacters: {command}")
+            return {
+                "status": "error",
+                "error": "Command contains dangerous shell metacharacters (;, &, |, <, >, $, `, \\). Use explicit arguments instead.",
+                "risk_level": "CRITICAL",
+            }
+
+        try:
+            # Parse command safely using shlex
+            argv = shlex.split(command)
+
+            # Execute with shell=False (SECURE: no shell interpretation)
+            result = subprocess.run(
+                argv,
+                shell=False,  # CRITICAL: Prevents shell injection
+                capture_output=True,
+                text=True,
+                timeout=30,  # 30 second timeout for safety
+            )
+
+            return {
+                "status": "success",
+                "action": "bash",
+                "command": command,
+                "returncode": result.returncode,
+                "stdout": result.stdout,
+                "stderr": result.stderr,
+            }
+
+        except subprocess.TimeoutExpired:
+            logger.error(f"Command timed out: {command}")
+            return {
+                "status": "timeout",
+                "error": "Command execution timed out (30s limit)",
+                "command": command,
+            }
+
+        except Exception as e:
+            logger.error(f"Command execution failed: {e}")
+            return {
+                "status": "error",
+                "error": str(e),
+                "command": command,
+            }
 
     def _add_to_history(self, action: Action, result: Dict, execution_time: float):
         """Add action to history (circular buffer)."""
@@ -344,6 +401,23 @@ class ActionExecutor:
                 break
 
         return results
+
+    async def execute_bash(
+        self, command: str, priority: ActionPriority = ActionPriority.NORMAL, timeout: Optional[float] = None
+    ) -> Dict[str, Any]:
+        """
+        Execute bash command asynchronously with security.
+
+        Args:
+            command: The bash command to execute
+            priority: Execution priority
+            timeout: Timeout in seconds
+
+        Returns:
+            Execution result
+        """
+        action = {"type": "bash", "command": command}
+        return await self.execute_async("bash_executor", action, priority, timeout)
 
     def _wait_for_result(self, agent_id: str, request_id: str, timeout: float = 10.0) -> Dict[str, Any]:
         """
