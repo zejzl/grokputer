@@ -20,6 +20,10 @@ import time
 from pathlib import Path
 from datetime import datetime
 from dotenv import load_dotenv
+from typing import Optional
+
+# Load environment variables
+load_dotenv()
 
 # Add src to path
 
@@ -82,6 +86,7 @@ from src.agents.love_agent import LoveAgent
 from src.core.action_executor import ActionExecutor
 from src.observability.deadlock_detector import DeadlockDetector
 from src.observability.session_logger import SessionLogger
+from src.core.agent_lifecycle_manager import AgentLifecycleManager
 from datetime import datetime
 
 from typing import Optional
@@ -121,7 +126,7 @@ def start_mcp_server():
     """Stub: Start MCP server."""
     print("MCP server not implemented yet")
 
-def _get_api_key_for_provider_main(provider):
+def _get_api_key_for_provider_main(provider) -> Optional[str]:
     """Stub: Get API key for provider."""
     return None
 
@@ -141,8 +146,11 @@ def _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot):
     """Stub: Run interactive mode."""
     print("Interactive mode not implemented yet")
 
-async def _list_models_for_provider(provider: str, api_key: str):
+async def _list_models_for_provider(provider: str, api_key: Optional[str]):
     """Stub: List models for provider."""
+    if not api_key:
+        print("No API key available for listing models")
+        return
     print(f"List models for {provider} not implemented yet")
 
 
@@ -173,7 +181,7 @@ async def _list_models_for_provider(provider: str, api_key: str):
 @click.option("--distributed", is_flag=True, help="Enable distributed multi-process communication")
 @click.option("--process-id", default="main", help="Process ID for distributed communication")
 @click.option("--connect-to", help="Comma-separated list of process IDs to connect to")
-def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, swarm, agent_roles, messagebus, pantheon, providers, maf_config, review_mode, analytics, agent_name, limit, performance, list_models, syntax_check, quick_check, mcp, todo_daemon: bool = False, distributed: bool = False, process_id: str = "main", connect_to: str = None):
+def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, swarm, agent_roles, messagebus, pantheon, providers, maf_config, review_mode, analytics, agent_name, limit, performance, list_models, syntax_check, quick_check, mcp, todo_daemon: bool = False, distributed: bool = False, process_id: str = "main", connect_to: Optional[str] = None):
     """
     Grokputer - VRZIBRZI Node
     Main entry point for the observe-reason-act loop.
@@ -243,6 +251,7 @@ def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, sw
         else:
             # Single-agent mode
             asyncio.run(_run_single_agent_mode(task, max_iterations, debug, skip_boot, provider, model))
+            return
 
         # Rest of the existing main function logic...
         # (Keeping the original code below for completeness)
@@ -390,6 +399,9 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False, di
     deadlock_detector = DeadlockDetector(timeout_seconds=30.0, check_interval=5.0)
     session_logger = SessionLogger(session_id=session_id, task=task, log_dir=config.LOG_FILE.parent, swarm_mode=True)
 
+    # Initialize agent lifecycle manager
+    lifecycle_manager = AgentLifecycleManager(session_logger=session_logger)
+
     logger.info("[PANTHEON] Infrastructure initialized")
     print("[OK] Infrastructure initialized\n")
 
@@ -400,6 +412,7 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False, di
     observer = ObserverAgent(
         agent_id="observer", message_bus=message_bus, session_logger=session_logger, config=agent_config
     )
+    await lifecycle_manager.register_agent(observer)
     register_agent_if_distributed("observer")
     session_logger.log_agent_start("observer")
     print("✓ Observer agent ready")
@@ -409,11 +422,13 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False, di
         session_logger=session_logger,
         config=None,  # Use default config with decomposition_prompt
     )
+    await lifecycle_manager.register_agent(reasoner)
     register_agent_if_distributed("reasoner")
     session_logger.log_agent_start("reasoner")
     print("✓ Reasoner (Coordinator) agent ready")
 
     actor = ActorAgent(agent_id="actor", message_bus=message_bus, session_logger=session_logger, config=agent_config)
+    await lifecycle_manager.register_agent(actor)
     register_agent_if_distributed("actor")
     session_logger.log_agent_start("actor")
     print("✓ Actor agent ready")
@@ -425,6 +440,7 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False, di
         config=agent_config,
         action_executor=action_executor,
     )
+    await lifecycle_manager.register_agent(validator)
     register_agent_if_distributed("validator")
     session_logger.log_agent_start("validator")
     print("✓ Validator agent ready")
@@ -536,27 +552,19 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False, di
         love_agent,
         memory_manager=hierarchical_memory,
     )
+    await lifecycle_manager.register_agent(pantheon)
     print("✓ Pantheon Coordinator initialized with 4 core agents + 2 literary agents\n")
 
     print("[PANTHEON] Starting execution with enhanced workflow...")
     print("  Workflow: Observe → Reason → Validate → Act → Verify\n")
 
-    # Start agent tasks
-    agent_tasks = [
-        asyncio.create_task(observer.run()),
-        asyncio.create_task(reasoner.run()),
-        asyncio.create_task(actor.run()),
-        asyncio.create_task(validator.run()),
-        asyncio.create_task(learner.run()),
-        asyncio.create_task(executor.run()),
-        asyncio.create_task(analyzer.run()),
-        asyncio.create_task(improver.run()),
-        asyncio.create_task(character_analyzer.run()),
-        asyncio.create_task(story_generator.run()),
-        asyncio.create_task(visionary.run()),
-        asyncio.create_task(love_agent.run()),
-        asyncio.create_task(pantheon.run()),
-    ]
+    # Start all agents through lifecycle manager
+    success = await lifecycle_manager.start_all_agents()
+    if not success:
+        print("Warning: Some agents failed to start")
+
+    # Start pantheon coordinator task (already started by manager, but ensure)
+    pantheon_task = asyncio.create_task(pantheon.run())
 
     # Start analytics monitoring if enabled
     analytics_task = None
@@ -593,12 +601,7 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False, di
 
     # Stop all agents gracefully
     logger.info("[PANTHEON] Stopping all agents...")
-    for agent_task in agent_tasks:
-        agent_task.cancel()
-    try:
-        await asyncio.gather(*agent_tasks, return_exceptions=True)
-    except asyncio.CancelledError:
-        pass
+    await lifecycle_manager.stop_all_agents()
 
     # Get final stats
     stats = pantheon.get_pantheon_stats()
@@ -1006,7 +1009,6 @@ async def _run_maf_mode(task: str, providers: list, maf_config: str, max_rounds:
     try:
         # Initialize MessageBus for MAF integration
         message_bus = MessageBus()
-        await message_bus.initialize()
 
         # Initialize MAF-MessageBus integration
         from src.collaboration import initialize_maf_messagebus_integration
@@ -1054,10 +1056,14 @@ async def _run_single_agent_mode(
     task: str, max_iterations: int, debug: bool, skip_boot: bool, provider: str = "grok", model: str = None
 ):
     """Run single-agent mode using Grokputer class."""
-    grokputer = Grokputer(debug=debug, provider=provider, model=model)
-    if not skip_boot:
-        grokputer.boot()
-    await grokputer.run_task(task=task, max_iterations=max_iterations)
+    try:
+        grokputer = Grokputer(debug=debug, provider=provider, model=model)
+        if not skip_boot:
+            grokputer.boot()
+        await grokputer.run_task(task=task, max_iterations=max_iterations)
+    except Exception as e:
+        print(f"Fatal error in single agent mode: {e}")
+        raise
 
 async def run_task(grok_client: GrokClient, screen_observer: ScreenObserver,
                    tool_executor: ToolExecutor, session_logger: SessionLogger,

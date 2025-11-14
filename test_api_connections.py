@@ -6,6 +6,13 @@ import asyncio
 import sys
 import os
 
+# Load environment variables
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 sys.path.insert(0, os.path.dirname(__file__))
 
 from src.grok_client import GrokClient
@@ -14,8 +21,11 @@ from src.model_client import ModelClientFactory
 
 async def test_grok():
     print("Testing Grok API connection...")
-    client = GrokClient()
-    print(f"Grok client config: api_key={client.api_key[:10]}..., base_url={client.base_url}, model={client.model}")
+    grok_key = os.getenv("XAI_API_KEY", "")
+    if not grok_key:
+        print("XAI_API_KEY not found, skipping Grok test")
+        return False
+    client = ModelClientFactory.create_client("grok", grok_key, "grok-4-fast-reasoning")
     result = await client.test_connection()
     print(f"Grok API test result: {result}")
     return result
