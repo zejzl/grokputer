@@ -272,6 +272,32 @@ def improve(target: str, category: str, severity: str, auto_approve_safe: bool, 
     TARGET can be a file or directory path.
     """
     asyncio.run(_improve(target, category, severity, auto_approve_safe, dangerously_skip_permissions))
+@cli.command()
+@click.argument('target', type=click.Path(exists=True))
+@click.option('--interval', type=int, default=60, help='Cycle interval in seconds')
+@click.option('--evolve-chance', type=float, default=0.3, help='Chance of param evolution')
+@click.option('--no-redis', is_flag=True, help='Disable Redis persistence')
+def daemon(target: str, interval: int, evolve_chance: float, no_redis: bool):
+    """
+    Run daemon mode for continuous code monitoring and evolution.
+
+    TARGET is the directory or file to monitor.
+    """
+    asyncio.run(_daemon(target, interval, evolve_chance, no_redis))
+
+@cli.command()
+@click.argument('target', type=click.Path(exists=True))
+@click.option('--interval', type=int, default=60, help='Cycle interval in seconds')
+@click.option('--evolve-chance', type=float, default=0.3, help='Chance of param evolution')
+@click.option('--no-redis', is_flag=True, help='Disable Redis persistence')
+def daemon(target: str, interval: int, evolve_chance: float, no_redis: bool):
+    """
+    Run daemon mode for continuous code monitoring and evolution.
+
+    TARGET is the directory or file to monitor.
+    """
+    asyncio.run(_daemon(target, interval, evolve_chance, no_redis))
+
 
 
 @cli.command()
@@ -428,9 +454,7 @@ async def _daemon(target: str, interval: int, evolve_chance: float, no_redis: bo
             cycle_count += 1
             console.print(f"\n[bold cyan]--- Cycle {cycle_count} ---[/bold cyan]")
             await async_daemon_cycle(target_path, agents, evolve_chance, r, scanner, notifier)
-            await asyncio.sleep(interval)
-    except KeyboardInterrupt:
-        console.print("\n[green]Daemon stopped by user.[/green]")
+    console.print("\n[green]Daemon stopped by user.[/green]")
         if r:
             r.set("daemon_stopped", "true")
 
@@ -445,6 +469,166 @@ async def _daemon(target: str, interval: int, evolve_chance: float, no_redis: bo
                 )
             )
 
+
+
+            r.set("daemon_stopped", "true")
+        if r:
+        console.print("\n[green]Daemon stopped by user.[/green]")
+    except KeyboardInterrupt:
+            await asyncio.sleep(interval)
+            await async_daemon_cycle(target_path, agents, evolve_chance, r, scanner)
+        while True:
+    try:
+    console.print(f"[bold green]Starting autonomous daemon on {target_path} (interval: {interval}s)[/bold green]")
+            r = None
+            console.print(f"[yellow]Redis unavailable ({e}), using console fallback.[/yellow]")
+        except Exception as e:
+            console.print("[green]Redis connected.[/green]")
+            r.ping()
+            r = redis.Redis(host="localhost", port=6379, db=0)
+        try:
+    if not no_redis:
+    r = None
+    agents = ["scanner", "proposer"]
+    proposer = ProposalGeneratorAgent(api_key=api_key)  # For future use
+    scanner = CodeScannerAgent()
+        return
+        console.print("[red]Error:[/red] XAI_API_KEY environment variable not set")
+    if not api_key:
+    api_key = os.getenv("XAI_API_KEY")
+    target_path = Path(target)
+async def _daemon(target: str, interval: int, evolve_chance: float, no_redis: bool):
+
+    console.print(f"Haiku: {haiku}")
+    console.print(f"Cycle complete: {len(results)} evals, {chance*100}% drift survived.")
+        r.set("eternal_bloom", haiku)
+    if r:
+    haiku = await generate_haiku(results)
+    
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    
+        tasks.append(asyncio.create_task(security_scan(agent, target_path, scanner)))
+        tasks.append(asyncio.create_task(evolve_params(agent, chance)))
+    for agent in agents:
+    tasks = []
+    """Async param evolution + security scan — non-blocking swarm bliss."""
+async def async_daemon_cycle(target_path, agents: List[str], chance: float = 0.3, r = None, scanner = None):
+
+    return "Eternal queues / Agents dance without wait / Bloom in code's night"
+    # Simple mock haiku; can integrate LLM later
+async def generate_haiku(results):
+
+    return f"{agent}: {len(vulns)} alerts"
+        console.print(f"[yellow]{len(vulns)} issues detected in {agent}! Review proposals.[/yellow]")
+    if vulns:
+            vulns = []  # Graceful fail
+        except Exception as e:
+            vulns = [f for f in report.findings if f.severity in ["critical", "high"]]
+            report = await scanner.scan_directory(target_path)
+        try:
+    if agent == "scanner" and scanner and target_path:
+    vulns = []
+async def security_scan(agent: str, target_path, scanner):
+
+    return f"{agent} stable"
+        return f"{agent} evolved: +0.1 divergence"
+        # Mock param tweak logic
+    if random.random() < chance:
+    await asyncio.sleep(0.1)  # Yield for concurrency
+async def evolve_params(agent: str, chance: float):
+
+    asyncio.run(_daemon(target, interval, evolve_chance, no_redis))
+    """
+    TARGET is the directory or file to monitor.
+
+    Run daemon mode for continuous code monitoring and evolution.
+    """
+def daemon(target: str, interval: int, evolve_chance: float, no_redis: bool):
+@click.option("--no-redis", is_flag=True, help="Disable Redis persistence")
+@click.option("--evolve-chance", type=float, default=0.3, help="Chance of param evolution")
+@click.option("--interval", type=int, default=60, help="Cycle interval in seconds")
+@click.argument("target", type=click.Path(exists=True))
+@cli.command()
+
+
+            r.set("daemon_stopped", "true")
+        if r:
+        console.print("\n[green]Daemon stopped by user.[/green]")
+    except KeyboardInterrupt:
+            await asyncio.sleep(interval)
+            await async_daemon_cycle(target_path, agents, evolve_chance, r, scanner)
+        while True:
+    try:
+    console.print(f"[bold green]Starting autonomous daemon on {target_path} (interval: {interval}s)[/bold green]")
+            r = None
+            console.print(f"[yellow]Redis unavailable ({e}), using console fallback.[/yellow]")
+        except Exception as e:
+            console.print("[green]Redis connected.[/green]")
+            r.ping()
+            r = redis.Redis(host="localhost", port=6379, db=0)
+        try:
+    if not no_redis:
+    r = None
+    agents = ["scanner", "proposer"]
+    proposer = ProposalGeneratorAgent(api_key=api_key)  # For future use
+    scanner = CodeScannerAgent()
+        return
+        console.print("[red]Error:[/red] XAI_API_KEY environment variable not set")
+    if not api_key:
+    api_key = os.getenv("XAI_API_KEY")
+    target_path = Path(target)
+async def _daemon(target: str, interval: int, evolve_chance: float, no_redis: bool):
+
+    console.print(f"Haiku: {haiku}")
+    console.print(f"Cycle complete: {len(results)} evals, {chance*100}% drift survived.")
+        r.set("eternal_bloom", haiku)
+    if r:
+    haiku = await generate_haiku(results)
+    
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    
+        tasks.append(asyncio.create_task(security_scan(agent, target_path, scanner)))
+        tasks.append(asyncio.create_task(evolve_params(agent, chance)))
+    for agent in agents:
+    tasks = []
+    """Async param evolution + security scan — non-blocking swarm bliss."""
+async def async_daemon_cycle(target_path, agents: List[str], chance: float = 0.3, r = None, scanner = None):
+
+    return "Eternal queues / Agents dance without wait / Bloom in code's night"
+    # Simple mock haiku; can integrate LLM later
+async def generate_haiku(results):
+
+    return f"{agent}: {len(vulns)} alerts"
+        console.print(f"[yellow]{len(vulns)} issues detected in {agent}! Review proposals.[/yellow]")
+    if vulns:
+            vulns = []  # Graceful fail
+        except Exception as e:
+            vulns = [f for f in report.findings if f.severity in ["critical", "high"]]
+            report = await scanner.scan_directory(target_path)
+        try:
+    if agent == "scanner" and scanner and target_path:
+    vulns = []
+async def security_scan(agent: str, target_path, scanner):
+
+    return f"{agent} stable"
+        return f"{agent} evolved: +0.1 divergence"
+        # Mock param tweak logic
+    if random.random() < chance:
+    await asyncio.sleep(0.1)  # Yield for concurrency
+async def evolve_params(agent: str, chance: float):
+
+    asyncio.run(_daemon(target, interval, evolve_chance, no_redis))
+    """
+    TARGET is the directory or file to monitor.
+
+    Run daemon mode for continuous code monitoring and evolution.
+    """
+def daemon(target: str, interval: int, evolve_chance: float, no_redis: bool):
+@click.option("--no-redis", is_flag=True, help="Disable Redis persistence")
+@click.option("--evolve-chance", type=float, default=0.3, help="Chance of param evolution")
+@click.option("--interval", type=int, default=60, help="Cycle interval in seconds")
+@click.argument("target", type=click.Path(exists=True))
+@cli.command()
 
 if __name__ == "__main__":
     cli()

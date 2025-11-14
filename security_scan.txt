@@ -1,0 +1,16 @@
+# Security Scan Results
+
+Total vulnerabilities found: 3
+
+## src\magic.py
+
+- [MEDIUM] SYNTAX_ERROR: Syntax error that could hide malicious code: unexpected indent at src\magic.py:18
+
+## src\tools.py
+
+- [MEDIUM] SYNTAX_ERROR: Syntax error that could hide malicious code: invalid syntax at src\tools.py:295
+
+## src\agents\guardian_agent.py
+
+- [MEDIUM] SYNTAX_ERROR: Syntax error that could hide malicious code: unterminated triple-quoted string literal (detected at line 119) at src\agents\guardian_agent.py:8
+

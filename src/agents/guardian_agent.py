@@ -9,7 +9,7 @@ class GuardianAgent(BaseAgent):
 
     Intercepts proposed actions from other agents, assesses risks, and approves/rejects.
     Uses regex for dangerous commands, ethical checks, and context analysis.
-    \"\"\"
+    """
 
     def __init__(self, agent_id: str = 'guardian', message_bus=None, session_logger=None, config=None):
         super().__init__(agent_id, message_bus, session_logger, config)
@@ -27,7 +27,7 @@ class GuardianAgent(BaseAgent):
         self.ethical_checker = ethical_bounds
 
     async def process_message(self, message: Message) -> List[Message]:
-        \"\"\"Process incoming messages, intercept actions.\"\"\"
+        """Process incoming messages, intercept actions."""
         responses = []
 
         if message.message_type == 'proposed_action':
@@ -64,7 +64,7 @@ class GuardianAgent(BaseAgent):
         return responses
 
     def assess_risk(self, action_data: Dict[str, Any]) -> Dict[str, Any]:
-        \"\"\"Assess risk of proposed action.\"\"\"
+        """Assess risk of proposed action."""
         command = action_data.get('command', '')
         context = action_data.get('context', '')
         full_text = f"{command} {context}"
@@ -103,7 +103,7 @@ class GuardianAgent(BaseAgent):
         }
 
     async def run(self):
-        \"\"\"Run the guardian agent.\"\"\"
+        """Run the guardian agent."""
         self.session_logger.log_agent_start(self.agent_id)
         print(f"[{self.agent_id}] Guardian agent started - monitoring for risks")
         

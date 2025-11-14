@@ -1,0 +1,43 @@
+Session: pantheon_20251114_015420
+Task: what is happening round here yoyo gang the boys are back in town
+Started: 2025-11-14T01:54:20.356085
+Swarm Mode: True
+--------------------------------------------------------------------------------
+
+[01:54:20.356] [AGENT START] observer
+[01:54:20.357] [AGENT START] observer
+[01:54:20.358] [AGENT START] coordinator_learner
+[01:54:20.367] [AGENT START] coordinator
+[01:54:20.367] [AGENT START] reasoner
+[01:54:20.369] [AGENT START] actor
+[01:54:20.369] [AGENT START] actor
+[01:54:20.369] [AGENT START] validator
+[01:54:20.370] [AGENT START] validator
+[01:54:20.382] [AGENT START] hierarchical_memory
+[01:54:20.382] [AGENT START] learner
+[01:54:20.382] [AGENT START] learner
+[01:54:20.383] [AGENT START] executor
+[01:54:20.385] [AGENT START] analyzer
+[01:54:20.393] [AGENT START] improver
+[01:54:20.394] [AGENT START] character_analyzer
+[01:54:20.394] [AGENT START] story_generator
+[01:54:20.394] [AGENT START] visionary
+[01:54:20.395] [AGENT START] love_agent
+[01:54:20.438] [AGENT START] pantheon_coordinator
+[01:54:20.439] [AGENT START] pantheon_coordinator
+[01:54:20.439] [AGENT START] observer
+[01:54:20.552] [AGENT START] coordinator
+[01:54:20.662] [AGENT START] actor
+[01:54:20.771] [AGENT START] validator
+[01:54:20.877] [AGENT START] pantheon_coordinator
+[01:54:20.878] [AGENT START] pantheon_coordinator
+[01:54:20.984] [AGENT START] pantheon_coordinator
+[01:54:20.984] [AGENT START] pantheon_coordinator
+[01:54:21.995] [AGENT ACTIVITY] pantheon_coordinator -> Pantheon handling task: what is happening round here yoyo gang the boys are back in town
+[01:54:21.996] [AGENT ACTIVITY] learner -> processing
+[01:54:21.996] [AGENT ACTIVITY] learner -> idle
+[01:54:21.998] [AGENT ERROR] pantheon_coordinator: 'Message' object has no attribute 'get'
+[01:54:50.455] [AGENT WAIT] observer
+[01:54:50.780] [AGENT WAIT] validator
+[01:54:50.994] [AGENT WAIT] pantheon_coordinator
+[01:54:52.008] [AGENT WAIT] pantheon_coordinator

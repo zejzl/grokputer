@@ -1076,7 +1076,7 @@ async def _run_single_agent_mode(
         grokputer = Grokputer(debug=debug, provider=provider, model=model)
         if not skip_boot:
             grokputer.boot()
-        await grokputer.run_task(task=task, max_iterations=max_iterations)
+        await asyncio.run(grokputer.run_task(task=task, max_iterations=max_iterations))
     except Exception as e:
         print(f"Fatal error in single agent mode: {e}")
         raise

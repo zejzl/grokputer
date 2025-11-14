@@ -1,0 +1,8 @@
+timestamp: 2025-11-14T03-58-45.567528
+player: test
+game_data:
+  level: 1
+  score: 100
+metadata:
+  version: "1.0"
+  location: "saves\\test_2025-11-14T03-58-45.567528.toon"

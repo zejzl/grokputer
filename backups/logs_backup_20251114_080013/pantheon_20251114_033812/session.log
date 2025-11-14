@@ -1,0 +1,45 @@
+Session: pantheon_20251114_033812
+Task: consult the council about our current development phase
+Started: 2025-11-14T03:38:12.077988
+Swarm Mode: True
+--------------------------------------------------------------------------------
+
+[03:38:12.078] [AGENT START] observer
+[03:38:12.078] [AGENT START] observer
+[03:38:12.079] [AGENT START] coordinator_learner
+[03:38:12.080] [AGENT START] coordinator
+[03:38:12.080] [AGENT START] reasoner
+[03:38:12.081] [AGENT START] actor
+[03:38:12.081] [AGENT START] actor
+[03:38:12.082] [AGENT START] validator
+[03:38:12.082] [AGENT START] validator
+[03:38:16.158] [AGENT START] hierarchical_memory
+[03:38:16.158] [AGENT START] learner
+[03:38:16.159] [AGENT START] learner
+[03:38:16.159] [AGENT START] executor
+[03:38:16.159] [AGENT START] analyzer
+[03:38:20.254] [AGENT START] improver
+[03:38:20.255] [AGENT START] character_analyzer
+[03:38:20.255] [AGENT START] story_generator
+[03:38:20.255] [AGENT START] visionary
+[03:38:20.255] [AGENT START] love_agent
+[03:38:20.256] [AGENT START] documentation_agent
+[03:38:20.256] [AGENT START] maf_coordinator
+[03:38:20.265] [AGENT START] pantheon_coordinator
+[03:38:20.265] [AGENT START] pantheon_coordinator
+[03:38:20.266] [AGENT START] observer
+[03:38:20.377] [AGENT START] coordinator
+[03:38:20.486] [AGENT START] actor
+[03:38:20.594] [AGENT START] validator
+[03:38:20.702] [AGENT START] pantheon_coordinator
+[03:38:20.702] [AGENT START] pantheon_coordinator
+[03:38:20.811] [AGENT START] pantheon_coordinator
+[03:38:20.811] [AGENT START] pantheon_coordinator
+[03:38:21.817] [AGENT ACTIVITY] pantheon_coordinator -> Pantheon handling task: consult the council about our current development phase
+[03:38:21.817] [AGENT ACTIVITY] learner -> processing
+[03:38:21.817] [AGENT ACTIVITY] learner -> idle
+[03:38:22.959] [AGENT ERROR] pantheon_coordinator: 'Message' object has no attribute 'get'
+[03:38:50.272] [AGENT WAIT] observer
+[03:38:50.611] [AGENT WAIT] validator
+[03:38:50.813] [AGENT WAIT] pantheon_coordinator
+[03:38:52.965] [AGENT WAIT] pantheon_coordinator

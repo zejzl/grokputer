@@ -8,9 +8,13 @@ and automated restart capabilities for all agents in the Grokputer system.
 import asyncio
 import logging
 import time
+import psutil
+import threading
 from typing import Dict, List, Optional, Callable, Any
 from dataclasses import dataclass, field
 from enum import Enum
+import statistics
+import json
 
 from src.core.base_agent import BaseAgent
 from src.observability.deadlock_detector import DeadlockDetector
@@ -43,6 +47,14 @@ class AgentHealthMetrics:
     last_error: Optional[str] = None
     performance_score: float = 1.0  # 0.0 to 1.0
 
+    # Advanced metrics
+    cpu_usage_history: List[float] = field(default_factory=list)
+    memory_usage_history: List[float] = field(default_factory=list)
+    response_times: List[float] = field(default_factory=list)
+    message_throughput: float = 0.0
+    load_factor: float = 1.0
+    predictive_failure_risk: float = 0.0  # 0.0 to 1.0
+
     def update_health(self, is_healthy: bool, error: Optional[str] = None):
         """Update health status."""
         self.last_health_check = time.time()
@@ -71,6 +83,15 @@ class LifecycleConfig:
     auto_restart_enabled: bool = True
     deadlock_timeout_seconds: float = 60.0
     performance_monitoring: bool = True
+
+    # Advanced features
+    auto_scaling_enabled: bool = True
+    predictive_monitoring: bool = True
+    max_agents_per_type: int = 5
+    min_agents_per_type: int = 1
+    scaling_threshold_high: float = 0.8  # Scale up when load > 80%
+    scaling_threshold_low: float = 0.3   # Scale down when load < 30%
+    emergency_shutdown_threshold: float = 0.95  # System load emergency
 
 
 class AgentLifecycleManager:

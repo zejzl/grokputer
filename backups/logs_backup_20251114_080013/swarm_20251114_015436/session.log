@@ -1,0 +1,36 @@
+Session: swarm_20251114_015436
+Task: Explain what ';0;rgb:0000/0000/0000scale optimizie wewelovoe <33' means
+Started: 2025-11-14T01:54:36.440625
+Swarm Mode: True
+--------------------------------------------------------------------------------
+
+[01:54:36.441] [AGENT START] coordinator
+[01:54:36.441] [AGENT START] coordinator_learner
+[01:54:36.444] [AGENT START] observer
+[01:54:36.444] [AGENT START] actor
+[01:54:36.446] [AGENT START] coordinator
+[01:54:36.447] [AGENT ACTIVITY] coordinator -> new_task
+[01:54:36.447] [AGENT ACTIVITY] coordinator -> decomposed {'task_id': 'task_001', 'subtasks': 1}
+[01:54:36.449] [AGENT ACTIVITY] observer -> idle
+[01:54:36.449] [AGENT START] observer
+[01:54:36.450] [AGENT START] actor
+[01:54:46.452] 
+================================================================================
+Session Summary: swarm_20251114_015436
+================================================================================
+Task: Explain what ';0;rgb:0000/0000/0000scale optimizie wewelovoe <33' means
+Duration: 10.01s
+Iterations: 0
+Tool Executions: 0
+API Calls: 0
+Errors: 0
+
+Swarm Metrics:
+  Handoffs: 0
+  Avg Latency: 0.00ms
+  Messages: 0
+  Heartbeats: 0
+  Agents: 4
+================================================================================
+[01:54:46.457] [AGENT ACTIVITY] observer -> stopped
+[01:54:46.457] [AGENT STOP] observer

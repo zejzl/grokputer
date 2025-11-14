@@ -1,0 +1,36 @@
+Session: swarm_20251113_230259
+Task: read vault/tehutishh.md and append findings into tree_of_life.md
+Started: 2025-11-13T23:02:59.588388
+Swarm Mode: True
+--------------------------------------------------------------------------------
+
+[23:02:59.588] [AGENT START] coordinator
+[23:02:59.589] [AGENT START] coordinator_learner
+[23:03:00.493] [AGENT START] observer
+[23:03:00.494] [AGENT START] actor
+[23:03:00.495] [AGENT START] coordinator
+[23:03:00.495] [AGENT ACTIVITY] coordinator -> new_task
+[23:03:00.496] [AGENT ACTIVITY] coordinator -> decomposed {'task_id': 'task_001', 'subtasks': 1}
+[23:03:00.496] [AGENT ACTIVITY] observer -> idle
+[23:03:00.496] [AGENT START] observer
+[23:03:00.496] [AGENT START] actor
+[23:03:10.507] 
+================================================================================
+Session Summary: swarm_20251113_230259
+================================================================================
+Task: read vault/tehutishh.md and append findings into tree_of_life.md
+Duration: 10.92s
+Iterations: 0
+Tool Executions: 0
+API Calls: 0
+Errors: 0
+
+Swarm Metrics:
+  Handoffs: 0
+  Avg Latency: 0.00ms
+  Messages: 0
+  Heartbeats: 0
+  Agents: 4
+================================================================================
+[23:03:10.513] [AGENT ACTIVITY] observer -> stopped
+[23:03:10.513] [AGENT STOP] observer

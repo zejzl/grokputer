@@ -1,9 +1,3 @@
-"""
-# magic.py - Inspired by Artemis Fowl: Fairy Magic as 'Forgotten Science'
-# Simulates magical elements like Holly Short's blue spark healing, acorn vitality,
-# and fairy shielding. Integrates with Grokputer agents for error recovery, energy boosts,
-# and thematic 'enchantments'. Magic is tech-magic hybrid: uses randomness, APIs, and tools.
-
 import random
 import time
 import logging
@@ -15,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 class FairyMagic:
     """
-    Core class for fairy 'magic' simulation. Represents the 'People's' tech-magic:
+    Core class for fairy magic simulation. Represents the People's tech-magic:
     - Blue Spark: Healing energy (error recovery, optimization).
     - Acorn Vitality: Natural boost (resource allocation, stamina for agents).
     - Fairy Shield: Protection (security checks, mesmerization for NLI).
@@ -29,7 +23,7 @@ class FairyMagic:
         self.is_shielded = False
         
     def recharge_magic(self, acorn_boost: bool = False) -> float:
-        """Recharges fairy magic like Holly's post-heal recovery.
+        """Recharges fairy magic like Holly post-heal recovery.
         Optional acorn for extra vitality (herbal tie-in).
         """
         base_recharge = random.uniform(10, 20)
@@ -149,4 +143,3 @@ if __name__ == "__main__":
     print(f"Energy after: {magic.energy_level}%")
     magic.fairy_shield(True)
     print("Shield active:", magic.is_shielded)
-"""

@@ -1,7 +1,7 @@
 import asyncio
 import pytest
 from src.core.base_agent import BaseAgent, AgentState
-from src.core.message_bus import MessageBus  # Assume implemented
+from src.core.message_bus import MessageBus, Message
 from src.core.action_executor import ActionExecutor
 from unittest.mock import AsyncMock, Mock
 import time

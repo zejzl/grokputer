@@ -1,0 +1,20 @@
+{
+  "timestamp": "2025-11-14T03-17-31.191867",
+  "player": "hero",
+  "game_data": {
+    "level": 5,
+    "score": 1500,
+    "inventory": [
+      "sword",
+      "potion"
+    ],
+    "position": {
+      "x": 10,
+      "y": 20
+    }
+  },
+  "metadata": {
+    "version": "1.0",
+    "location": "saves\\hero_2025-11-14T03-17-31.191867.json"
+  }
+}

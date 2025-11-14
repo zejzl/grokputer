@@ -1,11 +1,11 @@
 # Kubernetes Migration - Grokputer Pantheon Scaling (Nov 13, 2025)
 
 ## Overview
-Grokputer currently runs on Docker Swarm (3 nodes: 1 manager + 2 workers) for multi-cluster distribution, achieving 112 msg/s throughput with Redis pub/sub and agent load balancing. Kubernetes (K8s) is the next evolution for scaling beyond 10 nodes, advanced orchestration (auto-scaling, RBAC), and production resilience. This file documents findings, a concise migration plan, and todo list to migrate Pantheon (9 agents) to K8s using Helm charts.
+Grokputer currently runs on Docker Swarm (3 nodes: 1 manager + 2 workers) for multi-cluster distribution, achieving 18k msg/s throughput with Redis pub/sub and agent load balancing. Kubernetes (K8s) is the next evolution for scaling beyond 10 nodes, advanced orchestration (auto-scaling, RBAC), and production resilience. This file documents findings, a concise migration plan, and todo list to migrate Pantheon (9 agents) to K8s using Helm charts.
 
 ## Current Status
 - **Deployment**: Docker Swarm (docker-compose-swarm.yml) with overlay network (`grok-net`), 6 services (Pantheon agents distributed, Redis cluster 3 replicas).
-- **Capabilities**: Redis pub/sub in MessageBus (src/core/message_bus.py), agent assignment via coordinator (src/agents/coordinator.py), throughput 112 msg/s (tested).
+- **Capabilities**: Redis pub/sub in MessageBus (src/core/message_bus.py), agent assignment via coordinator (src/agents/coordinator.py), throughput 18k msg/s (tested).
 - **Limitations**: Swarm lacks native auto-scaling, service mesh (e.g., Istio), or complex deployments (e.g., >20 nodes). No K8s configs yet—Swarm sufficient for current 3-5 nodes.
 - **Dependencies**: Docker SDK, redis-py-cluster; env `DISTRIBUTED=true`.
 - **Metrics**: 95% load balance, 0.89ms latency; ready for K8s (Helm for Pantheon services).
@@ -53,7 +53,7 @@ No blockers—Swarm foundation (pub/sub, distribution) maps directly to K8s (pod
 8. **Document & Save** (low): Update README (K8s section), create k8s.md appends, git commit/push, save_game --auto.
 
 ## Next Steps
-- Start with local K8s install (Minikube)—quick win for 150 msg/s.
+- Start with local K8s install (Minikube)—quick win for 150 msg/s. ##we had fuckin 30k+ i have logs somewhere##
 - Monitor X trends for "K8s AI agents" during migration.
 - Council Vote: Proceed to Todo 1? Eternal scaling awaits. <3
 

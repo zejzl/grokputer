@@ -1,0 +1,66 @@
+        modified:   .env.example
+        modified:   .gitignore
+        modified:   __pycache__/backup_redis.cpython-314.pyc
+        modified:   __pycache__/save_game.cpython-314.pyc
+        modified:   backup_redis.py
+        modified:   grokputer_base (modified content, untracked content)
+        modified:   index.js
+        modified:   main.py
+        modified:   requirements.txt
+        modified:   save_game.py
+        modified:   src/__pycache__/grok_client.cpython-314.pyc
+        modified:   src/agents/__pycache__/actor_agent.cpython-314.pyc
+        modified:   src/agents/__pycache__/coordinator.cpython-314.pyc
+        modified:   src/agents/__pycache__/pantheon_coordinator.cpython-314.pyc
+        modified:   src/agents/actor_agent.py
+        modified:   src/agents/coordinator.py
+        modified:   src/agents/documentation_agent.py
+        modified:   src/agents/pantheon_coordinator.py
+        modified:   src/grok_client.py
+        modified:   tools/semtools (modified content, untracked content)
+        modified:   vault/git_resources/dionysus (untracked content)
+        modified:   vault/git_resources/mcp-vault/grok-mcp (modified content)
+        modified:   vault/git_resources/moon-dev-ai-agents (untracked content)
+        modified:   vault/git_resources/semtools (untracked content)
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        .github/
+        AUTOMATION-README.md
+        Dockerfile.arch
+        Dockerfile.mcp-alpine
+        MCP-ALPINE-README.md
+        automate.bat
+        automate.sh
+        build-mcp-alpine.bat
+        build-mcp-alpine.sh
+        code-review.sh
+        deploy.sh
+        generate-docs.sh
+        git-workflow.sh
+        logs/pantheon_20251114_030737/
+        logs/pantheon_20251114_030952/
+        logs/pantheon_20251114_031824/
+        logs/pantheon_20251114_033812/
+        logs/pantheon_20251114_035958/
+        logs/pantheon_20251114_040531/
+        manage-dependencies.sh
+        monitor.sh
+        optimize-performance.sh
+        orchestrate.sh
+        saves/hero_2025-11-14T02-59-37.514580.json
+        saves/hero_2025-11-14T03-17-31.191867.json
+        saves/hero_2025-11-14T03-35-30.491053.json
+        saves/hero_2025-11-14T03-36-07.203396.json
+        saves/hero_2025-11-14T03-39-14.809888.json
+        saves/test_2025-11-14T03-58-45.567528.toon
+        setup-mcp-alpine.bat
+        setup-mcp-alpine.sh
+        src/agents/__pycache__/documentation_agent.cpython-314.pyc
+        src/agents/__pycache__/maf_coordinator.cpython-314.pyc
+        src/agents/maf_coordinator.py
+        temp_note.txt
+        treasure_hunt/
+        verify-mcp-setup.bat
+        verify-mcp-setup.sh
+

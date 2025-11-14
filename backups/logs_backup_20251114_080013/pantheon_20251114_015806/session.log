@@ -1,0 +1,43 @@
+Session: pantheon_20251114_015806
+Task: Test the new MessageBus subscribe_callback functionality
+Started: 2025-11-14T01:58:06.775130
+Swarm Mode: True
+--------------------------------------------------------------------------------
+
+[01:58:06.775] [AGENT START] observer
+[01:58:06.775] [AGENT START] observer
+[01:58:06.776] [AGENT START] coordinator_learner
+[01:58:06.783] [AGENT START] coordinator
+[01:58:06.783] [AGENT START] reasoner
+[01:58:06.784] [AGENT START] actor
+[01:58:06.784] [AGENT START] actor
+[01:58:06.784] [AGENT START] validator
+[01:58:06.784] [AGENT START] validator
+[01:58:06.794] [AGENT START] hierarchical_memory
+[01:58:06.794] [AGENT START] learner
+[01:58:06.795] [AGENT START] learner
+[01:58:06.795] [AGENT START] executor
+[01:58:06.795] [AGENT START] analyzer
+[01:58:06.800] [AGENT START] improver
+[01:58:06.800] [AGENT START] character_analyzer
+[01:58:06.801] [AGENT START] story_generator
+[01:58:06.801] [AGENT START] visionary
+[01:58:06.801] [AGENT START] love_agent
+[01:58:06.814] [AGENT START] pantheon_coordinator
+[01:58:06.814] [AGENT START] pantheon_coordinator
+[01:58:06.815] [AGENT START] observer
+[01:58:06.916] [AGENT START] coordinator
+[01:58:07.024] [AGENT START] actor
+[01:58:07.133] [AGENT START] validator
+[01:58:07.243] [AGENT START] pantheon_coordinator
+[01:58:07.243] [AGENT START] pantheon_coordinator
+[01:58:07.351] [AGENT START] pantheon_coordinator
+[01:58:07.352] [AGENT START] pantheon_coordinator
+[01:58:08.356] [AGENT ACTIVITY] pantheon_coordinator -> Pantheon handling task: Test the new MessageBus subscribe_callback functionality
+[01:58:08.356] [AGENT ACTIVITY] learner -> processing
+[01:58:08.357] [AGENT ACTIVITY] learner -> idle
+[01:58:08.357] [AGENT ERROR] pantheon_coordinator: 'Message' object has no attribute 'get'
+[01:58:36.816] [AGENT WAIT] observer
+[01:58:37.142] [AGENT WAIT] validator
+[01:58:37.359] [AGENT WAIT] pantheon_coordinator
+[01:58:38.370] [AGENT WAIT] pantheon_coordinator

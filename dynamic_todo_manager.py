@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-\"\"\"Dynamic Todo Manager Daemon for Grokputer Pantheon.
+"""Dynamic Todo Manager Daemon for Grokputer Pantheon.
 
 Runs in background as asyncio daemon. Uses Redis for shared todo state and pub/sub updates.
 Integrates with Message Bus for Council/Taskmaster visibility. Supports multiple gitcli windows
@@ -11,7 +11,7 @@ Usage:
 
 Author: Pantheon Coordinator (via Grok CLI)
 Version: 1.0 (Pantheon-Integrated)
-\"\"\"
+"""
 
 import asyncio
 import json

@@ -1,0 +1,56 @@
+Session: pantheon_20251113_230139
+Task: tune flash attention in pantheon, test num_heads=16 for better performance
+Started: 2025-11-13T23:01:39.898628
+Swarm Mode: True
+--------------------------------------------------------------------------------
+
+[23:01:39.899] [AGENT START] observer
+[23:01:39.899] [AGENT START] coordinator_learner
+[23:01:40.700] [AGENT START] reasoner
+[23:01:40.701] [AGENT START] actor
+[23:01:40.702] [AGENT START] validator
+[23:01:40.714] [AGENT START] hierarchical_memory
+[23:01:40.714] [AGENT START] learner
+[23:01:40.714] [AGENT START] learner
+[23:01:40.715] [AGENT START] executor
+[23:01:40.715] [AGENT START] analyzer
+[23:01:40.719] [AGENT START] improver
+[23:01:40.719] [AGENT START] character_analyzer
+[23:01:40.719] [AGENT START] story_generator
+[23:01:40.720] [AGENT START] visionary
+[23:01:40.720] [AGENT START] love_agent
+[23:01:40.728] [AGENT START] pantheon_coordinator
+[23:01:40.729] [AGENT ACTIVITY] observer -> idle
+[23:01:40.729] [AGENT START] observer
+[23:01:40.729] [AGENT START] coordinator
+[23:01:40.730] [AGENT START] actor
+[23:01:40.730] [AGENT ACTIVITY] validator -> idle
+[23:01:40.730] [AGENT START] validator
+[23:01:40.730] [AGENT ACTIVITY] learner -> idle
+[23:01:40.730] [AGENT START] learner
+[23:01:40.731] [AGENT ACTIVITY] executor -> idle
+[23:01:40.731] [AGENT START] executor
+[23:01:40.731] [AGENT ACTIVITY] analyzer -> idle
+[23:01:40.731] [AGENT START] analyzer
+[23:01:40.732] [AGENT ACTIVITY] improver -> idle
+[23:01:40.732] [AGENT START] improver
+[23:01:40.732] [AGENT ACTIVITY] visionary -> idle
+[23:01:40.732] [AGENT START] visionary
+[23:01:40.733] [AGENT ACTIVITY] love_agent -> idle
+[23:01:40.733] [AGENT START] love_agent
+[23:01:40.733] [AGENT ACTIVITY] pantheon_coordinator -> idle
+[23:01:40.733] [AGENT START] pantheon_coordinator
+[23:02:10.745] [AGENT ACTIVITY] observer -> waiting
+[23:02:10.746] [AGENT WAIT] observer
+[23:02:10.746] [AGENT ACTIVITY] validator -> waiting
+[23:02:10.746] [AGENT WAIT] validator
+[23:02:10.746] [AGENT ACTIVITY] executor -> waiting
+[23:02:10.747] [AGENT WAIT] executor
+[23:02:10.747] [AGENT ACTIVITY] analyzer -> waiting
+[23:02:10.747] [AGENT WAIT] analyzer
+[23:02:10.747] [AGENT ACTIVITY] improver -> waiting
+[23:02:10.747] [AGENT WAIT] improver
+[23:02:10.747] [AGENT ACTIVITY] visionary -> waiting
+[23:02:10.748] [AGENT WAIT] visionary
+[23:02:10.748] [AGENT ACTIVITY] love_agent -> waiting
+[23:02:10.748] [AGENT WAIT] love_agent

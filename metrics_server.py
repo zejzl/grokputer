@@ -93,7 +93,8 @@ class MetricsHandler(BaseHTTPRequestHandler):
         # Provider distribution
         for providers, count in data['maf']['maf_provider_distribution'].items():
             lines.append(f"# HELP maf_provider_usage_total Total MAF orchestrations using {providers} providers")
-            lines.append("# TYPE maf_provider_usage_total counter"            lines.append(f"maf_provider_usage_total{{providers=\"{providers}\"}} {count}")
+            lines.append("# TYPE maf_provider_usage_total counter")
+            lines.append(f"maf_provider_usage_total{{providers=\"{providers}\"}} {count}")
 
         # Uptime
         lines.append("# HELP grokputer_uptime_seconds Grokputer uptime in seconds")

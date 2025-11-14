@@ -292,7 +292,6 @@ def scan_vault(pattern: str = "*.jpg", limit: int = 100) -> Dict[str, Any]:
             "error": str(e),
             "pattern": pattern
         }
->>>>>>> Stashed changes
 
 
 def invoke_prayer() -> Dict[str, Any]:
@@ -464,7 +463,6 @@ TOOL_REGISTRY = {
 def execute_tool(tool_name: str, **kwargs) -> Dict[str, Any]:
     """
     Execute a tool by name with the given arguments.
->>>>>>> Stashed changes
 
     Args:
         filename: Name of the file to create (e.g., 'season_haiku.py').
@@ -598,7 +596,6 @@ def search(query: str, path: str = ".") -> Dict[str, Any]:
         return {"status": "success", "results": results, "message": f"Found {len(results)} files containing '{query}'"}
     except Exception as e:
         return {"status": "error", "message": f"Search failed: {e}"}
-=======
         logger.error(f"Error executing tool {tool_name}: {e}")
         return {
             "status": "error",
@@ -884,4 +881,3 @@ def enhanced_analytics_query(query_type: str, agent_name: str = None, limit: int
     else:
         # Original roll analytics
         return analytics_query(query_type, agent_name, limit)
->>>>>>> Stashed changes

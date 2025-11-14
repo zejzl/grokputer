@@ -1,9 +1,17 @@
 import json
 import os
-import redis
+import sqlite3
 from datetime import datetime
 from pathlib import Path
 from toon_format import encode, decode
+
+# Optional Redis import
+try:
+    import redis
+    REDIS_AVAILABLE = True
+except ImportError:
+    redis = None
+    REDIS_AVAILABLE = False
 
 """
 GameSaver Module
@@ -46,7 +54,29 @@ class GameSaver:
     def __init__(self, save_dir="saves"):
         self.save_dir = Path(save_dir)
         self.save_dir.mkdir(exist_ok=True)
-        self.redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
+        if REDIS_AVAILABLE:
+            self.redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
+        else:
+            self.redis_client = None
+
+        # SQLite setup
+        self.db_path = self.save_dir / "saves.db"
+        self.db_conn = sqlite3.connect(str(self.db_path))
+        self._create_table()
+
+    def _create_table(self):
+        """Create the saves table if it doesn't exist."""
+        cursor = self.db_conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS saves (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                player_name TEXT NOT NULL,
+                timestamp TEXT NOT NULL,
+                game_data TEXT NOT NULL,
+                file_path TEXT
+            )
+        ''')
+        self.db_conn.commit()
     
     def save_state(self, game_data, player_name="player"):
         timestamp = datetime.now().isoformat().replace(":", "-")
@@ -64,11 +94,31 @@ class GameSaver:
 
         with open(save_file, 'w') as f:
             f.write(encode(state))
-        
+
+        # Also save to SQLite for backup
+        self.save_to_sqlite(game_data, player_name, save_file)
+
         print(f"Game saved to {save_file}")
         return save_file
 
+    def save_to_sqlite(self, game_data, player_name="player", file_path=None):
+        """Save game data to SQLite database."""
+        try:
+            timestamp = datetime.now().isoformat()
+            cursor = self.db_conn.cursor()
+            cursor.execute('''
+                INSERT INTO saves (player_name, timestamp, game_data, file_path)
+                VALUES (?, ?, ?, ?)
+            ''', (player_name, timestamp, json.dumps(game_data), str(file_path) if file_path else None))
+            self.db_conn.commit()
+            print(f"Game saved to SQLite: {player_name} at {timestamp}")
+        except Exception as e:
+            print(f"SQLite save failed: {e}")
+
     def save_to_redis(self, game_data, player_name="player", key_prefix="game"):
+        if not REDIS_AVAILABLE or self.redis_client is None:
+            print("Redis not available. Skipping Redis save.")
+            return
         try:
             key = f"{key_prefix}:{player_name}"
             self.redis_client.set(key, json.dumps(game_data))
@@ -78,7 +128,32 @@ class GameSaver:
         except Exception as e:
             print(f"Redis save failed: {e}")
 
+    def load_from_sqlite(self, player_name="player", limit=1):
+        """Load latest game data from SQLite database."""
+        try:
+            cursor = self.db_conn.cursor()
+            cursor.execute('''
+                SELECT game_data, timestamp FROM saves
+                WHERE player_name = ?
+                ORDER BY timestamp DESC
+                LIMIT ?
+            ''', (player_name, limit))
+            rows = cursor.fetchall()
+            if rows:
+                game_data = json.loads(rows[0][0])
+                timestamp = rows[0][1]
+                print(f"Game loaded from SQLite: {player_name} at {timestamp}")
+                return game_data
+            else:
+                raise ValueError(f"No data found for {player_name}")
+        except Exception as e:
+            print(f"SQLite load failed: {e}")
+            raise
+
     def load_from_redis(self, player_name="player", key_prefix="game"):
+        if not REDIS_AVAILABLE or self.redis_client is None:
+            print("Redis not available.")
+            raise RuntimeError("Redis not available")
         try:
             key = f"{key_prefix}:{player_name}"
             data = self.redis_client.get(key)
@@ -151,6 +226,7 @@ def main():
 
                     save_path = saver.save_state(sample_data, "auto_backup")
                     saver.save_to_redis(sample_data, "auto_backup")
+                    # SQLite save is already done in save_state
                     print(f"[AUTO-BACKUP] Saved at {time.strftime('%Y-%m-%d %H:%M:%S')}: {save_path}")
 
                 except Exception as e:

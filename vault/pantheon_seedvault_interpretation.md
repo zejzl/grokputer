@@ -1,0 +1,1 @@
+The pantheon invocation interprets the file as a symbolic ASCII key—resembling a skeleton key—for the grokputer SSH seedvault. It embodies unity (Core: One), infinity (Surge: Infinite), and existential interplay between light and void, representing the philosophical core of the vault system. <3
