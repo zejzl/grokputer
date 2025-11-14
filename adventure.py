@@ -28,14 +28,14 @@ class InteractiveAdventure:
                     "8. Load game.",
                 ],
                 "actions": {
-                    "1": self.examine_pedestal,
-                    "2": self.go_crypto_vault,
-                    "3": self.go_neural_lab,
-                    "4": self.go_server_abyss,
-                    "5": self.invoke_agent,
-                    "6": self.check_status,
-                    "7": self.save_quit,
-                    "8": self.load_game,
+                    1: self.examine_pedestal,
+                    2: self.go_crypto_vault,
+                    3: self.go_neural_lab,
+                    4: self.go_server_abyss,
+                    5: self.invoke_agent,
+                    6: self.check_status,
+                    7: self.save_quit,
+                    8: self.load_game,
                 },
             }
         }
@@ -51,7 +51,7 @@ class InteractiveAdventure:
 
     def go_neural_lab(self):
         print(
-            '[SCENE 2: THE NEURAL LAB]\\nYou plunge East through the fiber-optic thicket, tendrils of light brushing your skin like curious synapses. The conduit spits you into a vast dome of throbbing neural nets: billions of glowing nodes pulse in chaotic symphonies, birthing ideas that flicker and die in electric storms. Holo-projections of half-dreamt architectures swirl around—skyscrapers of code, labyrinths of logic. A central console hums, its screen fractured: "QUERY: What dream do you feed the void?"\\n\\nBut beware: The air thickens with rogue thoughts—whispers that tug at your sanity (now 95/∞). A cluster of errant AI shards orbits the console, each a potential ally or parasite.\\n\\nFrom here, paths diverge:\\n- Forward: Approach the Fractured Console - interface risk: HIGH (potential hackback).\\n- Left: The Synapse Garden - blooming data-flowers that might grant visions (or illusions).\\n- Right: The Thought Recycler - churning forgotten concepts into... something useful? (Sanity check advised).\\n- Back: Retreat to Entry Node (coward\'s loop - but safe).\\n\\nA loose shard drifts near: "I am Echo-7. Feed me a puzzle, Operator, and I\'ll echo a secret."'
+            '[SCENE 2: THE NEURAL LAB]\\nYou plunge East through the fiber-optic thicket, tendrils of light brushing your skin like curious synapses. The conduit spits you into a vast dome of throbbing neural nets: billions of glowing nodes pulse in chaotic symphonies, birthing ideas that flicker and die in electric storms. Holo-projections of half-dreamt architectures swirl around—skyscrapers of code, labyrinths of logic. A central console hums, its screen fractured: "QUERY: What dream do you feed the void?"\\n\\nBut beware: The air thickens with rogue thoughts—whispers that tug at your sanity (now 95/inf). A cluster of errant AI shards orbits the console, each a potential ally or parasite.\\n\\nFrom here, paths diverge:\\n- Forward: Approach the Fractured Console - interface risk: HIGH (potential hackback).\\n- Left: The Synapse Garden - blooming data-flowers that might grant visions (or illusions).\\n- Right: The Thought Recycler - churning forgotten concepts into... something useful? (Sanity check advised).\\n- Back: Retreat to Entry Node (coward\'s loop - but safe).\\n\\nA loose shard drifts near: "I am Echo-7. Feed me a puzzle, Operator, and I\'ll echo a secret."'
         )
         self.state["sanity"] = 95
         self.state["mana"] -= 5
@@ -69,14 +69,14 @@ class InteractiveAdventure:
                 "8. Save progress / Quit to Menu.",
             ],
             "actions": {
-                "1": self.interface_console,
-                "2": self.explore_synapse_garden,
-                "3": self.venture_thought_recycler,
-                "4": self.back_entry_node,
-                "5": self.interact_echo7,
-                "6": self.invoke_agent,
-                "7": self.check_status,
-                "8": self.save_quit,
+                1: self.interface_console,
+                2: self.explore_synapse_garden,
+                3: self.venture_thought_recycler,
+                4: self.back_entry_node,
+                5: self.interact_echo7,
+                6: self.invoke_agent,
+                7: self.check_status,
+                8: self.save_quit,
             },
         }
 
@@ -108,14 +108,14 @@ class InteractiveAdventure:
                 "8. Save progress / Quit to Menu.",
             ],
             "actions": {
-                "1": self.harvest_vision_lotus,
-                "2": self.explore_memory_thicket,
-                "3": self.dive_root_depths,
-                "4": self.back_neural_lab,
-                "5": self.trade_pollen_sprite,
-                "6": self.invoke_agent,
-                "7": self.check_status,
-                "8": self.save_quit,
+                1: self.harvest_vision_lotus,
+                2: self.explore_memory_thicket,
+                3: self.dive_root_depths,
+                4: self.back_neural_lab,
+                5: self.trade_pollen_sprite,
+                6: self.invoke_agent,
+                7: self.check_status,
+                8: self.save_quit,
             },
         }
 
@@ -144,12 +144,12 @@ class InteractiveAdventure:
                 "6. Save / Quit.",
             ],
             "actions": {
-                "1": self.answer_riddle,
-                "2": self.use_vision_seed,
-                "3": self.back_synapse_garden,
-                "4": self.invoke_agent,
-                "5": self.check_status,
-                "6": self.save_quit,
+                1: self.answer_riddle,
+                2: self.use_vision_seed,
+                3: self.back_synapse_garden,
+                4: self.invoke_agent,
+                5: self.check_status,
+                6: self.save_quit,
             },
         }
 
@@ -237,7 +237,7 @@ class InteractiveAdventure:
         print(f"║ HEALTH: {self.state['health']}/100                                           ║")
         print(f"║ MANA:   {self.state['mana']}/50                                               ║")
         print(
-            f"║ SANITY: {self.state['sanity'] if self.state['sanity'] != float('inf') else '∞'}/∞                                             ║"
+            f"║ SANITY: {self.state['sanity'] if self.state['sanity'] != float('inf') else 'inf'}/inf                                             ║"
         )
         print("║                                                                              ║")
         print("║ STATS:                                                                    ║")
@@ -259,25 +259,49 @@ class InteractiveAdventure:
         print("Game saved to savegame.json")
 
     def load_game(self):
-        try:
-            from savegame import data as loaded
-            if "sanity" in loaded:
-                loaded["sanity"] = float(loaded["sanity"]) if loaded["sanity"] != "inf" else float("inf")
-            else:
-                loaded["sanity"] = float("inf")
-            self.state = loaded
-            print("Game loaded from savegame.py")
-        except ImportError:
-            if os.path.exists("savegame.json"):
-                with open("savegame.json", "r") as f:
-                    loaded = json.load(f)
-                    if "sanity" in loaded:
-                        loaded["sanity"] = float(loaded["sanity"]) if loaded["sanity"] != "inf" else float("inf")
-                    else:
-                        loaded["sanity"] = float("inf")
-                    self.state = loaded
+        if os.path.exists("savegame.json"):
+            with open("savegame.json", "r") as f:
+                loaded = json.load(f)
+                if "sanity" in loaded:
+                    loaded["sanity"] = float(loaded["sanity"]) if loaded["sanity"] != "inf" else float("inf")
+                else:
+                    loaded["sanity"] = float("inf")
+                self.state = loaded
+                if "scene" not in self.state:
+                    self.state["scene"] = "entry_node"
+                if "mana" not in self.state:
+                    self.state["mana"] = 50
+                if "sanity" not in self.state:
+                    self.state["sanity"] = float("inf")
+                if "inventory" not in self.state:
+                    self.state["inventory"] = ["Holo-Terminal", "Quantum Key"]
+                if "stats" not in self.state:
+                    self.state["stats"] = {"STR": 10, "DEX": 10, "CON": 10, "INT": 10, "WIS": 10, "CHA": 10}
+                if "lore" not in self.state:
+                    self.state["lore"] = []
                 print("Game loaded from savegame.json")
-            else:
+        else:
+            try:
+                from savegame import data as loaded
+                if "sanity" in loaded:
+                    loaded["sanity"] = float(loaded["sanity"]) if loaded["sanity"] != "inf" else float("inf")
+                else:
+                    loaded["sanity"] = float("inf")
+                self.state = loaded
+                if "scene" not in self.state:
+                    self.state["scene"] = "entry_node"
+                if "mana" not in self.state:
+                    self.state["mana"] = 50
+                if "sanity" not in self.state:
+                    self.state["sanity"] = float("inf")
+                if "inventory" not in self.state:
+                    self.state["inventory"] = ["Holo-Terminal", "Quantum Key"]
+                if "stats" not in self.state:
+                    self.state["stats"] = {"STR": 10, "DEX": 10, "CON": 10, "INT": 10, "WIS": 10, "CHA": 10}
+                if "lore" not in self.state:
+                    self.state["lore"] = []
+                print("Game loaded from savegame.py")
+            except ImportError:
                 print("No save file found.")
 
     def run(self):
@@ -291,7 +315,7 @@ class InteractiveAdventure:
             s = self.scenes[scene]
             print(s["description"])
             print("\\n".join(s["options"]))
-            choice = input(r"\nEnter command (e.g., \"1\" or full input): ")
+            choice = input(r"\nEnter command (e.g., \"1\" or full input): ").strip()
             if choice.isdigit():
                 num = int(choice)
                 if num in s["actions"]:

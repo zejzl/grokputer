@@ -17,6 +17,13 @@ from collections import deque
 
 # Standardized error handling
 from ..exceptions import MessageBusError, handle_error
+# TOON integration
+try:
+    from ..utils.toon_utils import encode_for_swarm, decode_from_swarm, estimate_savings, ToonDecodeError
+    TOON_AVAILABLE = True
+except ImportError:
+    TOON_AVAILABLE = False
+    logger.warning("TOON utils not available - install python-toon for token efficiency")
 
 logger = logging.getLogger(__name__)
 
@@ -694,6 +701,49 @@ class MessageBus:
         self.queues[agent_id] = asyncio.Queue(maxsize=maxsize)
 
         logger.info(f"Cleared priority queue for agent: {agent_id}")
+
+    async def send_toon(self, to_agent: str, data: Dict[str, Any], from_agent: str = "system", priority: MessagePriority = MessagePriority.NORMAL, correlation_id: Optional[str] = None, metadata: Optional[Dict[str, Any]] = None) -> str:
+        """
+        Send data encoded in TOON format for token efficiency.
+        Returns the TOON string sent.
+        """
+        if not TOON_AVAILABLE:
+            raise MessageBusError("TOON not available - install python-toon")
+        toon_str, savings = await estimate_savings(data)
+        logger.info(f"TOON send to {to_agent}: {savings:.1f}% savings ({len(toon_str)} chars)")
+        message = Message(
+            from_agent=from_agent,
+            to_agent=to_agent,
+            message_type="toon_data",
+            content={"toon": toon_str, "savings": savings},
+            priority=priority,
+            correlation_id=correlation_id,
+            metadata=metadata or {},
+        )
+        await self.send(message)
+        return toon_str
+
+    async def receive_toon(self, agent_id: str, timeout: float = 5.0) -> Tuple[Dict[str, Any], float]:
+        """
+        Receive and decode TOON message.
+        Returns (decoded_data, savings_percentage).
+        Raises ToonDecodeError if decode fails.
+        """
+        if not TOON_AVAILABLE:
+            raise MessageBusError("TOON not available - install python-toon")
+        message = await self.receive(agent_id, timeout)
+        if message.message_type == "toon_data":
+            toon_str = message.content["toon"]
+            savings = message.content["savings"]
+            try:
+                data = await decode_from_swarm(toon_str)
+                return data, savings
+            except ToonDecodeError as e:
+                logger.error(f"TOON decode failed: {e}")
+                raise
+        else:
+            # Not TOON, return content as is
+            return message.content, 0.0
 
     async def shutdown(self):
         """

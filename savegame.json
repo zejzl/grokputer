@@ -1,12 +1,1 @@
-{
-    "health": 100,
-    "level": 1,
-    "inventory": [
-        "sword",
-        "shield"
-    ],
-    "position": {
-        "x": 0,
-        "y": 0
-    }
-}
+{"scene": "entry_node", "health": 100, "mana": 48, "sanity": "inf", "inventory": ["Holo-Terminal", "Quantum Key"], "stats": {"STR": 10, "DEX": 10, "CON": 10, "INT": 10, "WIS": 10, "CHA": 10}, "lore": ["Pedestal's whisper"]}
