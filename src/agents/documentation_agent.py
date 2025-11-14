@@ -12,6 +12,7 @@ from pathlib import Path
 
 from src.core.base_agent import BaseAgent
 from src.core.message_bus import MessageBus, Message, MessagePriority
+from src.model_client import ModelClientFactory
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +43,10 @@ class DocumentationAgent(BaseAgent):
             'code_comments': self._add_code_comments,
             'user_guide': self._generate_user_guide,
         }
+
+        # Initialize AI client for enhanced generation
+        self.ai_client = None
+        self._init_ai_client()
 
     async def process_message(self, message: Message) -> List[Message]:
         """Process documentation-related messages."""

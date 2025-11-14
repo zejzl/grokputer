@@ -29,5 +29,11 @@ def listen_for_responses(duration=10):
 
 
 if __name__ == "__main__":
-    publish_ping()
-    listen_for_responses()
+    while True:
+        try:
+            publish_ping()
+            listen_for_responses(30)  # Listen for 30 seconds
+            time.sleep(60)  # Wait 1 minute before next cycle
+        except Exception as e:
+            print(f"Error in daemon loop: {e}")
+            time.sleep(10)  # Wait 10 seconds on error
