@@ -119,7 +119,7 @@ class NegotiationRoom:
         self.session_id = f"room_{topic}_{asyncio.get_event_loop().time()}"
 
         # Subscribe to room topic
-        self.message_bus.subscribe(topic, self._handle_message)
+        self.message_bus.subscribe_callback(topic, self._handle_message)
 
     async def _handle_message(self, message: Message) -> None:
         \"\"\"Handle incoming messages (proposals, votes).\"\"\"

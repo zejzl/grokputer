@@ -315,6 +315,40 @@ class MessageBus:
             except asyncio.TimeoutError:
                 continue  # Keep listening
 
+    def subscribe_callback(self, agent_id: str, callback: callable):
+        """
+        Subscribe to messages for an agent with a callback function.
+
+        Args:
+            agent_id: Agent to subscribe to
+            callback: Function to call with each message
+        """
+        # For now, store callbacks and handle in a background task
+        if not hasattr(self, '_callbacks'):
+            self._callbacks = {}
+        if agent_id not in self._callbacks:
+            self._callbacks[agent_id] = []
+        self._callbacks[agent_id].append(callback)
+
+        # Start background listener if not already running
+        if not hasattr(self, '_callback_tasks'):
+            self._callback_tasks = {}
+        if agent_id not in self._callback_tasks:
+            self._callback_tasks[agent_id] = asyncio.create_task(self._run_callbacks(agent_id))
+
+    async def _run_callbacks(self, agent_id: str):
+        """Run callbacks for messages to an agent."""
+        try:
+            async for message in self.subscribe(agent_id):
+                if agent_id in self._callbacks:
+                    for callback in self._callbacks[agent_id]:
+                        try:
+                            await callback(message)
+                        except Exception as e:
+                            logger.error(f"Callback error for {agent_id}: {e}")
+        except Exception as e:
+            logger.error(f"Callback runner error for {agent_id}: {e}")
+
     async def send_request(
         self,
         from_agent: str,

@@ -914,3 +914,28 @@ async def test_message_history_under_load():
     assert len(limited_history) == 10
 
     print(f"\n[HISTORY] Successfully capped at {len(history)} entries out of 1000 messages")
+
+
+@pytest.mark.asyncio
+async def test_subscribe_callback():
+    """Test callback-based message subscription."""
+    bus = MessageBus()
+    bus.register_agent("callback_agent")
+
+    received_messages = []
+
+    def callback(message: Message):
+        received_messages.append(message)
+
+    bus.subscribe_callback("callback_agent", callback)
+
+    # Send a message
+    message = Message(from_agent="sender", to_agent="callback_agent", message_type="callback_test", content={"test": "data"})
+    await bus.send(message)
+
+    # Wait a bit for callback to execute
+    await asyncio.sleep(0.1)
+
+    assert len(received_messages) == 1
+    assert received_messages[0].message_type == "callback_test"
+    assert received_messages[0].content["test"] == "data"

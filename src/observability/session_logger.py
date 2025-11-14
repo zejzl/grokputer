@@ -125,13 +125,13 @@ class SessionLogger:
             f.write(f"Swarm Mode: {self.swarm_mode}\n")
             f.write("-" * 80 + "\n\n")
 
-    def log_agent_start(self, agent_id: str):
+    def log_agent_start(self, agent_id: str, state: str = "started"):
         """Log agent startup."""
         msg = f"[AGENT START] {agent_id}"
         self._log(msg)
 
         if self.swarm_metrics:
-            self.swarm_metrics.agent_states[agent_id] = "started"
+            self.swarm_metrics.agent_states[agent_id] = state
 
     def log_agent_stop(self, agent_id: str):
         """Log agent shutdown."""
