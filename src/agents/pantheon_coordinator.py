@@ -84,6 +84,7 @@ class PantheonCoordinator(BaseAgent):
         story_generator: Optional[StoryGenerationAgent] = None,
         visionary: Optional["VisionaryAgent"] = None,
         love_agent: Optional["LoveAgent"] = None,
+        documentation_agent: Optional["DocumentationAgent"] = None,
         memory_manager=None,
     ):
         """Initialize the Pantheon with all 9 agents."""
@@ -121,6 +122,7 @@ class PantheonCoordinator(BaseAgent):
             "story_generator": story_generator,
             "visionary": visionary,
             "love_agent": love_agent,
+            "documentation_agent": documentation_agent,
         }
 
         self.session_logger.log_agent_start(self.agent_id)

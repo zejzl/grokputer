@@ -84,6 +84,7 @@ from src.agents.story_generation_agent import StoryGenerationAgent
 from src.agents.visionary_agent import VisionaryAgent
 from src.agents.love_agent import LoveAgent
 from src.agents.documentation_agent import DocumentationAgent
+from src.agents.maf_coordinator import MAFCoordinator
 from src.core.action_executor import ActionExecutor
 from src.observability.deadlock_detector import DeadlockDetector
 from src.observability.session_logger import SessionLogger
@@ -527,6 +528,12 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False, di
     session_logger.log_agent_start("documentation_agent")
     print("✓ DocumentationAgent ready")
 
+    maf_coordinator = MAFCoordinator(
+        agent_id="maf_coordinator", message_bus=message_bus, session_logger=session_logger, config=agent_config
+    )
+    session_logger.log_agent_start("maf_coordinator")
+    print("✓ MAFCoordinator ready")
+
     # Initialize Safety Systems
     from src.safety.godmode_protocols import activate_godmode_protection
     from src.ethics.ethical_bounds import ethical_bounds
@@ -557,10 +564,11 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False, di
         story_generator,
         visionary,
         love_agent,
+        documentation_agent,
         memory_manager=hierarchical_memory,
     )
     await lifecycle_manager.register_agent(pantheon)
-    print("✓ Pantheon Coordinator initialized with 4 core agents + 2 literary agents\n")
+    print("✓ Pantheon Coordinator initialized with 4 core agents + 6 specialized agents\n")
 
     print("[PANTHEON] Starting execution with enhanced workflow...")
     print("  Workflow: Observe → Reason → Validate → Act → Verify\n")
