@@ -1,7 +1,7 @@
 # Grokputer Project Structure
 
-**Last Updated**: 2025-11-08
-**Status**: Phase 0 Complete (100%) - PoC Validated
+**Last Updated**: 2025-11-14
+**Status**: Phase 1 In Progress - Multi-Agent Swarm Development
 **Version**: v0.1.0 (Ready for Phase 1)
 
 ---
@@ -10,7 +10,7 @@
 
 Grokputer is a CLI tool enabling xAI's Grok API to control a PC through screen observation, keyboard/mouse simulation, and file system access. Currently implementing a multi-agent swarm architecture with asyncio foundation.
 
-**Current Milestone**: Phase 0 Complete ✅
+**Current Milestone**: Phase 1 In Progress - Coordinator + Trio Test
 - Async foundation operational
 - MessageBus production-ready (18K msg/sec)
 - PoC duo test passed (3.13s, zero deadlocks)
@@ -229,11 +229,59 @@ grokputer/
 - `DEVELOPMENT_PLAN.md` - 7-week phased roadmap (v2.0)
 - `COLLABORATION.md` - Claude-Grok coordination workspace
 - `system_prompt.md` - Prompt engineering guidelines
+- `MCP_IMPLEMENTATION_NOTES.md` - MCP server implementation details
+- `MCP_QUICK_REFERENCE.md` - MCP tools quick reference
+- `MCP_SERVER_README.md` - MCP server setup and usage
+- `MESSAGEBUS_COLLABORATION_PLAN.md` - MessageBus collaboration strategy
+- `external_git_as_mcp.md` - Git integration via MCP
+- `lora.md` - LoRA fine-tuning notes
+- `lora-todo.md` - LoRA implementation tasks
+- `memory.md` - Memory management guidelines
+- `ocr_instruct.md` - OCR implementation instructions
+- `ocr_plan.md` - OCR integration plan
+- `qlora.md` - QLoRA quantization notes
+- `qwen_setup.md` - Qwen model setup guide
+- `selenium.md` - Selenium browser automation
+- `tools.md` - Tool definitions and schemas
 
 **Operational Guides**
 - `grok.md` - Grok's operational wisdom
 - `README.md` - Project overview and setup
 - `tools.md` - Tool definitions and schemas
+- `AUTONOMOUS_QUICKSTART.md` - Quick start for autonomous mode
+- `128coinflips.md` - Coin flip simulation results
+- `codebase_update.md` - Codebase update notes
+- `debugging_prompt.md` - Debugging guidelines
+- `football.md` - Football-related notes
+- `grokputer_swarm_examples.md` - Swarm agent examples
+- `haiku.md` - Haiku poetry collection
+- `newest_changes.md` - Latest project changes
+- `next_steps.md` - Next development steps
+- `notepad.txt` - Notepad notes
+- `ocr.md` - OCR integration guidelines
+- `plan.md` - Project planning notes
+- `server_prayer.md` - Server initialization chant
+- `session_1.md` - Session 1 notes
+- `session_2.md` - Session 2 notes
+- `toon.md` - Cartoon or fun notes
+- `collaboration_plan_20251109_002232.md` to `collaboration_plan_20251114_020027.md` - Recent collaboration plans (14 files)
+- `AUTONOMOUS_QUICKSTART.md` - Quick start for autonomous mode
+- `128coinflips.md` - Coin flip simulation results
+- `codebase_update.md` - Codebase update notes
+- `debugging_prompt.md` - Debugging guidelines
+- `football.md` - Football-related notes
+- `grokputer_swarm_examples.md` - Swarm agent examples
+- `haiku.md` - Haiku poetry collection
+- `newest_changes.md` - Latest project changes
+- `next_steps.md` - Next development steps
+- `notepad.txt` - Notepad notes
+- `ocr.md` - OCR integration guidelines
+- `plan.md` - Project planning notes
+- `server_prayer.md` - Server initialization chant
+- `session_1.md` - Session 1 notes
+- `session_2.md` - Session 2 notes
+- `toon.md` - Cartoon or fun notes
+- `collaboration_plan_20251109_002232.md` to `collaboration_plan_20251114_020027.md` - Recent collaboration plans (14 files)
 
 ---
 
@@ -267,7 +315,7 @@ grokputer/
 
 **Go/No-Go Decision**: ✅ GO for Phase 1
 
-### Phase 1: Multi-Agent Swarm (Weeks 2-4) - NEXT
+### Phase 1: Multi-Agent Swarm (Weeks 2-4) - IN PROGRESS
 **Goal**: Working 3-agent swarm with 95% reliability
 
 **Planned Tasks**:
@@ -366,24 +414,26 @@ grokputer/
 
 **Branch**: main
 **Recent Commits**:
-1. `c367a13` - docs: Update grok.md with Grok's latest changes
-2. `2272b06` - feat: Phase 0 Milestone 1.1 - Production MessageBus & Safety Scoring
-3. `0799b58` - Add Docker containerization with Xvfb headless display
-4. `cca1655` - Initial commit: Grokputer - VRZIBRZI node fully operational
+1. `ca700f6` - Integrate DocumentationAgent into Pantheon
+2. `339cd91` - Update various files: messagebus runner, documentation agent, vault resources
+3. `bfb16c1` - Add timeout crash prevention to Coordinator
+4. `11d7608` - Fix GrokClient bugs and update CHANGELOG.md
+5. `2e0d82f` - Integrate DocumentationAgent into main system
 
 **Current Changes** (unstaged):
-- Modified: COLLABORATION.md (Phase 0 completion report)
-- Modified: src/agents/observer.py (MessageBus API fixes)
-- Modified: src/agents/actor.py (MessageBus API fixes)
-- Modified: src/core/action_executor.py (race condition fix)
-- Modified: src/session_logger.py (agent logging methods)
-- Modified: src/screen_observer.py (async wrappers)
-- Modified: src/config.py (screenshot presets)
-- Modified: tests/poc_duo.py (production MessageBus)
-- Modified: projectmap.md (this file)
+- Modified: docs/projectmap.md (updated documentation tree)
+- Modified: grokputer_base, index.js, main.py
+- Modified: src/agents/coordinator.py, documentation_agent.py, pantheon_coordinator.py
+- Modified: tools/semtools
+- Modified: Various files in vault/git_resources/
 
 **Untracked Files**:
-- debugging_prompt.md, yes.txt, hello.txt (test files)
+- New documentation files in docs/ (see Documentation section above)
+- Dockerfile.arch
+- Logs directories: logs/pantheon_20251114_*/
+- Saves: saves/hero_*.json
+- New agents: src/agents/maf_coordinator.py
+- Temp files: temp_note.txt, treasure_hunt/
 - Various .md files in vault/
 - External repos: grok-cli/, mcp-vault/, semtools/, superagent/
 
@@ -526,5 +576,5 @@ python test_safety_scoring.py
 
 ---
 
-*Last updated: 2025-11-08 by Claude Code*
+*Last updated: 2025-11-14 by opencode*
 *Generated after Phase 0 completion and PoC validation*

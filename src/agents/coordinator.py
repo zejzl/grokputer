@@ -430,8 +430,10 @@ Output as JSON list only, no extra text: [{{"id": "sub1", "type": "...", "target
         try:
             subtasks = await asyncio.wait_for(
                 self._decompose_with_prompt(enhanced_prompt, task_desc),
-                timeout=30.0  # 30 second timeout
+                timeout=30.0
             )
+            # Rate limit: chill between API calls
+            await asyncio.sleep(1.0)
         except asyncio.TimeoutError:
             self.logger.warning("[COORDINATOR] Decomposition timed out, using fallback")
             subtasks = self._fallback_decompose(task_desc)
@@ -583,7 +585,11 @@ Example format:
         # Parse JSON from Grok response
         try:
             subtasks_json = decomposition_response.get("content", "[]")
-            subtasks: List[Dict] = json.loads(subtasks_json)
+            try:
+                subtasks: List[Dict] = json.loads(subtasks_json)
+            except json.JSONDecodeError as e:
+                self.logger.error(f"[COORDINATOR] Failed to parse subtasks JSON: {e}")
+                subtasks = self._fallback_decompose(task_desc)
             subtasks = subtasks[: self.config["max_subtasks"]]
         except json.JSONDecodeError:
             self.logger.warning("[COORDINATOR] Invalid JSON from Grok; using fallback")
@@ -621,6 +627,8 @@ Example format:
                         timeout=10.0  # 10 second timeout per subtask
                     )
                     validation_results.append((subtask, score))
+                    # Rate limit between validations
+                    await asyncio.sleep(0.5)
                 except asyncio.TimeoutError:
                     self.logger.warning(f"[COORDINATOR] Subtask validation timed out: {subtask.get('description', 'unknown')}")
                     validation_results.append((subtask, 0.0))  # Low score for timeout
@@ -657,7 +665,13 @@ Example format:
 
                     if refinement_response["status"] == "success":
                         try:
-                            refined_json = json.loads(refinement_response["content"])
+                            try:
+                                refined_json = json.loads(refinement_response["content"])
+                            except json.JSONDecodeError as e:
+                                self.logger.error(f"[COORDINATOR] Failed to parse refinement JSON: {e}")
+                                refined_json = {"description": subtask.get("description", "unknown"), "error": "JSON parse failed"}
+                            # Rate limit between refinements
+                            await asyncio.sleep(0.5)
                             if isinstance(refined_json, dict):
                                 refined_subtasks.append(refined_json)
                             else:
