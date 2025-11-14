@@ -1,14 +1,14 @@
 # Grokputer Project Structure
 
-**Last Updated**: 2025-11-08
-**Status**: Phase 0 Complete (100%) - PoC Validated
-**Version**: v0.1.0 (Ready for Phase 1)
+**Last Updated**: 2025-11-14
+**Status**: Phase 0 Complete (100%) - PoC Validated + Cline Integration
+**Version**: v0.1.1 (Ready for Phase 1)
 
 ---
 
 ## Project Overview
 
-Grokputer is a CLI tool enabling xAI's Grok API to control a PC through screen observation, keyboard/mouse simulation, and file system access. Currently implementing a multi-agent swarm architecture with asyncio foundation.
+Grokputer is a CLI tool enabling AI models (Grok, Gemini, Cline) to control a PC through screen observation, keyboard/mouse simulation, and file system access. Currently implementing a multi-agent swarm architecture with asyncio foundation.
 
 **Current Milestone**: Phase 0 Complete ✅
 - Async foundation operational
@@ -41,6 +41,7 @@ grokputer/
 ├── collaboration2.txt           # Additional collaboration notes
 ├── debugging_prompt.md          # Debugging guidelines
 ├── extra_tools.txt              # List of additional CLI tools
+├── cline.md                     # Cline-related notes (Claude-based assistant)
 ├── gemini.md                    # Gemini-related notes
 ├── grok.md                      # Grok's operational guide
 ├── hello.txt                    # Test file
@@ -97,6 +98,7 @@ grokputer/
 │   │   ├── base_agent.py        # Abstract base class for agents (179 lines)
 │   │   └── message_bus.py       # asyncio.Queue messaging (500 lines, 18K msg/sec)
 │   │
+│   ├── cline_client.py          # Async Cline API wrapper (Anthropic Claude)
 │   ├── config.py                # Configuration, tool schemas, safety scores
 │   ├── executor.py              # Legacy tool executor (pre-Phase 0)
 │   ├── grok_client.py           # Async Grok API wrapper (AsyncOpenAI)
@@ -184,6 +186,13 @@ grokputer/
 - Tool calling support
 - Conversation continuation
 - Error handling with tenacity retries
+
+**ClineClient** (`src/cline_client.py`)
+- Async Cline API wrapper using AsyncAnthropic (Claude)
+- Model: `claude-3.5-sonnet-latest` (default)
+- Multimodal input (image+text)
+- Tool calling support
+- Production-ready for software engineering tasks
 
 **Tools** (`src/tools.py`)
 - `scan_vault()` - File scanning with glob patterns
@@ -307,6 +316,7 @@ grokputer/
 **Core**:
 - Python 3.14+
 - asyncio (event loop, async/await)
+- Anthropic Claude API (Cline integration)
 - xAI Grok API (grok-4-fast-reasoning)
 - OpenAI-compatible API client (AsyncOpenAI)
 
@@ -526,5 +536,5 @@ python test_safety_scoring.py
 
 ---
 
-*Last updated: 2025-11-08 by Claude Code*
-*Generated after Phase 0 completion and PoC validation*
+*Last updated: 2025-11-14 by Claude Code*
+*Generated after Cline integration addition*
