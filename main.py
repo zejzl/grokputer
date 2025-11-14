@@ -83,6 +83,7 @@ from src.agents.character_analysis_agent import CharacterAnalysisAgent
 from src.agents.story_generation_agent import StoryGenerationAgent
 from src.agents.visionary_agent import VisionaryAgent
 from src.agents.love_agent import LoveAgent
+from src.agents.documentation_agent import DocumentationAgent
 from src.core.action_executor import ActionExecutor
 from src.observability.deadlock_detector import DeadlockDetector
 from src.observability.session_logger import SessionLogger
@@ -519,6 +520,12 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False, di
     )
     session_logger.log_agent_start("love_agent")
     print("✓ LoveAgent ready")
+
+    documentation_agent = DocumentationAgent(
+        agent_id="documentation_agent", message_bus=message_bus, session_logger=session_logger, config=agent_config
+    )
+    session_logger.log_agent_start("documentation_agent")
+    print("✓ DocumentationAgent ready")
 
     # Initialize Safety Systems
     from src.safety.godmode_protocols import activate_godmode_protection
