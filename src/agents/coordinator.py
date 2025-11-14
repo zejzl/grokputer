@@ -612,11 +612,18 @@ Example format:
         for iteration in range(max_iterations):
             self.logger.info(f"[COORDINATOR] Validation iteration {iteration + 1}/{max_iterations}")
 
-            # Validate each subtask
+            # Validate each subtask with timeout
             validation_results = []
             for subtask in subtasks:
-                score = await self._score_subtask_feasibility(subtask, task_desc)
-                validation_results.append((subtask, score))
+                try:
+                    score = await asyncio.wait_for(
+                        self._score_subtask_feasibility(subtask, task_desc),
+                        timeout=10.0  # 10 second timeout per subtask
+                    )
+                    validation_results.append((subtask, score))
+                except asyncio.TimeoutError:
+                    self.logger.warning(f"[COORDINATOR] Subtask validation timed out: {subtask.get('description', 'unknown')}")
+                    validation_results.append((subtask, 0.0))  # Low score for timeout
 
             # Check if all subtasks meet threshold
             low_score_subtasks = [(subtask, score) for subtask, score in validation_results if score < threshold]
@@ -636,10 +643,17 @@ Example format:
                     # Generate refinement prompt
                     refinement_prompt = self._build_refinement_prompt(subtask, score, task_desc)
 
-                    # Get refined subtask from Grok
-                    refinement_response = await self.grok_client.create_message(
-                        task=refinement_prompt, conversation_history=None
-                    )
+                    # Get refined subtask from Grok with timeout
+                    try:
+                        refinement_response = await asyncio.wait_for(
+                            self.grok_client.create_message(
+                                task=refinement_prompt, conversation_history=None
+                            ),
+                            timeout=20.0  # 20 second timeout for refinement
+                        )
+                    except asyncio.TimeoutError:
+                        self.logger.warning(f"[COORDINATOR] Refinement timed out for subtask: {subtask.get('description', 'unknown')}")
+                        refinement_response = {"status": "error", "content": "Timeout during refinement"}
 
                     if refinement_response["status"] == "success":
                         try:

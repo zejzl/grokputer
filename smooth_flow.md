@@ -36,9 +36,10 @@ def smooth_flow(action, max_iterations=100):
 ## Best Practices
 1. Always set maximum iteration limits
 2. Monitor for repetitive states
-3. Implement timeout mechanisms
+3. Implement timeout mechanisms (e.g., 30s for API calls, 10s for validations)
 4. Log loop progress for debugging
 5. Use break conditions based on meaningful progress
+6. Handle timeouts gracefully with fallbacks
 
 ## Agent Flow Control
 For multi-agent systems:
