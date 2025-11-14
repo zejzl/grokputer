@@ -1,0 +1,51 @@
+# Grokputer MCP Server with Redis Alpine
+# Multi-stage build for <3s startup time and <200MB image size
+
+# Build stage
+FROM python:3.11-alpine AS builder
+
+WORKDIR /app
+
+# Install build dependencies
+RUN apk add --no-cache gcc musl-dev
+
+# Copy requirements first for better caching
+COPY mcp-requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir --user -r mcp-requirements.txt
+
+# Runtime stage with Redis
+FROM python:3.11-alpine
+
+# Install Redis
+RUN apk add --no-cache redis
+
+WORKDIR /app
+
+# Copy Python packages from builder
+COPY --from=builder /root/.local /root/.local
+
+# Copy server code
+COPY grokputer_server.py .
+COPY server_prayer.txt .
+
+# Optional: Copy vault if needed (can be mounted instead)
+# COPY vault ./vault
+
+# Create Redis data directory
+RUN mkdir -p /data/redis
+
+# Make sure scripts are in PATH
+ENV PATH=/root/.local/bin:$PATH
+
+# Expose MCP server port and Redis port
+EXPOSE 8000 6379
+
+# Health check for fast startup verification
+HEALTHCHECK --interval=5s --timeout=3s --start-period=5s --retries=2 \
+  CMD python -c "import sys; sys.exit(0)"
+
+# Start both Redis and MCP server
+CMD ["sh", "-c", "redis-server --daemonize yes --appendonly yes && uvicorn grokputer_server:app --host 0.0.0.0 --port 8000 --workers 1"]</content>
+<parameter name="filePath">Dockerfile.mcp-alpine

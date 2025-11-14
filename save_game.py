@@ -1,7 +1,9 @@
 import json
 import os
+import redis
 from datetime import datetime
 from pathlib import Path
+from toon_format import encode, decode
 
 """
 GameSaver Module
@@ -44,11 +46,12 @@ class GameSaver:
     def __init__(self, save_dir="saves"):
         self.save_dir = Path(save_dir)
         self.save_dir.mkdir(exist_ok=True)
+        self.redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
     
     def save_state(self, game_data, player_name="player"):
         timestamp = datetime.now().isoformat().replace(":", "-")
-        save_file = self.save_dir / f"{player_name}_{timestamp}.json"
-        
+        save_file = self.save_dir / f"{player_name}_{timestamp}.toon"
+
         state = {
             "timestamp": timestamp,
             "player": player_name,
@@ -58,25 +61,53 @@ class GameSaver:
                 "location": str(save_file)
             }
         }
-        
+
         with open(save_file, 'w') as f:
-            json.dump(state, f, indent=2)
+            f.write(encode(state))
         
         print(f"Game saved to {save_file}")
         return save_file
+
+    def save_to_redis(self, game_data, player_name="player", key_prefix="game"):
+        try:
+            key = f"{key_prefix}:{player_name}"
+            self.redis_client.set(key, json.dumps(game_data))
+            print(f"Game saved to Redis: {key}")
+        except redis.ConnectionError:
+            print("Redis connection failed. Skipping Redis save.")
+        except Exception as e:
+            print(f"Redis save failed: {e}")
+
+    def load_from_redis(self, player_name="player", key_prefix="game"):
+        try:
+            key = f"{key_prefix}:{player_name}"
+            data = self.redis_client.get(key)
+            if data:
+                loaded = json.loads(data)
+                print(f"Game loaded from Redis: {key}")
+                return loaded
+            else:
+                raise ValueError(f"No data found for {key}")
+        except redis.ConnectionError:
+            print("Redis connection failed.")
+            raise
+        except Exception as e:
+            print(f"Redis load failed: {e}")
+            raise
     
     def load_state(self, save_file_path):
         if not Path(save_file_path).exists():
             raise FileNotFoundError(f"Save file not found: {save_file_path}")
-        
+
         with open(save_file_path, 'r') as f:
-            state = json.load(f)
-        
+            data = f.read()
+            state = decode(data)
+
         print(f"Game loaded from {save_file_path}")
         return state["game_data"]
     
     def list_saves(self, player_name=None):
-        saves = list(self.save_dir.glob("*.json"))
+        saves = list(self.save_dir.glob("*.toon"))
         if player_name:
             saves = [s for s in saves if player_name in s.name]
         
@@ -119,6 +150,7 @@ def main():
                     }
 
                     save_path = saver.save_state(sample_data, "auto_backup")
+                    saver.save_to_redis(sample_data, "auto_backup")
                     print(f"[AUTO-BACKUP] Saved at {time.strftime('%Y-%m-%d %H:%M:%S')}: {save_path}")
 
                 except Exception as e:

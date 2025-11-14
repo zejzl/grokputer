@@ -9,6 +9,7 @@ Run: python backup_redis.py
 import redis
 import json
 import os
+import boto3
 from datetime import datetime
 
 # Config
@@ -52,8 +53,21 @@ def backup_redis():
         
         with open(BACKUP_FILE, 'w') as f:
             json.dump(full_backup, f, indent=2, default=str)  # default=str for non-serializable
-        
+
         print(f"Redis backup complete: {len(backup_data)} keys saved to {BACKUP_FILE}")
+
+        # Upload to S3 if configured
+        s3_bucket = os.getenv('S3_BUCKET_NAME')
+        if s3_bucket:
+            try:
+                s3_client = boto3.client('s3')
+                s3_key = f"redis_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+                s3_client.upload_file(BACKUP_FILE, s3_bucket, s3_key)
+                print(f"Uploaded to S3: s3://{s3_bucket}/{s3_key}")
+            except Exception as e:
+                print(f"S3 upload failed: {e}")
+        else:
+            print("S3_BUCKET_NAME not set, skipping remote upload")
         
     except redis.ConnectionError:
         print("Redis connection failed. Is Redis running?")

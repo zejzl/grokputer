@@ -1,0 +1,34 @@
+# Lightweight Arch Linux Docker Setup
+FROM archlinux:latest
+
+# Update package database and install basic tools
+RUN pacman -Syu --noconfirm && \
+    pacman -S --noconfirm \
+        base \
+        base-devel \
+        git \
+        vim \
+        python \
+        python-pip \
+        nodejs \
+        npm \
+        curl \
+        wget \
+        htop && \
+    pacman -Scc --noconfirm
+
+# Set up a non-root user (optional)
+RUN useradd -m -G wheel archuser && \
+    echo 'archuser ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+# Set working directory
+WORKDIR /app
+
+# Copy project files (if needed)
+# COPY . /app
+
+# Expose port if needed
+# EXPOSE 8000
+
+# Default command
+CMD ["/bin/bash"]

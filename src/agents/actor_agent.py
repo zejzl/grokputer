@@ -37,6 +37,9 @@ class ActorAgent:
         self.running = False
         self.action_queue = asyncio.Queue()
 
+    def is_healthy(self) -> bool:
+        return True
+
         # Register with message bus
         self.message_bus.register_agent(self.agent_id)
 

@@ -578,7 +578,7 @@ Example format:
         final_prompt = prompt + prompt_modifier
         decomposition_response = await self.grok_client.create_message(task=final_prompt, conversation_history=None)
 
-        if decomposition_response["status"] != "success":
+        if not decomposition_response or decomposition_response["status"] != "success":
             self.logger.error(f"[COORDINATOR] Decomposition failed: {decomposition_response}")
             return self._fallback_decompose(task_desc)
 

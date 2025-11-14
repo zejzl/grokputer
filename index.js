@@ -1,3 +1,4 @@
+###hi i dont like json pls use python wherever possible. ty -z :3~ uwu###
 const express = require('express');
 const axios = require('axios');
 const app = express();

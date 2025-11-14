@@ -141,7 +141,7 @@ class GrokClient:
             session = self._get_session()
             try:
                 async with session.post(url, json=payload, headers=headers) as response:
-                    response_time = response.connection.transport.get_extra_info("total_time", 0) or 0
+                    response_time = response.connection.transport.get_extra_info("total_time", 0) if response.connection and response.connection.transport else 0
                     if response.status == 200:
                         data = await response.json()
                         if provider.name == "grok" or provider.name == "claude":

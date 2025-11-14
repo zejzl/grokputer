@@ -48,6 +48,20 @@ class DocumentationAgent(BaseAgent):
         self.ai_client = None
         self._init_ai_client()
 
+    def _init_ai_client(self):
+        """Initialize the AI client for documentation generation."""
+        try:
+            api_key = self.config.get("GROK_API_KEY") or os.getenv("GROK_API_KEY")
+            model = self.config.get("GROK_MODEL", "grok-4-fast-reasoning")
+            if api_key:
+                self.ai_client = ModelClientFactory.create_client("grok", api_key, model)
+            else:
+                logger.warning("No GROK_API_KEY found for DocumentationAgent")
+                self.ai_client = None
+        except Exception as e:
+            logger.warning(f"Failed to initialize AI client for DocumentationAgent: {e}")
+            self.ai_client = None
+
     async def process_message(self, message: Message) -> List[Message]:
         """Process documentation-related messages."""
         responses = []

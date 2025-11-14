@@ -565,10 +565,11 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False, di
         visionary,
         love_agent,
         documentation_agent,
+        maf_coordinator,
         memory_manager=hierarchical_memory,
     )
     await lifecycle_manager.register_agent(pantheon)
-    print("✓ Pantheon Coordinator initialized with 4 core agents + 6 specialized agents\n")
+    print("✓ Pantheon Coordinator initialized with 4 core agents + 7 specialized agents\n")
 
     print("[PANTHEON] Starting execution with enhanced workflow...")
     print("  Workflow: Observe → Reason → Validate → Act → Verify\n")
