@@ -25,6 +25,10 @@ from typing import Optional
 # Load environment variables
 load_dotenv()
 
+# Setup centralized logging
+from src.core.logging_config import setup_logging
+setup_logging(log_level=os.getenv('LOG_LEVEL', 'INFO'), enable_json=os.getenv('LOG_JSON', 'false').lower() == 'true')
+
 # Add src to path
 
 # Import adventure mode
