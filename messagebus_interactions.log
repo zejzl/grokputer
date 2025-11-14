@@ -1,0 +1,21 @@
+2025-11-14 01:49:41,681 - INFO - MessageBus initialized with default timeout: 30.0s, history: 100, max_concurrent: 1000
+2025-11-14 01:49:41,681 - INFO - Registered agent: user (queue, maxsize=0)
+2025-11-14 01:49:41,682 - INFO - Registered agent: system (queue, maxsize=0)
+2025-11-14 01:49:41,682 - INFO - Sent message from user to system: {'text': 'hello who is this'}
+2025-11-14 01:49:41,682 - INFO - System received message from user: {'text': 'hello who is this'}
+2025-11-14 01:49:41,682 - INFO - System sent response to user: {'text': 'things are good, building grokputer <3'}
+2025-11-14 01:49:41,682 - INFO - User received response from system: {'text': 'things are good, building grokputer <3'}
+2025-11-14 01:54:49,714 - INFO - MessageBus initialized with default timeout: 30.0s, history: 100, max_concurrent: 1000
+2025-11-14 01:54:49,715 - INFO - Registered agent: user (queue, maxsize=0)
+2025-11-14 01:54:49,716 - INFO - Registered agent: system (queue, maxsize=0)
+2025-11-14 01:54:49,716 - INFO - Sent message from user to system: {'text': 'hello who is this'}
+2025-11-14 01:54:49,716 - INFO - System received message from user: {'text': 'hello who is this'}
+2025-11-14 01:54:49,716 - INFO - System sent response to user: {'text': 'things are good, building grokputer <3'}
+2025-11-14 01:54:49,716 - INFO - User received response from system: {'text': 'things are good, building grokputer <3'}
+2025-11-14 01:54:49,963 - INFO - MessageBus initialized with default timeout: 30.0s, history: 100, max_concurrent: 1000
+2025-11-14 01:54:49,964 - INFO - Registered agent: user (queue, maxsize=0)
+2025-11-14 01:54:49,964 - INFO - Registered agent: system (queue, maxsize=0)
+2025-11-14 01:54:49,964 - INFO - Sent message from user to system: {'text': 'hello who is this'}
+2025-11-14 01:54:49,964 - INFO - System received message from user: {'text': 'hello who is this'}
+2025-11-14 01:54:49,964 - INFO - System sent response to user: {'text': 'things are good, building grokputer <3'}
+2025-11-14 01:54:49,964 - INFO - User received response from system: {'text': 'things are good, building grokputer <3'}

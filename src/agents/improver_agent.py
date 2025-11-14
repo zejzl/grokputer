@@ -21,6 +21,7 @@ try:
 
     REDIS_AVAILABLE = True
 except ImportError:
+    redis = None
     REDIS_AVAILABLE = False
     logging.warning("Redis not available - ImproverAgent will use in-memory learning only")
 

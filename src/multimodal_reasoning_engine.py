@@ -813,4 +813,3 @@ class MultiModalReasoningEngine:
             "confidence_score": result.confidence_score,
             "reasoning_time": result.reasoning_time
         }
-<parameter name="filePath">src/multimodal_reasoning_engine.py

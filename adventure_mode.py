@@ -204,11 +204,20 @@ Response format (JSON):
                 content = response.get("content", "")
                 # Try to parse JSON from response
                 try:
-                    # Extract JSON if wrapped in text
-                    json_start = content.find("{")
-                    json_end = content.rfind("}") + 1
-                    if json_start >= 0 and json_end > json_start:
-                        json_content = content[json_start:json_end]
+                    # First, try to extract JSON from code blocks
+                    json_match = re.search(r'```json\s*(\{.*?\})\s*```', content, re.DOTALL)
+                    if json_match:
+                        json_content = json_match.group(1)
+                    else:
+                        # Fallback to old method
+                        json_start = content.find("{")
+                        json_end = content.rfind("}") + 1
+                        if json_start >= 0 and json_end > json_start:
+                            json_content = content[json_start:json_end]
+                        else:
+                            json_content = None
+
+                    if json_content:
                         data = json.loads(json_content)
                         # Apply state updates
                         if "state_updates" in data:

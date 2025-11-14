@@ -418,5 +418,4 @@ async def demo_distributed_communication():
 
 if __name__ == "__main__":
     # Run demo
-    asyncio.run(demo_distributed_communication())</content>
-<parameter name="filePath">src/core/distributed_communication.py
+    asyncio.run(demo_distributed_communication())

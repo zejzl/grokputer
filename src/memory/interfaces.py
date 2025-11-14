@@ -11,12 +11,22 @@ from pathlib import Path
 class MemoryConfig:
     """Configuration for memory system."""
 
-    backend: str = "sqlite"  # or "pinecone", "redis"
+    backend: str = "sqlite"  # or "pinecone", "redis", "hierarchical"
     db_path: str = ""  # Will be set dynamically
     redis_url: str = "redis://localhost:6379/0"  # Redis connection URL
     max_episodes: int = 1000
     consolidation_threshold: int = 100
     episode_ttl: Optional[int] = None  # Time-to-live for episodes in seconds
+
+    # Pinecone configuration
+    pinecone_key: Optional[str] = None
+    pinecone_env: str = "us-west1-gcp"
+    pinecone_index: str = "grokputer-memory"
+
+    # HyDE configuration
+    enable_hyde: bool = True
+    hyde_num_hypotheticals: int = 3
+    hyde_model: str = "grok-beta"
 
     def __post_init__(self):
         if not self.db_path:
@@ -38,4 +48,16 @@ class MemoryBackend(Protocol):
 
     def consolidate(self, agent_id: str) -> Dict[str, Any]:
         """Consolidate memory for an agent."""
+        ...
+
+
+class BaseVectorStore(Protocol):
+    """Protocol for vector store backends."""
+
+    def embed_and_store(self, text: str, metadata: Dict[str, Any]) -> str:
+        """Embed text and store in vector database, return vector ID."""
+        ...
+
+    def query_similar(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
+        """Query for similar vectors and return metadata."""
         ...

@@ -79,5 +79,3 @@ MCP is a Flask-based API server for exposing Grokputer's tools via HTTP endpoint
 
 ---
 
-*This MCP todo list transforms the standalone tool server into a fully integrated, production-ready API for external task execution and tool access.*</content>
-<parameter name="filePath">mcp_new.md

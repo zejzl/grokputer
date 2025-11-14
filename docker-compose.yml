@@ -1,24 +1,21 @@
-
 services:
   grokputer:
     build: .
     image: grokputer:latest
-    container_name: grokputer
     environment:
       - XAI_API_KEY=${XAI_API_KEY}
       - GROK_MODEL=${GROK_MODEL:-grok-4-fast-reasoning}
       - XAI_BASE_URL=${XAI_BASE_URL:-https://api.x.ai/v1}
-      - REQUIRE_CONFIRMATION=${REQUIRE_CONFIRMATION:-true}
+      - REQUIRE_CONFIRMATION=${REQUIRE_CONFIRMATION:-false}
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
       - TASK=${TASK:-invoke server prayer}
       - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      - PROCESS_ID=${PROCESS_ID:-main}
     volumes:
       - ./vault:/app/vault
       - ./logs:/app/logs
       - ./.env:/app/.env:ro
-    stdin_open: true
-    tty: true
-    command: python main.py --task "${TASK:-invoke server prayer}"
+    command: python main.py --task "invoke server prayer" --distributed --process-id main
     depends_on:
       - redis
     profiles:
@@ -41,7 +38,7 @@ services:
       - "5900:5900"
     command: >
       sh -c "Xvfb :99 -screen 0 1920x1080x24 &
-             x11vnc -display :99 -forever -shared &
+             x11vnc -display :99 -forever -shared -localhost no &
              python main.py --task '${TASK:-invoke server prayer}'"
     profiles:
       - debug

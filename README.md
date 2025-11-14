@@ -267,6 +267,31 @@ For real computer control with actual window observation:
 python main.py --task "your task"  # Run natively, not in Docker
 ```
 
+### Node.js Web Interface
+
+**NEW**: Web-based interface using Node.js and Express for easier access to Grokputer functionality!
+
+```bash
+# Install Node.js dependencies
+npm install
+
+# Start the web server (serves on port 3000)
+npm start
+
+# The web interface provides:
+# - Web UI for task execution
+# - REST API endpoints
+# - Integration with Python backend
+```
+
+**Features**:
+- ✅ Express.js server with REST API
+- ✅ Calls Python APIs for core functionality
+- ✅ Serves static web files (index.html)
+- ✅ Health check endpoints
+
+See `index.js` and `grokputer_api.py` for implementation details.
+
 ---
 
 ## 📊 Session Logging & Analytics

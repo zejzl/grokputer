@@ -1,0 +1,32 @@
+{
+  "session_id": "swarm_20251114_015436",
+  "task": "Explain what ';0;rgb:0000/0000/0000scale optimizie wewelovoe <33' means",
+  "duration_seconds": 10.013415813446045,
+  "iterations": 0,
+  "tool_executions": [],
+  "api_calls": [],
+  "errors": [],
+  "swarm_mode": true,
+  "swarm": {
+    "agent_states": {
+      "coordinator": "decomposed",
+      "coordinator_learner": "started",
+      "observer": "started",
+      "actor": "started"
+    },
+    "agent_message_counts": {},
+    "agent_errors": {},
+    "total_handoffs": 0,
+    "handoff_latencies": [],
+    "message_count": 0,
+    "avg_handoff_latency": 0.0,
+    "max_handoff_latency": 0.0,
+    "coordinator_decisions": 0,
+    "task_decompositions": 0,
+    "confirmations_requested": 0,
+    "confirmations_approved": 0,
+    "heartbeats_received": 0,
+    "deadlocks_detected": 0,
+    "agent_restarts": 0
+  }
+}

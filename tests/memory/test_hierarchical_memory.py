@@ -28,6 +28,12 @@ def mock_redis_backend():
     mock_redis.consolidate = Mock(return_value={"redis": "stats"})
     mock_redis.get_connection = Mock(return_value=True)
     mock_redis.close = Mock()
+    # Add more Redis-specific methods
+    mock_redis.ping = Mock(return_value=True)
+    mock_redis.get = Mock(return_value=None)
+    mock_redis.set = Mock(return_value=True)
+    mock_redis.exists = Mock(return_value=False)
+    mock_redis.delete = Mock(return_value=1)
     return mock_redis
 
 
@@ -181,8 +187,9 @@ class TestHierarchicalMemory:
         # Check that long-term backend was called
         hierarchical_memory.long_term_backend.store_episode.assert_called()
 
-    def test_hierarchical_retrieve_context(self, hierarchical_memory):
-        """Test retrieving context with memory fusion."""
+    @pytest.mark.asyncio
+    async def test_hierarchical_retrieve_context(self, hierarchical_memory):
+        """Test context retrieval from hierarchical memory."""
         # Mock long-term backend to return some data
         hierarchical_memory.long_term_backend.retrieve_context.return_value = [
             {"task_type": "reasoning", "result": "past_result", "_memory_layer": "long_term"}
@@ -191,7 +198,7 @@ class TestHierarchicalMemory:
         # Store some data in short-term
         hierarchical_memory.short_term.store("test_key", {"task_type": "reasoning", "data": "test"})
 
-        context = hierarchical_memory.retrieve_context("test_agent", "reasoning", top_k=5)
+        context = await hierarchical_memory.retrieve_context("test_agent", "reasoning", top_k=5)
 
         # Should return fused results from multiple layers
         assert len(context) > 0

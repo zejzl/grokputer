@@ -6,6 +6,13 @@ Creates appropriate memory backend based on configuration with graceful fallback
 import logging
 from ..interfaces import MemoryConfig, MemoryBackend
 from ..backends.redis_store import RedisMemoryBackend
+
+try:
+    from ..backends.pinecone_store import PineconeStore
+    PINECONE_STORE_AVAILABLE = True
+except ImportError:
+    PINECONE_STORE_AVAILABLE = False
+
 from .persistent_manager import PersistentMemoryManager
 from ..hierarchical_memory import HierarchicalMemoryManager
 
@@ -44,6 +51,18 @@ def create_memory_backend(config: MemoryConfig) -> MemoryBackend:
             backend = RedisMemoryBackend(config)
             logger.info("Redis memory backend initialized")
             return backend
+
+        elif backend_type == "pinecone":
+            if not PINECONE_STORE_AVAILABLE:
+                logger.warning("Pinecone store not available (library not installed), falling back to SQLite")
+                return PersistentMemoryManager(config)
+            try:
+                backend = PineconeStore(config, enable_hyde=config.enable_hyde)
+                logger.info("Pinecone memory backend initialized with HyDE support")
+                return backend
+            except Exception as e:
+                logger.warning(f"Pinecone backend failed: {e}, falling back to SQLite")
+                return PersistentMemoryManager(config)
 
         elif backend_type == "sqlite":
             backend = PersistentMemoryManager(config)

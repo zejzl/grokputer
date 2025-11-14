@@ -103,5 +103,3 @@ Based on the comprehensive list in `python_lib.txt`, here are the recommended li
 ## Migration Notes
 - Update `requirements.txt` to include new libraries
 - Consider moving to `pyproject.toml` with Poetry for better dependency management
-- Test all additions in Docker environment to ensure compatibility</content>
-<parameter name="filePath">python_lib.md

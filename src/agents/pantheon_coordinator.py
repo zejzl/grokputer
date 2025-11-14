@@ -461,7 +461,6 @@ class PantheonCoordinator(BaseAgent):
     async def on_start(self):
         """Pantheon-specific startup."""
         await super().on_start()
-        self.message_bus.subscribe("pantheon_todo_sync", self._handle_todo_sync)
         self.session_logger.log_agent_start(self.agent_id)
 
     async def on_stop(self):

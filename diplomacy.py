@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-\"\"\"Diplomacy Module for Grokputer Pantheon.
+"""Diplomacy Module for Grokputer Pantheon.
 
 Enables multi-agent negotiation and consensus for task delegation, priority voting, and conflict resolution.
 Council-approved structure: DiplomatAgent for proposals/votes, NegotiationRoom for sessions (70% quorum),
@@ -17,7 +17,7 @@ Usage:
 
 Author: Pantheon Council (via Grok CLI)
 Version: 1.0 (Harmony-Integrated)
-\"\"\"
+"""
 
 import asyncio
 import json
@@ -38,7 +38,7 @@ class Proposal:
             self.votes = {}
 
 class DiplomatAgent:
-    \"\"\"Agent specialized in negotiation and voting.\"\"\"
+    """Agent specialized in negotiation and voting."""
 
     def __init__(self, agent_id: str, message_bus: MessageBus, strategy: str = "consensus"):
         self.agent_id = agent_id
@@ -47,7 +47,7 @@ class DiplomatAgent:
         self.proposals: List[Proposal] = []
 
     async def propose(self, content: str, topic: str, recipients: List[str]) -> str:
-        \"\"\"Propose an idea to the negotiation room.\"\"\"
+        """Propose an idea to the negotiation room."""
 
         proposal_id = f"prop_{self.agent_id}_{asyncio.get_event_loop().time()}"
         proposal = Proposal(proposal_id, content, self.agent_id)
@@ -63,7 +63,7 @@ class DiplomatAgent:
         return proposal_id
 
     async def vote(self, proposal_id: str, approve: bool, topic: str) -> None:
-        \"\"\"Vote on a proposal.\"\"\"
+        """Vote on a proposal."""
 
         for prop in self.proposals:
             if prop.id == proposal_id:
@@ -80,7 +80,7 @@ class DiplomatAgent:
                 break
 
     def _calculate_harmony(self, votes: Dict[str, bool]) -> float:
-        \"\"\"Calculate harmony score (0-100): >80 for eternal <3.\"\"\"
+        """Calculate harmony score (0-100): >80 for eternal <3."""
 
         if not votes:
             return 0.0
@@ -88,14 +88,14 @@ class DiplomatAgent:
         return (approvals / len(votes)) * 100
 
 class ConsensusEngine:
-    \"\"\"Engine for reaching consensus with quorum and veto logic.\"\"\"
+    """Engine for reaching consensus with quorum and veto logic."""
 
     def __init__(self, quorum_threshold: float = 0.7, harmony_threshold: float = 80.0):
         self.quorum_threshold = quorum_threshold  # 70% minimum participation
         self.harmony_threshold = harmony_threshold  # 80% harmony for approval
 
     def reach_consensus(self, proposal: Proposal, participants: int) -> Dict[str, Any]:
-        \"\"\"Determine if consensus is reached.\"\"\"
+        """Determine if consensus is reached."""
 
         if len(proposal.votes) < (participants * self.quorum_threshold):
             return {"approved": False, "reason": "Quorum not met", "harmony": proposal.harmony_score}
@@ -108,7 +108,7 @@ class ConsensusEngine:
             return {"approved": False, "reason": "No consensus (veto possible)", "harmony": proposal.harmony_score}
 
 class NegotiationRoom:
-    \"\"\"Manages negotiation sessions between agents.\"\"\"
+    """Manages negotiation sessions between agents."""
 
     def __init__(self, topic: str, message_bus: MessageBus, agents: List[str], consensus_engine: ConsensusEngine = None):
         self.topic = topic
@@ -122,7 +122,7 @@ class NegotiationRoom:
         self.message_bus.subscribe_callback(topic, self._handle_message)
 
     async def _handle_message(self, message: Message) -> None:
-        \"\"\"Handle incoming messages (proposals, votes).\"\"\"
+        """Handle incoming messages (proposals, votes)."""
 
         if message.message_type == "proposal":
             prop_data = message.content
@@ -163,7 +163,7 @@ class NegotiationRoom:
                         await self._request_votes(prop_id)
 
     async def _request_votes(self, proposal_id: str) -> None:
-        \"\"\"Request votes from non-voting agents.\"\"\"
+        """Request votes from non-voting agents."""
 
         prop = self.active_proposals[proposal_id]
         voted = list(prop.votes.keys())
@@ -179,7 +179,7 @@ class NegotiationRoom:
             await self.message_bus.broadcast(self.topic, request_msg)
 
     async def propose_and_consensus(self, content: str, diplomat: DiplomatAgent) -> Dict[str, Any]:
-        \"\"\"Propose and wait for consensus.\"\"\"
+        """Propose and wait for consensus."""
 
         prop_id = await diplomat.propose(content, self.topic, self.agents)
         # Wait for consensus or timeout (60s)
@@ -194,7 +194,7 @@ class NegotiationRoom:
         return {"error": "Proposal not found"}
 
     async def _wait_for_consensus(self, proposal_id: str) -> None:
-        \"\"\"Wait for consensus on a proposal.\"\"\"
+        """Wait for consensus on a proposal."""
 
         while proposal_id in self.active_proposals:
             await asyncio.sleep(1.0)

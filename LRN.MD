@@ -54,5 +54,3 @@ These methods evolve LLM training from sequential thinking to organized, aligned
 - Has some local inference (Qwen mentioned in docs)
 - Multi-agent orchestration already resembles AsyncThink
 
-For local training, start with DPO on a small model. Would need ~10-50GB disk space, GPU, and 1-2 days training time.</content>
-<parameter name="filePath">LRN.MD

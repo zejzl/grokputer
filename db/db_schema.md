@@ -362,5 +362,3 @@ GROUP BY metric_name;
 **Last Updated**: November 12, 2025
 **Database Version**: 2.0 (NLI Integration)
 **Total Tables**: 9
-**Redis Keys**: 3 main patterns</content>
-<parameter name="filePath">db/db_schema.md

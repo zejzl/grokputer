@@ -14,13 +14,14 @@ from dataclasses import dataclass
 import logging
 from datetime import datetime
 
-# Analytics integration
-try:
-    from analytics import log_api_call, start_session, end_session
+# Analytics integration disabled due to database issues
+# try:
+#     from analytics import log_api_call, start_session, end_session
+#     ANALYTICS_ENABLED = True
+# except ImportError:
+#     ANALYTICS_ENABLED = False
 
-    ANALYTICS_ENABLED = True
-except ImportError:
-    ANALYTICS_ENABLED = False
+ANALYTICS_ENABLED = False
 
 # Standardized error handling
 from .exceptions import APIError, handle_error, retry_with_backoff
@@ -173,17 +174,42 @@ class GrokClient:
                 return None
 
     async def chat(self, messages: list[Dict[str, str]], session_id: Optional[int] = None) -> str:
-        """Chat with fallback cycling."""
-        for i, provider in enumerate(self.providers):
-            logger.info(f"Trying provider {i+1}/{len(self.providers)}: {provider.name}")
-            response = await self._call_provider(provider, messages, session_id)
-            if response:
-                return response
+        """Chat with the AI using current provider."""
+        if not self.session:
+            self.session = self._get_session()
 
-        logger.error("All providers failed")
-        return "Error: All AI providers unavailable. Check API keys and connections."
+        provider = self.providers[self.current_provider_index]
+        try:
+            response = await self._call_provider(provider, messages, session_id)
+            if ANALYTICS_ENABLED:
+                log_api_call(provider.name, "success", len(messages))
+            return response
+        except Exception as e:
+            logger.error(f"Provider {provider.name} failed: {e}")
+            if ANALYTICS_ENABLED:
+                log_api_call(provider.name, "error", len(messages))
+            # Try next provider
+            self.current_provider_index = (self.current_provider_index + 1) % len(self.providers)
+            if self.current_provider_index != 0:  # Don't retry the same provider
+                return await self.chat(messages, session_id)
+            raise APIError(f"All providers failed: {e}")
+
+    async def create_message(self, task: str, conversation_history: Optional[list] = None, **kwargs) -> Dict[str, Any]:
+        """Create a message with the AI model, returning dict format."""
+        messages = []
+        if conversation_history:
+            messages.extend(conversation_history)
+        messages.append({"role": "user", "content": task})
+
+        try:
+            content = await self.chat(messages)
+            return {"status": "success", "content": content}
+        except Exception as e:
+            logger.error(f"create_message failed: {e}")
+            return {"status": "error", "content": str(e)}
 
     async def close(self):
+        """Close the session."""
         if self.session:
             await self.session.close()
 

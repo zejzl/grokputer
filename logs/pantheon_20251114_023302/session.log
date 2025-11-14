@@ -1,0 +1,39 @@
+Session: pantheon_20251114_023302
+Task: Fix Bun out of memory error
+Started: 2025-11-14T02:33:02.624354
+Swarm Mode: True
+--------------------------------------------------------------------------------
+
+[02:33:02.624] [AGENT START] observer
+[02:33:02.624] [AGENT START] observer
+[02:33:02.625] [AGENT START] coordinator_learner
+[02:33:02.627] [AGENT START] coordinator
+[02:33:02.627] [AGENT START] reasoner
+[02:33:02.628] [AGENT START] actor
+[02:33:02.628] [AGENT START] actor
+[02:33:02.628] [AGENT START] validator
+[02:33:02.629] [AGENT START] validator
+[02:33:02.781] [AGENT START] hierarchical_memory
+[02:33:02.782] [AGENT START] learner
+[02:33:02.782] [AGENT START] learner
+[02:33:02.782] [AGENT START] executor
+[02:33:02.783] [AGENT START] analyzer
+[02:33:02.787] [AGENT START] improver
+[02:33:02.787] [AGENT START] character_analyzer
+[02:33:02.788] [AGENT START] story_generator
+[02:33:02.788] [AGENT START] visionary
+[02:33:02.788] [AGENT START] love_agent
+[02:33:02.825] [AGENT START] pantheon_coordinator
+[02:33:02.825] [AGENT START] pantheon_coordinator
+[02:33:02.826] [AGENT START] observer
+[02:33:02.926] [AGENT START] coordinator
+[02:33:03.035] [AGENT START] actor
+[02:33:03.143] [AGENT START] validator
+[02:33:03.252] [AGENT START] pantheon_coordinator
+[02:33:03.252] [AGENT START] pantheon_coordinator
+[02:33:03.360] [AGENT START] pantheon_coordinator
+[02:33:03.361] [AGENT START] pantheon_coordinator
+[02:33:04.362] [AGENT ACTIVITY] pantheon_coordinator -> Pantheon handling task: Fix Bun out of memory error
+[02:33:04.362] [AGENT ACTIVITY] learner -> processing
+[02:33:04.363] [AGENT ACTIVITY] learner -> idle
+[02:33:13.424] [AGENT ERROR] pantheon_coordinator: 'Message' object has no attribute 'get'

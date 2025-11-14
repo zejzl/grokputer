@@ -324,18 +324,28 @@ Output as JSON list only, no extra text: [{{"id": "sub1", "type": "...", "target
     async def run(self):
         """
         Main coordinator loop: Listen for tasks, decompose, delegate, aggregate.
+        Includes loop prevention to avoid infinite processing.
         """
         self.running = True
         self.session_logger.log_agent_start("coordinator")
         self.logger.info("[COORDINATOR] Starting run loop")
+
+        # Loop prevention
+        max_iterations = self.config.get("max_coordinator_iterations", 1000)
+        iteration_count = 0
 
         # Listen for incoming messages (new tasks or results)
         async for message in self.message_bus.subscribe("coordinator"):
             if not self.running:
                 break
 
+            iteration_count += 1
+            if iteration_count >= max_iterations:
+                self.logger.warning(f"[COORDINATOR] Max iterations ({max_iterations}) reached, stopping to prevent infinite loop")
+                break
+
             msg_type = message.message_type
-            self.logger.info(f"[COORDINATOR] Received: {msg_type} - {message.content}")
+            self.logger.info(f"[COORDINATOR] Received: {msg_type} - {message.content} (iteration {iteration_count})")
             self.session_logger.log_agent_activity("coordinator", msg_type)
 
             if self.deadlock_detector:
@@ -417,7 +427,14 @@ Output as JSON list only, no extra text: [{{"id": "sub1", "type": "...", "target
 
         # Step 2: Initial decomposition with learner-enhanced prompt
         enhanced_prompt = self._build_enhanced_prompt(task_desc, learner_insights)
-        subtasks = await self._decompose_with_prompt(enhanced_prompt, task_desc)
+        try:
+            subtasks = await asyncio.wait_for(
+                self._decompose_with_prompt(enhanced_prompt, task_desc),
+                timeout=30.0  # 30 second timeout
+            )
+        except asyncio.TimeoutError:
+            self.logger.warning("[COORDINATOR] Decomposition timed out, using fallback")
+            subtasks = self._fallback_decompose(task_desc)
 
         # Step 3: Validator pre-scan and refinement loop
         refined_subtasks = await self._validate_and_refine_subtasks(subtasks, task_desc, task_id)

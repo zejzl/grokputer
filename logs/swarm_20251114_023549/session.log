@@ -1,0 +1,36 @@
+Session: swarm_20251114_023549
+Task: Simulate 32 ultra hard tasks
+Started: 2025-11-14T02:35:49.501699
+Swarm Mode: True
+--------------------------------------------------------------------------------
+
+[02:35:49.502] [AGENT START] coordinator
+[02:35:49.502] [AGENT START] coordinator_learner
+[02:35:49.504] [AGENT START] observer
+[02:35:49.504] [AGENT START] actor
+[02:35:49.505] [AGENT START] coordinator
+[02:35:49.505] [AGENT ACTIVITY] coordinator -> new_task
+[02:35:49.506] [AGENT ACTIVITY] observer -> idle
+[02:35:49.506] [AGENT START] observer
+[02:35:49.506] [AGENT START] actor
+[02:35:50.604] [AGENT ACTIVITY] coordinator -> decomposed {'task_id': 'task_001', 'subtasks': 1}
+[02:35:59.520] 
+================================================================================
+Session Summary: swarm_20251114_023549
+================================================================================
+Task: Simulate 32 ultra hard tasks
+Duration: 10.02s
+Iterations: 0
+Tool Executions: 0
+API Calls: 0
+Errors: 0
+
+Swarm Metrics:
+  Handoffs: 0
+  Avg Latency: 0.00ms
+  Messages: 0
+  Heartbeats: 0
+  Agents: 4
+================================================================================
+[02:35:59.526] [AGENT ACTIVITY] observer -> stopped
+[02:35:59.526] [AGENT STOP] observer

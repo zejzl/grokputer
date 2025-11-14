@@ -587,5 +587,3 @@
 - [ ] Optimize MessageBus throughput
 - [ ] Add connection pooling for providers
 - [ ] Implement caching layers
-- [ ] Profile and optimize critical paths</content>
-<parameter name="filePath">next_session_todo.md

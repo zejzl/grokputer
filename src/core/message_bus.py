@@ -126,6 +126,7 @@ class MessageBus:
         """
         self.queues: Dict[str, asyncio.PriorityQueue] = {}
         self.default_timeout = default_timeout
+        self.history_size = history_size
         self.message_count = 0
         self.start_time = time.time()
 
@@ -552,6 +553,115 @@ class MessageBus:
             "pending_requests": len(self.pending_requests),
             "message_history_size": len(self.message_history),
             "latency_by_type": latency_stats,
+            "concurrency_stats": self.get_concurrency_stats(),
+        }
+
+    def get_performance_snapshot(self) -> Dict[str, Any]:
+        """
+        Get real-time performance snapshot for monitoring.
+
+        Returns:
+            Performance metrics optimized for monitoring dashboards
+        """
+        stats = self.get_stats()
+        current_time = time.time()
+
+        # Calculate recent performance (last 60 seconds)
+        recent_messages = sum(1 for msg in self.message_history
+                            if current_time - msg["timestamp"] < 60)
+
+        # Queue health metrics
+        queue_health = {}
+        for agent_id, queue in self.queues.items():
+            qsize = queue.qsize()
+            max_size = getattr(queue, '_maxsize', 0) or float('inf')
+            queue_health[agent_id] = {
+                "current_size": qsize,
+                "max_size": max_size,
+                "utilization_percent": (qsize / max_size * 100) if max_size != float('inf') else 0,
+                "is_full": qsize >= max_size if max_size != float('inf') else False,
+            }
+
+        return {
+            "timestamp": current_time,
+            "overall_throughput": stats["messages_per_second"],
+            "recent_throughput_60s": recent_messages / 60 if recent_messages > 0 else 0,
+            "total_agents": len(stats["registered_agents"]),
+            "total_queues": len(self.queues),
+            "queue_health": queue_health,
+            "pending_requests_count": stats["pending_requests"],
+            "concurrency_active": stats["concurrency_stats"]["active"],
+            "concurrency_limit": stats["concurrency_stats"]["semaphore_limit"],
+            "concurrency_utilization_percent": (
+                stats["concurrency_stats"]["active"] / stats["concurrency_stats"]["semaphore_limit"] * 100
+                if stats["concurrency_stats"]["semaphore_limit"] > 0 else 0
+            ),
+            "avg_latency_ms": sum(
+                type_stats["avg_ms"] for type_stats in stats["latency_by_type"].values()
+            ) / len(stats["latency_by_type"]) if stats["latency_by_type"] else 0,
+        }
+
+    def optimize_performance(self) -> Dict[str, Any]:
+        """
+        Perform automatic performance optimizations based on current metrics.
+
+        Returns:
+            Dictionary describing optimizations performed
+        """
+        optimizations = {}
+        stats = self.get_performance_snapshot()
+
+        # Clean up old message history if it's getting large
+        if len(self.message_history) > self.history_size * 1.5:
+            # Keep only recent messages (last 10 minutes)
+            cutoff_time = time.time() - 600
+            old_count = len(self.message_history)
+            self.message_history = [
+                msg for msg in self.message_history
+                if msg["timestamp"] > cutoff_time
+            ]
+            new_count = len(self.message_history)
+            optimizations["history_cleanup"] = {
+                "old_count": old_count,
+                "new_count": new_count,
+                "removed": old_count - new_count,
+            }
+
+        # Check for queue congestion
+        congested_queues = []
+        for agent_id, health in stats["queue_health"].items():
+            if health["utilization_percent"] > 80:
+                congested_queues.append(agent_id)
+
+        if congested_queues:
+            optimizations["queue_congestion_warning"] = {
+                "congested_agents": congested_queues,
+                "recommendation": "Consider increasing queue sizes or processing capacity",
+            }
+
+        # Check concurrency utilization
+        if stats["concurrency_utilization_percent"] > 90:
+            optimizations["high_concurrency_warning"] = {
+                "current_active": stats["concurrency_active"],
+                "limit": stats["concurrency_limit"],
+                "recommendation": "Consider increasing max_concurrent limit",
+            }
+
+        # Latency optimization suggestions
+        if stats["avg_latency_ms"] > 10:  # More than 10ms average
+            optimizations["latency_optimization"] = {
+                "current_avg_ms": stats["avg_latency_ms"],
+                "recommendations": [
+                    "Consider reducing message history size",
+                    "Check for blocking operations in message handlers",
+                    "Monitor agent processing times",
+                ],
+            }
+
+        return {
+            "timestamp": time.time(),
+            "optimizations_performed": optimizations,
+            "performance_snapshot": stats,
         }
 
     def get_message_history(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:

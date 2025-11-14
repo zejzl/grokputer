@@ -186,7 +186,7 @@ class Pantheon:
 # Example usage
 if __name__ == "__main__":
     pantheon = Pantheon()
-    result = pantheon.oram_cycle("Write a simple function to add two numbers")
+    result = pantheon.oram_cycle("what is happening round here yoyo gang the boys are back in town")
     
     print("\nFinal Output:")
     print("Generated Code:\n", result.get('code', 'No code generated'))

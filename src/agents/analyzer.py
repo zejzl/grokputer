@@ -21,6 +21,7 @@ import time
 from src.core.base_agent import BaseAgent
 from src.core.message_bus import MessageBus, Message, MessagePriority
 from src.cognitive.agent_integration import CognitiveAnalyzerMixin
+from src.tools.alerts import get_haiku_alerts
 
 logger = logging.getLogger(__name__)
 
@@ -109,12 +110,16 @@ class AnalyzerAgent(CognitiveAnalyzerMixin, BaseAgent):
         # Analysis task
         self.analysis_task: Optional[asyncio.Task] = None
 
+        # Initialize haiku alerts for failure notifications
+        self.alerts = get_haiku_alerts(message_bus)
+
         # Statistics
         self.stats = {
             "metrics_collected": 0,
             "health_checks_performed": 0,
             "bottlenecks_detected": 0,
             "reports_generated": 0,
+            "alerts_triggered": 0,
         }
 
         self.session_logger.log_agent_init(self.agent_id, "Analyzer ready for performance monitoring")
@@ -197,6 +202,18 @@ class AnalyzerAgent(CognitiveAnalyzerMixin, BaseAgent):
         # Track outcomes
         outcome_key = "success" if success else "failure"
         self.task_outcomes[task_type][outcome_key] += 1
+
+        # Trigger haiku alert for failures
+        if not success:
+            try:
+                await self.alerts.trigger_manual_alert(
+                    task_name=f"Task Failure: {task_type}",
+                    task_type=task_type,
+                    task_id=content.get("task_id", f"{task_type}_{int(time.time())}")
+                )
+                self.stats["alerts_triggered"] += 1
+            except Exception as e:
+                logger.error(f"Failed to trigger alert for task failure: {e}")
 
         # Record as metric for time-series analysis
         await self._record_metric(
@@ -509,6 +526,9 @@ class AnalyzerAgent(CognitiveAnalyzerMixin, BaseAgent):
     async def on_start(self):
         """Analyzer-specific startup."""
         await super().on_start()
+
+        # Start haiku alerts listening
+        await self.alerts.start_listening()
 
         # Start periodic analysis
         self.analysis_task = asyncio.create_task(self._periodic_analysis())

@@ -5,7 +5,8 @@ import time
 import logging
 from dataclasses import dataclass
 from datetime import datetime
-from .message_bus import Message, MessagePriority
+from .message_bus import Message, MessagePriority, MessageBus
+from ..observability.session_logger import SessionLogger
 
 
 @dataclass
@@ -26,8 +27,8 @@ class BaseAgent(ABC):
     def __init__(
         self,
         agent_id: str,
-        message_bus: "MessageBus",  # Forward reference to avoid import cycle
-        session_logger: "SessionLogger",
+        message_bus: MessageBus,
+        session_logger: SessionLogger,
         config: Dict[str, Any],
         heartbeat_interval: float = 10.0,  # Seconds between heartbeats
     ):
@@ -282,7 +283,7 @@ class BaseAgent(ABC):
         """Send a message to TaskMaster and wait for response."""
         try:
             # Send message to taskmaster
-            from src.core.message_bus import Message, MessagePriority
+            # Message and MessagePriority already imported at top
 
             message = Message(
                 message_type=message_type,

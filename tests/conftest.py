@@ -12,7 +12,16 @@ warnings.filterwarnings("ignore", category=UserWarning, module="llama_cpp")
 def mock_external_deps():
     with patch("openai.OpenAI", return_value=Mock()) as mock_openai:
         with patch.dict("sys.modules", {"pyautogui": Mock(), "src.tools": Mock()}) as mock_modules:
-            yield
+            with patch("redis.Redis", return_value=Mock()) as mock_redis:
+                # Mock Redis methods
+                mock_redis_instance = Mock()
+                mock_redis_instance.ping.return_value = True
+                mock_redis_instance.get.return_value = None
+                mock_redis_instance.set.return_value = True
+                mock_redis_instance.exists.return_value = False
+                mock_redis_instance.delete.return_value = 1
+                mock_redis.return_value = mock_redis_instance
+                yield
 
 
 # Async fixture if needed

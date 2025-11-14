@@ -198,5 +198,3 @@ python view_sessions.py session_12345 --graph
 - Pantheon mode includes advanced features like conflict resolution, rollback, and meta-reasoning
 - Swarm mode uses async coordination with load balancing
 - Autonomous mode can run as daemon for continuous monitoring
-- All modes support analytics with `--analytics` flag</content>
-<parameter name="filePath">help.md

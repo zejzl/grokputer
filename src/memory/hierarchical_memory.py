@@ -15,6 +15,7 @@ from dataclasses import dataclass, field
 from collections import deque, defaultdict
 import threading
 from .interfaces import MemoryConfig, MemoryBackend
+from .hyde_generator import HyDEGenerator
 from ..knowledge_graph import KnowledgeGraph, Entity, Relationship
 from ..exceptions import MemoryError, handle_error
 from ..encryption import get_encryptor, randomize_encrypt, randomize_decrypt
@@ -224,6 +225,30 @@ class ContextMemory:
             }
 
 
+def create_memory_backend(config: MemoryConfig) -> Optional[MemoryBackend]:
+    """Factory function to create memory backend with connection handling."""
+    if config.backend == "redis":
+        try:
+            from .backends.redis_store import RedisStore
+            backend = RedisStore(config)
+            # Test connection
+            backend.get_connection()
+            return backend
+        except Exception as e:
+            logger.warning(f"Failed to connect to Redis: {e}. Using fallback memory.")
+            return None
+    elif config.backend == "pinecone":
+        try:
+            from .backends.pinecone_store import PineconeStore
+            return PineconeStore(config)
+        except Exception as e:
+            logger.warning(f"Failed to initialize Pinecone: {e}. Using fallback memory.")
+            return None
+    else:
+        logger.info(f"Using {config.backend} backend")
+        return None
+
+
 class HierarchicalMemoryManager(MemoryBackend):
     """
     Hierarchical memory manager coordinating short-term, context, and long-term memory.
@@ -236,7 +261,8 @@ class HierarchicalMemoryManager(MemoryBackend):
 
     def __init__(self, config: MemoryConfig, long_term_backend: Optional[MemoryBackend] = None):
         self.config = config
-        self.long_term_backend = long_term_backend
+        # Use factory to create backend if none provided
+        self.long_term_backend = long_term_backend or create_memory_backend(config)
 
         # Initialize memory layers
         self.short_term = ShortTermMemory(max_entries=50)  # Fast working memory
@@ -247,12 +273,19 @@ class HierarchicalMemoryManager(MemoryBackend):
         # Initialize knowledge graph for semantic understanding
         self.knowledge_graph = KnowledgeGraph()
 
+        # Initialize HyDE generator if enabled
+        self.hyde_generator = HyDEGenerator(
+            num_hypotheticals=config.hyde_num_hypotheticals,
+            model=config.hyde_model
+        ) if getattr(config, 'enable_hyde', False) else None
+
         # Memory fusion settings
         self.fusion_weights = {
             "short_term": 0.5,
             "context": 0.3,
             "long_term": 0.2,
             "knowledge_graph": 0.4,  # Higher weight for semantic relevance
+            "hyde": 0.6,  # Higher weight for HyDE-enhanced results
         }
 
         # Background consolidation task
@@ -413,7 +446,7 @@ class HierarchicalMemoryManager(MemoryBackend):
         # Extract relationships from episode content
         self._extract_relationships_from_episode(episode_data, agent_id)
 
-    def retrieve_context(self, agent_id: str, query: str = None, top_k: int = 5) -> List[Dict[str, Any]]:
+    async def retrieve_context(self, agent_id: str, query: str = None, top_k: int = 5) -> List[Dict[str, Any]]:
         """Retrieve context using memory fusion including knowledge graph."""
         results = []
 
@@ -424,12 +457,37 @@ class HierarchicalMemoryManager(MemoryBackend):
         long_term_results = []
         if self.long_term_backend:
             try:
-                long_term_results = self.long_term_backend.retrieve_context(agent_id, query, top_k * 2)
+                if hasattr(self.long_term_backend, 'retrieve_context'):
+                    long_term_results = await self.long_term_backend.retrieve_context(agent_id, query, top_k * 2)
+                else:
+                    # Fallback for non-async backends
+                    long_term_results = self.long_term_backend.retrieve_context(agent_id, query, top_k * 2)
             except Exception as e:
                 logger.error(f"Failed to retrieve from long-term memory: {e}")
 
         # Get knowledge graph semantic search results
         kg_results = self.knowledge_graph.semantic_search(query or "", top_k * 2)
+
+        # Get HyDE-enhanced results if available
+        hyde_results = []
+        if self.hyde_generator and query:
+            try:
+                hypotheticals = await self.hyde_generator.generate_hypotheticals(query)
+                if hypotheticals:
+                    # For each hypothetical, search across memory layers
+                    for hypo in hypotheticals:
+                        # Search short-term and context with hypothetical
+                        hypo_short_results = self.short_term.search(hypo, top_k)
+                        hypo_context_results = self.context.search(hypo, top_k)
+
+                        # Combine and add to hyde_results
+                        for result in hypo_short_results + hypo_context_results:
+                            result_copy = result.copy()
+                            result_copy["_memory_layer"] = "hyde"
+                            result_copy["_fusion_score"] = self.fusion_weights["hyde"]
+                            hyde_results.append(result_copy)
+            except Exception as e:
+                logger.warning(f"HyDE retrieval failed: {e}")
 
         # Apply fusion weights and combine results
         all_results = []
@@ -468,6 +526,9 @@ class HierarchicalMemoryManager(MemoryBackend):
                 "_fusion_score": semantic_score * self.fusion_weights["knowledge_graph"],
             }
             all_results.append(kg_result)
+
+        # Add HyDE results
+        all_results.extend(hyde_results)
 
         # Sort by fusion score and return top_k
         all_results.sort(key=lambda x: x.get("_fusion_score", 0), reverse=True)
@@ -605,15 +666,18 @@ class HierarchicalMemoryManager(MemoryBackend):
 
         return relationships
 
-    def semantic_search(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
+    async def semantic_search(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
         """Perform semantic search combining memory and knowledge graph."""
         results = []
 
         # Get memory results
-        memory_results = self.retrieve_context("knowledge_graph", query, top_k * 2)
+        memory_results = await self.retrieve_context("knowledge_graph", query, top_k * 2)
 
         # Get knowledge graph semantic search results
         kg_results = self.knowledge_graph.semantic_search(query, top_k * 2)
+
+        # Get memory results (now async)
+        memory_results = await self.retrieve_context("knowledge_graph", query, top_k * 2)
 
         # Convert KG results to dict format
         kg_dict_results = []

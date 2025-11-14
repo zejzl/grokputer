@@ -1,0 +1,15 @@
+Welcome to Grokputer! 🌟
+
+Grokputer is an AI-powered system with multi-agent architecture using Grok API, Redis memory, and Docker. Features Pantheon mode (9 agents), MessageBus communication, and cognitive enhancements.
+
+Key agents: Observer (vision), Coordinator (tasks), Actor (execution), Validator (safety).
+
+MessageBus broadcasts periodic messages for synchronization: heartbeats, updates, notifications.
+
+Get started:
+1. python token_haze.py
+2. python main.py --help
+3. python main.py --task "invoke server prayer"
+4. python main.py --pantheon --task "complex task"
+
+Explore the AI realm! 🚀 <3

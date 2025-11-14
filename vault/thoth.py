@@ -1,4 +1,3 @@
-```python
 emerald_tablets_summary = {
     "preface": {
         "author": "Thoth, Atlantean Priest-King",
@@ -91,4 +90,3 @@ emerald_tablets_summary = {
         "Inner fire, vibration, meditation for enlightenment"
     ]
 }
-```
