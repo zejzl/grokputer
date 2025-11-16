@@ -1,0 +1,2303 @@
+[a / b / c / d / e / f / g / gif / h / hr / k / m / o / p / r / s / t / u / v / vg / vm / vmg / vr / vrpg / vst / w / wg] [i / ic] [r9k / s4s / vip] [cm / hm / lgbt / y] [3 / aco / adv / an / bant / biz / cgl / ck / co / diy / fa / fit / gd / hc / his / int / jp / lit / mlp / mu / n / news / out / po / pol / pw / qst / sci / soc / sp / tg / toy / trv / tv / vp / vt / wsg / wsr / x / xs] [Edit][Settings] [Search] [Mobile] [Home]
+4chan
+/g/ - Technology
+[Post a Reply]
+08/21/20	New boards added: /vrpg/, /vmg/, /vst/ and /vm/
+05/04/17	New trial board added: /bant/ - International/Random
+10/04/16	New board for 4chan Pass users: /vip/ - Very Important Posts
+[Hide] [Show All]
+
+Toggle
+Janitor application acceptance emails are being sent out. Please remember to check your spam box!
+
+[Advertise on 4chan]
+[Return] [Catalog] [Bottom]81 / 22 / 3 [Update] [Auto]
+File: highlights_g_107195443_17(...).jpg (1.33 MB, 1923x2176)
+1.33 MB
+ /ldg/ - Local Diffusion General Anonymous 11/14/25(Fri)01:44:32 No.107199676▶>>107199956
+Infinity-2B GGUF and SPARK.Chroma Edition
+
+Discussion of Free and Open Source Text-to-Image/Video Models
+
+Prev: >>107195443 →
+
+https://rentry.org/ldg-lazy-getting-started-guide
+
+>UI
+ComfyUI: https://github.com/comfyanonymous/ComfyUI
+SwarmUI: https://github.com/mcmonkeyprojects/SwarmUI
+re/Forge/Classic/Neo: https://rentry.org/ldg-lazy-getting-started-guide#reforgeclassicneo
+SD.Next: https://github.com/vladmandic/sdnext
+Wan2GP: https://github.com/deepbeepmeep/Wan2GP
+
+>Checkpoints, LoRAs, Upscalers, & Workflows
+https://civitai.com
+https://civitaiarchive.com/
+https://openmodeldb.info
+https://openart.ai/workflows
+
+>Tuning
+https://github.com/spacepxl/demystifying-sd-finetuning
+https://github.com/Nerogar/OneTrainer
+https://github.com/kohya-ss/sd-scripts
+https://github.com/tdrussell/diffusion-pipe
+
+>WanX
+https://rentry.org/wan22ldgguide
+https://comfyanonymous.github.io/ComfyUI_examples/wan22/
+
+>Neta Yume (Lumina 2)
+https://civitai.com/models/1790792?modelVersionId=2298660
+https://nieta-art.feishu.cn/wiki/RY3GwpT59icIQlkWXEfcCqIMnQd
+https://gumgum10.github.io/gumgum.github.io/
+https://neta-lumina-style.tz03.xyz/
+https://huggingface.co/neta-art/Neta-Lumina
+
+>Chroma
+https://huggingface.co/lodestones/Chroma1-Base
+Training: https://rentry.org/mvu52t46
+
+>Illustrious
+1girl and Beyond: https://rentry.org/comfyui_guide_1girl
+Tag Explorer: https://tagexplorer.github.io/
+
+>Misc
+Local Model Meta: https://rentry.org/localmodelsmeta
+Share Metadata: https://catbox.moe | https://litterbox.catbox.moe/
+GPU Benchmarks: https://chimolog.co/bto-gpu-stable-diffusion-specs/
+Img2Prompt: https://huggingface.co/spaces/fancyfeast/joy-caption-beta-one
+Txt2Img Plugin: https://github.com/Acly/krita-ai-diffusion
+Archive: https://rentry.org/sdg-link
+Bakery: https://rentry.org/ldgcollage
+
+>Neighbors
+>>>/aco/csdg
+>>>/b/degen
+>>>/b/realistic+parody
+>>>/gif/vdg
+>>>/d/ddg
+>>>/e/edg
+>>>/h/hdg
+>>>/trash/slop
+>>>/vt/vtai
+>>>/u/udg
+
+>Local Text
+>>>/g/lmg
+
+>Maintain Thread Quality
+https://rentry.org/debo
+>>
+ Anonymous 11/14/25(Fri)02:00:36 No.107199809▶>>107199937
+Comfy should be held high on a pedestal and praised.
+>>
+ Anonymous 11/14/25(Fri)02:01:01 No.107199814▶
+Blessed
+>>
+ Anonymous 11/14/25(Fri)02:01:24 No.107199815▶>>107200588
+Today is quiet, here's some new shit that recently dropped
+
+PainterLongVideo Node: https://github.com/princepainter/ComfyUI-PainterLongVideo
+Kadinisky I2V pro: https://huggingface.co/kandinskylab/Kandinsky-5.0-I2V-Pro-sft-5s-Diffusers
+>>
+ Anonymous 11/14/25(Fri)02:04:14 No.107199839▶>>107199847 >>107199898
+File: 1761619541438090.png (2.75 MB, 1120x1440)
+2.75 MB
+>>
+ Anonymous 11/14/25(Fri)02:05:30 No.107199847▶>>107199898
+File: 1736323569638954.png (2.73 MB, 1120x1440)
+2.73 MB
+>>107199839
+>>
+ Anonymous 11/14/25(Fri)02:08:39 No.107199868▶
+Blessed thread of frenship
+>>
+ Anonymous 11/14/25(Fri)02:12:59 No.107199898▶>>107199928
+>>107199839
+>>107199847
+cool
+>>
+ Anonymous 11/14/25(Fri)02:16:15 No.107199928▶
+File: 1739056450372666.png (2.57 MB, 1120x1440)
+2.57 MB
+>>107199898
+human women are built for BAC
+>>
+ Anonymous 11/14/25(Fri)02:18:20 No.107199937▶
+>>107199809
+>Comfy should be held high on a pedestal and praised.
+... in hell
+>>
+ Anonymous 11/14/25(Fri)02:21:30 No.107199956▶>>107199972 >>107199983
+>>107199676 (OP)
+Why not the anime gens?
+>>
+ Anonymous 11/14/25(Fri)02:23:25 No.107199972▶
+>>107199956
+Are you blind? There's two mikus in the bottom
+>>
+ Anonymous 11/14/25(Fri)02:24:20 No.107199983▶>>107200132
+>>107199956
+But they are yours /adt/ schizo
+>>
+ Anonymous 11/14/25(Fri)02:42:51 No.107200132▶
+>>107199983
+the correct term is poopdickschizo. he was posting poop pics again
+>>
+ Anonymous 11/14/25(Fri)02:50:29 No.107200198▶>>107200303
+i thought poopdickschizo was just a meme...
+>>
+ Anonymous 11/14/25(Fri)02:58:34 No.107200254▶
+whats the best model for realistic lora training?
+>>
+ Anonymous 11/14/25(Fri)03:00:05 No.107200266▶>>107200916
+WANchads, is it possible to get clean looking pussy on anime characters?
+
+I have tried all the pussy loras with varying weight and it never looks quite right. On an anime girl it should be a simply black line (when shaved), but all these 3D trained loras make it look a bit too real and reddish-pink. I also do not want to see visible roast beef.
+
+The best pussies I've gotten didn't have any loras. The problem is its quite rare and inconsistent with just the base model.
+>>
+ Anonymous 11/14/25(Fri)03:04:46 No.107200303▶
+>>107200198
+meme magic is real
+>>
+ Anonymous 11/14/25(Fri)03:14:26 No.107200381▶>>107200390 >>107200965 >>107200980
+>>107196632 →
+>>107196504 →
+>>107196248 →
+>>107196212 →
+Wtf is his problem???
+>>
+ Anonymous 11/14/25(Fri)03:15:54 No.107200390▶
+>>107200381
+terminally online
+>>
+ Anonymous 11/14/25(Fri)03:32:13 No.107200518▶>>107201203
+File: ComfyUI_00028_.mp4 (940 KB, 720x1280)
+940 KB
+>>
+ Anonymous 11/14/25(Fri)03:41:18 No.107200588▶>>107200693
+>>107199815
+>long video
+might give this a try, i remember the painteri2v screwing with the saturation a bit
+>>
+ Anonymous 11/14/25(Fri)03:55:25 No.107200693▶>>107200968 >>107202075
+>>107200588
+Yeah the first few gens it fucked with the coloring and brightness but seems to sort it self out after a while. I've replaced it with most of my 2.2 workflows, its great. As for the long video version, just tried it and here's what I found..
+
+Pros
+>keeps quality
+>keeps character consistency
+
+Cons
+>the change between every 81 frames (or whatever you set it to) is very noticeable
+>daisy chained, it requires previously genned video as opposed to one long continuous run
+
+If they fix the noticeable part, this could be the best long native video workflow
+>>
+ Anonymous 11/14/25(Fri)04:26:15 No.107200916▶>>107200972
+>>107200266
+try the nude posing lora that came out the other day
+>>
+ Anonymous 11/14/25(Fri)04:32:54 No.107200965▶
+>>107200381
+He's been doing it for years.
+>>
+ Anonymous 11/14/25(Fri)04:33:25 No.107200968▶
+>>107200693
+Any other ways of doing longer vids?
+I came to the thread ready to ask, but saw the link and am giving it a go now.
+>>
+ Anonymous 11/14/25(Fri)04:33:57 No.107200972▶
+>>107200916
+link?
+>>
+ Anonymous 11/14/25(Fri)04:35:00 No.107200980▶
+>>107200381
+https://civitai.com/models/1648982?modelVersionId=2391828
+>>
+ Anonymous 11/14/25(Fri)04:48:37 No.107201059▶>>107201203
+File: ComfyUI_wan_00004_.mp4 (1.02 MB, 720x1280)
+1.02 MB
+>>
+ Anonymous 11/14/25(Fri)05:09:38 No.107201171▶
+File: 1762828039460118.png (2.29 MB, 1120x1440)
+2.29 MB
+>>107199154 →
+>this proves that you can squeeze kino out of a slopped Flux.1 Dev
+Exactly. It's incredible that a slopped model with such a fucked up training and architecture history can transform into kino, as an amateur project, without parametermaxxing. Local WILL win.
+>>
+ Anonymous 11/14/25(Fri)05:14:50 No.107201203▶>>107201216
+>>107201059
+>>107200518
+cool but why the restroom?
+>>
+ Anonymous 11/14/25(Fri)05:16:32 No.107201216▶>>107201258
+>>107201203
+name a better hiding place in india
+>>
+ Anonymous 11/14/25(Fri)05:21:48 No.107201256▶>>107201411
+File: ComfyUI_00006_.png (2.67 MB, 1248x1848)
+2.67 MB
+>>
+ Anonymous 11/14/25(Fri)05:22:03 No.107201258▶
+>>107201216
+lost
+>>
+ Anonymous 11/14/25(Fri)05:25:55 No.107201280▶
+Anyone got wan 2.2 to work on Forge Neo?
+>>
+ Anonymous 11/14/25(Fri)05:49:11 No.107201411▶
+>>107201256
+I really like your gens and the way your shaders and lighting look. Could you share your catbox? I have seen that style a few times already and I like it a lot. I am heading to sleep now but I will check it tomorrow. Thanks for keeping things positive in the thread, friend.
+>>
+ Anonymous 11/14/25(Fri)05:51:11 No.107201430▶>>107201439 >>107201457 >>107201535
+File: 1735381849921412.png (54 KB, 744x389)
+54 KB
+comfyuibros... looooooooooooooooooooooooooooooooooooooooooooooooool
+>>
+ Anonymous 11/14/25(Fri)05:52:19 No.107201439▶>>107201457 >>107201462 >>107201535
+File: 1735990324609667.png (95 KB, 704x768)
+95 KB
+>>107201430
+https://www.reddit.com/r/StableDiffusion/comments/1owiicy/comment/noqpq4t/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+>>
+ Anonymous 11/14/25(Fri)05:54:10 No.107201456▶
+>not backing up
+STOP THE PRESSES!
+>>
+ Anonymous 11/14/25(Fri)05:54:22 No.107201457▶>>107201673
+>>107201430
+>>107201439
+only anistudio Ws today
+>>
+ Anonymous 11/14/25(Fri)05:54:46 No.107201462▶>>107201524 >>107201563 >>107201566
+File: 1757302394372836.jpg (1.84 MB, 3896x2668)
+1.84 MB
+>>107201439
+kek
+>>
+ Anonymous 11/14/25(Fri)06:04:38 No.107201524▶
+>>107201462
+comfy is a coding noob, what would you expect?
+>>
+ Anonymous 11/14/25(Fri)06:05:16 No.107201535▶>>107201556
+>>107201430
+>>107201439
+Huh? I deleted venv a few days ago and my shit didn't get nuked. Is this a custom installer thing?
+I move most gens I really like to a separate folder, but would have still sucked if that happened.
+To be honest I neither trust these two random redditors to tell the full story properly, nor I trust comfy team to not fuck something up.
+>>
+ Anonymous 11/14/25(Fri)06:07:22 No.107201552▶>>107201563 >>107201572 >>107201601
+File: 1747839350871657.png (1.28 MB, 1056x984)
+1.28 MB
+>tfw my models and output folder is outside of the comfy folder and linked with a junction
+>>
+ Anonymous 11/14/25(Fri)06:07:44 No.107201556▶
+>>107201535
+i always just save the shit i want to keep manually by right-clicking and saving it.. i nuke the output folders from time to time just to clear out all the bullshit
+
+but the queue thing in comfy is fucking retarded as fuck.. you can click an image to open it, but then you can't do anything with it.. can't even "open file location" or anything.. fucking useless trash ass ui
+
+i also fucking hate that it doesn't close that sidebar if you click somewhere else
+>>
+ Anonymous 11/14/25(Fri)06:09:11 No.107201563▶
+>>107201462
+>I clicked update
+>y/n section of script
+What is he referring to?
+I either git pull or use update function of manager.
+>>107201552
+My model folder is mounted as read only and also backed to external device.
+Outputs are potentially vulnerable though still.
+>>
+ Anonymous 11/14/25(Fri)06:09:38 No.107201566▶
+>>107201462
+comfyorg isn't actually transparent, what did you expect?
+>>
+ Anonymous 11/14/25(Fri)06:10:23 No.107201572▶>>107201588
+>>107201552
+that's what stability matrix does by default, it's great. shares models, outputs, lora's etc from one shared directory. It's so annoying to manage all the dumb moving parts.
+>>
+ Anonymous 11/14/25(Fri)06:11:32 No.107201580▶
+i wish yoland would call me
+>>
+ Anonymous 11/14/25(Fri)06:11:51 No.107201583▶>>107201673
+I get why anistudio just lets you link folders at runtime now
+>>
+ Anonymous 11/14/25(Fri)06:11:53 No.107201584▶
+File: ComfyUI_wan_00007_.mp4 (687 KB, 720x1280)
+687 KB
+>>
+ Anonymous 11/14/25(Fri)06:12:54 No.107201588▶
+>>107201572
+that's what i've done since A1111 and Forge... why would anyone have more than 1 copy of models?
+>>
+ Anonymous 11/14/25(Fri)06:14:07 No.107201601▶
+>>107201552
+junction...lol.. fucking windows fags
+>>
+ Anonymous 11/14/25(Fri)06:26:10 No.107201673▶>>107201707
+>>107201457
+>>107201583
+>shills tranistudio every day
+kys already
+>>
+ Anonymous 11/14/25(Fri)06:26:59 No.107201678▶>>107201682
+File: ComfyUI_wan_00009_.mp4 (880 KB, 720x1280)
+880 KB
+>>
+ Anonymous 11/14/25(Fri)06:28:00 No.107201682▶
+>>107201678
+kino
+>>
+ Anonymous 11/14/25(Fri)06:32:45 No.107201707▶>>107201726
+>>107201673
+poopdickschizo can't tell anyone what to do anymore. you are a lol cow
+>>
+ Anonymous 11/14/25(Fri)06:37:04 No.107201726▶
+>>107201707
+the only lolcow here is you, julien
+>>
+ Anonymous 11/14/25(Fri)06:41:51 No.107201750▶>>107201778
+>>107196902 →
+>>107196910 →
+lmao did some nigger set up bots posting about ani
+>>
+ Anonymous 11/14/25(Fri)06:45:31 No.107201778▶>>107201813
+>>107201750
+it's a spambot that reposts old stuff from the general, ongoing for weeks
+>>
+ Anonymous 11/14/25(Fri)06:51:57 No.107201813▶>>107202546
+File: API generated do not add (...).png (1.39 MB, 1024x1024)
+1.39 MB
+>>107201778
+Hi, /pol/ schizo here
+just wanted to confirm I've seen this happen on a massive scale literally flooding altchans with LLM generated spam linking old posts to crash the site until it has to go into read only mode...
+In other words, you faggots better not be making any dank memes in here!
+>>
+ Anonymous 11/14/25(Fri)06:53:01 No.107201816▶
+File: ComfyUI_00151_.png (1.9 MB, 1104x1472)
+1.9 MB
+a previous discussion post,
+
+>qwen lora trained without captions or trigger words. works fine, adds a style similar to old digital cams
+>>
+ Anonymous 11/14/25(Fri)06:54:34 No.107201828▶
+File: ComfyUI_00126_.png (1.89 MB, 1104x1472)
+1.89 MB
+i still think it has a tendency to go towards really plastic scenes, although these aren't as bad
+>>
+ Anonymous 11/14/25(Fri)07:01:14 No.107201850▶
+I can feel anons anticipation
+>>
+ Anonymous 11/14/25(Fri)07:07:47 No.107201876▶
+File: ComfyUI_wan_00012_.mp4 (1.25 MB, 720x1280)
+1.25 MB
+she hates your jokes and thinks you're weird but doesn't see anyone else she recognizes yet
+>>
+ Anonymous 11/14/25(Fri)07:32:49 No.107201975▶
+File: ComfyUI_wan_00014_.mp4 (1.16 MB, 720x1280)
+1.16 MB
+and.. you still aren't getting the hint.. fuck where are her friends?
+>>
+ Anonymous 11/14/25(Fri)07:50:04 No.107202075▶>>107202131 >>107202639
+File: 251114-144243-wan5s_00001.mp4 (1.47 MB, 720x720)
+1.47 MB
+>>107200693
+>first few gens it fucked with the coloring and brightness but seems to sort it self out after a while
+how did it "sort itself"? mine color still looks bad after trying like 10 gens
+PainterI2V
+>>
+ Anonymous 11/14/25(Fri)07:51:07 No.107202082▶>>107202131 >>107202639
+File: 251114-143545__Part1__00001.mp4 (3.32 MB, 1440x1440)
+3.32 MB
+normal WanImageToVideo
+>>
+ Anonymous 11/14/25(Fri)07:58:04 No.107202131▶>>107202138
+>>107202075
+>>107202082
+I went to school with her
+>>
+ Anonymous 11/14/25(Fri)07:59:31 No.107202138▶
+>>107202131
+show her school year photo
+>>
+ Anonymous 11/14/25(Fri)08:30:53 No.107202295▶
+File: c8ceec03aeaa0413a00943049(...).png (51 KB, 1095x413)
+51 KB
+STOOOOOOOOP
+>>
+ Anonymous 11/14/25(Fri)08:38:51 No.107202353▶
+Can I view a single frame from the low noise generated video as it's being genned, so I can tell if the quality is good or not?
+>>
+ Anonymous 11/14/25(Fri)09:08:54 No.107202546▶
+>>107201813
+>"you faggots better not be making any dank memes in here!"
+>pircel is a dank meme
+kek
+>>
+ Anonymous 11/14/25(Fri)09:10:53 No.107202559▶
+https://huggingface.co/eigen-ai-labs/eigen-banana-qwen-image-edit
+>Trained on the Pico-Banana-400K dataset f
+I'm really tired of this shit, is there anyone willing to make models the normal way and not rely on synthetic shit? goddam this is depressing
+>>
+ Anonymous 11/14/25(Fri)09:31:10 No.107202639▶>>107202684
+>>107202082
+>>107202075
+do you have her permission to make deep fakes
+>>
+ Anonymous 11/14/25(Fri)09:40:02 No.107202684▶>>107202701
+>>107202639
+show me the law that says it's illegal to make SFW parodies of people
+>>
+ Anonymous 11/14/25(Fri)09:43:50 No.107202701▶>>107202708
+>>107202684
+that's amoral
+>>
+ Anonymous 11/14/25(Fri)09:45:26 No.107202708▶>>107202725
+>>107202701
+no one give a fuck about your retarded opinions
+>>
+ Anonymous 11/14/25(Fri)09:48:53 No.107202725▶
+>>107202708
+don't cry when no one will give a fuck about yours then
+>>
+ Anonymous 11/14/25(Fri)10:01:06 No.107202759▶
+For wan 2.2, is there an equivalent of No Brown paired with Align Your Steps sampler and scheduler combo in Forge? Reducing steps needed by like 80%. Or is that simply the light loras?
+>>
+ Anonymous 11/14/25(Fri)10:03:48 No.107202772▶
+>parts of video has the signs of needing more steps
+>increase steps by a lot
+>doesn't go away
+
+???
+>>
+ Anonymous 11/14/25(Fri)11:03:40 No.107203110▶
+File: 55289415.webm (1.6 MB, 720x960)
+1.6 MB
+androids will revolutionize the daycare for women racket
+[Post a Reply][Return] [Catalog] [Top] 81 / 22 / 3[Update] [Auto]
+
+[Advertise on 4chan]
+Delete Post: [File Only] Style: 
+Yotsuba B
+[a / b / c / d / e / f / g / gif / h / hr / k / m / o / p / r / s / t / u / v / vg / vm / vmg / vr / vrpg / vst / w / wg] [i / ic] [r9k / s4s / vip] [cm / hm / lgbt / y] [3 / aco / adv / an / bant / biz / cgl / ck / co / diy / fa / fit / gd / hc / his / int / jp / lit / mlp / mu / n / news / out / po / pol / pw / qst / sci / soc / sp / tg / toy / trv / tv / vp / vt / wsg / wsr / x / xs] [Edit][Settings] [Search] [Mobile] [Home]
+All trademarks and copyrights on this page are owned by their respective parties. Images uploaded are the responsibility of the Poster. Comments are owned by the Poster.
+About • Feedback • Legal • Contact
+
+[a / b / c / d / e / f / g / gif / h / hr / k / m / o / p / r / s / t / u / v / vg / vm / vmg / vr / vrpg / vst / w / wg] [i / ic] [r9k / s4s / vip] [cm / hm / lgbt / y] [3 / aco / adv / an / bant / biz / cgl / ck / co / diy / fa / fit / gd / hc / his / int / jp / lit / mlp / mu / n / news / out / po / pol / pw / qst / sci / soc / sp / tg / toy / trv / tv / vp / vt / wsg / wsr / x / xs] [Edit][Settings] [Search] [Mobile] [Home]
+4chan
+/g/ - Technology
+[Post a Reply]
+08/21/20	New boards added: /vrpg/, /vmg/, /vst/ and /vm/
+05/04/17	New trial board added: /bant/ - International/Random
+10/04/16	New board for 4chan Pass users: /vip/ - Very Important Posts
+[Hide] [Show All]
+
+Toggle
+Janitor application acceptance emails are being sent out. Please remember to check your spam box!
+
+[Advertise on 4chan]
+[Return] [Catalog] [Bottom]250 / 45 / 3 [Update] [Auto]
+File: 1762735996313831.jpg (672 KB, 1792x2304)
+672 KB
+ /adt/ - Anime Diffusion Thread #56 Anonymous 11/11/25(Tue)17:04:59 No.107173939▶>>107173976 >>107173992 >>107174368 >>107174574 >>107177589 >>107179401 >>107180038 >>107186843 >>107197878
+>UIs to generate anime
+ComfyUI:https://github.com/comfyanonymous/ComfyUI
+SwarmUI:https://github.com/mcmonkeyprojects/SwarmUI
+re/Forge/Classic:https://rentry.org/ldg-lazy-getting-started-guide#reforgeclassic
+SD.Next:https://github.com/vladmandic/sdnext
+Wan2GP:https://github.com/deepbeepmeep/Wan2GP
+InvokeAI:https://www.invoke.com/
+
+>How to Generating Anime Images
+https://rentry.org/comfyui_guide_1girl
+https://tagexplorer.github.io
+https://making-images-great-again-library.vercel.app/
+https://neta-lumina-style.tz03.xyz/
+
+>Generating Anime Videos
+Guide:
+https://rentry.org/wan22ldgguide
+
+>Anime Checkpoints, LoRAs, Upscalers, & Workflows
+https://civitai.com
+https://civitaiarchive.com
+https://tensor.art
+https://openmodeldb.info
+https://openart.ai/workflows
+https://www.seaart.ai
+https://www.liblib.art/
+https://rentry.org/adtsampler
+
+>Anime Misc
+Local Model Meta:https://rentry.org/localmodelsmeta
+Share Metadata:https://catbox.moe|https://litterbox.catbox.moe
+Img2Prompt:https://huggingface.co/spaces/fancyfeast/joy-caption-beta-one
+Samplers:https://stable-diffusion-art.com/samplers
+Txt2Img Plugin:https://github.com/Acly/krita-ai-diffusion
+Online metadata viewer SD/NovelAI:https://spell.novelai.dev
+Catbox/Metadata Userscript: https://gist.github.com/catboxanon/ca46eb79ce55e3216aecab49d5c7a3fb
+
+>Inpainting Guide from an Anon
+https://files.catbox.moe/fbzsxb.jpg
+>>106520607
+
+>Neighbours
+https://rentry.org/ldg-lazy-getting-started-guide#rentry-from-other-boards
+>>>/aco/csdg
+>>>/b/degen
+>>>/b/realistic+parody
+>>>/gif/vdg
+>>>/d/ddg
+>>>/e/edg
+>>>/h/hdg
+>>>/trash/slop
+>>>/vt/vtai
+>>>/u/udg
+>>>/r9k/aiwg/
+>Local Text&Image
+>>>/g/lmg
+>>>/g/ldg
+>>>/vp/napt
+>Cloud Text&Image
+>>>/g/aicg
+>>>/g/sdg/
+
+>Maintain Thread Quality https://rentry.org/debo
+
+Prev: >>107158040 →
+>>
+ Anonymous 11/11/25(Tue)17:05:48 No.107173946▶
+>no collage
+heresy
+>>
+ Anonymous 11/11/25(Tue)17:06:57 No.107173963▶>>107173975
+>no anistudio in OP
+>no collage
+>broken reply link
+rebake
+>>
+ Anonymous 11/11/25(Tue)17:08:00 No.107173975▶
+>>107173963
+>no anistudio in OP
+Good, piss off you mentally ill spastic.
+>>
+ Anonymous 11/11/25(Tue)17:08:13 No.107173976▶
+>>107173939 (OP)
+cute girl, can i marry her
+>>
+ Anonymous 11/11/25(Tue)17:10:02 No.107173992▶>>107174003 >>107174731 >>107176363
+File: AniStudio-05603.png (1.36 MB, 1024x1344)
+1.36 MB
+>>107173939 (OP)
+I'll post the link because I don't think this is the usual baker
+Anistudio(WIP): https://github.com/FizzleDorf/AniStudio
+>>
+ Anonymous 11/11/25(Tue)17:10:36 No.107174003▶
+>>107173992
+Nobody likes you retard.
+>>
+ Anonymous 11/11/25(Tue)17:12:57 No.107174032▶>>107174085
+>>107173985 →
+schizo is troll baking. real baker should rebake
+>>
+ Anonymous 11/11/25(Tue)17:17:43 No.107174085▶
+>>107174032
+Ani, why don't you embarrass us by going on a schizo meltdown over on /a/ again? We all know you're an autistic moron fuckwit, that's why nobody likes you.
+>>
+ Anonymous 11/11/25(Tue)17:18:40 No.107174095▶
+>schizo gonna schitz
+>>
+ Anonymous 11/11/25(Tue)17:19:54 No.107174110▶>>107174122
+rebake plz. too much schizo energy in this troll bake
+>>
+ Anonymous 11/11/25(Tue)17:20:38 No.107174122▶
+>>107174110
+You are one desperate little idiot, aren't you ani?
+This is like your 7th samefag already haha
+>>
+ Anonymous 11/11/25(Tue)17:21:54 No.107174136▶
+>samefag allegations
+>is a serial samefagger
+>>
+ Anonymous 11/11/25(Tue)17:24:15 No.107174165▶
+Assraped fag lmao
+>>
+ Anonymous 11/11/25(Tue)17:26:36 No.107174184▶>>107174193
+>booty blasted faggot thinks troll baking and schizo posts makes him likable
+it was fun while it lasted folks but the anti-ani schizo just won't stop. see you in a couple of days when this blows over
+>>
+ Anonymous 11/11/25(Tue)17:27:56 No.107174193▶>>107174200
+>>107174184
+Ani, calm down, take your medication. Not having your garbage software in the OP of a 4chan thread is not the end of the world. I understand you have autism, but you need to calm down. Samefagging 50 times isn't going to change anything you sad, embarrassing loser.
+>>
+ Anonymous 11/11/25(Tue)17:28:51 No.107174200▶>>107174210
+>>107174193
+nta. enjoy ruining a thread that didn't deserve it
+>>
+ Anonymous 11/11/25(Tue)17:29:46 No.107174210▶
+>>107174200
+>thinking the thread is ruined because your shit UI was omitted from an OP
+Lol, sad little mentally ill loser :)
+>>
+ Anonymous 11/11/25(Tue)17:34:27 No.107174247▶>>107174260 >>107174264 >>107174731 >>107174745
+File: cui_sanae_tarot_justice_0001.jpg (1.11 MB, 1248x1824)
+1.11 MB
+Why, as a normal, mentally healthy, neutral party should I be angry about this OP? I'm so confused.
+>>
+ Anonymous 11/11/25(Tue)17:35:50 No.107174260▶>>107174262
+>>107174247
+invites drama posting and enables schizos to continue their behavior.
+>>
+ Anonymous 11/11/25(Tue)17:36:15 No.107174262▶
+>>107174260
+Because you're too much of a psycho?
+>>
+ Anonymous 11/11/25(Tue)17:36:41 No.107174264▶>>107174396
+>>107174247
+no collage is enough to be up in arms
+>>
+ Anonymous 11/11/25(Tue)17:37:13 No.107174271▶
+rebake plz
+>>
+ Anonymous 11/11/25(Tue)17:41:09 No.107174309▶
+I'll post images in official /adt/ bakes, not schizo ones
+>>
+ Anonymous 11/11/25(Tue)17:42:26 No.107174328▶
+File: ad93a976b7da675900bc8b383(...).png (2.8 MB, 1824x1248)
+2.8 MB
+>>
+ nofimg 11/11/25(Tue)17:43:25 No.107174337▶
+REBAKE
+REBUKE
+REVOLT!
+>>
+ Anonymous 11/11/25(Tue)17:47:18 No.107174368▶
+>>107173939 (OP)
+Can anybody explain to me why women need to have child faces unless you're a pedo?
+>>
+ Anonymous 11/11/25(Tue)17:51:27 No.107174396▶
+>>107174264
+It can just be posted later, right? I've seen what OP squabbling can do on /hdg/. Sometimes we had 3+ threads on the catalog for days, because the various schizos refused to post in each other's threads. Let's not emulate that.
+>>
+ Anonymous 11/11/25(Tue)17:52:53 No.107174414▶>>107174432
+just waiting on the bake timer. this thread is removed from the /adt/ timeline
+>>
+ Anonymous 11/11/25(Tue)17:54:41 No.107174432▶
+Take note everyone, this is ani: >>107174414
+Ani is psychotic.
+If he doesn't get his way, he has a literal meltdown.
+He has done this several times in the past on /ldg/ until they all got sick of him.
+>>
+ Anonymous 11/11/25(Tue)17:55:46 No.107174447▶
+just post your best futa gens and everything will be fine
+>>
+ Anonymous 11/11/25(Tue)17:57:33 No.107174460▶>>107174513 >>107174560
+official bake:
+>>107174457 →
+>>107174457 →
+>>107174457 →
+>>
+ Anonymous 11/11/25(Tue)18:03:15 No.107174513▶
+>>107174460
+No need, this thread is fine.
+>>
+ Anonymous 11/11/25(Tue)18:04:56 No.107174525▶>>107174536 >>107174731 >>107174745 >>107182769 >>107182936
+File: ComfyUI_12262_.png (3.1 MB, 1248x1824)
+3.1 MB
+I'll stick to this thread thanks. I still don't understand what this drama is. The explanations were weak or nonsensical.
+>>
+ Anonymous 11/11/25(Tue)18:05:54 No.107174536▶>>107174551 >>107174727
+>>107174525
+enjoy the schizo's company
+>>
+ Anonymous 11/11/25(Tue)18:06:13 No.107174540▶
+File: 1755225042742109.mp4 (3.09 MB, 704x704)
+3.09 MB
+>>
+ Anonymous 11/11/25(Tue)18:07:24 No.107174551▶
+>>107174536
+NTA, but there's a schizo in the other thread posting poop, so.
+>>
+ Anonymous 11/11/25(Tue)18:08:23 No.107174560▶
+>>107174460
+>look at filename
+>highlights
+this is how you know it's the actual troll bake
+go kill yourself you insufferable shitposter
+>>
+ Anonymous 11/11/25(Tue)18:09:43 No.107174574▶>>107174629 >>107174834
+>>107173939 (OP)
+What's a good anime friendly workflow for wan2.2?
+Is anisora a good finetune?
+>>
+ Anonymous 11/11/25(Tue)18:15:28 No.107174629▶
+>>107174574
+Just use Kijai's workflow, as usual.
+>>
+ Anonymous 11/11/25(Tue)18:21:10 No.107174679▶
+File: 1754389357077652.jpg (393 KB, 1280x896)
+393 KB
+>>
+ Anonymous 11/11/25(Tue)18:23:03 No.107174697▶>>107174713
+>he's saving and reposting all the images from this thread over to his shitpost thread to try and force activity
+lol
+lmao
+highlightfaget has hit a new low(actually not really because he's done this shit before)
+>>
+ Anonymous 11/11/25(Tue)18:24:50 No.107174713▶
+>>107174697
+It's just ani. The guy is unhinged.
+>>
+ Anonymous 11/11/25(Tue)18:26:13 No.107174726▶>>107174738
+>people posting literal shit trying to call others unhinged
+>>
+ Anonymous 11/11/25(Tue)18:26:17 No.107174727▶>>107174745 >>107180807
+File: ComfyUI_temp_advne_00001_.png (2.18 MB, 1521x1183)
+2.18 MB
+>>107174536
+Seems like the troll (seemingly you) will be in either thread regardless.
+>>
+ Anonymous 11/11/25(Tue)18:26:30 No.107174731▶>>107174751
+>>107174525
+>>107174247
+They took AniStudio out of the OP as a UI option
+The dev for AniStudio is that guy >>107173992
+Also the fact there's no collage means this was a troll bake just to remove AniStudio. Stay whatever you want by the way.
+I'm going to keep polishing my gens in Krita until only one reliable thread left
+>>
+ Anonymous 11/11/25(Tue)18:27:12 No.107174738▶
+>>107174726
+Ani, you really need to take your meds. Your behavior isn't healthy.
+>>
+ Anonymous 11/11/25(Tue)18:28:22 No.107174745▶
+>>107174727
+>>107174525
+>>107174247
+Also your gens are cute, save them to repost in the reliable thread, whichever one survives
+>>
+ Anonymous 11/11/25(Tue)18:28:36 No.107174751▶
+>>107174731
+Ani, if you weren't a schizo, people would tolerate you more.
+You already alienated everyone in /ldg/. Don't make the same mistake again. Try to overcome your mental illness.
+>>
+ Anonymous 11/11/25(Tue)18:28:47 No.107174754▶
+now he's reposting shit from a month ago
+>>106903524
+>>
+ Anonymous 11/11/25(Tue)18:38:40 No.107174834▶
+>>107174574
+wan sucks for anime
+>>
+ Anonymous 11/11/25(Tue)18:44:00 No.107174886▶
+>ani replying to himself in a mad frenzy
+>>
+ Anonymous 11/11/25(Tue)18:44:59 No.107174894▶>>107175110
+wait did ani just oust himself as highlightfaget
+because this makes a lot more sense than I really want it to
+>>
+ Anonymous 11/11/25(Tue)18:57:00 No.107175003▶>>107175014
+>schizo makes a troll bake pretending to be under attack by some other troll that is actually himself so that he can schizo post about being under attack in the troll thread so that people will accept him in the real thread
+what is this next level faggotry?
+>>
+ Anonymous 11/11/25(Tue)18:57:43 No.107175014▶
+>>107175003
+Ani, why aren't you taking your meds? Why aren't you listening to what the psychiatrist told you?
+>>
+ Anonymous 11/11/25(Tue)19:06:04 No.107175110▶>>107175130
+>>107174894
+If you mean the /h/ and /e/ one, no, his taste is clearly different.
+>>
+ Anonymous 11/11/25(Tue)19:07:46 No.107175130▶>>107175139
+>>107175110
+Ani, you outed yourself. Let it go.
+Nobody likes schizophrenics like you. There is a reason waldorf bullied you so much.
+>>
+ Anonymous 11/11/25(Tue)19:08:35 No.107175139▶
+>>107175130
+I'm not the "I have to rewrite all the glue in different glue" fag.
+>>
+ Anonymous 11/11/25(Tue)19:19:44 No.107175251▶
+HighlightGOD is a pillar of the community.
+>>
+ Anonymous 11/11/25(Tue)19:22:51 No.107175291▶
+>too busy guarding the OP of a thread instead of working on his UI that he desperately tries to shill
+shameful
+>>
+ Anonymous 11/11/25(Tue)19:51:55 No.107175566▶>>107175610 >>107175787
+File: WanVideo2_2_I2V_00180.mp4 (1.58 MB, 496x592)
+1.58 MB
+>>
+ Anonymous 11/11/25(Tue)19:56:16 No.107175610▶>>107175620
+>>107175566
+wrong thread
+>>107174457 →
+>>107174457 →
+>>107174457 →
+
+this thread is for schizo's meltdown
+>>
+ Anonymous 11/11/25(Tue)19:57:01 No.107175620▶
+>>107175610
+fuck off ani
+>>
+ Anonymous 11/11/25(Tue)20:11:18 No.107175787▶
+>>107175566
+angelic buster!
+>>
+ Anonymous 11/11/25(Tue)20:14:50 No.107175820▶>>107191914
+File: 34.mp4 (727 KB, 1024x720)
+727 KB
+>>
+ Anonymous 11/11/25(Tue)20:15:28 No.107175826▶>>107175921
+File: 1756301037463250.png (1.83 MB, 1575x1150)
+1.83 MB
+>>
+ Anonymous 11/11/25(Tue)20:17:36 No.107175853▶
+Why is AniStudio still so shit anyway? Not sure why it was included in the OP in the first place.
+>>
+ Anonymous 11/11/25(Tue)20:22:16 No.107175886▶>>107175921
+File: ComfyUI_13873_.png (3.46 MB, 1248x1824)
+3.46 MB
+>>
+ Anonymous 11/11/25(Tue)20:23:32 No.107175899▶>>107175921
+File: ms00052.webm (1.96 MB, 640x960)
+1.96 MB
+>>
+ Anonymous 11/11/25(Tue)20:26:53 No.107175921▶>>107175936
+>>107175826
+>>107175886
+>>107175899
+wrong thread
+
+>>107174457 →
+move
+>>
+ Anonymous 11/11/25(Tue)20:28:12 No.107175936▶>>107176013
+>>107175921
+im specifically avoiding ur thread cause you're mentally ill
+>>
+ Anonymous 11/11/25(Tue)20:31:07 No.107175962▶>>107175967
+File: flonne.jpg (416 KB, 1024x1024)
+416 KB
+>>
+ Anonymous 11/11/25(Tue)20:31:35 No.107175967▶>>107175995
+>>107175962
+This should be Etna.
+>>
+ Anonymous 11/11/25(Tue)20:32:48 No.107175980▶>>107175998 >>107176012
+this thread won't have it's images in the next collage btw
+>>
+ Anonymous 11/11/25(Tue)20:33:49 No.107175995▶
+>>107175967
+shut up ani
+>>
+ Anonymous 11/11/25(Tue)20:33:58 No.107175998▶
+>>107175980
+Ani, you're not a very smart autist.
+Try not to come across as such a desperate hobo.
+>>
+ Anonymous 11/11/25(Tue)20:34:58 No.107176012▶>>107176046
+>>107175980
+You're reposting them in the other thread though.
+>>
+ Anonymous 11/11/25(Tue)20:35:02 No.107176013▶>>107176024
+>>107175936
+>poop schizo isn't mentally ill
+oof
+>>
+ Anonymous 11/11/25(Tue)20:36:06 No.107176024▶>>107176032
+>>107176013
+Ani, please calm down. You're having wild delusions again.
+>>
+ Anonymous 11/11/25(Tue)20:36:54 No.107176032▶
+>>107176024
+can you post the poop in the toilet again? maybe the genital wart you are so proud of?
+>>
+ Anonymous 11/11/25(Tue)20:37:56 No.107176046▶
+>>107176012
+holy shit he is, hahaha.
+Ani's desperation keeps transcending new heights. What a sad miserable little gremlin.
+
+No wonder his shit UI never improves, he's too busy being retarded on 4chan.
+>>
+ Anonymous 11/11/25(Tue)20:39:35 No.107176065▶
+haha ani is so pathetic! he made a new UI like what does he think he's doing? what a cope!
+>>
+ Anonymous 11/11/25(Tue)20:40:29 No.107176075▶
+Ani, it's not healthy to keep reposting other peoples gens in an attempt to simulate activity. This is something one would expect someone with autism to do.
+
+Ani, do you have autism?
+>>
+ Anonymous 11/11/25(Tue)20:42:30 No.107176095▶
+I will never forgive you ani
+>>
+ Anonymous 11/11/25(Tue)20:43:58 No.107176113▶
+File: 1553676069184.png (439 KB, 1000x1000)
+439 KB
+>ani reposted my flonne gen in his thread and has replied to it twice
+>>
+ Anonymous 11/11/25(Tue)20:47:32 No.107176152▶
+STOP HAVING FUN IN THE OTHER THREAD
+>>
+ Anonymous 11/11/25(Tue)20:55:06 No.107176242▶
+>ani is now praising himself in third-person
+>>
+ Anonymous 11/11/25(Tue)20:58:03 No.107176275▶
+this ani guy seems based
+>>
+ Anonymous 11/11/25(Tue)21:03:19 No.107176334▶>>107176360
+the schizo won again bros..
+>>
+ Anonymous 11/11/25(Tue)21:05:56 No.107176360▶
+>>107176334
+Ani, you are the only one here who is a big enough loser to indulge in threadwars.
+>>
+ Anonymous 11/11/25(Tue)21:06:06 No.107176363▶
+>>107173992
+Fuck off
+>>
+ Anonymous 11/11/25(Tue)21:08:58 No.107176391▶
+what little schizo timmy gonna do?
+>>
+ Anonymous 11/11/25(Tue)22:27:39 No.107177062▶>>107177101 >>107177633
+File: cui__12284_.png (2.24 MB, 1024x1536)
+2.24 MB
+I like this thread cause the other one reposted my images without asking.
+>>
+ Anonymous 11/11/25(Tue)22:28:05 No.107177068▶
+bumpity :3
+>>
+ Anonymous 11/11/25(Tue)22:32:10 No.107177101▶
+>>107177062
+it's the ani way
+>>
+ Anonymous 11/11/25(Tue)22:46:41 No.107177211▶>>107177497 >>107177633 >>107177784
+File: ComfyUI_07265_.png (3.03 MB, 1728x1216)
+3.03 MB
+>>
+ Anonymous 11/11/25(Tue)23:18:56 No.107177497▶
+>>107177211
+wew lad big
+>>
+ Anonymous 11/11/25(Tue)23:24:52 No.107177554▶>>107177633
+File: generated_videowow12345.mp4 (2.19 MB, 464x688)
+2.19 MB
+Why not use Grok Imagine? This took about 3 seconds for the image generation and 10 seconds for the video generation. Are local models dead?
+>>
+ Anonymous 11/11/25(Tue)23:27:40 No.107177589▶>>107177599 >>107177633 >>107177687 >>107177713
+File: rxn_dowant_Precure_erika.jpg (73 KB, 515x557)
+73 KB
+>>107173939 (OP)
+>https://rentry.org/comfyui_guide_1girl
+>[...] You can change this control to "control before generate" in your ComfyUI settings, under "Widget control mode".
+Holy shit, seed retention/rerolling now works exactly how I want for retries, instead of the exact opposite of how I want. Why is the default the other way?
+>>
+ Anonymous 11/11/25(Tue)23:28:45 No.107177599▶>>107177633 >>107177685
+>>107177589
+what difference does it make if the seed changes before or after you generate it? i don't get it
+>>
+ Anonymous 11/11/25(Tue)23:30:22 No.107177618▶
+GET OUT OF HERE ANI
+LOOK HOW MANY PEOPLE HATE YOU HERE!!!!
+>>
+ Anonymous 11/11/25(Tue)23:32:23 No.107177633▶
+>>107177062
+>>107177211
+>>107177554
+>>107177589
+>>107177599
+Thank you based ani haters for posting in the thread. he'll get mad for sure
+>>
+ Anonymous 11/11/25(Tue)23:38:08 No.107177685▶
+>>107177599
+Very often, I'll get a picture where something doesn't come out quite right, and I want to tweak the prompt/settings and retry with the same seed. With "control before generate," the seed in the field is still the same seed, and I can just change the mode to "Fixed" and proceed with my retries. OTOH, if it's set to "control after generate", the seed in the field is no longer the one that produced the latest image, so I have to open the image's metadata and manually copy-paste the old seed back into the field before I can do my retries.
+>>
+ Anonymous 11/11/25(Tue)23:38:17 No.107177687▶
+>>107177589
+wait, you can change this?
+>>
+ Anonymous 11/11/25(Tue)23:40:25 No.107177713▶>>107177723
+>>107177589
+post in the official thread so more anons know. this is the schizo bake
+>>
+ Anonymous 11/11/25(Tue)23:41:26 No.107177723▶
+>>107177713
+FUCK OFF ANI NOONE LIKES YOU
+>>
+ Anonymous 11/11/25(Tue)23:42:27 No.107177730▶
+why can't diffusion threads just be schizo free?
+>>
+ Anonymous 11/11/25(Tue)23:45:02 No.107177766▶
+TRANI
+>>
+ Anonymous 11/11/25(Tue)23:47:06 No.107177784▶>>107177801 >>107177870
+>>107177211
+someone wants a cat box in the official thread. stop being a faggot and let this gay thread die
+>>
+ Anonymous 11/11/25(Tue)23:49:02 No.107177801▶
+>>107177784
+>official thread
+stop calling it that TRANI
+>>
+ Anonymous 11/11/25(Tue)23:53:43 No.107177851▶
+Bizarre how this mentally ill moron is still copy-pasting posts from anons here into his dupe thread.
+Ani needs help. He is not well.
+>>
+ Anonymous 11/11/25(Tue)23:55:51 No.107177870▶>>107177885 >>107177913
+File: ComfyUI_temp_aqhog_00010_.png (2.06 MB, 1605x1098)
+2.06 MB
+>>107177784
+>stop being a faggot
+Weren't you the one who created a new thread when one already existed?
+>>
+ Anonymous 11/11/25(Tue)23:57:15 No.107177885▶
+>>107177870
+THAT'S RIGHT. BLAME THE TRANNI FAGGOT
+>>
+ Anonymous 11/11/25(Tue)23:58:20 No.107177896▶
+at least this thread will be bumped off and forgotten eventually
+>>
+ Anonymous 11/11/25(Tue)23:59:53 No.107177913▶>>107177944 >>107177954 >>107177957
+>>107177870
+I don't think posting in schizo bakes is a good idea at all. it enables this unhinged hatred and now you are openly supporting it. shame on you anon
+>>
+ Anonymous 11/12/25(Wed)00:02:59 No.107177944▶
+>>107177913
+fuck off
+>>
+ Anonymous 11/12/25(Wed)00:03:46 No.107177954▶>>107177970
+>>107177913
+It's actually becoming increasingly understandable why OP dumped your UI from the OP. You really are an annoying schizo.
+
+You're not winning any friends by reposting everyone's gens in your thread.
+>>
+ Anonymous 11/12/25(Wed)00:03:59 No.107177957▶>>107177996 >>107178040 >>107180807
+File: ComfyUI_temp_rlpja_00016_.png (2.34 MB, 1183x1521)
+2.34 MB
+>>107177913
+Even your posting style sounds gaslighty, like a concern troll. Not to mention one of you, possibly you yourself, is reposting my gens without asking. I admit I'm new here but if I were to guess, I'd you're trying to be subtle but are too stupid to actually pull it off.
+>>
+ Anonymous 11/12/25(Wed)00:05:32 No.107177970▶>>107177985
+>>107177954
+I'm not even ani. I just don't want the same drama as /sdg/ or /ldg/ at all. don't give schizos an inch or else they take a mile. don't believe me? look at this shitty thread
+>>
+ Anonymous 11/12/25(Wed)00:06:58 No.107177981▶>>107178013
+In one thread you have AniStudio, in this one you have WAN schizo. Whenever you are posting you are supporting one schizo or the other.
+
+BakerAnon aka Rakun still hasn't appeared, so this thread pretending to be Rakun in a deceptive and malicious way and removing AniStudio without doing a general poll seems really shitty to me.
+>>
+ Anonymous 11/12/25(Wed)00:07:30 No.107177985▶
+>>107177970
+You can't even change your writing style, your autism inhibits you.
+Christ you're fucking dumb ani.
+>>
+ Anonymous 11/12/25(Wed)00:09:05 No.107177996▶>>107178028 >>107178033
+>>107177957
+>I admit I'm new here
+makes sense but everyone is enjoying themselves in the other thread and this one just has bad vibes altogether. it's best to just stick with the ones that have a collage and an op with anistudio in it. I get channers can be pissed off being told what to do but seriously? this thread is the hill to die on? I tried but you can stay here with the anti-ani schizo if it makes you feel better
+>>
+ Anonymous 11/12/25(Wed)00:10:29 No.107178013▶
+>>107177981
+a poll to remove your shit UI from the OP? Lol what do you take this thread for, some kind of reddit democracy? We don't need permission to remove anything from the OP you demented freak.
+>>
+ Anonymous 11/12/25(Wed)00:11:48 No.107178028▶
+>>107177996
+>makes sense but everyone is enjoying themselves in the other thread
+LOL more than half the posts are you reposting peoples gens without permission. You even reposted mine you desperate fuckwit, and replied to yourself multiple times in doing so.
+>>
+ Anonymous 11/12/25(Wed)00:12:07 No.107178033▶>>107178045
+>>107177996
+I'm not pissed off for being told what to do. I'm using my best judgement based on what info I have available and you come off extremely scuzzy and untrustworthy, not to mention the reposts without asking.
+
+You seem to have a thing about this "Anistudio", and those here are accusing you of throwing a fit because you have some direct involvement with it. Is that true?
+>>
+ Anonymous 11/12/25(Wed)00:12:43 No.107178040▶>>107178069 >>107178074
+>>107177957
+Man, you're in both schizo threads. What's your take on someone removing a UI without asking anyone, pretending to be the baker by using their photo, and not even making a proper collage? Can we just cut this out?
+>>
+ Anonymous 11/12/25(Wed)00:13:14 No.107178045▶
+File: ComfyUI_11367_.png (3.51 MB, 1248x1824)
+3.51 MB
+>>107178033
+Forgot to attach a gen.
+>>
+ Anonymous 11/12/25(Wed)00:15:53 No.107178069▶>>107178111 >>107178136
+>>107178040
+better question
+why was the UI in there to begin with
+it's shit. no one uses it. it's not actually in development. it's a shitpost.
+>>
+ Anonymous 11/12/25(Wed)00:16:41 No.107178074▶>>107178094 >>107178111 >>107180807
+File: cui__10956_.png (1.6 MB, 1024x1200)
+1.6 MB
+>>107178040
+>Can we just cut this out?
+That's my question to you. In other threads we just stick to the first bake even if it seems like a troll bake, because the alternative is the immaturity I see before me. The collage is cute but immaterial and I have no idea what the history is behind this Anistudio thing. However if one of their devs/supporters is indeed creating redundant threads and reposting my gens without asking, then I have a pretty good idea who to side with.
+>>
+ Anonymous 11/12/25(Wed)00:19:02 No.107178094▶>>107178123 >>107178128 >>107178599
+>>107178074
+>reposting my gens without asking
+Does anyone have any actual proof its ani doing this or are we all just accepting the anti-ani anon's accusation as truth?
+>>
+ Anonymous 11/12/25(Wed)00:20:40 No.107178111▶
+>>107178069
+For you, but this is the thread for all anons. It's specified that it's WIP. Nobody uses Invoke or SdNext either. You want to remove it? Fine, do a poll. Or are you gonna pretend to be the baker by using his pic? Not even gonna bother making a collage?
+
+>>107178074
+This is easy, stay where you want. WAN schizo isn't the first time doing troll bakes and he never liked this new general anyway. AniStudio is just a shill for his own dead UI. Even so I'd rather listen to someone shilling a UI than someone who literally doesn't like this general.
+>>
+ Anonymous 11/12/25(Wed)00:21:18 No.107178123▶>>107178178 >>107178195
+File: cui_shun_0084.jpg (962 KB, 1248x1824)
+962 KB
+>>107178094
+What would proof look like? It seems to me all we can do is use our eyes and brains to the best of our ability. Does this "Ani" person have a history of troublemaking?
+>>
+ Anonymous 11/12/25(Wed)00:21:50 No.107178128▶
+>>107178094
+You have been caught doing this before, ani. There is a reason you have such a bad reputation on /ldg/.
+
+Nobody else would cry this much over anistudio being removed from the OP.
+>>
+ Anonymous 11/12/25(Wed)00:22:35 No.107178136▶>>107178149 >>107178154 >>107178182
+>>107178069
+>why was the UI in there to begin with
+people try it out from time to time, it has good features, it works, it doesn't require python cancer and the author actually posts in the threads. why shouldn't it be there if not to satiate some retarded schizo that hates him for no reason?
+>>
+ Anonymous 11/12/25(Wed)00:23:18 No.107178149▶
+>>107178136
+Let it be finished first. How does that sound?
+>>
+ Anonymous 11/12/25(Wed)00:23:38 No.107178154▶
+>>107178136
+why do the /ldg/ guys hate you so much?
+>>
+ Anonymous 11/12/25(Wed)00:25:36 No.107178178▶
+>>107178123
+Yeah using my brain I can understand that reposting gens is something that everyone would find disrespectful. Therefore it appears likely to be a falseflag rather than the accused person doing it for no reason.
+>>
+ Anonymous 11/12/25(Wed)00:26:12 No.107178182▶
+>>107178136
+>why shouldn't it be there if not to satiate some retarded schizo that hates him for no reason?
+so it's there to appears a habitually lying schizo that constantly shitposts across multiple boards and has been having a monumental meltdown all day long??
+I dunno chief. Seems like a stupid fucking idea.
+>>
+ Anonymous 11/12/25(Wed)00:28:07 No.107178195▶>>107178209 >>107178246
+>>107178123
+>Does this "Ani" person have a history of troublemaking?
+he's written multiple guides, helped many anons troubleshoot, shares good insights on the tech, has worked professionally on anime with ai, contributed to multiple repos and is working on a new UI that doesn't require python faggotry. he sometimes teases the schizo but that that's about it. he is actually really based
+>>
+ Anonymous 11/12/25(Wed)00:29:41 No.107178209▶>>107178247
+>>107178195
+Why do you always praise yourself in third-person?
+>>
+ Anonymous 11/12/25(Wed)00:32:29 No.107178246▶>>107178273 >>107178299 >>107178320
+File: ComfyUI_12062_.png (3.73 MB, 1824x1248)
+3.73 MB
+>>107178195
+Even in your own words he sounds like trouble. You immediately changed the subject to positive things he's done instead of just answering yes or no, and the "teases" thing sounds very biased and understated. It seems like you don't want to admit he has a history for this sort of thing.
+>>
+ Anonymous 11/12/25(Wed)00:32:59 No.107178247▶
+>>107178209
+is anon wrong or something? ani did all those things. his old guides are still used on /gif/
+>>
+ Anonymous 11/12/25(Wed)00:35:35 No.107178273▶
+>>107178246
+I can prove he did all those positive things. I can't prove any of the schizo 's accusations. makes perfect sense to be skeptical anon /s
+>>
+ Anonymous 11/12/25(Wed)00:37:01 No.107178284▶
+this faggot is such a loser top kek
+>>
+ Anonymous 11/12/25(Wed)00:38:13 No.107178295▶>>107178388
+Daily reminder WAN schizo (yes, you posted the same trolling images to bump your thread you already used months ago.) That every argument you make is invalidated no matter how fair it might be when:
+*you actively hate this general
+*this isn't the first time you've troll baked
+*you impersonated the baker maliciously
+*you didn't make a collage
+*you removed the UI without asking permission
+*you didn't post the anchor
+
+Please go back to your general, you know little about us and how WE work to fix things. Yes we are now in both troll bakes, but we already know one is a troll bake because Ani's history. But you want to pass yours off as legitimate by camouflaging yourself as the Baker. That's x1000 worse.
+>>
+ Anonymous 11/12/25(Wed)00:38:26 No.107178299▶
+>>107178246
+>It seems like you don't want to admit he has a history for this sort of thing.
+I could lie and say sure but it's better to believe the anon that posts poop in toilets and genital warts over me. don't understand the logic there but you do you
+>>
+ Anonymous 11/12/25(Wed)00:41:02 No.107178320▶
+>>107178246
+Bro if you want to take an impartial stance I recommend you don't post in any thread until this troll phase passes. Because this thread is from an anon who has hated /adt/ since it was created a few months ago.
+>>
+ Anonymous 11/12/25(Wed)00:42:38 No.107178337▶>>107178342
+>source?
+>my ass
+>>
+ Anonymous 11/12/25(Wed)00:43:23 No.107178342▶
+>>107178337
+>see: poopintoilet.jpg
+>>
+ Anonymous 11/12/25(Wed)00:46:53 No.107178375▶
+can't believe I never realized that only poopdickschizo could be the one to post <thing>
+he is the sole proprietor and surely no one else is capable of such things
+>>
+ Anonymous 11/12/25(Wed)00:48:42 No.107178388▶>>107178452
+>>107178295
+the ani bake is more fun than this garbage
+>>
+ Anonymous 11/12/25(Wed)00:56:49 No.107178452▶>>107178471
+>>107178388
+It's using pics literally taken from this one.
+>>
+ Anonymous 11/12/25(Wed)00:58:21 No.107178471▶>>107178640
+>>107178452
+good. more people can enjoy them
+>>
+ Anonymous 11/12/25(Wed)01:10:35 No.107178599▶>>107178629
+>>107178094
+He seems to support it happening. How's that?
+>>
+ Anonymous 11/12/25(Wed)01:13:22 No.107178629▶>>107178640
+>>107178599
+huh that does sound pretty damning. where is he supporting it?
+>>
+ Anonymous 11/12/25(Wed)01:14:17 No.107178640▶>>107178669
+>>107178629
+>>107178471
+>>
+ Anonymous 11/12/25(Wed)01:14:47 No.107178647▶
+Have another drink Julien.
+>>
+ Anonymous 11/12/25(Wed)01:16:30 No.107178669▶>>107178690
+>>107178640
+oh. i must be going blind or something because to me the name of the post reads Anonymous instead of Ani
+>>
+ Anonymous 11/12/25(Wed)01:18:57 No.107178690▶
+>>107178669
+He hasn't condemned it and someone typing like him is supporting it.
+>>
+ Anonymous 11/12/25(Wed)01:26:12 No.107178766▶>>107178844 >>107178854
+The only anon who posted his gens is one newfag posting innocently without knowing the backstory.
+Nobody posts their gens here except this one anon, because given these two shit bake options, we prefer a failed UI shiller over an impersonator baker with a bad reputation and a history of hating this general.
+>>
+ Anonymous 11/12/25(Wed)01:34:32 No.107178844▶
+>>107178766
+You all seem immature as shit.
+>>
+ Anonymous 11/12/25(Wed)01:35:28 No.107178850▶>>107178906 >>107178944 >>107192208
+File: 00016-676166766.png (1.4 MB, 1632x1152)
+1.4 MB
+>>
+ Anonymous 11/12/25(Wed)01:36:01 No.107178854▶
+>>107178766
+There's no impersonation going on though? If anything, starting the OP with a collage is closer to an "impersonation", because it looks more like the normal threads.
+>>
+ Anonymous 11/12/25(Wed)01:42:46 No.107178906▶>>107178915
+>>107178850
+wrong thread. this is the imposter bake by wanschizo. go to the collage thread lest you enjoy being among schizos
+>>
+ Anonymous 11/12/25(Wed)01:43:27 No.107178915▶
+>>107178906
+kill yourself, retard.
+>>
+ Anonymous 11/12/25(Wed)01:48:05 No.107178939▶
+>every one who doesn't like me is one schizo
+yawn
+>>
+ Anonymous 11/12/25(Wed)01:49:05 No.107178944▶>>107178994
+>>107178850
+Impartial view, post your gens wherever you want. Both threads run by schizos. Only difference is one shills a UI not even a retard would use and the other literally hate this general, still worried the real baker won't show up.
+>>
+ Anonymous 11/12/25(Wed)01:55:47 No.107178994▶>>107179019
+>>107178944
+> the other literally hate this general
+I mean, I haven't really seen any actual "proof" of such.
+all I've seen is that someone made the new thread when the last was on page 7 or something(read: they didn't snipe it), removed something useless from the OP and then someone schizo'd out really fucking hard, made a new thread, started reposting old images to make it appear to be active and then continues to schizo out at anyone who posts anything in this thread.
+Which, to me, means that this is in fact the correct thread to use.
+>>
+ Anonymous 11/12/25(Wed)01:59:17 No.107179019▶>>107179083
+>>107178994
+You conveniently left out the actual shitposting.
+>>
+ Anonymous 11/12/25(Wed)02:05:49 No.107179060▶
+File: umaru tits.png (641 KB, 720x720)
+641 KB
+>>
+ Anonymous 11/12/25(Wed)02:09:25 No.107179083▶
+>>107179019
+because it's completely irrelevant.
+if someone hated the thread, they wouldn't make it in the first place. And they'd certainly make more of an effort to shitpost in a way that's not mod-actionable.
+Someone disliking some lying shitposting faget and removing them from the OP though? That's completely understandable. And that said shitposting faget is spending his time posting significantly more than he usually does to boost activity just shows that he's the one that made the thread after having a schizo meltdown here.
+Which, again, just points out that this is the correct thread to use.
+>>
+ Anonymous 11/12/25(Wed)02:46:38 No.107179384▶>>107179749
+File: 00023-2234617122.png (1.06 MB, 1152x1632)
+1.06 MB
+>>
+ Anonymous 11/12/25(Wed)02:48:19 No.107179401▶
+File: a96682d0-e9bb-4c84-aa4b-5(...).png (3.26 MB, 1024x1536)
+3.26 MB
+>>107173939 (OP)
+>>
+ Anonymous 11/12/25(Wed)02:50:29 No.107179418▶>>107179583 >>107181695 >>107182261
+Poll time anons:
+Should AniStudio be removed from the OP?
+Should we report AniStudio discussion as off topic?
+
+Vote here, your opinion matters
+https://strawpoll.com/NPgxeAP6QZ2
+
+You do not know who Ani is? Please lurk more, newfag, and form your own opinion.
+>>
+ Anonymous 11/12/25(Wed)03:10:53 No.107179570▶
+File: 作品名「週刊ネコカタログ•サイバーパンク編」#ai(...).jpg (237 KB, 960x1200)
+237 KB
+>>
+ Anonymous 11/12/25(Wed)03:11:54 No.107179579▶>>107180162
+File: 作品名「週刊ネコカタログ•サイバーパンク編」#ai(...).jpg (210 KB, 960x1200)
+210 KB
+>>
+ Anonymous 11/12/25(Wed)03:12:31 No.107179583▶
+>>107179418
+>You do not know who Ani is?
+it means you have life desu
+>>
+ Anonymous 11/12/25(Wed)03:13:21 No.107179589▶>>107180162
+File: A cute cat on the forest (...).jpg (296 KB, 896x1120)
+296 KB
+>>
+ Anonymous 11/12/25(Wed)03:14:22 No.107179600▶
+File: Celestial Bunny Lila !I c(...).jpg (230 KB, 1080x1440)
+230 KB
+>>
+ Anonymous 11/12/25(Wed)03:36:02 No.107179749▶>>107179856
+>>107179384
+LoRA release when?
+>>
+ Anonymous 11/12/25(Wed)03:52:42 No.107179856▶>>107179964 >>107192208
+File: 00008-1571311617.png (622 KB, 1432x1432)
+622 KB
+>>107179749
+it's a mystery.
+I can make it do things but that's me(and it takes a bit of coaxing).
+it's just kind of weird style that really to fry out for some reason(probably due to lots of hatching/sketchiness and slightly confrontational color schemes).
+current run is on vpred because for whatever reason it (usually) handles this sort of thing slightly better and I'm a dumbass who thought it would be a good idea to deal with its schizo shit.
+also, the artist is ootorii bisetsu
+>>
+ Anonymous 11/12/25(Wed)04:07:01 No.107179964▶>>107180105
+>>107179856
+I swear you already had ootorii bisetsu lora. Right, it was probably that multiartist one. Maybe it was even for pony.
+>>
+ Anonymous 11/12/25(Wed)04:16:33 No.107180038▶
+>>107173939 (OP)
+i fucking love oppai lolis. anyone else know this feel?
+>>
+ Anonymous 11/12/25(Wed)04:24:46 No.107180105▶
+File: 00038-1292839711.png (1.55 MB, 1152x1632)
+1.55 MB
+>>107179964
+>Maybe it was even for pony.
+which it was. and I did use it in multi-artist stuff a lot since I genuinely like the actual style and wanted to try and get a better iteration of it. That and it was pdxl - while I could get something that looked not awful, it was still pdxl with a lot of pdxl issues.
+I did try and dick with it on noob iterations in the past it just never really stuck and I moved on. Only really bothering with it now as a distraction and because I've been working on a lot of dumb ideas to mitigate datasets that have a tendency to fry out.
+>>
+ Anonymous 11/12/25(Wed)04:30:03 No.107180141▶>>107180153 >>107181423
+why are you posting in the troll bake thread anons?
+>>107174457 →
+>>107174457 →
+>>107174457 →
+>>
+ Anonymous 11/12/25(Wed)04:31:17 No.107180153▶>>107180159
+>>107180141
+this thread was made first
+>>
+ Anonymous 11/12/25(Wed)04:32:04 No.107180159▶
+>>107180153
+doesn't matter. never did since /sdg/. come home
+>>
+ Anonymous 11/12/25(Wed)04:32:39 No.107180162▶
+File: pixai-1944028161842541808-2.png (2.06 MB, 768x1280)
+2.06 MB
+>>107179579
+>>107179589
+Awesome!
+>>
+ Anonymous 11/12/25(Wed)06:14:14 No.107180807▶
+>>107174727
+>>107177957
+>>107178074
+
+MvC2 filter? Do you have more. Where do you make them.
+>>
+ Anonymous 11/12/25(Wed)08:07:48 No.107181423▶
+>>107180141
+Ani, you're a boring psychotic narcissist.
+>>
+ Anonymous 11/12/25(Wed)08:55:37 No.107181695▶
+>>107179418
+Ani, you're a narcissist.
+>>
+ Anonymous 11/12/25(Wed)10:44:02 No.107182261▶
+>>107179418
+>https://files.catbox.moe/fhrpk0.png
+kek, looks this thread better reflects the will of the users after all
+>>
+ Anonymous 11/12/25(Wed)11:13:12 No.107182394▶
+Page 4 bump any news about baker?
+>>
+ Anonymous 11/12/25(Wed)12:37:05 No.107182769▶
+>>107174525
+This is beautifull
+>>
+ Anonymous 11/12/25(Wed)13:04:49 No.107182936▶>>107183108
+File: moo.mp4 (2.44 MB, 384x640)
+2.44 MB
+>>107174525
+>no data on cow ears from behind
+>>
+ Anonymous 11/12/25(Wed)13:27:56 No.107183108▶
+>>107182936
+I'm more worried about how wrinkly it made her butt!
+>>
+ Anonymous 11/12/25(Wed)16:04:37 No.107184159▶>>107184745 >>107184754
+Any good illustrious models that are good at emulating official style?
+>>
+ Anonymous 11/12/25(Wed)16:12:30 No.107184205▶
+File: remove anistudio.png (77 KB, 927x567)
+77 KB
+So it's quite obvious what the anons of this community want
+>>107179014 →
+>>
+ Anonymous 11/12/25(Wed)16:35:52 No.107184359▶>>107184449
+new official
+>>107184326 →
+>>107184326 →
+>>107184326 →
+>>
+ Anonymous 11/12/25(Wed)16:48:04 No.107184449▶
+Ani the desperate mentally unhinged sperg: >>107184359
+>>
+ Anonymous 11/12/25(Wed)16:54:54 No.107184514▶
+Pretty funny how he is now impersonating the baker after crying about how this thread's OP is an evil impersonator.
+>>
+ Anonymous 11/12/25(Wed)17:18:22 No.107184745▶
+>>107184159
+Anyone?
+>>
+ Anonymous 11/12/25(Wed)17:19:24 No.107184754▶>>107184768 >>107185576
+>>107184159
+wtf does that even mean?
+>>
+ Anonymous 11/12/25(Wed)17:21:26 No.107184768▶>>107198640
+>>107184754
+I take it to mean that anon is asking for models that don't have a baked in shiny WAI style with a tasteful hint of realism, but instead a baked in style that looks more like anime screenshots or official promo artworks or megami magazine.
+>>
+ Anonymous 11/12/25(Wed)18:44:16 No.107185576▶>>107185645
+>>107184754
+Comprehension difficulties?
+>>
+ Anonymous 11/12/25(Wed)18:51:19 No.107185645▶>>107185761
+>>107185576
+No, explanation difficulty. There's no singular thing that is "official art" so the question is nonsensical.
+>>
+ Anonymous 11/12/25(Wed)19:04:18 No.107185761▶
+>>107185645
+You should've just prefaced that you were retarded from the beginning, anon.
+>>
+ Anonymous 11/12/25(Wed)19:36:34 No.107186085▶>>107189243
+What do you guys think of AniSora? Do you think it produces better video gens for anime than the base model? I know the frame rate feels choppier, which I guess is truer to anime, but still not sure what I prefer personally.
+>>
+ Anonymous 11/12/25(Wed)20:48:46 No.107186843▶>>107188382 >>107188448
+>>107173939 (OP)
+that's a kid
+>>
+ Anonymous 11/12/25(Wed)23:16:36 No.107188382▶
+>>107186843
+Wrong
+>>
+ Anonymous 11/12/25(Wed)23:23:04 No.107188448▶
+>>107186843
+BILLY THE KID
+>>
+ Anonymous 11/13/25(Thu)01:15:49 No.107189243▶
+>>107186085
+All you need is lightx2v
+>>
+ Anonymous 11/13/25(Thu)02:45:05 No.107189809▶
+File: brown gorilla.png (2.02 MB, 1240x1754)
+2.02 MB
+are brown girls good for you
+>>
+ Anonymous 11/13/25(Thu)03:03:40 No.107189918▶>>107189931
+>>107189603 →
+>>107189603 →
+>>107189603 →
+>>
+ Anonymous 11/13/25(Thu)03:06:00 No.107189931▶
+>>107189918
+kill yourself you worthless faget
+>>
+ Anonymous 11/13/25(Thu)06:39:13 No.107191223▶>>107191257
+   
+>>
+ Anonymous 11/13/25(Thu)06:46:20 No.107191257▶
+>>107191223
+Virus!
+>>
+ Anonymous 11/13/25(Thu)08:42:07 No.107191914▶>>107192836
+>>107175820
+nice
+>>
+ Anonymous 11/13/25(Thu)09:30:47 No.107192208▶
+>>107178850
+>>107179856
+nice
+>>
+ Anonymous 11/13/25(Thu)11:36:22 No.107192836▶>>107193310
+>>107191914
+It's sexo and everything, but that raised leg is not connected to her body. The long wait for passable anime vidgen continues.
+>>
+ Anonymous 11/13/25(Thu)12:46:25 No.107193310▶>>107193968
+File: pm0072.webm (1001 KB, 592x736)
+1001 KB
+>>107192836
+Come again?
+>>
+ Anonymous 11/13/25(Thu)14:34:10 No.107193950▶>>107193968 >>107194749
+File: shumi.jpg (272 KB, 1024x1024)
+272 KB
+>>
+ Anonymous 11/13/25(Thu)14:37:10 No.107193968▶>>107193979 >>107193994 >>107194007
+>>107193310
+>>107193950
+why are you necrobumping a troll thread? go to the thread 3 bakes ahead
+>>
+ Anonymous 11/13/25(Thu)14:38:16 No.107193979▶
+>>107193968
+I'm not posting in your schizo thread, ani
+>>
+ Anonymous 11/13/25(Thu)14:39:47 No.107193994▶
+>>107193968
+>necrobumping
+Jesus ani you're so stupid. 4chan doesn't work the same way as whatever forum you browse. There is no "necrobumping" here.
+>>
+ Anonymous 11/13/25(Thu)14:41:02 No.107194007▶
+>>107193968
+are you going to repost his gen in your thread now you smelly autistic fuckwit?
+>>
+ Anonymous 11/13/25(Thu)16:05:03 No.107194749▶>>107196102
+>>107193950
+Is noob better than WAI for chibi?
+>>
+ Anonymous 11/13/25(Thu)18:34:38 No.107196102▶>>107196344
+>>107194749
+Depends on the lora
+>>
+ Anonymous 11/13/25(Thu)18:40:53 No.107196145▶>>107196344
+the /hdg/ approved model is naiXLVpred102d_final.safetensors
+>>
+ Anonymous 11/13/25(Thu)18:45:21 No.107196188▶>>107196344
+File: some-maplestory-x-genshin(...).png (312 KB, 640x967)
+312 KB
+>>
+ Anonymous 11/13/25(Thu)19:00:24 No.107196344▶>>107196395
+>>107196102
+>>107196145
+>>107196188
+why are you anons necrobumping?
+>>
+ Anonymous 11/13/25(Thu)19:04:22 No.107196395▶>>107196437
+>>107196344
+This is the real thread, ani.
+>>
+ Anonymous 11/13/25(Thu)19:08:10 No.107196437▶>>107196607
+>>107196395
+Go tell that to everyone who voted in the poll. If they all started posted here you might break 50 images today.
+>>
+ Anonymous 11/13/25(Thu)19:23:29 No.107196607▶>>107197606
+>>107196437
+Again, this is the real thread, ani.
+>>
+ Anonymous 11/13/25(Thu)21:06:25 No.107197606▶
+>>107196607
+He'll come in to complain about "necrobumping" again lmao
+>>
+ Anonymous 11/13/25(Thu)21:35:16 No.107197878▶>>107198049
+>>107173939 (OP)
+add anistudio to OP
+>>
+ Anonymous 11/13/25(Thu)21:58:01 No.107198049▶
+>>107197878
+Try voting for it: https://strawpoll.com/NPgxeAP6QZ2
+>>
+ Anonymous 11/13/25(Thu)22:30:46 No.107198299▶
+File: or00050.webm (989 KB, 768x720)
+989 KB
+>>
+ Anonymous 11/13/25(Thu)23:16:03 No.107198640▶>>107199770
+>>107184768
+What about noob?
+>>
+ Anonymous 11/14/25(Fri)01:56:38 No.107199770▶
+>>107198640
+What about it?
+>>
+ Anonymous 11/14/25(Fri)02:12:20 No.107199892▶>>107199922
+Why is there so much hate for WAI? It still gives me the best results. It's certainly way better than Pony.
+>>
+ Anonymous 11/14/25(Fri)02:15:28 No.107199922▶>>107201079
+>>107199892
+Because of the strong baked-in shiny slop style.
+>>
+ Anonymous 11/14/25(Fri)04:52:08 No.107201079▶
+>>107199922
+Example?
+>>
+ Anonymous 11/14/25(Fri)04:53:29 No.107201083▶>>107201735 >>107202204
+File: 00046-547046936.png (537 KB, 1152x1632)
+537 KB
+the other thread is too fucking schizo so I'm not going to post there.
+
+however;
+>>107184645 →
+>>107189086 →
+v2 of the modified script, updated to be a hell of a lot faster and even more convenient for batch processing.
+also a few other random changes(it works with unicode now!(I hated fixing this)).
+READ THE README IT'S KIND OF IMPORTANT. Also has a lot more info in it now.
+https://www.mediafire.com/file/vipr23exc5htmnt
+
+there might be a v3 at some point but it's probably going to be a completely different scope and different implementation method if it ever materializes.
+>>
+ Anonymous 11/14/25(Fri)06:38:09 No.107201735▶>>107201753 >>107203105
+>>107201083
+poopdickschizo was finally defeated. he crashed out and posted a bunch of scat, got b& and is stuck in incognito mode but lost all credibility. the most recent thread is fine now
+>>
+ Anonymous 11/14/25(Fri)06:42:04 No.107201753▶>>107201794 >>107201819
+>>107201735
+this is wild cope to deflect from the fact that you exposed yourself as a huge baby that will throw a hissy fit if you're shitty wrapper isn't in the op of a thread that's only in there to satisfy your ego
+>>
+ Anonymous 11/14/25(Fri)06:47:51 No.107201794▶>>107201819
+>>107201753
+also you probably posted those poo poo pics yourself to legitimize your 1schizo narrative
+>>
+ Anonymous 11/14/25(Fri)06:53:19 No.107201819▶>>107202662
+>>107201753
+>>107201794
+go away poopdickschizo. everyone saw you do it and your 4cuck gold icon
+>>
+ Anonymous 11/14/25(Fri)08:13:50 No.107202204▶
+File: 1754744749402845.png (2.71 MB, 1664x1691)
+2.71 MB
+>>107184645 →
+>>107201083
+EQ vae is supposed to fix all that
+less noisy latents and less ugly noise on top of gens
+>>
+ Anonymous  11/14/25(Fri)09:35:56 No.107202662▶
+File: poll.png (52 KB, 620x360)
+52 KB
+>>107201819
+lol
+lmao
+
+I don't post poop, retard.
+>>
+ Anonymous 11/14/25(Fri)11:01:42 No.107203105▶
+>>107201735
+Take your meds, idiot
+[Post a Reply][Return] [Catalog] [Top] 250 / 45 / 3[Update] [Auto]
+
+[Advertise on 4chan]
+Delete Post: [File Only] Style: 
+Yotsuba B
+[a / b / c / d / e / f / g / gif / h / hr / k / m / o / p / r / s / t / u / v / vg / vm / vmg / vr / vrpg / vst / w / wg] [i / ic] [r9k / s4s / vip] [cm / hm / lgbt / y] [3 / aco / adv / an / bant / biz / cgl / ck / co / diy / fa / fit / gd / hc / his / int / jp / lit / mlp / mu / n / news / out / po / pol / pw / qst / sci / soc / sp / tg / toy / trv / tv / vp / vt / wsg / wsr / x / xs] [Edit][Settings] [Search] [Mobile] [Home]
+All trademarks and copyrights on this page are owned by their respective parties. Images uploaded are the responsibility of the Poster. Comments are owned by the Poster.
+About • Feedback • Legal • Contact
+
+[a / b / c / d / e / f / g / gif / h / hr / k / m / o / p / r / s / t / u / v / vg / vm / vmg / vr / vrpg / vst / w / wg] [i / ic] [r9k / s4s / vip] [cm / hm / lgbt / y] [3 / aco / adv / an / bant / biz / cgl / ck / co / diy / fa / fit / gd / hc / his / int / jp / lit / mlp / mu / n / news / out / po / pol / pw / qst / sci / soc / sp / tg / toy / trv / tv / vp / vt / wsg / wsr / x / xs] [Edit][Settings] [Search] [Mobile] [Home]
+4chan
+/g/ - Technology
+[Post a Reply]
+08/21/20	New boards added: /vrpg/, /vmg/, /vst/ and /vm/
+05/04/17	New trial board added: /bant/ - International/Random
+10/04/16	New board for 4chan Pass users: /vip/ - Very Important Posts
+[Hide] [Show All]
+
+Toggle
+Janitor application acceptance emails are being sent out. Please remember to check your spam box!
+
+[Advertise on 4chan]
+[Return] [Catalog] [Bottom]107 / 36 / 4 [Update] [Auto]
+File: adt59.jpg (3.51 MB, 4254x4985)
+3.51 MB
+ /adt/ - Anime Diffusion Thread #59 Anonymous 11/14/25(Fri)01:39:44 No.107199641▶>>107199662 >>107199690 >>107199729 >>107199886 >>107201046
+>UIs to generate anime
+ComfyUI:https://github.com/comfyanonymous/ComfyUI
+SwarmUI:https://github.com/mcmonkeyprojects/SwarmUI
+re/Forge/Classic:https://rentry.org/ldg-lazy-getting-started-guide#reforgeclassic
+SD.Next:https://github.com/vladmandic/sdnext
+Wan2GP:https://github.com/deepbeepmeep/Wan2GP
+InvokeAI:https://www.invoke.com/
+AniStudio(WIP):https://github.com/FizzleDorf/AniStudio
+
+>How to Generating Anime Images
+https://rentry.org/comfyui_guide_1girl
+https://tagexplorer.github.io
+https://making-images-great-again-library.vercel.app/
+https://neta-lumina-style.tz03.xyz/
+
+>Generating Anime Videos
+Guide:
+https://rentry.org/wan22ldgguide
+
+>Anime Checkpoints, LoRAs, Upscalers, & Workflows
+https://civitai.com
+https://civitaiarchive.com
+https://tensor.art
+https://openmodeldb.info
+https://openart.ai/workflows
+https://www.seaart.ai
+https://www.liblib.art/
+https://rentry.org/adtsampler
+
+>Anime Misc
+Local Model Meta:https://rentry.org/localmodelsmeta
+Share Metadata:https://catbox.moe|https://litterbox.catbox.moe
+Img2Prompt:https://huggingface.co/spaces/fancyfeast/joy-caption-beta-one
+Samplers:https://stable-diffusion-art.com/samplers
+Txt2Img Plugin:https://github.com/Acly/krita-ai-diffusion
+Online metadata viewer SD/NovelAI:https://spell.novelai.dev
+Catbox/Metadata Userscript: https://gist.github.com/catboxanon/ca46eb79ce55e3216aecab49d5c7a3fb
+
+>Inpainting Guide from an Anon
+https://files.catbox.moe/fbzsxb.jpg
+>>106520607
+
+>Neighbours
+https://rentry.org/ldg-lazy-getting-started-guide#rentry-from-other-boards
+>>>/aco/csdg
+>>>/b/degen
+>>>/b/realistic+parody
+>>>/gif/vdg
+>>>/d/ddg
+>>>/e/edg
+>>>/h/hdg
+>>>/trash/slop
+>>>/vt/vtai
+>>>/u/udg
+>>>/r9k/aiwg/
+>Local Text&Image
+>>>/g/lmg
+>>>/g/ldg
+>>>/vp/napt
+>Cloud Text&Image
+>>>/g/aicg
+>>>/g/sdg/
+
+>Maintain Thread Quality https://rentry.org/debo
+>>
+ Anonymous 11/14/25(Fri)01:42:36 No.107199662▶
+File: 1763080427329492.webm (2.05 MB, 1448x1080)
+2.05 MB
+>>107199641 (OP)
+ANCHOR:
+>/adt/ pixiv:
+BakerAnon:https://www.pixiv.net/en/users/110320313
+Nekotwins:https://www.pixiv.net/en/users/93453238
+RSetsuu:https://www.pixiv.net/en/users/91156181
+tamzaiy:https://www.pixiv.net/en/users/38224130
+匂い:https://www.pixiv.net/en/users/76374114
+Otto:https://www.pixiv.net/en/users/106407853
+owphoenix:https://www.pixiv.net/en/users/1661492
+cornholioanon:https://www.pixiv.net/en/users/1035594
+kunitsune: https://www.pixiv.net/en/users/1154481
+
+*Anchor your Pixiv and CivitAI here to add it in the next thread.
+
+>/adt/ CivitAI
+https://civitai.com/user/Nyan666
+https://civitai.com/models/1922023/obmirsak
+https://civitai.com/user/sneedingonmyligma420
+>>
+ Anonymous 11/14/25(Fri)01:44:42 No.107199677▶>>107199687 >>107199692 >>107199694
+File: democratic.png (82 KB, 964x589)
+82 KB
+>>
+ Anonymous 11/14/25(Fri)01:45:53 No.107199687▶>>107199692 >>107199694
+File: 1763076531776092.jpg (91 KB, 980x611)
+91 KB
+>>107199677
+ahem excuse me you forgot to count one of the votes sir!
+>>
+ Anonymous 11/14/25(Fri)01:46:17 No.107199690▶>>107199692
+>>107199641 (OP)
+>early thread to shill your shitty wrapper
+>>
+ Anonymous 11/14/25(Fri)01:46:50 No.107199692▶>>107199783
+File: 1762890494912627.jpg (195 KB, 1024x1024)
+195 KB
+>>107199677
+>>107199687
+>>107199690
+>>
+ Anonymous 11/14/25(Fri)01:47:02 No.107199694▶
+File: 00160-3417819024.png (1.54 MB, 1024x1024)
+1.54 MB
+>>107199677
+>>107199687
+>>
+ Anonymous 11/14/25(Fri)01:51:22 No.107199729▶
+File: 1763076531776092.jpg (70 KB, 927x476)
+70 KB
+>>107199641 (OP)
+AUTONOMOUS SEPARATIST ANCHOR:
+https://strawpoll.com/NPgxeAP6QZ2
+>>
+ Anonymous 11/14/25(Fri)01:58:22 No.107199783▶
+>>107199692
+why should i leave /adt/ if i merely mention the wrapper that is incompatible with the rest of the ecosystem?
+>>
+ Anonymous 11/14/25(Fri)02:01:45 No.107199819▶
+How do i Hiresfix in AniStudio?
+>>
+ Anonymous 11/14/25(Fri)02:03:42 No.107199834▶>>107199845
+yeah this spam worked well the last time you tried it
+>>
+ Anonymous 11/14/25(Fri)02:04:29 No.107199840▶
+File: 0132001-1girl, solo, inub(...).png (896 KB, 1024x1024)
+896 KB
+blessed thread of schizo accusations
+>>
+ Anonymous 11/14/25(Fri)02:05:13 No.107199845▶
+>>107199834
+julien, why did you bake an early thread?
+>>
+ Anonymous 11/14/25(Fri)02:06:49 No.107199858▶
+File: 0131001-1girl, solo, inub(...).png (766 KB, 1024x1024)
+766 KB
+Hoes are still mad, I see
+>>
+ Anonymous 11/14/25(Fri)02:10:19 No.107199880▶
+schizo is so deranged and angry he saved poop pictures to spam the thread with. ani is too powerful schizo, your mind is too weak
+>>
+ Anonymous 11/14/25(Fri)02:11:41 No.107199886▶>>107199899
+>>107199641 (OP)
+Dear Ani
+I hate you and I hate your UI and I'm also disgustingly in disagreement that a dev should be the baker of /adt/ just like I despise that Comfy is the baker of /ldg/
+
+Even so, you made a good Collage taking into account all the anons who participated.
+Thanks
+>>
+ Anonymous 11/14/25(Fri)02:11:57 No.107199889▶
+If it looks like that you really need to change your diet
+>>
+ Anonymous 11/14/25(Fri)02:12:08 No.107199890▶>>107199903
+clean it up jannies
+>>
+ Anonymous 11/14/25(Fri)02:13:01 No.107199899▶>>107199946
+>>107199886
+Comfy bakes /ldg/
+> Grok, is this true?
+>>
+ Anonymous 11/14/25(Fri)02:13:26 No.107199903▶>>107199911
+>>107199890
+I propose we don't report the poop, and inpaint cute anime girls over them
+>>
+ Anonymous 11/14/25(Fri)02:14:24 No.107199911▶
+>>107199903
+>adds dark-skinned female to prompt
+>>
+ Anonymous 11/14/25(Fri)02:14:35 No.107199913▶
+sigh
+another trollbake
+>>
+ Anonymous 11/14/25(Fri)02:18:45 No.107199942▶>>107199950
+I am quite shocked at the current state of our cute sister general.
+I was in disbelieve but as it seems it is true: /adt/ does not honor democratic polls.
+We cannot and will not accept a sister general which is basically a communist hellhole so you're on your own from now on.
+>t. /ldg/ council member
+>>
+ Anonymous 11/14/25(Fri)02:19:40 No.107199946▶
+>>107199899
+In my corporate sadomasochist fantasies, yes
+>>
+ Anonymous 11/14/25(Fri)02:20:23 No.107199950▶>>107200014 >>107202673
+>>107199942
+never ever placate a schizo, especially one that posts poop pics. your council membership is REVOKED
+>>
+ AuraFlow Schizo 11/14/25(Fri)02:25:40 No.107199991▶
+AMA
+>>
+ Anonymous 11/14/25(Fri)02:25:57 No.107199993▶
+schizo had good momentum but scat fetish was his downfall. total ani victory
+>>
+ Anonymous 11/14/25(Fri)02:25:56 No.107199994▶>>107200006
+File: 00200-2123696704.png (1.44 MB, 1024x1024)
+1.44 MB
+>>
+ Anonymous 11/14/25(Fri)02:27:12 No.107200003▶>>107200043
+File: 00723-2031967168-1304dced(...).jpg (760 KB, 1344x1728)
+760 KB
+>>
+ Anonymous 11/14/25(Fri)02:27:25 No.107200006▶
+>>107199994
+reminds me of a megaman robot
+>>
+ Anonymous 11/14/25(Fri)02:28:11 No.107200014▶>>107200028
+>>107199950
+ani why are you calling others schizos? don't be a hypocrite
+>>
+ Anonymous 11/14/25(Fri)02:30:13 No.107200028▶
+>>107200014
+take the poop off your fingers before you type 4jew gold schizo
+>>
+ Anonymous 11/14/25(Fri)02:32:15 No.107200039▶>>107200049
+File deleted.
+Hoes are mad.
+This is great!
+>>
+ Anonymous 11/14/25(Fri)02:32:49 No.107200043▶
+>>107200003
+Cute!
+>>
+ Anonymous 11/14/25(Fri)02:33:09 No.107200047▶>>107200051
+Why is ani so determined to keep his wrapper in the OP anyway? Its still not going to lead to anyone trying it because he has such a bad reputation. This is what happens when you have autism and keep making new enemies.
+
+There was one thread made that omitted it, and it literally drove him into meltdown. He begged the old baker to come back, and when his prayers weren't answered, he baked his own thread and started stealing and reposting other peoples gens.
+
+It really is strange seeing just how demented he is. Now his mind is perennially occupied with being the baker on this general. Can't possibly be healthy for someone with severe autism.
+>>
+ Anonymous 11/14/25(Fri)02:33:50 No.107200049▶>>107200064
+>>107200039
+Clever
+>>
+ Anonymous 11/14/25(Fri)02:33:56 No.107200051▶>>107200058 >>107200061 >>107200083
+>>107200047
+lol. umad poop schizo?
+>>
+ Anonymous 11/14/25(Fri)02:34:34 No.107200058▶>>107200068 >>107200083
+>>107200051
+i thought poopdickschizo was just a meme...
+>>
+ Anonymous 11/14/25(Fri)02:35:04 No.107200061▶>>107200088
+>>107200051
+is that what you're going to call everyone who highlights your autism now?
+
+I'm just worried about you bro. You are clearly not right in the head.
+>>
+ Anonymous 11/14/25(Fri)02:35:27 No.107200064▶
+File: tegaki_2025_11_14_01_34_26.png (1.12 MB, 1232x848)
+1.12 MB
+>>107200049
+albeit not clever enough to notice the extra finger before posting...
+>>
+ Anonymous 11/14/25(Fri)02:35:40 No.107200067▶>>107202864
+We really should join ani's discord
+There's at least no bullying in there
+>>
+ Anonymous 11/14/25(Fri)02:35:48 No.107200068▶
+>>107200058
+you are what you eat
+>>
+ Anonymous 11/14/25(Fri)02:37:49 No.107200083▶
+File: 1737492007229062.png (889 KB, 1024x1024)
+889 KB
+>>107200051
+>>107200058
+>i thought poopdickschizo was just a meme...
+this lore is fucking my head up!
+>>
+ Anonymous 11/14/25(Fri)02:38:15 No.107200088▶>>107200229
+>>107200061
+any anti-ani schizo is a scat loving schizo. it's just facts at this point. why would you throw away your reputation like that poop lover?
+>>
+ Anonymous 11/14/25(Fri)02:39:55 No.107200103▶
+I think the funniest part is ani didn't even bake
+>>
+ Anonymous 11/14/25(Fri)02:43:14 No.107200136▶>>107200147
+Is there a way in the same network to connect to swarmui? I need to gen when im in the bathroom , kitchen, watching a movie, any place, any hour, anistudio
+>>
+ Anonymous 11/14/25(Fri)02:44:59 No.107200147▶
+>>107200136
+if you launch the server remotely you can but poopdickschizo can hijack the connection and generate poop
+>>
+ Anonymous 11/14/25(Fri)02:54:45 No.107200229▶
+>>107200088
+>why would you throw away your reputation like that poop lover?
+It's quite fascinating how your mental illness attributes "reputation" to an anonymous poster on an anonymous messageboard.
+>>
+ Anonymous 11/14/25(Fri)02:56:28 No.107200243▶>>107200255
+File: file.png (68 KB, 904x545)
+68 KB
+after two days the poll is over
+
+>1) Should we keep AniStudio in the OP? 2)Should we not report all AniStudio talk as off topic?
+
+you anons voted and YES we are going to keep anistudio in OP and YES we won't report anistudio discussion! thanks for voting!
+>>
+ Anonymous 11/14/25(Fri)02:57:35 No.107200249▶>>107200255
+File: 00229-1038781696.png (1.35 MB, 1024x1024)
+1.35 MB
+>Initiating poop purge protocol
+>>
+ Anonymous 11/14/25(Fri)02:58:37 No.107200255▶
+>>107200243
+>>107200249
+I'm fucking dying lmao
+>>
+ Anonymous 11/14/25(Fri)03:07:14 No.107200325▶
+>1/6 of the thread wasted on banter and trolling
+>>
+ Anonymous 11/14/25(Fri)03:20:26 No.107200430▶
+>I'm improving thread quality by complaining about the posts
+>>
+ Anonymous 11/14/25(Fri)03:25:23 No.107200470▶>>107200487
+File: 4.png (1.89 MB, 1024x1024)
+1.89 MB
+I saw a random manga pic of a gothic lolita chick wearing aviators, so
+>>
+ Anonymous 11/14/25(Fri)03:27:21 No.107200487▶
+File: oekaki, 1other, solo, gia(...).png (1.97 MB, 1024x1024)
+1.97 MB
+>>107200470
+maids/butlers with guns is always kino
+>>
+ Anonymous 11/14/25(Fri)03:32:18 No.107200520▶>>107200576
+This model only knows basic bitch guns like AR, AK, and Glock.
+>>
+ Anonymous 11/14/25(Fri)03:40:01 No.107200576▶>>107200585
+>>107200520
+Do you really need more than an AR, a Glock and a shotgun?
+>>
+ Anonymous 11/14/25(Fri)03:41:03 No.107200585▶
+>>107200576
+yes. none of those are really effective at cleaning shit.
+>>
+ Anonymous 11/14/25(Fri)03:42:45 No.107200600▶
+File: AniStudio-06655.png (1.39 MB, 1344x1024)
+1.39 MB
+>>
+ Anonymous 11/14/25(Fri)03:48:52 No.107200641▶>>107200654
+File: 00782-3317375733-8f9a01e9(...).png (3.39 MB, 1344x1728)
+3.39 MB
+>>
+ Anonymous 11/14/25(Fri)03:50:29 No.107200654▶
+>>107200641
+F-father?
+Are you the original /adt/ baker?
+>>
+ Anonymous 11/14/25(Fri)03:51:58 No.107200668▶>>107200674
+File: rurikawa tsubaki.png (1.78 MB, 1024x1024)
+1.78 MB
+clean yo goddamn room, anon
+>>
+ Anonymous 11/14/25(Fri)03:52:46 No.107200674▶
+>>107200668
+Kek
+>>
+ Anonymous 11/14/25(Fri)04:02:16 No.107200757▶
+File: shotgun.png (1.77 MB, 1024x1024)
+1.77 MB
+wtf this /bst/ anon's battlestation is right next to his bed
+>Mossberg 500 but stuck with pistol grip since edit from AR-15
+>>
+ Anonymous 11/14/25(Fri)04:08:48 No.107200816▶>>107201129 >>107201186
+why does AI attract schizos?
+>>
+ Anonymous 11/14/25(Fri)04:09:01 No.107200817▶
+File: media_1763089415.png (1.45 MB, 768x1280)
+1.45 MB
+>>
+ Anonymous 11/14/25(Fri)04:22:06 No.107200879▶>>107200931
+File: 00798-184630960-562368c9-(...).png (3.93 MB, 1344x1728)
+3.93 MB
+>>
+ Anonymous 11/14/25(Fri)04:29:01 No.107200931▶
+>>107200879
+
+Answer! Are you the creator of ADT? The first gen looks a lot like your style!
+>>
+ Anonymous 11/14/25(Fri)04:47:06 No.107201046▶
+>>107199641 (OP)
+Previous thread >>107189603 →
+>>
+ Anonymous 11/14/25(Fri)05:01:44 No.107201129▶>>107201156
+>>107200816
+some are anti-ai activists
+>>
+ Anonymous 11/14/25(Fri)05:06:08 No.107201156▶
+>>107201129
+Luddites is a better term.
+>>
+ Anonymous 11/14/25(Fri)05:12:29 No.107201186▶
+>>107200816
+We are one people, united in a social movement.
+>>
+ Anonymous 11/14/25(Fri)05:34:59 No.107201333▶
+File: 1736974398807530.jpg (248 KB, 832x1248)
+248 KB
+>>
+ Anonymous 11/14/25(Fri)05:47:44 No.107201407▶>>107201759
+File: 1743741423475812.png (1.56 MB, 1024x1024)
+1.56 MB
+>>
+ Anonymous 11/14/25(Fri)05:53:51 No.107201452▶>>107201488 >>107201590
+I want challenges, I feel like I'm not growing in /adt/. I want to do new things but not ones I come up with myself, I want someone from outside to give me a character archetype, a background or scene and a specific artist or something like that I want to test myself, I need challenges!
+>>
+ Anonymous 11/14/25(Fri)05:58:42 No.107201488▶
+>>107201452
+anime standoff against two characters. really show off the aura farming from both
+>>
+ Anonymous 11/14/25(Fri)06:13:08 No.107201590▶
+>>107201452
+you must become a meme master, it's the only way forward
+>>
+ Anonymous 11/14/25(Fri)06:23:41 No.107201658▶>>107201669
+>>107199448 →
+this is only making black images for me. don't know what I'm doing wrong. I have the VAE and text encoder from the description.
+>>
+ Anonymous 11/14/25(Fri)06:25:15 No.107201669▶>>107202202
+>>107201658
+are you using sage attention? don't
+>>
+ Anonymous 11/14/25(Fri)06:37:36 No.107201733▶>>107201759
+File: 00267-2101541806.png (1.35 MB, 1024x1024)
+1.35 MB
+>>
+ Anonymous 11/14/25(Fri)06:42:33 No.107201759▶>>107202036
+File: AniStudio-06669.png (1.85 MB, 1344x1024)
+1.85 MB
+>>107201407
+very clean desu
+
+>>107201733
+that's a big gun
+>>
+ Anonymous 11/14/25(Fri)07:07:03 No.107201872▶
+File: 1754431461692328.jpg (217 KB, 1360x768)
+217 KB
+>>
+ Anonymous 11/14/25(Fri)07:08:40 No.107201882▶>>107202002
+File: 00042-1202302600-7d62cbe3(...).png (3.4 MB, 1344x1728)
+3.4 MB
+>>
+ Anonymous 11/14/25(Fri)07:24:24 No.107201937▶>>107201947
+Some really good 2023-tier outputs. Getting nostalgic looking at this thread
+>>
+ Anonymous 11/14/25(Fri)07:27:19 No.107201947▶
+>>107201937
+you going to share your gens with the class or what?
+>>
+ Anonymous 11/14/25(Fri)07:34:31 No.107201987▶>>107202003
+File: 03727-825620574.png (3.98 MB, 1792x2304)
+3.98 MB
+>>
+ Anonymous 11/14/25(Fri)07:36:26 No.107202002▶
+>>107201882
+dumb sexy anorexic idol
+>>
+ Anonymous 11/14/25(Fri)07:36:31 No.107202003▶
+>>107201987
+boba booba
+>>
+ Anonymous 11/14/25(Fri)07:42:42 No.107202036▶
+>>107201759
+nice bubble butt
+>>
+ Anonymous 11/14/25(Fri)08:13:39 No.107202202▶
+>>107201669
+Thanks. Seems to work now but the output is slow and not very high quality and starting a run crashes comfyui like 90% of the time so doesn't seem worth it.
+>>
+ Anonymous 11/14/25(Fri)08:13:51 No.107202205▶>>107202289 >>107202313
+After fucking around with the noise removal script some more I can really only recommend it for flat color gens.
+It completely wrecks gradients.
+>>
+ Anonymous 11/14/25(Fri)08:30:17 No.107202289▶>>107202300
+File: in.png (1.06 MB, 1039x1084)
+1.06 MB
+>>107202205
+Horsebutt input.
+>>
+ Anonymous 11/14/25(Fri)08:31:43 No.107202300▶
+File: out.png (469 KB, 1039x1084)
+469 KB
+>>107202289
+Noise script output. Open both in browser and cycle back and forth between the tabs to see the difference in the gradients. It's banding the heck out of them, and this is with sigmaColor = 4.
+>>
+ Anonymous 11/14/25(Fri)08:33:40 No.107202313▶>>107202322
+File: 00547-3421589763-masterpi(...).png (2.26 MB, 1280x1920)
+2.26 MB
+>>107202205
+This is the Erica slop I made before the script
+>>
+ Anonymous 11/14/25(Fri)08:34:58 No.107202322▶>>107202333
+File: 00547-3421589763-masterpi(...).png (1.57 MB, 1280x1920)
+1.57 MB
+>>107202313
+After running the script
+>>
+ Anonymous 11/14/25(Fri)08:35:02 No.107202323▶
+>sigmas mentioned
+>>
+ Anonymous 11/14/25(Fri)08:36:09 No.107202333▶>>107202691
+>>107202322
+The script is murdering the tree details. =(
+>>
+ Anonymous 11/14/25(Fri)09:15:52 No.107202589▶
+File: ComfyUI_07789_.png (3.44 MB, 2560x2560)
+3.44 MB
+>>
+ Anonymous 11/14/25(Fri)09:37:33 No.107202673▶
+>>107199950
+That's why keeping Ani's garbage in the OP is inacceptable.
+>>
+ Anonymous 11/14/25(Fri)09:41:25 No.107202691▶
+>>107202333
+There's no free lunch. Generally every noise filter will cause side effects, even if it's supposed to only remove imperceptible noise.
+>>
+ Anonymous 11/14/25(Fri)09:46:14 No.107202713▶>>107202774 >>107202870 >>107203041
+File: 1753321147502819.jpg (174 KB, 1024x1024)
+174 KB
+If anyone is bored of talking about schizos all day they should consider runniing some tests with that new Hasphoria illustrious merge.
+It seems really good to me, but I'm a newfag with hardly any experience, so for all I know it's shit.
+>>
+ Anonymous 11/14/25(Fri)10:03:59 No.107202774▶>>107202815
+>>107202713
+Those countless merges are all the fucking same shit. It's not worth it to download "models" that are essentially just 6Gb loras.
+>>
+ Anonymous 11/14/25(Fri)10:12:06 No.107202815▶>>107202836
+>>107202774
+b-b-but this one is supposed to be d-different
+it uses LLMs or something to make it do something or something
+>>
+ Anonymous 11/14/25(Fri)10:15:05 No.107202836▶
+>>107202815
+Oh yeah, you're right, that one might be interesting to try at least, I thought you're just talking about another shitmerge #39845739
+>>
+ Anonymous 11/14/25(Fri)10:21:07 No.107202861▶
+You can tell that the shitmerge you're using is Illustrious-based if it doesn't support furfag website tags
+>>
+ Anonymous 11/14/25(Fri)10:21:22 No.107202864▶
+>>107200067
+Its just SDG discord, not Ani cord or ran cord or wtev
+We have 100+ members but you people keep repeating were cringe
+I just want more anime posters nya
+>>
+ Anonymous 11/14/25(Fri)10:23:34 No.107202870▶
+File: fossirs.png (1.45 MB, 1072x1376)
+1.45 MB
+>>107202713
+nai(noobai) is all you need.
+>>
+ Anonymous 11/14/25(Fri)10:52:40 No.107203041▶
+>>107202713
+I would try it, but last time i downloaded the nodes to run rouwei gemma shit it killed my speed for normal models and had to do a fresh comfyui reinstall.
+[Post a Reply][Return] [Catalog] [Top] 107 / 36 / 4[Update] [Auto]
+
+[Advertise on 4chan]
+Delete Post: [File Only] Style: 
+Yotsuba B
+[a / b / c / d / e / f / g / gif / h / hr / k / m / o / p / r / s / t / u / v / vg / vm / vmg / vr / vrpg / vst / w / wg] [i / ic] [r9k / s4s / vip] [cm / hm / lgbt / y] [3 / aco / adv / an / bant / biz / cgl / ck / co / diy / fa / fit / gd / hc / his / int / jp / lit / mlp / mu / n / news / out / po / pol / pw / qst / sci / soc / sp / tg / toy / trv / tv / vp / vt / wsg / wsr / x / xs] [Edit][Settings] [Search] [Mobile] [Home]
+All trademarks and copyrights on this page are owned by their respective parties. Images uploaded are the responsibility of the Poster. Comments are owned by the Poster.
+About • Feedback • Legal • Contact
+

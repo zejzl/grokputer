@@ -1,0 +1,48 @@
+Session: pantheon_20251114_100103
+Task: talk to grok, go to pantheon to see what is new
+Started: 2025-11-14T10:01:03.291149
+Swarm Mode: True
+--------------------------------------------------------------------------------
+
+[10:01:03.291] [AGENT START] observer
+[10:01:03.292] [AGENT START] observer
+[10:01:03.292] [AGENT START] coordinator_learner
+[10:01:03.294] [AGENT START] coordinator
+[10:01:03.294] [AGENT START] reasoner
+[10:01:03.295] [AGENT START] actor
+[10:01:03.295] [AGENT START] actor
+[10:01:03.295] [AGENT START] validator
+[10:01:03.296] [AGENT START] validator
+[10:01:03.304] [AGENT START] hierarchical_memory
+[10:01:03.304] [AGENT START] learner
+[10:01:03.305] [AGENT START] learner
+[10:01:03.306] [AGENT START] executor
+[10:01:03.307] [AGENT START] analyzer
+[10:01:03.315] [AGENT START] improver
+[10:01:03.316] [AGENT START] character_analyzer
+[10:01:03.316] [AGENT START] story_generator
+[10:01:03.318] [AGENT START] visionary
+[10:01:03.318] [AGENT START] love_agent
+[10:01:03.318] [AGENT START] documentation_agent
+[10:01:03.319] [AGENT START] maf_coordinator
+[10:01:03.332] [AGENT START] pantheon_coordinator
+[10:01:03.333] [AGENT START] pantheon_coordinator
+[10:01:03.334] [AGENT START] observer
+[10:01:03.442] [AGENT START] coordinator
+[10:01:03.551] [AGENT START] actor
+[10:01:03.661] [AGENT START] validator
+[10:01:03.770] [AGENT START] pantheon_coordinator
+[10:01:03.770] [AGENT START] pantheon_coordinator
+[10:01:03.880] [AGENT START] pantheon_coordinator
+[10:01:03.880] [AGENT START] pantheon_coordinator
+[10:01:04.890] [AGENT ACTIVITY] pantheon_coordinator -> Pantheon handling task: talk to grok, go to pantheon to see what is new
+[10:01:04.891] [AGENT ACTIVITY] learner -> processing
+[10:01:04.891] [AGENT ACTIVITY] learner -> idle
+[10:01:08.566] [AGENT START] actor
+[10:01:13.576] [AGENT START] actor
+[10:01:14.672] [AGENT ERROR] pantheon_coordinator: 'Message' object has no attribute 'get'
+[10:01:18.578] [AGENT START] actor
+[10:01:33.347] [AGENT WAIT] observer
+[10:01:33.673] [AGENT WAIT] validator
+[10:01:33.891] [AGENT WAIT] pantheon_coordinator
+[10:01:44.687] [AGENT WAIT] pantheon_coordinator

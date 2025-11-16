@@ -2,58 +2,59 @@
 Collaboration module for multi-agent coordination via MessageBus.
 """
 
-from src.collaboration.message_models import MessageType, AgentRole, CollaborationMessage, ConsensusSignal, FinalPlan
+from src.collaboration.message_models import (
+    AgentRole,
+    CollaborationMessage,
+    ConsensusSignal,
+    FinalPlan,
+    MessageType,
+)
 
 # MAF (Multi-Agent Framework) components - optional imports
 try:
-    from src.collaboration.provider_registry import (
-        ProviderCapability,
-        ProviderMetadata,
-        ProviderInstance,
-        ProviderRegistry,
-        provider_registry,
-        initialize_default_providers,
-        initialize_mock_providers,
-    )
-
-    from src.collaboration.provider_pool import (
-        PoolStrategy,
-        PoolConfig,
-        ConnectionInfo,
-        ProviderPoolStats,
-        CircuitBreaker,
-        ProviderPool,
-        provider_pool,
-    )
-
-    from src.collaboration.multi_provider_coordinator import (
-        ProviderRole,
-        CollaborationConfig,
-        MultiProviderCoordinator,
-        CollaborationCoordinator,
-    )
-
-    from src.collaboration.orchestrator import (
-        OrchestrationStrategy,
-        OrchestrationConfig,
-        RoleAssignment,
-        Orchestrator,
-        orchestrator,
-    )
-
     from src.collaboration.config import (
+        DEFAULT_CONFIGS,
         MAF_CONFIG_SCHEMA,
         MAFConfigLoader,
-        maf_config_loader,
         create_default_configs,
-        DEFAULT_CONFIGS,
+        maf_config_loader,
     )
-
     from src.collaboration.maf_messagebus_integration import (
         MAFMessageBusAdapter,
         MAFMessageBusCoordinator,
         initialize_maf_messagebus_integration,
         maf_messagebus_coordinator,
+    )
+    from src.collaboration.multi_provider_coordinator import (
+        CollaborationConfig,
+        CollaborationCoordinator,
+        MultiProviderCoordinator,
+        ProviderRole,
+    )
+    from src.collaboration.orchestrator import (
+        OrchestrationConfig,
+        OrchestrationStrategy,
+        Orchestrator,
+        RoleAssignment,
+        orchestrator,
+    )
+    from src.collaboration.provider_pool import (
+        CircuitBreaker,
+        ConnectionInfo,
+        PoolConfig,
+        PoolStrategy,
+        ProviderPool,
+        ProviderPoolStats,
+        provider_pool,
+    )
+    from src.collaboration.provider_registry import (
+        ProviderCapability,
+        ProviderInstance,
+        ProviderMetadata,
+        ProviderRegistry,
+        initialize_default_providers,
+        initialize_mock_providers,
+        provider_registry,
     )
 
     MAF_AVAILABLE = True

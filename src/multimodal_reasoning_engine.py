@@ -6,20 +6,26 @@ for intelligent decision making and action planning.
 """
 
 import asyncio
+import json
 import logging
-from typing import Dict, Any, List, Optional, Union, Tuple
 from dataclasses import dataclass, field
 from datetime import datetime
-import json
+from typing import Any, Dict, List, Optional, Tuple, Union
 
-from .multimodal_processor import MultiModalProcessor, MultiModalAnalysis, MultiModalInput
-from .ui_understanding import UIUnderstandingModule, UIUnderstanding
+from .multimodal_processor import (
+    MultiModalAnalysis,
+    MultiModalInput,
+    MultiModalProcessor,
+)
+from .ui_understanding import UIUnderstanding, UIUnderstandingModule
 
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class ReasoningContext:
     """Context information for reasoning."""
+
     user_intent: str = ""
     task_objective: str = ""
     environmental_factors: Dict[str, Any] = field(default_factory=dict)
@@ -27,9 +33,11 @@ class ReasoningContext:
     constraints: Dict[str, Any] = field(default_factory=dict)
     timestamp: float = field(default_factory=lambda: datetime.now().timestamp())
 
+
 @dataclass
 class ReasoningStep:
     """A step in the reasoning process."""
+
     step_type: str
     description: str
     input_data: Dict[str, Any]
@@ -38,9 +46,11 @@ class ReasoningStep:
     output: Dict[str, Any]
     timestamp: float = field(default_factory=lambda: datetime.now().timestamp())
 
+
 @dataclass
 class Decision:
     """A decision made by the reasoning engine."""
+
     action: str
     parameters: Dict[str, Any]
     justification: str
@@ -49,15 +59,18 @@ class Decision:
     risks: List[str] = field(default_factory=list)
     expected_outcomes: List[str] = field(default_factory=list)
 
+
 @dataclass
 class ReasoningResult:
     """Complete reasoning result."""
+
     context: ReasoningContext
     analysis: MultiModalAnalysis
     reasoning_steps: List[ReasoningStep] = field(default_factory=list)
     final_decision: Optional[Decision] = None
     confidence_score: float = 0.0
     reasoning_time: float = 0.0
+
 
 class MultiModalReasoningEngine:
     """
@@ -80,11 +93,10 @@ class MultiModalReasoningEngine:
             "safety_assessment": self._reason_safety_assessment,
             "task_execution": self._reason_task_execution,
             "error_handling": self._reason_error_handling,
-            "learning_opportunity": self._reason_learning_opportunity
+            "learning_opportunity": self._reason_learning_opportunity,
         }
 
-    async def reason_and_decide(self, input_data: MultiModalInput,
-                              context: ReasoningContext) -> ReasoningResult:
+    async def reason_and_decide(self, input_data: MultiModalInput, context: ReasoningContext) -> ReasoningResult:
         """
         Perform multi-modal reasoning and make a decision.
 
@@ -139,7 +151,7 @@ class MultiModalReasoningEngine:
                 justification="Reasoning process encountered an error",
                 confidence=0.1,
                 risks=["Unknown system state"],
-                expected_outcomes=["Error logged and handled gracefully"]
+                expected_outcomes=["Error logged and handled gracefully"],
             )
 
         finally:
@@ -162,10 +174,7 @@ class MultiModalReasoningEngine:
             input_data={"input_data": input_data},
             reasoning="Processed text, visual, and audio data to extract features and cross-modal insights",
             confidence=analysis.confidence_score,
-            output={
-                "analysis": analysis,
-                "ui_understanding": ui_understanding
-            }
+            output={"analysis": analysis, "ui_understanding": ui_understanding},
         )
 
     def _integrate_context(self, analysis: MultiModalAnalysis, context: ReasoningContext) -> ReasoningStep:
@@ -184,8 +193,8 @@ class MultiModalReasoningEngine:
             confidence=context_relevance,
             output={
                 "context_relevance": context_relevance,
-                "integrated_factors": self._extract_relevant_context_factors(analysis, context)
-            }
+                "integrated_factors": self._extract_relevant_context_factors(analysis, context),
+            },
         )
 
     def _assess_situation(self, analysis: MultiModalAnalysis, context: ReasoningContext) -> ReasoningStep:
@@ -208,8 +217,8 @@ class MultiModalReasoningEngine:
                 "situation_type": situation_type,
                 "urgency_level": urgency_level,
                 "complexity_level": complexity_level,
-                "key_factors": self._extract_situation_factors(analysis, context)
-            }
+                "key_factors": self._extract_situation_factors(analysis, context),
+            },
         )
 
     def _select_reasoning_strategy(self, analysis: MultiModalAnalysis, context: ReasoningContext) -> ReasoningStep:
@@ -242,12 +251,12 @@ class MultiModalReasoningEngine:
             input_data={"analysis": analysis, "context": context},
             reasoning=f"Selected '{strategy}' strategy based on input characteristics and context",
             confidence=0.9,
-            output={"strategy": strategy}
+            output={"strategy": strategy},
         )
 
-    async def _reason_ui_interaction(self, analysis: MultiModalAnalysis,
-                                   context: ReasoningContext,
-                                   previous_steps: List[ReasoningStep]) -> ReasoningStep:
+    async def _reason_ui_interaction(
+        self, analysis: MultiModalAnalysis, context: ReasoningContext, previous_steps: List[ReasoningStep]
+    ) -> ReasoningStep:
         """Reasoning strategy for UI interaction scenarios."""
         # Get UI understanding if available
         ui_understanding = None
@@ -269,12 +278,12 @@ class MultiModalReasoningEngine:
             input_data={"ui_understanding": ui_understanding, "context": context},
             reasoning="Analyzed UI elements, user intent, and interaction possibilities to determine optimal action",
             confidence=decision.confidence if decision else 0.5,
-            output={"decision": decision}
+            output={"decision": decision},
         )
 
-    async def _reason_content_analysis(self, analysis: MultiModalAnalysis,
-                                     context: ReasoningContext,
-                                     previous_steps: List[ReasoningStep]) -> ReasoningStep:
+    async def _reason_content_analysis(
+        self, analysis: MultiModalAnalysis, context: ReasoningContext, previous_steps: List[ReasoningStep]
+    ) -> ReasoningStep:
         """Reasoning strategy for content analysis scenarios."""
         content_type = self._classify_content(analysis)
         analysis_depth = self._determine_analysis_depth(analysis, context)
@@ -284,11 +293,11 @@ class MultiModalReasoningEngine:
             parameters={
                 "content_type": content_type,
                 "analysis_depth": analysis_depth,
-                "focus_areas": self._identify_content_focus_areas(analysis)
+                "focus_areas": self._identify_content_focus_areas(analysis),
             },
             justification=f"Content identified as {content_type}, requiring {analysis_depth} analysis",
             confidence=0.8,
-            expected_outcomes=["Content insights extracted", "Knowledge base updated"]
+            expected_outcomes=["Content insights extracted", "Knowledge base updated"],
         )
 
         return ReasoningStep(
@@ -297,12 +306,12 @@ class MultiModalReasoningEngine:
             input_data={"analysis": analysis, "context": context},
             reasoning=f"Classified content and determined analysis strategy based on available modalities",
             confidence=0.8,
-            output={"decision": decision}
+            output={"decision": decision},
         )
 
-    async def _reason_safety_assessment(self, analysis: MultiModalAnalysis,
-                                      context: ReasoningContext,
-                                      previous_steps: List[ReasoningStep]) -> ReasoningStep:
+    async def _reason_safety_assessment(
+        self, analysis: MultiModalAnalysis, context: ReasoningContext, previous_steps: List[ReasoningStep]
+    ) -> ReasoningStep:
         """Reasoning strategy for safety assessment."""
         safety_concerns = self._identify_safety_concerns(analysis, context)
         risk_level = self._assess_risk_level(safety_concerns)
@@ -315,7 +324,9 @@ class MultiModalReasoningEngine:
             justification=f"Safety assessment identified {len(safety_concerns)} concerns with risk level {risk_level:.1f}",
             confidence=0.9,
             risks=safety_concerns,
-            expected_outcomes=["Safe operation maintained"] if action == "proceed_safely" else ["Risk mitigation implemented"]
+            expected_outcomes=(
+                ["Safe operation maintained"] if action == "proceed_safely" else ["Risk mitigation implemented"]
+            ),
         )
 
         return ReasoningStep(
@@ -324,12 +335,12 @@ class MultiModalReasoningEngine:
             input_data={"analysis": analysis, "context": context},
             reasoning="Evaluated potential safety risks and determined appropriate action",
             confidence=0.9,
-            output={"decision": decision}
+            output={"decision": decision},
         )
 
-    async def _reason_task_execution(self, analysis: MultiModalAnalysis,
-                                   context: ReasoningContext,
-                                   previous_steps: List[ReasoningStep]) -> ReasoningStep:
+    async def _reason_task_execution(
+        self, analysis: MultiModalAnalysis, context: ReasoningContext, previous_steps: List[ReasoningStep]
+    ) -> ReasoningStep:
         """Reasoning strategy for task execution scenarios."""
         task_progress = self._assess_task_progress(analysis, context)
         next_steps = self._identify_next_task_steps(analysis, context, task_progress)
@@ -339,11 +350,11 @@ class MultiModalReasoningEngine:
             parameters={
                 "task_progress": task_progress,
                 "next_steps": next_steps,
-                "required_resources": self._identify_required_resources(analysis, next_steps)
+                "required_resources": self._identify_required_resources(analysis, next_steps),
             },
             justification=f"Task {task_progress:.1%} complete, identified {len(next_steps)} next steps",
             confidence=0.8,
-            expected_outcomes=[f"Task step '{step}' completed" for step in next_steps[:3]]
+            expected_outcomes=[f"Task step '{step}' completed" for step in next_steps[:3]],
         )
 
         return ReasoningStep(
@@ -352,12 +363,12 @@ class MultiModalReasoningEngine:
             input_data={"analysis": analysis, "context": context},
             reasoning="Assessed task progress and planned next execution steps",
             confidence=0.8,
-            output={"decision": decision}
+            output={"decision": decision},
         )
 
-    async def _reason_error_handling(self, analysis: MultiModalAnalysis,
-                                   context: ReasoningContext,
-                                   previous_steps: List[ReasoningStep]) -> ReasoningStep:
+    async def _reason_error_handling(
+        self, analysis: MultiModalAnalysis, context: ReasoningContext, previous_steps: List[ReasoningStep]
+    ) -> ReasoningStep:
         """Reasoning strategy for error handling."""
         error_type = self._classify_error(analysis)
         recovery_strategy = self._determine_recovery_strategy(error_type, context)
@@ -367,12 +378,12 @@ class MultiModalReasoningEngine:
             parameters={
                 "error_type": error_type,
                 "recovery_strategy": recovery_strategy,
-                "error_context": self._extract_error_context(analysis)
+                "error_context": self._extract_error_context(analysis),
             },
             justification=f"Error classified as {error_type}, implementing {recovery_strategy} recovery",
             confidence=0.7,
             risks=["Recovery may not succeed", "Data loss possible"],
-            expected_outcomes=["Error condition resolved", "System stability restored"]
+            expected_outcomes=["Error condition resolved", "System stability restored"],
         )
 
         return ReasoningStep(
@@ -381,12 +392,12 @@ class MultiModalReasoningEngine:
             input_data={"analysis": analysis, "context": context},
             reasoning="Analyzed error condition and determined recovery strategy",
             confidence=0.7,
-            output={"decision": decision}
+            output={"decision": decision},
         )
 
-    async def _reason_learning_opportunity(self, analysis: MultiModalAnalysis,
-                                         context: ReasoningContext,
-                                         previous_steps: List[ReasoningStep]) -> ReasoningStep:
+    async def _reason_learning_opportunity(
+        self, analysis: MultiModalAnalysis, context: ReasoningContext, previous_steps: List[ReasoningStep]
+    ) -> ReasoningStep:
         """Reasoning strategy for learning opportunities."""
         learning_type = self._identify_learning_type(analysis, context)
         learning_value = self._assess_learning_value(analysis, context)
@@ -396,11 +407,11 @@ class MultiModalReasoningEngine:
             parameters={
                 "learning_type": learning_type,
                 "learning_value": learning_value,
-                "knowledge_to_extract": self._identify_knowledge_to_extract(analysis)
+                "knowledge_to_extract": self._identify_knowledge_to_extract(analysis),
             },
             justification=f"Identified {learning_type} learning opportunity with value {learning_value:.1f}",
             confidence=0.8,
-            expected_outcomes=["Knowledge base enhanced", "Future performance improved"]
+            expected_outcomes=["Knowledge base enhanced", "Future performance improved"],
         )
 
         return ReasoningStep(
@@ -409,7 +420,7 @@ class MultiModalReasoningEngine:
             input_data={"analysis": analysis, "context": context},
             reasoning="Recognized pattern or insight that could improve future reasoning",
             confidence=0.8,
-            output={"decision": decision}
+            output={"decision": decision},
         )
 
     def _assess_reasoning_confidence(self, result: ReasoningResult) -> ReasoningStep:
@@ -425,7 +436,7 @@ class MultiModalReasoningEngine:
                 context_relevance = step.output.get("context_relevance", 0.5)
                 break
 
-        overall_confidence = (base_confidence * 0.4 + avg_step_confidence * 0.4 + context_relevance * 0.2)
+        overall_confidence = base_confidence * 0.4 + avg_step_confidence * 0.4 + context_relevance * 0.2
 
         return ReasoningStep(
             step_type="confidence_assessment",
@@ -433,7 +444,7 @@ class MultiModalReasoningEngine:
             input_data={"result": result},
             reasoning=f"Combined analysis confidence ({base_confidence:.2f}), step confidences ({avg_step_confidence:.2f}), and context relevance ({context_relevance:.2f})",
             confidence=overall_confidence,
-            output={"confidence": overall_confidence}
+            output={"confidence": overall_confidence},
         )
 
     # Helper methods
@@ -444,7 +455,7 @@ class MultiModalReasoningEngine:
 
         # Simple heuristic based on filename and metadata
         filename = input_data.image_path.lower()
-        screenshot_indicators = ['screenshot', 'screen', 'capture', 'shot']
+        screenshot_indicators = ["screenshot", "screen", "capture", "shot"]
 
         return any(indicator in filename for indicator in screenshot_indicators)
 
@@ -540,15 +551,18 @@ class MultiModalReasoningEngine:
 
     def _is_ui_interaction_scenario(self, analysis: MultiModalAnalysis, context: ReasoningContext) -> bool:
         """Determine if this is a UI interaction scenario."""
-        return (analysis.visual_analysis and
-                self._is_screenshot(analysis.input_data) and
-                (context.user_intent and any(word in context.user_intent.lower()
-                                           for word in ['click', 'type', 'select', 'navigate'])))
+        return (
+            analysis.visual_analysis
+            and self._is_screenshot(analysis.input_data)
+            and (
+                context.user_intent
+                and any(word in context.user_intent.lower() for word in ["click", "type", "select", "navigate"])
+            )
+        )
 
     def _requires_safety_assessment(self, analysis: MultiModalAnalysis, context: ReasoningContext) -> bool:
         """Determine if safety assessment is required."""
-        return (context.constraints.get("safety_critical", False) or
-                self._detects_error_condition(analysis))
+        return context.constraints.get("safety_critical", False) or self._detects_error_condition(analysis)
 
     def _is_task_execution_scenario(self, analysis: MultiModalAnalysis, context: ReasoningContext) -> bool:
         """Determine if this is a task execution scenario."""
@@ -564,11 +578,13 @@ class MultiModalReasoningEngine:
 
     def _is_learning_opportunity(self, analysis: MultiModalAnalysis, context: ReasoningContext) -> bool:
         """Determine if this presents a learning opportunity."""
-        return (len(analysis.cross_modal_insights) > 2 or
-                (analysis.confidence_score > 0.8 and len(context.historical_actions) > 0))
+        return len(analysis.cross_modal_insights) > 2 or (
+            analysis.confidence_score > 0.8 and len(context.historical_actions) > 0
+        )
 
-    async def _decide_ui_action(self, ui_understanding: Optional[UIUnderstanding],
-                              analysis: MultiModalAnalysis, context: ReasoningContext) -> Optional[Decision]:
+    async def _decide_ui_action(
+        self, ui_understanding: Optional[UIUnderstanding], analysis: MultiModalAnalysis, context: ReasoningContext
+    ) -> Optional[Decision]:
         """Decide on UI action based on understanding."""
         if not ui_understanding:
             return None
@@ -592,7 +608,7 @@ class MultiModalReasoningEngine:
                 parameters={"ui_elements": [elem.__dict__ for elem in ui_understanding.ui_hierarchy]},
                 justification=f"Selected action '{best_action}' matching user intent with score {best_match_score:.2f}",
                 confidence=min(best_match_score, 0.9),
-                expected_outcomes=[f"UI interaction '{best_action}' completed successfully"]
+                expected_outcomes=[f"UI interaction '{best_action}' completed successfully"],
             )
 
         return None
@@ -690,7 +706,9 @@ class MultiModalReasoningEngine:
         # Placeholder implementation
         return 0.5
 
-    def _identify_next_task_steps(self, analysis: MultiModalAnalysis, context: ReasoningContext, progress: float) -> List[str]:
+    def _identify_next_task_steps(
+        self, analysis: MultiModalAnalysis, context: ReasoningContext, progress: float
+    ) -> List[str]:
         """Identify next steps for task execution."""
         if progress < 0.3:
             return ["analyze_requirements", "gather_resources"]
@@ -725,7 +743,7 @@ class MultiModalReasoningEngine:
         strategies = {
             "processing_failure": "retry_with_fallback",
             "content_error": "request_clarification",
-            "unknown_error": "log_and_continue"
+            "unknown_error": "log_and_continue",
         }
         return strategies.get(error_type, "log_and_continue")
 
@@ -736,9 +754,9 @@ class MultiModalReasoningEngine:
             "available_modalities": [
                 "text" if analysis.text_analysis else None,
                 "visual" if analysis.visual_analysis else None,
-                "audio" if analysis.audio_analysis else None
+                "audio" if analysis.audio_analysis else None,
             ],
-            "confidence_score": analysis.confidence_score
+            "confidence_score": analysis.confidence_score,
         }
 
     def _identify_learning_type(self, analysis: MultiModalAnalysis, context: ReasoningContext) -> str:
@@ -786,7 +804,7 @@ class MultiModalReasoningEngine:
                 "environmental_factors": result.context.environmental_factors,
                 "historical_actions": result.context.historical_actions,
                 "constraints": result.context.constraints,
-                "timestamp": result.context.timestamp
+                "timestamp": result.context.timestamp,
             },
             "analysis": self.multimodal_processor.to_dict(result.analysis),
             "reasoning_steps": [
@@ -797,19 +815,23 @@ class MultiModalReasoningEngine:
                     "reasoning": step.reasoning,
                     "confidence": step.confidence,
                     "output": step.output,
-                    "timestamp": step.timestamp
+                    "timestamp": step.timestamp,
                 }
                 for step in result.reasoning_steps
             ],
-            "final_decision": {
-                "action": result.final_decision.action,
-                "parameters": result.final_decision.parameters,
-                "justification": result.final_decision.justification,
-                "confidence": result.final_decision.confidence,
-                "alternatives": result.final_decision.alternatives,
-                "risks": result.final_decision.risks,
-                "expected_outcomes": result.final_decision.expected_outcomes
-            } if result.final_decision else None,
+            "final_decision": (
+                {
+                    "action": result.final_decision.action,
+                    "parameters": result.final_decision.parameters,
+                    "justification": result.final_decision.justification,
+                    "confidence": result.final_decision.confidence,
+                    "alternatives": result.final_decision.alternatives,
+                    "risks": result.final_decision.risks,
+                    "expected_outcomes": result.final_decision.expected_outcomes,
+                }
+                if result.final_decision
+                else None
+            ),
             "confidence_score": result.confidence_score,
-            "reasoning_time": result.reasoning_time
+            "reasoning_time": result.reasoning_time,
         }

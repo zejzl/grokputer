@@ -6,13 +6,14 @@ Async client with error handling and rate limiting.
 Integrates with analytics for fallback tracking.
 """
 
-import os
 import asyncio
-import aiohttp
-from typing import Optional, Dict, Any
-from dataclasses import dataclass
 import logging
+import os
+from dataclasses import dataclass
 from datetime import datetime
+from typing import Any, Dict, Optional
+
+import aiohttp
 
 # Analytics integration disabled due to database issues
 # try:
@@ -141,7 +142,11 @@ class GrokClient:
             session = self._get_session()
             try:
                 async with session.post(url, json=payload, headers=headers) as response:
-                    response_time = response.connection.transport.get_extra_info("total_time", 0) if response.connection and response.connection.transport else 0
+                    response_time = (
+                        response.connection.transport.get_extra_info("total_time", 0)
+                        if response.connection and response.connection.transport
+                        else 0
+                    )
                     if response.status == 200:
                         data = await response.json()
                         if provider.name == "grok" or provider.name == "claude":

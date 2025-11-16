@@ -6,15 +6,16 @@ and automated restart capabilities for all agents in the Grokputer system.
 """
 
 import asyncio
+import json
 import logging
-import time
-import psutil
+import statistics
 import threading
-from typing import Dict, List, Optional, Callable, Any
+import time
 from dataclasses import dataclass, field
 from enum import Enum
-import statistics
-import json
+from typing import Any, Callable, Dict, List, Optional
+
+import psutil
 
 from src.core.base_agent import BaseAgent
 from src.observability.deadlock_detector import DeadlockDetector
@@ -25,6 +26,7 @@ logger = logging.getLogger(__name__)
 
 class AgentStatus(Enum):
     """Agent lifecycle status enumeration."""
+
     INITIALIZING = "initializing"
     RUNNING = "running"
     HEALTHY = "healthy"
@@ -38,6 +40,7 @@ class AgentStatus(Enum):
 @dataclass
 class AgentHealthMetrics:
     """Health metrics for an agent."""
+
     agent_id: str
     status: AgentStatus = AgentStatus.INITIALIZING
     last_health_check: float = field(default_factory=time.time)
@@ -75,6 +78,7 @@ class AgentHealthMetrics:
 @dataclass
 class LifecycleConfig:
     """Configuration for agent lifecycle management."""
+
     health_check_interval: float = 30.0  # seconds
     max_restart_attempts: int = 3
     restart_delay_seconds: float = 5.0
@@ -90,7 +94,7 @@ class LifecycleConfig:
     max_agents_per_type: int = 5
     min_agents_per_type: int = 1
     scaling_threshold_high: float = 0.8  # Scale up when load > 80%
-    scaling_threshold_low: float = 0.3   # Scale down when load < 30%
+    scaling_threshold_low: float = 0.3  # Scale down when load < 30%
     emergency_shutdown_threshold: float = 0.95  # System load emergency
 
 
@@ -106,11 +110,7 @@ class AgentLifecycleManager:
     - Graceful shutdown coordination
     """
 
-    def __init__(
-        self,
-        config: LifecycleConfig = None,
-        session_logger: SessionLogger = None
-    ):
+    def __init__(self, config: LifecycleConfig = None, session_logger: SessionLogger = None):
         self.config = config or LifecycleConfig()
         self.session_logger = session_logger
 
@@ -121,8 +121,7 @@ class AgentLifecycleManager:
 
         # Monitoring infrastructure
         self.deadlock_detector = DeadlockDetector(
-            timeout_seconds=self.config.deadlock_timeout_seconds,
-            check_interval=10.0
+            timeout_seconds=self.config.deadlock_timeout_seconds, check_interval=10.0
         )
 
         # Control flags
@@ -135,8 +134,11 @@ class AgentLifecycleManager:
         self.on_agent_restart: Optional[Callable[[str], None]] = None
         self.on_system_health_change: Optional[Callable[[str], None]] = None
 
-        logger.info("[LifecycleManager] Initialized with config: health_check=%ss, auto_restart=%s",
-                   self.config.health_check_interval, self.config.auto_restart_enabled)
+        logger.info(
+            "[LifecycleManager] Initialized with config: health_check=%ss, auto_restart=%s",
+            self.config.health_check_interval,
+            self.config.auto_restart_enabled,
+        )
 
     async def register_agent(self, agent: BaseAgent) -> bool:
         """
@@ -286,12 +288,11 @@ class AgentLifecycleManager:
             Dictionary with system health information
         """
         total_agents = len(self.agents)
-        healthy_count = sum(1 for m in self.health_metrics.values()
-                          if m.status in [AgentStatus.HEALTHY, AgentStatus.RUNNING])
-        degraded_count = sum(1 for m in self.health_metrics.values()
-                           if m.status == AgentStatus.DEGRADED)
-        unhealthy_count = sum(1 for m in self.health_metrics.values()
-                            if m.status == AgentStatus.UNHEALTHY)
+        healthy_count = sum(
+            1 for m in self.health_metrics.values() if m.status in [AgentStatus.HEALTHY, AgentStatus.RUNNING]
+        )
+        degraded_count = sum(1 for m in self.health_metrics.values() if m.status == AgentStatus.DEGRADED)
+        unhealthy_count = sum(1 for m in self.health_metrics.values() if m.status == AgentStatus.UNHEALTHY)
 
         overall_status = "healthy"
         if unhealthy_count > 0:
@@ -312,11 +313,11 @@ class AgentLifecycleManager:
                     "total_restarts": metrics.total_restarts,
                     "uptime_seconds": metrics.uptime_seconds,
                     "last_error": metrics.last_error,
-                    "performance_score": metrics.performance_score
+                    "performance_score": metrics.performance_score,
                 }
                 for agent_id, metrics in self.health_metrics.items()
             },
-            "deadlock_stats": self.deadlock_detector.get_stats()
+            "deadlock_stats": self.deadlock_detector.get_stats(),
         }
 
     async def restart_agent(self, agent_id: str, reason: str = "manual") -> bool:
@@ -457,15 +458,16 @@ class AgentLifecycleManager:
                     await self.on_agent_failure(agent_id, error_msg)
 
                 # Check if we should restart
-                if (self.config.auto_restart_enabled and
-                    restart_attempts < self.config.max_restart_attempts):
+                if self.config.auto_restart_enabled and restart_attempts < self.config.max_restart_attempts:
 
                     restart_attempts += 1
                     metrics.status = AgentStatus.RESTARTING
                     metrics.total_restarts += 1
 
-                    logger.info(f"[LifecycleManager] Restarting agent {agent_id} "
-                              f"(attempt {restart_attempts}/{self.config.max_restart_attempts})")
+                    logger.info(
+                        f"[LifecycleManager] Restarting agent {agent_id} "
+                        f"(attempt {restart_attempts}/{self.config.max_restart_attempts})"
+                    )
 
                     if self.on_agent_restart:
                         await self.on_agent_restart(agent_id)
@@ -475,8 +477,10 @@ class AgentLifecycleManager:
                 else:
                     # Give up
                     metrics.status = AgentStatus.FAILED
-                    logger.error(f"[LifecycleManager] Agent {agent_id} failed permanently "
-                               f"after {restart_attempts} restart attempts")
+                    logger.error(
+                        f"[LifecycleManager] Agent {agent_id} failed permanently "
+                        f"after {restart_attempts} restart attempts"
+                    )
                     break
 
     async def _health_monitor_loop(self):
@@ -522,8 +526,9 @@ class AgentLifecycleManager:
 
                 # Log status changes
                 if metrics.status == AgentStatus.UNHEALTHY:
-                    logger.warning(f"[LifecycleManager] Agent unhealthy: {agent_id} "
-                                 f"(failures: {metrics.consecutive_failures})")
+                    logger.warning(
+                        f"[LifecycleManager] Agent unhealthy: {agent_id} " f"(failures: {metrics.consecutive_failures})"
+                    )
 
             except Exception as e:
                 logger.error(f"[LifecycleManager] Health check failed for {agent_id}: {e}")

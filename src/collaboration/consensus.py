@@ -2,9 +2,9 @@
 Consensus detector for analyzing agreement and convergence between agents.
 """
 
+import logging
 import re
 from typing import List, Set
-import logging
 
 from src.collaboration.message_models import CollaborationMessage, ConsensusSignal
 

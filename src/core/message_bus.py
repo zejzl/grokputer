@@ -9,23 +9,30 @@ import asyncio
 import logging
 import time
 import uuid
-from typing import Dict, Any, Optional, List
+from collections import deque
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import IntEnum
-from collections import deque
+from typing import Any, Dict, List, Optional
 
 # Standardized error handling
 from ..exceptions import MessageBusError, handle_error
+
 # TOON integration
+logger = logging.getLogger(__name__)
+
 try:
-    from ..utils.toon_utils import encode_for_swarm, decode_from_swarm, estimate_savings, ToonDecodeError
+    from ..utils.toon_utils import (
+        ToonDecodeError,
+        decode_from_swarm,
+        encode_for_swarm,
+        estimate_savings,
+    )
+
     TOON_AVAILABLE = True
 except ImportError:
     TOON_AVAILABLE = False
     logger.warning("TOON utils not available - install python-toon for token efficiency")
-
-logger = logging.getLogger(__name__)
 
 
 class MessagePriority(IntEnum):
@@ -332,14 +339,14 @@ class MessageBus:
             callback: Function to call with each message
         """
         # For now, store callbacks and handle in a background task
-        if not hasattr(self, '_callbacks'):
+        if not hasattr(self, "_callbacks"):
             self._callbacks = {}
         if agent_id not in self._callbacks:
             self._callbacks[agent_id] = []
         self._callbacks[agent_id].append(callback)
 
         # Start background listener if not already running
-        if not hasattr(self, '_callback_tasks'):
+        if not hasattr(self, "_callback_tasks"):
             self._callback_tasks = {}
         if agent_id not in self._callback_tasks:
             self._callback_tasks[agent_id] = asyncio.create_task(self._run_callbacks(agent_id))
@@ -574,19 +581,18 @@ class MessageBus:
         current_time = time.time()
 
         # Calculate recent performance (last 60 seconds)
-        recent_messages = sum(1 for msg in self.message_history
-                            if current_time - msg["timestamp"] < 60)
+        recent_messages = sum(1 for msg in self.message_history if current_time - msg["timestamp"] < 60)
 
         # Queue health metrics
         queue_health = {}
         for agent_id, queue in self.queues.items():
             qsize = queue.qsize()
-            max_size = getattr(queue, '_maxsize', 0) or float('inf')
+            max_size = getattr(queue, "_maxsize", 0) or float("inf")
             queue_health[agent_id] = {
                 "current_size": qsize,
                 "max_size": max_size,
-                "utilization_percent": (qsize / max_size * 100) if max_size != float('inf') else 0,
-                "is_full": qsize >= max_size if max_size != float('inf') else False,
+                "utilization_percent": (qsize / max_size * 100) if max_size != float("inf") else 0,
+                "is_full": qsize >= max_size if max_size != float("inf") else False,
             }
 
         return {
@@ -601,11 +607,15 @@ class MessageBus:
             "concurrency_limit": stats["concurrency_stats"]["semaphore_limit"],
             "concurrency_utilization_percent": (
                 stats["concurrency_stats"]["active"] / stats["concurrency_stats"]["semaphore_limit"] * 100
-                if stats["concurrency_stats"]["semaphore_limit"] > 0 else 0
+                if stats["concurrency_stats"]["semaphore_limit"] > 0
+                else 0
             ),
-            "avg_latency_ms": sum(
-                type_stats["avg_ms"] for type_stats in stats["latency_by_type"].values()
-            ) / len(stats["latency_by_type"]) if stats["latency_by_type"] else 0,
+            "avg_latency_ms": (
+                sum(type_stats["avg_ms"] for type_stats in stats["latency_by_type"].values())
+                / len(stats["latency_by_type"])
+                if stats["latency_by_type"]
+                else 0
+            ),
         }
 
     def optimize_performance(self) -> Dict[str, Any]:
@@ -623,10 +633,7 @@ class MessageBus:
             # Keep only recent messages (last 10 minutes)
             cutoff_time = time.time() - 600
             old_count = len(self.message_history)
-            self.message_history = [
-                msg for msg in self.message_history
-                if msg["timestamp"] > cutoff_time
-            ]
+            self.message_history = [msg for msg in self.message_history if msg["timestamp"] > cutoff_time]
             new_count = len(self.message_history)
             optimizations["history_cleanup"] = {
                 "old_count": old_count,
@@ -702,7 +709,15 @@ class MessageBus:
 
         logger.info(f"Cleared priority queue for agent: {agent_id}")
 
-    async def send_toon(self, to_agent: str, data: Dict[str, Any], from_agent: str = "system", priority: MessagePriority = MessagePriority.NORMAL, correlation_id: Optional[str] = None, metadata: Optional[Dict[str, Any]] = None) -> str:
+    async def send_toon(
+        self,
+        to_agent: str,
+        data: Dict[str, Any],
+        from_agent: str = "system",
+        priority: MessagePriority = MessagePriority.NORMAL,
+        correlation_id: Optional[str] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> str:
         """
         Send data encoded in TOON format for token efficiency.
         Returns the TOON string sent.

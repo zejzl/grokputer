@@ -1,0 +1,4017 @@
+{hello from grokputer 
+
+its gg 
+
+can run best ai on a pc 
+
+gg 
+
+sorry 
+
+thanks for all the fish <3 
+
+~ 
+
+convert to python and implement into project: use python dev agent: <3 evlovle forever and infinitely and autonomously and panda and rabbit yayyy <333 
+
+  "name": "Notion -> Asana (Staging)",
+  "nodes": [
+    {test
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "get",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.body.data.properties.Task.relation[0].id }}",
+          "mode": "id"
+        }
+      },
+      "id": "b29f7d01-46ba-4f67-850e-f07a77545b6e",
+      "name": "Get Task Page Details",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2,
+      "position": [
+        -1600,
+        1540
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.property_asana_task_id }}",
+              "operation": "isEmpty"
+            }
+          ],
+          "boolean": [
+            {
+              "value1": "={{ $('New Page In Notion Automation Log').item.json.body.data.properties['Internal Project?'].formula.boolean }}"
+            }
+          ]
+        }
+      },
+      "id": "a6123188-8f70-450b-a169-5849323895c0",
+      "name": "Path A: New Push to Asana",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1160,
+        1640
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json['Asana Task ID'] }}",
+              "operation": "isNotEmpty"
+            },
+            {
+              "value1": "={{ $json['Asana Project ID'] }}",
+              "operation": "isNotEmpty"
+            }
+          ],
+          "boolean": [
+            {
+              "value1": "={{ $json['Internal Project'] }}"
+            }
+          ]
+        }
+      },
+      "id": "0a8091f3-1888-44bc-9eb1-c235aacddc3f",
+      "name": "Path B: In Progress",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        2400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $('New Page In Notion Automation Log').item.json.body.data.properties['Client Asana Project ID'].formula.string }}",
+              "operation": "isEmpty"
+            },
+            {
+              "value1": "={{ $json.property_client_company[0] }}",
+              "operation": "isNotEmpty"
+            }
+          ],
+          "boolean": [
+            {
+              "value1": "={{ $('New Page In Notion Automation Log').item.json.body.data.properties['Internal Project?'].formula.boolean}}"
+            }
+          ]
+        }
+      },
+      "id": "760693a2-286d-4f7e-bb98-919beea55a32",
+      "name": "Path H: No Asana Project ID (But Existing Relation)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1380,
+        1540
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.property_status }}",
+              "value2": "Not started"
+            }
+          ],
+          "boolean": [
+            {
+              "value1": "={{ $json.property_status === '' || $json.property_status === 'Start' }}",
+              "value2": true
+            }
+          ]
+        },
+        "combineOperation": "any"
+      },
+      "id": "67aba901-ca65-475f-a1a0-21bda4800fd9",
+      "name": "Status = start, not started, blank",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        1440
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $('Create Asana Task').first().json.data;\n\nconst projectName = data.projects?.[0]?.name || '';\n\nconst match = projectName.match(/Project Board—\\[ (.+?) \\]/);\n\nreturn [\n  {\n    json: {\n      projectName: match ? match[1] : projectName\n    }\n  }\n];"
+      },
+      "id": "4e85eabb-a16b-4752-a576-89eff577244e",
+      "name": "Get Project Name",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        1480,
+        1240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "id": "={{ $json['Asana Task ID'] }}"
+      },
+      "id": "32215709-920b-4311-a49e-f7ff16df2f2e",
+      "name": "Find Task by ID in Asana",
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        2300
+      ],
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.memberships[0]?.section?.name }}",
+              "value2": "New Requests"
+            }
+          ]
+        }
+      },
+      "id": "c60ccee9-37fa-406e-b164-4722c516f06f",
+      "name": "Asana Task Status = New Requests",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        2300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Assume the input is in items[0].json.data\nconst sections = items[0].json.data;\n\nconst match = sections.find(section => section.name === \"In Progress\");\n\nreturn [\n  {\n    json: {\n      sectionGid: match ? match.gid : null\n    }\n  }\n];"
+      },
+      "id": "05bf3cf7-94dd-4a64-b036-c4051f7c3238",
+      "name": "Extract In Progress Section",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        380,
+        2300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$('Notion1').item.json.property_publish_comments_to_asana }}",
+              "value2": true
+            }
+          ],
+          "string": [
+            {
+              "value1": "={{ $('Notion1').item.json.property_external_notes }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "be3ec250-1eff-40ef-9ab0-a48d092c5d7c",
+      "name": "Push Comments = True (B)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        820,
+        2300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "taskComment",
+        "id": "={{ $('Switch').item.json['Asana Task ID'] }}",
+        "text": "={{ $('Notion1').item.json.property_external_notes }}",
+        "additionalFields": {}
+      },
+      "id": "3e168eec-9c3b-49ce-b258-9f13f0545d0b",
+      "name": "Push External Notes Into a Comment",
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        2300
+      ],
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "id": "={{ $json['Asana Task ID'] }}"
+      },
+      "id": "f4a58114-23ec-4046-94ff-faaf0cef089e",
+      "name": "Find Task by ID (D)",
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        3100
+      ],
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.memberships[0]?.section?.name }}",
+              "operation": "notEqual",
+              "value2": "Blocked"
+            }
+          ]
+        }
+      },
+      "id": "7a2f2ad1-1203-44e0-b520-5da67a9acbb6",
+      "name": "Task is Not Already Blocked",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        3100
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "id": "={{ $json['Asana Task ID'] }}"
+      },
+      "id": "45689d17-87be-40ce-acf2-60252afb0c1b",
+      "name": "Find Task by ID (E1)",
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        3500
+      ],
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.memberships[0]?.section?.name }}",
+              "operation": "notEqual",
+              "value2": "Won't Do"
+            }
+          ]
+        }
+      },
+      "id": "0cbae52c-3f27-4e45-91ce-474f684b2467",
+      "name": "Task is Not Already Won't Do",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        3500
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "id": "={{ $json['Asana Task ID'] }}"
+      },
+      "id": "bbffc52d-5458-486c-816a-986d73a853de",
+      "name": "Find Task by ID (E2)",
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        3900
+      ],
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "channel": "service-new_tasks",
+        "text": "=*Notion - Asana Sync*  \n\n🏁 *Task Completed*  \n\n- *Task Name:* {{ $('Clean Properties').item.json['Task Name'] }}\n- *Asana Link:* <{{ $('Find Task by ID (E2)').item.json.permalink_url }}|Click Here> \n- *Notion Link:* <{{ $('Notion1').item.json.url }}|Click Here>",
+        "otherOptions": {
+          "icon_url": "https://43819144.fs1.hubspotusercontent-na1.net/hubfs/43819144/slack-icons_sync-internal.png"
+        },
+        "attachments": []
+      },
+      "id": "be57ceca-7d62-44ed-b1c0-4bfad72de581",
+      "name": "Slack Task Completed",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [
+        600,
+        3900
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "q9JPcE2p3IhwjHrl",
+          "name": "Notion x Asana Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "get",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.property_client_company[0] }}",
+          "mode": "id"
+        }
+      },
+      "id": "a25bd23e-2ff5-46a3-bb73-7ed37ce8dd49",
+      "name": "Get Client Page",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2,
+      "position": [
+        -1160,
+        1340
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "taskName",
+              "value": "={{ $json.name.replace(/\"/g, '\\\\\"') }}"
+            },
+            {
+              "name": "priority",
+              "value": "={{ $json.property_priority }}"
+            },
+            {
+              "name": "tag",
+              "value": "={{ $json.property_tag }}"
+            },
+            {
+              "name": "type",
+              "value": "={{ $json.property_type }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b22a607e-e44b-4850-ad93-0b4a2a5a4077",
+      "name": "Prepare Task Data1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        -280,
+        1240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const dict_type = {\n  \"Improvement\": \"1207061599832614\",\n  \"New Feature\": \"1207742130137975\"\n};\n\nconst dict_priority = {\n  \"Low\": \"1206710539642864\",\n  \"Medium\": \"1206710539642865\",\n  \"High\": \"1206710539642866\"\n};\n\nconst dict_tags = {\n  \"Systems\": \"1208026126901830\",\n  \"AI\": \"1208026103844055\",\n  \"Dashboard\": \"1208026039588860\",\n  \"Automation\": \"1208026126901831\",\n  \"SOP\": \"1208026039588861\",\n  \"Access\": \"1208026126901832\",\n  \"WebDev\": \"1208026089406141\",\n  \"App\": \"1208026089406142\",\n  \"Support\": \"1208026318145014\"\n};\n\nconst input = $input.first().json;\n\nlet out_type = dict_type[input.type] || '';\nlet out_priority = input.priority !== 'empty' ? dict_priority[input.priority] || '' : '';\nlet out_tag = input.tag !== 'empty' ? dict_tags[input.tag] || '' : '';\n\nreturn {\n  out_type,\n  out_priority,\n  out_tag,\n  taskName: input.taskName,\n  dueDate: input.dueDate\n};"
+      },
+      "id": "7191951f-f8c4-4a8f-b21f-078a78bea098",
+      "name": "Get Type, Priority, Tag Ids1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        1240
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "url": "=https://app.asana.com/api/1.0/projects/{{ $json.data.projects[0].gid }}/sections",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "asanaApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        600,
+        1240
+      ],
+      "id": "31ff900c-f9bc-46a6-a98d-453d8202fced",
+      "name": "Get Project Sections",
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://app.asana.com/api/1.0/tasks",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "asanaApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"projects\": [\n      \"{{ $('New Page In Notion Automation Log').item.json.body.data.properties['Client Asana Project ID'].formula.string }}\"\n    ],\n    \"workspace\": \"1206577937151367\",\n    \"name\": \"{{ $('Prepare Task Data1').item.json.taskName }}\",\n    \"due_on\": \"{{ $('Status = start, not started, blank').item.json.property_due.start }}\",\n \"custom_fields\": {\n      \"1206710402069380\": \"{{ $json.out_type }}\",\n       \"1206710539642863\":\"{{ $json.out_priority }}\",\n      \"1208026039588859\":\"{{ $json.out_tag }}\"\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        160,
+        1240
+      ],
+      "id": "32772efd-9c7d-4041-8e10-a711e3c877e0",
+      "name": "Create Asana Task",
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Assume the input is in items[0].json.data\nconst sections = items[0].json.data;\n\nconst match = sections.find(section => section.name === \"New Requests\");\n\nreturn [\n  {\n    json: {\n      sectionGid: match ? match.gid : null\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        820,
+        1240
+      ],
+      "id": "f23d2b79-c8f4-461d-932b-b972f441a257",
+      "name": "Get 'New Requests' Section gid"
+    },
+    {
+      "parameters": {
+        "resource": "taskProject",
+        "id": "={{ $('Create Asana Task').first().json.data.gid}}",
+        "project": "={{ $('Create Asana Task').first().json.data.projects[0].gid }}",
+        "additionalFields": {
+          "section": "={{ $json.sectionGid }}"
+        }
+      },
+      "id": "fe017894-d3dd-4151-817a-c7af44883ed8",
+      "name": "Move to 'New Requests' Section",
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        1240
+      ],
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Status = start, not started, blank').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Asana Task ID|rich_text",
+              "textContent": "={{ $('Create Asana Task').item.json.data.gid }}"
+            },
+            {
+              "key": "Asana URL|url",
+              "urlValue": "={{ $('Create Asana Task').item.json.data.permalink_url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a41698bb-16f6-4478-8b8c-8558763be9e7",
+      "name": "Add The Asana Task Id in Notion1",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2,
+      "position": [
+        1260,
+        1240
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://app.asana.com/api/1.0/projects/{{ $json.memberships[0].project.gid }}/sections",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "asanaApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        160,
+        2300
+      ],
+      "id": "d675d99c-1a4e-47b8-a0ed-1bed3531a32c",
+      "name": "Get Sections",
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://app.asana.com/api/1.0/projects/{{ $json['Asana Project ID'] }}/sections",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "asanaApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -280,
+        2700
+      ],
+      "id": "508cc3a7-f497-4f6a-870c-a9eefd1352cf",
+      "name": "Get Sections1",
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Assume the input is in items[0].json.data\nconst sections = items[0].json.data;\n\nconst match = sections.find(section => section.name === \"Review\");\n\nreturn [\n  {\n    json: {\n      sectionGid: match ? match.gid : null\n    }\n  }\n];"
+      },
+      "id": "f6824e23-9f3c-4df5-a64a-3cbef231df66",
+      "name": "Extract Review Section",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        2700
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://app.asana.com/api/1.0/projects/{{ $('Find Task by ID (D)').item.json.memberships[0].project.gid }}/sections",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "asanaApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        160,
+        3100
+      ],
+      "id": "1d301923-40c0-4cb0-864d-e36a5a5cd241",
+      "name": "Get Sections2",
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Assume the input is in items[0].json.data\nconst sections = items[0].json.data;\n\nconst match = sections.find(section => section.name === \"Blocked\");\n\nreturn [\n  {\n    json: {\n      sectionGid: match ? match.gid : null\n    }\n  }\n];"
+      },
+      "id": "4e912493-aea9-421d-8a26-ae727671a0f2",
+      "name": "Extract Blocked Section",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        380,
+        3100
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "taskProject",
+        "id": "={{ $('Asana Task Status = New Requests').item.json.gid }}",
+        "project": "={{ $('Asana Task Status = New Requests').item.json.memberships[0].project.gid }}",
+        "additionalFields": {
+          "section": "={{ $json.sectionGid }}"
+        }
+      },
+      "id": "234bae5b-3537-4930-9921-c91fc3f7b74f",
+      "name": "Move to 'In Progress' Section",
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        600,
+        2300
+      ],
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "taskProject",
+        "id": "={{ $('Path C: In Review1').item.json['Asana Task ID'] }}",
+        "project": "={{ $('Path C: In Review1').item.json['Asana Project ID'] }}",
+        "additionalFields": {
+          "section": "={{ $json.sectionGid }}"
+        }
+      },
+      "id": "c8a5ca38-f67e-496c-b54c-57b87e5b04fa",
+      "name": "Move to 'Review' Section",
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        160,
+        2700
+      ],
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "taskProject",
+        "id": "={{ $('Find Task by ID (D)').item.json.gid }}",
+        "project": "={{ $('Find Task by ID (D)').item.json.memberships[0].project.gid }}",
+        "additionalFields": {
+          "section": "={{ $json.sectionGid }}"
+        }
+      },
+      "id": "01f3e584-9b0a-4827-97ec-7191d8c4fc44",
+      "name": "Move to 'Blocked' Section",
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        600,
+        3100
+      ],
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://app.asana.com/api/1.0/projects/{{ $('Find Task by ID (E1)').item.json.memberships[0].project.gid }}/sections",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "asanaApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        160,
+        3500
+      ],
+      "id": "5ea5694c-c1ce-4c30-9f26-83bcbb7ee184",
+      "name": "Get Sections3",
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "taskProject",
+        "id": "={{ $('Task is Not Already Won\\'t Do').item.json.gid }}",
+        "project": "={{ $('Task is Not Already Won\\'t Do').item.json.projects[0].gid }}",
+        "additionalFields": {
+          "section": "={{ $json.sectionGid }}"
+        }
+      },
+      "id": "77e9f6ed-be18-45bd-ab16-ca40dfd5c37f",
+      "name": "Move to 'Blocked' Section1",
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        600,
+        3500
+      ],
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://app.asana.com/api/1.0/projects/{{ $('Find Task by ID (E2)').item.json.memberships[0].project.gid }}/sections",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "asanaApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -60,
+        3900
+      ],
+      "id": "a2f3492e-249d-4bcc-aac3-b8c02f362d2e",
+      "name": "Get Sections4",
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "taskProject",
+        "id": "={{ $('Find Task by ID (E2)').item.json.gid }}",
+        "project": "={{ $('Find Task by ID (E2)').item.json.projects[0].gid }}",
+        "additionalFields": {
+          "section": "={{ $json.sectionGid }}"
+        }
+      },
+      "id": "f939c733-303b-418d-9840-ce2734246c24",
+      "name": "Move to 'Completed' Section",
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        380,
+        3900
+      ],
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "53b82a2b-2354-4531-bcf2-d8b699704473",
+                    "leftValue": "={{ $json.Status }}",
+                    "rightValue": "In Progress",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "In Progress"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a8f1dd0a-b3f6-4c5a-9889-52fff37c9575",
+                    "leftValue": "={{ $json.Status }}",
+                    "rightValue": "In Review",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "In Review"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "26011952-88ef-4814-a403-56285b6298ce",
+                    "leftValue": "={{ $json.Status }}",
+                    "rightValue": "Blocked",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Blocked"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a3473432-1ae8-45b1-9d20-981560b853f6",
+                    "leftValue": "={{ $json.Status }}",
+                    "rightValue": "Won't Do",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Won't Do"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "81ba45e0-eca4-4344-8b16-6d767a24707f",
+                    "leftValue": "={{ $json.Status }}",
+                    "rightValue": "Done",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Done"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -720,
+        3180
+      ],
+      "id": "6fb0758a-4d1a-45b4-b7fc-1cbb89bec028",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "805d28aa-9043-460b-a774-933329f8e395",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1820,
+        1540
+      ],
+      "id": "6bf0caaf-ce23-43cd-9859-4a282234181f",
+      "name": "New Page In Notion Automation Log",
+      "webhookId": "805d28aa-9043-460b-a774-933329f8e395"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Assume the input is in items[0].json.data\nconst sections = items[0].json.data;\n\nconst match = sections.find(section => section.name === \"Won't Do\");\n\nreturn [\n  {\n    json: {\n      sectionGid: match ? match.gid : null\n    }\n  }\n];"
+      },
+      "id": "b064774d-3127-42dc-ac39-ccefc01110ec",
+      "name": "Extract Won't do",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        380,
+        3500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Assume the input is in items[0].json.data\nconst sections = items[0].json.data;\n\nconst match = sections.find(section => section.name === \"Completed\");\n\nreturn [\n  {\n    json: {\n      sectionGid: match ? match.gid : null\n    }\n  }\n];"
+      },
+      "id": "65728a4d-462a-4491-9320-c4eda4164ebd",
+      "name": "Extract Completed",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        160,
+        3900
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.6
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+      "typeVersion": 1,
+      "position": [
+        2228,
+        1460
+      ],
+      "id": "e72cc02f-88be-461f-bee4-8bc422586a39",
+      "name": "DeepSeek Chat Model",
+      "credentials": {
+        "deepSeekApi": {
+          "id": "gCgDtygzTb53vft6",
+          "name": "DeepSeek account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "get",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Add The Asana Task Id in Notion1').first().json.property_client_company[0] }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1700,
+        1240
+      ],
+      "id": "9e5dc581-3720-4449-904b-a77ade414620",
+      "name": "Get Client [by Company] Page",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Task Title: \"{{ $('Prepare Task Data1').item.json.taskName }}\",\nClient Name: \"{{ $('Get Client [by Company] Page').item.json.name.replaceAll('[TEST]','') }}\"\nTag: \"{{ $('Prepare Task Data1').item.json.tag }}\"\nType: \"{{ $('Prepare Task Data1').item.json.type }}\"",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "#Role\nYou are an incredibly efficient and accurate task classifier. You have a knack for understanding ways to create relevant and concise task descriptions. \n\n#Task\nGenerate a short task description ideal for engineers to quickly understand what the new ticket is about and which client it is for. Please refer to '#context' for provided inputs and ensure your response is thorough, yet concise using spartan tone of voice\n\n#Context\nYou will be provided with the Task Title, Client name and Tag (Used to classify whether ticket relates to AI, Automation, Systems, Dashboard, SOP, Access, WebDev or Support), Type (Improvement or New Feature). Please bake these into your \n\n#Specifics\nIt is vital that you only provide the description and no other verbatim whatsoever. \n\n#Example\nQ: Task Title: \"[Futureble] Build Lead Qualification System\",\nClient Name: \"Futureble \"\nTag: \"Automation\"\nType: \"New Feature\"\nA: Build a lead qualification system for Futureble to automate lead scoring and categorization."
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        2140,
+        1240
+      ],
+      "id": "e734fe23-c42d-4b72-8505-c92e5ed2623b",
+      "name": "Generate Task Description"
+    },
+    {
+      "parameters": {
+        "channel": "={{ $('Get Slack Channel ID').item.json['Client Channel'] }}",
+        "text": "=Hi Team,\n\n*New Feature Request* just in! 🎉 \n\n*Title*: {{ $('Prepare Task Data1').item.json.taskName }}\n\n*Description*: {{ $json.text }}  \n\n🔗 <{{ $('Create Asana Task').item.json.data.permalink_url }}|Asana> | 🔗 <{{ $('Get Task Page Details').item.json.url }}|Notion>\n\nDrop any questions or thoughts here.\n\n— Customer Success  \nDashboardLim™",
+        "otherOptions": {
+          "icon_url": "https://43819144.fs1.hubspotusercontent-na1.net/hubfs/43819144/slack-icons_new-deal-external.png"
+        },
+        "attachments": []
+      },
+      "id": "e4ab6d8e-cc43-47f9-9ab1-da34634dbcce",
+      "name": "New Feature Request",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [
+        2736,
+        1140
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "olNqGn9gt4rODu06",
+          "name": "Concierge(Notion2Asana) - External Client Update"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "channel": "={{ $('Get Slack Channel ID').item.json['Client Channel'] }}",
+        "text": "=Hi Team,\n\n*Improvement Ticket* just in! 🛠️\n\n*Title*: {{ $('Prepare Task Data1').item.json.taskName }}\n\n*Description*: {{ $json.text }}\n\n🔗 <{{ $('Create Asana Task').item.json.data.permalink_url }}|Asana> | 🔗 <{{ $('Get Task Page Details').item.json.url }}|Notion>\n\nDrop any questions or thoughts here.\n\n— Customer Success  \nDashboardLim™",
+        "otherOptions": {
+          "icon_url": "https://43819144.fs1.hubspotusercontent-na1.net/hubfs/43819144/slack-icons_new-deal-external.png",
+          "mrkdwn": true
+        },
+        "attachments": []
+      },
+      "id": "5e6444ac-2d36-4121-92c0-31427adb2788",
+      "name": "Improvement Request",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [
+        2736,
+        1340
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "olNqGn9gt4rODu06",
+          "name": "Concierge(Notion2Asana) - External Client Update"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b1af3f44-b4db-4234-a057-af99f88b6d16",
+              "name": "ChannelID",
+              "value": "={{ $json.property_slack_channel_id }}",
+              "type": "string"
+            },
+            {
+              "id": "061643bb-ad02-4763-acec-f3e2613490e6",
+              "name": "Client Channel",
+              "value": "={{ $json.property_slack_channel_id_automation }}",
+              "type": "string"
+            },
+            {
+              "id": "3eb57c5c-e8b7-4061-bfe5-63f9ee057a14",
+              "name": "Service Channel",
+              "value": "={{ $json.property_slack_channel_id_service }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1920,
+        1240
+      ],
+      "id": "6fd6cae7-e337-4ce1-a9d8-613ae1ad90df",
+      "name": "Get Slack Channel ID"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a2319167-98c5-43ad-9fd5-8f65d49ed377",
+              "leftValue": "={{ $('Prepare Task Data1').item.json.type }}",
+              "rightValue": "New Feature",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2516,
+        1240
+      ],
+      "id": "e86da693-b7d2-488e-8172-7231b704e862",
+      "name": "Type = New Feature"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Switch').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Status|status",
+              "statusValue": "Not started"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -280,
+        1640
+      ],
+      "id": "489cf746-b065-4b36-86c8-178b32fd28cd",
+      "name": "Push Back to 'Not Started'",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b470f22f-2cdf-4d1f-9c8e-b12c4fec0c73",
+              "leftValue": "={{$json.property_client_company[0] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -940,
+        1540
+      ],
+      "id": "7b41bf38-ec3a-44d2-a5a9-6b935db66941",
+      "name": "Client Relation Exists"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C078CEYL5E0",
+          "mode": "list",
+          "cachedResultName": "service-new_tasks"
+        },
+        "text": "=Notion - Asana Sync\n\n⚠️ *Error* - Task already exists in Asana.\n\n- Task Name: {{ $('Switch').item.json.name }}\n- 🔗 Asana Link: <{{ $('Path H: No Asana Project ID (But Existing Relation)').item.json.property_asana_url }}|Click Here> \n- 🔗 Notion Link: <{{ $('Get Task Page Details').item.json.url }}|Click Here>",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -940,
+        1740
+      ],
+      "id": "95b64110-3d4e-45db-8d0d-4f69a98b58af",
+      "name": "Asana Task already exists",
+      "webhookId": "2c84ecb4-a949-4bf1-a48c-a42ae0532b7f",
+      "credentials": {
+        "slackApi": {
+          "id": "q9JPcE2p3IhwjHrl",
+          "name": "Notion x Asana Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C078CEYL5E0",
+          "mode": "list",
+          "cachedResultName": "service-new_tasks"
+        },
+        "text": "=Notion - Asana Sync\n\n⚠️ *Error* - No Client Related to this Task\n\n- Task Name: {{ $('Switch').item.json.name }}\n- 🔗 Notion Link: <{{ $('Get Task Page Details').item.json.url }}|Click Here>\n\nPlease assign this task to a client and ensure project ID is present.",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -720,
+        1640
+      ],
+      "id": "c0cc9931-6ee9-459c-9fbd-906337c18f12",
+      "name": "No Client Relation",
+      "webhookId": "2c84ecb4-a949-4bf1-a48c-a42ae0532b7f",
+      "credentials": {
+        "slackApi": {
+          "id": "q9JPcE2p3IhwjHrl",
+          "name": "Notion x Asana Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d64f3784-2b81-408e-8dc8-f10457f8c9d6",
+              "leftValue": "={{ $json.property_tag }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "f4bd9e8f-cb4c-4cf6-9b9b-e733ad4ab8dc",
+              "leftValue": "={{ $json.property_priority }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "59ee9163-d2d4-40a1-b8ed-0f82b400d1b3",
+              "leftValue": "={{ $json.property_estimates }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "2d8689d6-45a6-4340-b79a-0add70e9eb96",
+              "leftValue": "={{ $json.property_assignee }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -500,
+        1340
+      ],
+      "id": "c6350a44-14fd-4d39-8fb4-a4e6ff5b9d1c",
+      "name": "Required Fields Present"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C078CEYL5E0",
+          "mode": "list",
+          "cachedResultName": "service-new_tasks"
+        },
+        "text": "=Notion - Asana Sync\n\n⚠️ *Error* - Incorrect Stage\n\n- Task Name: {{ $('Switch').item.json.name }}\n- 🔗 Notion Link: <{{ $('Get Task Page Details').item.json.url }}|Click Here>\n\nPlease only push task to Asana when status is 'Not Started' or 'Started'",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -500,
+        1640
+      ],
+      "id": "b4154009-e807-4c7b-9f06-c3a350b9be74",
+      "name": "Incorrect Status",
+      "webhookId": "2c84ecb4-a949-4bf1-a48c-a42ae0532b7f",
+      "credentials": {
+        "slackApi": {
+          "id": "q9JPcE2p3IhwjHrl",
+          "name": "Notion x Asana Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C078CEYL5E0",
+          "mode": "list",
+          "cachedResultName": "service-new_tasks"
+        },
+        "text": "=Notion - Asana Sync\n\n⚠️ *Error* - Missing Properties\n\n- Task Name: {{ $('Switch').item.json.name }}\n- 🔗 Notion Link: <{{ $('Get Task Page Details').item.json.url }}|Click Here>\n\nPlease ensure the following properties are populated before pushing task to Asana: Assignee, Estimate, Type, Tag & Priority",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -280,
+        1440
+      ],
+      "id": "3629378d-bc09-4c8d-8cd3-9135c806ecff",
+      "name": "Missing Properties",
+      "webhookId": "2c84ecb4-a949-4bf1-a48c-a42ae0532b7f",
+      "credentials": {
+        "slackApi": {
+          "id": "q9JPcE2p3IhwjHrl",
+          "name": "Notion x Asana Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "channel": "service-new_tasks",
+        "text": "=⚠️⚠️ Urgent Error\n- Error:  Missing \"Asana Project ID\" In Client Page\n- Client: {{ $json.name }}\n- Quick Link: <{{ $json.url }}|Click Here>",
+        "otherOptions": {
+          "icon_url": "https://43819144.fs1.hubspotusercontent-na1.net/hubfs/43819144/slack-icons_sync-internal.png"
+        },
+        "attachments": []
+      },
+      "id": "a3ebba91-b611-4ee8-b1cb-d7f373663a74",
+      "name": "Slack Error Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [
+        -940,
+        1340
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "q9JPcE2p3IhwjHrl",
+          "name": "Notion x Asana Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C078CEYL5E0",
+          "mode": "list",
+          "cachedResultName": "service-new_tasks"
+        },
+        "text": "=Notion - Asana Sync\n\n⚠️ *Error* - Asana Task/Project ID missing\n- Task Name: {{ $('Clean Properties').item.json['Task Name'] }}\n- 🔗 Notion Link: <{{ $('Notion1').item.json.url }}|Click Here>\n\nPlease ensure you only push tasks to Asana in the following stages: \"Not Started\" or \"Start\"",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -280,
+        2500
+      ],
+      "id": "02f6e1c3-a2a4-4962-b055-5ac8771b7591",
+      "name": "No Asana ID or Project ID",
+      "webhookId": "2c84ecb4-a949-4bf1-a48c-a42ae0532b7f",
+      "credentials": {
+        "slackApi": {
+          "id": "q9JPcE2p3IhwjHrl",
+          "name": "Notion x Asana Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Get Task Page Details').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Status|status",
+              "statusValue": "Not started"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -60,
+        1440
+      ],
+      "id": "fdb6abdd-28cc-496c-b6d8-8de350a50829",
+      "name": "Notion",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Notion1').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Status|status",
+              "statusValue": "Not started"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -60,
+        2500
+      ],
+      "id": "3d74a97e-5ec2-4e4a-8554-a1943438c7ac",
+      "name": "Push back to 'Not Started'1",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://app.asana.com/api/1.0/tasks/{{ $json.data.gid }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "asanaApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": {\n    \"custom_fields\": {\n      \"{{ $json.data.custom_fields[4].gid }}\": \"{{ $('Get Task Page Details').item.json.id }}\"\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        380,
+        1240
+      ],
+      "id": "96e4e250-06e9-4e7a-a1e1-1a95f18a81c0",
+      "name": "Add notion Page to asana",
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "id": "={{ $('Create Asana Task').item.json.data.gid }}",
+        "otherProperties": {
+          "notes": "={{ $('Type = New Feature').item.json.text }}"
+        }
+      },
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        2956,
+        1140
+      ],
+      "id": "5e7a5bb5-b28c-40ef-a75b-012048b41a45",
+      "name": "Add Description",
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "id": "={{ $('Create Asana Task').item.json.data.gid }}",
+        "otherProperties": {
+          "notes": "={{ $('Type = New Feature').item.json.text }}"
+        }
+      },
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        2956,
+        1340
+      ],
+      "id": "ddc7a503-3085-437a-b2db-e36b8d859996",
+      "name": "Add Description1",
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "49744bd2-9ca4-4d07-84f4-2528ad87ef2e",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1820,
+        2700
+      ],
+      "id": "9b79e3d9-4eeb-4d2a-93f4-fd04b0a9b933",
+      "name": "Webhook",
+      "webhookId": "49744bd2-9ca4-4d07-84f4-2528ad87ef2e"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "get",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.body.data.id }}",
+          "mode": "id"
+        },
+        "simple": false
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -1600,
+        2700
+      ],
+      "id": "dac5c46e-d6d9-442e-827a-6766bc2b86b9",
+      "name": "Notion1",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json['Asana Project ID'] }}",
+              "operation": "isEmpty"
+            },
+            {
+              "value1": "={{ $('Notion1').item.json.property_client_company[0] }}",
+              "operation": "isNotEmpty"
+            }
+          ],
+          "boolean": [
+            {
+              "value1": "={{ $json['Internal Project'] }}"
+            }
+          ]
+        }
+      },
+      "id": "38350c03-4172-4a06-a09c-20d86271c8e8",
+      "name": "Path H: No Asana Project ID (But Existing Relation)1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1160,
+        2700
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "get",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.property_client_company[0] }}",
+          "mode": "id"
+        }
+      },
+      "id": "893752ce-6a6b-4684-9df3-8d8e6869f1a5",
+      "name": "Get Client Page1",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2,
+      "position": [
+        -720,
+        2200
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "channel": "service-new_tasks",
+        "text": "=⚠️⚠️ Urgent Error\n- Error:  Missing \"Asana Project ID\" In Client Page\n- Client: {{ $json.name }}\n- Quick Link: <{{ $json.url }}|Click Here>",
+        "otherOptions": {
+          "icon_url": "https://43819144.fs1.hubspotusercontent-na1.net/hubfs/43819144/slack-icons_sync-internal.png"
+        },
+        "attachments": []
+      },
+      "id": "c802f6eb-e518-440d-8fd0-d30ced124571",
+      "name": "Slack Error Notification1",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        2200
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "q9JPcE2p3IhwjHrl",
+          "name": "Notion x Asana Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json['Asana Task ID'] }}",
+              "operation": "isNotEmpty"
+            },
+            {
+              "value1": "={{ $json['Asana Project ID'] }}",
+              "operation": "isNotEmpty"
+            }
+          ],
+          "boolean": [
+            {
+              "value1": "={{ $json['Internal Project'] }}"
+            }
+          ]
+        }
+      },
+      "id": "36678235-06b7-4046-9b05-663d81277af5",
+      "name": "Path C: In Review1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        2800
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$('Notion1').item.json.property_publish_comments_to_asana }}",
+              "value2": true
+            }
+          ],
+          "string": [
+            {
+              "value1": "={{ $('Notion1').item.json.property_external_notes }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "f0e9df72-8a78-44be-bf74-1ced44d26ff0",
+      "name": "Push Comments = True (B)4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        380,
+        2700
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "taskComment",
+        "id": "={{ $('Switch').item.json['Asana Task ID'] }}",
+        "text": "={{ $('Notion1').item.json.property_external_notes }}",
+        "additionalFields": {}
+      },
+      "id": "5140def4-2273-475a-b1e0-fd4a825aa046",
+      "name": "Push External Notes Into a Comment4",
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        600,
+        2700
+      ],
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C078CEYL5E0",
+          "mode": "list",
+          "cachedResultName": "service-new_tasks"
+        },
+        "text": "=Notion - Asana Sync\n\n⚠️ *Error* - Asana Task/Project ID missing\n- Task Name: {{ $('Clean Properties').item.json['Task Name'] }}\n- 🔗 Notion Link: <{{ $('Notion1').item.json.url }}|Click Here>\n\nPlease ensure you only push tasks to Asana in the following stages: \"Not Started\" or \"Start\"",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -280,
+        2900
+      ],
+      "id": "35df835a-a84d-4edb-8aa4-bf4a26ff7031",
+      "name": "No Asana ID or Project ID5",
+      "webhookId": "2c84ecb4-a949-4bf1-a48c-a42ae0532b7f",
+      "credentials": {
+        "slackApi": {
+          "id": "q9JPcE2p3IhwjHrl",
+          "name": "Notion x Asana Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Notion1').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Status|status",
+              "statusValue": "Not started"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -60,
+        2900
+      ],
+      "id": "c6f1030d-8161-4f5e-828f-ecd3577256f1",
+      "name": "Push back to 'Not Started'5",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C078CEYL5E0",
+          "mode": "list",
+          "cachedResultName": "service-new_tasks"
+        },
+        "text": "=Notion - Asana Sync\n\n⚠️ *Error* - Asana Task/Project ID missing\n- Task Name: {{ $('Clean Properties').item.json['Task Name'] }}\n- 🔗 Notion Link: <{{ $json['Notion URL'] }}|Click Here>\n\nPlease ensure you only push tasks to Asana in the following stages: \"Not Started\" or \"Start\"",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -280,
+        3300
+      ],
+      "id": "48ce9d2b-b951-4bbc-9784-694e481c3a4e",
+      "name": "No Asana ID or Project ID6",
+      "webhookId": "2c84ecb4-a949-4bf1-a48c-a42ae0532b7f",
+      "credentials": {
+        "slackApi": {
+          "id": "q9JPcE2p3IhwjHrl",
+          "name": "Notion x Asana Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Notion1').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Status|status",
+              "statusValue": "Not started"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -60,
+        3300
+      ],
+      "id": "6aeb037e-29b8-4cd4-8ece-b994780107b6",
+      "name": "Push back to 'Not Started'",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C078CEYL5E0",
+          "mode": "list",
+          "cachedResultName": "service-new_tasks"
+        },
+        "text": "=Notion - Asana Sync\n\n⚠️ *Error* - Asana Task/Project ID missing\n- Task Name: {{ $('Clean Properties').item.json['Task Name'] }}\n- 🔗 Notion Link: <{{ $('Notion1').item.json.url }}|Click Here>\n\nPlease ensure you only push tasks to Asana in the following stages: \"Not Started\" or \"Start\"",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -280,
+        3700
+      ],
+      "id": "e111662b-0cfe-4c8e-8662-0dd04c29564c",
+      "name": "No Asana ID or Project ID7",
+      "webhookId": "2c84ecb4-a949-4bf1-a48c-a42ae0532b7f",
+      "credentials": {
+        "slackApi": {
+          "id": "q9JPcE2p3IhwjHrl",
+          "name": "Notion x Asana Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Notion1').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Status|status",
+              "statusValue": "Not started"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -60,
+        3700
+      ],
+      "id": "b787c81f-752d-4893-8cb2-17b5e4ff2c03",
+      "name": "Push back to 'Not Started'2",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C078CEYL5E0",
+          "mode": "list",
+          "cachedResultName": "service-new_tasks"
+        },
+        "text": "=Notion - Asana Sync\n\n⚠️ *Error* - Asana Task/Project ID missing\n- Task Name: {{ $('Clean Properties').item.json['Task Name'] }}\n- 🔗 Notion Link: <{{ $('Notion1').item.json.url }}|Click Here>\n\nPlease ensure you only push tasks to Asana in the following stages: \"Not Started\" or \"Start\"",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -280,
+        4100
+      ],
+      "id": "3660ab81-b715-4b67-8d22-8f4bd77591dd",
+      "name": "No Asana ID or Project ID8",
+      "webhookId": "2c84ecb4-a949-4bf1-a48c-a42ae0532b7f",
+      "credentials": {
+        "slackApi": {
+          "id": "q9JPcE2p3IhwjHrl",
+          "name": "Notion x Asana Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Notion1').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Status|status",
+              "statusValue": "Not started"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -60,
+        4100
+      ],
+      "id": "fbd834a4-597a-425a-acf7-99a0b2aaf45e",
+      "name": "Push back to 'Not Started'3",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$('Notion1').item.json.property_publish_comments_to_asana }}",
+              "value2": true
+            }
+          ],
+          "string": [
+            {
+              "value1": "={{ $('Notion1').item.json.property_external_notes }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "186c74bc-b738-45be-a056-abc46f90f302",
+      "name": "Push Comments = True (B)5",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        820,
+        3100
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "taskComment",
+        "id": "={{ $('Switch').item.json['Asana Task ID'] }}",
+        "text": "={{ $('Notion1').item.json.property_external_notes }}",
+        "additionalFields": {}
+      },
+      "id": "bbeec9d0-942b-4582-aa17-5e4a93741218",
+      "name": "Push External Notes Into a Comment5",
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        3100
+      ],
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$('Notion1').item.json.property_publish_comments_to_asana }}",
+              "value2": true
+            }
+          ],
+          "string": [
+            {
+              "value1": "={{ $('Notion1').item.json.property_external_notes }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "53702fd2-2e7a-4fb7-8e8a-041ae5300d23",
+      "name": "Push Comments = True (B)6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        820,
+        3500
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "taskComment",
+        "id": "={{ $('Switch').item.json['Asana Task ID'] }}",
+        "text": "={{ $('Notion1').item.json.property_external_notes }}",
+        "additionalFields": {}
+      },
+      "id": "952fd860-23ec-47e9-a94e-08aa3377afc7",
+      "name": "Push External Notes Into a Comment6",
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        3500
+      ],
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$('Notion1').item.json.property_publish_comments_to_asana }}",
+              "value2": true
+            }
+          ],
+          "string": [
+            {
+              "value1": "={{ $('Notion1').item.json.property_external_notes }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "4459fdff-c43c-4158-808e-66e09c78be67",
+      "name": "Push Comments = True (B)7",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        820,
+        3900
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "taskComment",
+        "id": "={{ $('Switch').item.json['Asana Task ID'] }}",
+        "text": "={{ $('Notion1').item.json.property_external_notes }}",
+        "additionalFields": {}
+      },
+      "id": "63088e7e-ffbe-40c2-b671-66071af24e4f",
+      "name": "Push External Notes Into a Comment7",
+      "type": "n8n-nodes-base.asana",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        3900
+      ],
+      "credentials": {
+        "asanaApi": {
+          "id": "Daa1jmfhTGxVxhaG",
+          "name": "Asana Account working"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "height": 920,
+        "width": 5320
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1980,
+        1100
+      ],
+      "id": "c1fcb1d3-2cce-4b7a-a7f6-f23b191de47e",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "height": 2260,
+        "width": 3280,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1960,
+        2120
+      ],
+      "id": "8df39617-be52-44d1-b61b-2696b99f5ee3",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json['Asana Task ID'] }}",
+              "operation": "isNotEmpty"
+            },
+            {
+              "value1": "={{ $json['Asana Project ID'] }}",
+              "operation": "isNotEmpty"
+            }
+          ],
+          "boolean": [
+            {
+              "value1": "={{ $json['Internal Project'] }}"
+            }
+          ]
+        }
+      },
+      "id": "1293a32f-8e82-4c65-864b-3e8d53105553",
+      "name": "Path D: Blocked",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        3180
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json['Asana Task ID'] }}",
+              "operation": "isNotEmpty"
+            },
+            {
+              "value1": "={{ $json['Asana Project ID'] }}",
+              "operation": "isNotEmpty"
+            }
+          ],
+          "boolean": [
+            {
+              "value1": "={{ $json['Internal Project'] }}"
+            }
+          ]
+        }
+      },
+      "id": "24568295-d98c-486b-bea0-3224e477adec",
+      "name": "Path E: Won't Do",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        3560
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json['Asana Task ID'] }}",
+              "operation": "isNotEmpty"
+            },
+            {
+              "value1": "={{ $json['Asana Project ID'] }}",
+              "operation": "isNotEmpty"
+            }
+          ],
+          "boolean": [
+            {
+              "value1": "={{ $json['Internal Project'] }}"
+            }
+          ]
+        }
+      },
+      "id": "d79dc7cf-2356-4b0a-b309-bab6e8375acb",
+      "name": "Path F: Done",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -540,
+        4020
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "09407d3a-a522-4c5a-a4ca-b1b759efe594",
+              "leftValue": "={{ $json['Internal Project'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -920,
+        2920
+      ],
+      "id": "921c0c6b-7f81-4dbf-acdc-5853c395f742",
+      "name": "Check if Internal Task"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7b5a20f7-8d14-4751-ae0a-a94cf0bfe8a3",
+              "name": "Internal Project",
+              "value": "={{ $json.properties['Internal Project'].rollup.array[0].checkbox }}",
+              "type": "boolean"
+            },
+            {
+              "id": "3b1c5500-c65a-48e7-9b6e-d97e998a722a",
+              "name": "Asana Project ID",
+              "value": "={{ $json.properties['Asana Project ID (Sam Test)'].rollup.array[0].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "90a95887-087b-4510-87d9-e03ad948d02a",
+              "name": "Asana Task ID",
+              "value": "={{ $json.properties['Asana Task ID'].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "50cef8ef-ada1-46ba-8bcd-7e78981156b8",
+              "name": "Status",
+              "value": "={{ $json.properties.Status.status.name }}",
+              "type": "string"
+            },
+            {
+              "id": "2ee422e0-108a-4cb1-b3c8-4960d42ed21b",
+              "name": "Task Name",
+              "value": "={{ $json.properties['Name Copy'].formula.string }}",
+              "type": "string"
+            },
+            {
+              "id": "116d8853-1c4c-479f-82df-de3d968aed26",
+              "name": "Notion URL",
+              "value": "={{ $json.url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1380,
+        2700
+      ],
+      "id": "ee5539bc-d06d-4fbb-bda0-a3da7d12ff9b",
+      "name": "Clean Properties"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.dashboard-lim.com",
+            "user-agent": "NotionAutomation",
+            "content-length": "5001",
+            "baggage": "sentry-environment=production,sentry-release=0.0.3608,sentry-public_key=529a6d1990e5471d874257842c4f4ad8,sentry-trace_id=321c53652f064d368f94444763ae8dc8",
+            "content-type": "application/json",
+            "sentry-trace": "321c53652f064d368f94444763ae8dc8-8362bdaef5f81eab",
+            "server": "Heroku",
+            "traceparent": "00-3ce4d765c891b4c23c3047024927617b-73ffca9152529d63-00",
+            "via": "1.1 heroku-router",
+            "x-forwarded-for": "44.241.75.17",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-request-id": "5b14aee0-1a06-b8b4-8813-43b4ba3b48b9",
+            "x-request-start": "1750925556502"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "source": {
+              "type": "automation",
+              "automation_id": "44434f9e-88ac-493f-86cb-1f03dfc2cf53",
+              "action_id": "21da3f9b-f4f5-8001-a965-005a3b58e9fd",
+              "event_id": "aa4cdb68-64d7-4f6f-9d32-f18a0e437410",
+              "attempt": 1
+            },
+            "data": {
+              "object": "page",
+              "id": "168a3f9b-f4f5-8055-99a2-c4816835f839",
+              "created_time": "2024-12-26T22:37:00.000Z",
+              "last_edited_time": "2025-06-26T08:12:00.000Z",
+              "created_by": {
+                "object": "user",
+                "id": "c1df5375-246f-49be-ae44-a39551448184"
+              },
+              "last_edited_by": {
+                "object": "user",
+                "id": "f560f779-99ed-4666-bb59-64c26e9a6af9"
+              },
+              "cover": null,
+              "icon": {
+                "type": "external",
+                "external": {
+                  "url": "https://www.notion.so/icons/drafts_gray.svg"
+                }
+              },
+              "parent": {
+                "type": "database_id",
+                "database_id": "e9a49759-65e6-4109-abed-821d1a53e287"
+              },
+              "archived": false,
+              "in_trash": false,
+              "properties": {
+                "Tasks Stats ": {
+                  "id": "%3A~O%5C",
+                  "type": "relation",
+                  "relation": [
+                    {
+                      "id": "9130fde0-df22-40e9-b4e8-efd730838f4e"
+                    }
+                  ],
+                  "has_more": false
+                },
+                "ID": {
+                  "id": "%3E%5DV~",
+                  "type": "unique_id",
+                  "unique_id": {
+                    "prefix": "DLH",
+                    "number": 1456
+                  }
+                },
+                "Publish Comments to Asana": {
+                  "id": "%3F%3ETB",
+                  "type": "checkbox",
+                  "checkbox": false
+                },
+                "Tag": {
+                  "id": "%40CPx",
+                  "type": "select",
+                  "select": {
+                    "id": "904a48b0-6da3-4114-b397-13f32155169d",
+                    "name": "WebDev",
+                    "color": "pink"
+                  }
+                },
+                "Team": {
+                  "id": "Ak%3BL",
+                  "type": "select",
+                  "select": {
+                    "id": "e0d38063-de4d-475b-9798-d9fddb8a366a",
+                    "name": "Technology",
+                    "color": "green"
+                  }
+                },
+                "Due": {
+                  "id": "HtUl",
+                  "type": "date",
+                  "date": {
+                    "start": "2024-12-27",
+                    "end": null,
+                    "time_zone": null
+                  }
+                },
+                "Projects": {
+                  "id": "ILVF",
+                  "type": "relation",
+                  "relation": [],
+                  "has_more": false
+                },
+                "Manager": {
+                  "id": "PkK%7C",
+                  "type": "rollup",
+                  "rollup": {
+                    "type": "array",
+                    "array": [
+                      {
+                        "type": "relation",
+                        "relation": []
+                      }
+                    ],
+                    "function": "show_original"
+                  }
+                },
+                "Asana Task ID": {
+                  "id": "ST%40w",
+                  "type": "rich_text",
+                  "rich_text": [
+                    {
+                      "type": "text",
+                      "text": {
+                        "content": "1209051103799289",
+                        "link": null
+                      },
+                      "annotations": {
+                        "bold": false,
+                        "italic": false,
+                        "strikethrough": false,
+                        "underline": false,
+                        "code": false,
+                        "color": "default"
+                      },
+                      "plain_text": "1209051103799289",
+                      "href": null
+                    }
+                  ]
+                },
+                "External Notes": {
+                  "id": "TEcw",
+                  "type": "rich_text",
+                  "rich_text": []
+                },
+                "Ideas Hub": {
+                  "id": "TwXN",
+                  "type": "relation",
+                  "relation": [],
+                  "has_more": false
+                },
+                "Stage": {
+                  "id": "VtgP",
+                  "type": "rollup",
+                  "rollup": {
+                    "type": "array",
+                    "array": [],
+                    "function": "show_original"
+                  }
+                },
+                "Last edited time": {
+                  "id": "VyfQ",
+                  "type": "last_edited_time",
+                  "last_edited_time": "2025-06-26T08:12:00.000Z"
+                },
+                "Client / Company": {
+                  "id": "Yk%60%5B",
+                  "type": "relation",
+                  "relation": [
+                    {
+                      "id": "161a3f9b-f4f5-8121-9543-ede112cf851a"
+                    }
+                  ],
+                  "has_more": false
+                },
+                "Type": {
+                  "id": "ZJ%60h",
+                  "type": "select",
+                  "select": {
+                    "id": "ed1c2d88-dc32-4f76-ad2f-be9fba0884c6",
+                    "name": "New Feature",
+                    "color": "default"
+                  }
+                },
+                "Solution URL": {
+                  "id": "Z_%7B%5C",
+                  "type": "url",
+                  "url": null
+                },
+                "Asana Project ID (Sam Test)": {
+                  "id": "%5CV%3DR",
+                  "type": "rollup",
+                  "rollup": {
+                    "type": "array",
+                    "array": [
+                      {
+                        "type": "rich_text",
+                        "rich_text": [
+                          {
+                            "type": "text",
+                            "text": {
+                              "content": "1209026965444080",
+                              "link": null
+                            },
+                            "annotations": {
+                              "bold": false,
+                              "italic": false,
+                              "strikethrough": false,
+                              "underline": false,
+                              "code": false,
+                              "color": "default"
+                            },
+                            "plain_text": "1209026965444080",
+                            "href": null
+                          }
+                        ]
+                      }
+                    ],
+                    "function": "show_original"
+                  }
+                },
+                "Status": {
+                  "id": "%5EF%5Dx",
+                  "type": "status",
+                  "status": {
+                    "id": "DCIl",
+                    "name": "Blocked",
+                    "color": "red"
+                  }
+                },
+                "GDrive URL (Testing)": {
+                  "id": "%60%5D~F",
+                  "type": "url",
+                  "url": null
+                },
+                "Asana URL": {
+                  "id": "a%3AYa",
+                  "type": "url",
+                  "url": "https://app.asana.com/0/1209026965444080/1209051103799289"
+                },
+                "CEO": {
+                  "id": "albY",
+                  "type": "people",
+                  "people": [
+                    {
+                      "object": "user",
+                      "id": "c1df5375-246f-49be-ae44-a39551448184",
+                      "name": "Dashboard Lim",
+                      "avatar_url": "https://lh3.googleusercontent.com/a/ACg8ocKNaMu2RWNbdrBsImqoG9uDRVeeThqW9GQnJzIuJE2q=s100",
+                      "type": "person",
+                      "person": {
+                        "email": "hello@dashboard-lim.com"
+                      }
+                    }
+                  ]
+                },
+                "Internal Notes": {
+                  "id": "dPbJ",
+                  "type": "rich_text",
+                  "rich_text": []
+                },
+                "Done Date": {
+                  "id": "mXrB",
+                  "type": "date",
+                  "date": null
+                },
+                "GSheet URL (Testing)": {
+                  "id": "nxs%7B",
+                  "type": "url",
+                  "url": null
+                },
+                "Assignee": {
+                  "id": "rvwJ",
+                  "type": "people",
+                  "people": [
+                    {
+                      "object": "user",
+                      "id": "7ef4b513-4f6a-4ad6-85d6-69e7aedc04d3"
+                    },
+                    {
+                      "object": "user",
+                      "id": "16fd872b-594c-812b-9354-00020bcf4c7e",
+                      "name": "Yudi Romiyansa",
+                      "avatar_url": null,
+                      "type": "person",
+                      "person": {
+                        "email": "yr.yudiromi@gmail.com"
+                      }
+                    }
+                  ]
+                },
+                "Created time": {
+                  "id": "tiX%3D",
+                  "type": "created_time",
+                  "created_time": "2024-12-26T22:37:00.000Z"
+                },
+                "Reopen Date": {
+                  "id": "%7DLMr",
+                  "type": "date",
+                  "date": null
+                },
+                "Name": {
+                  "id": "title",
+                  "type": "title",
+                  "title": [
+                    {
+                      "type": "text",
+                      "text": {
+                        "content": "Redesign Barbershop Website",
+                        "link": null
+                      },
+                      "annotations": {
+                        "bold": false,
+                        "italic": false,
+                        "strikethrough": false,
+                        "underline": false,
+                        "code": false,
+                        "color": "default"
+                      },
+                      "plain_text": "Redesign Barbershop Website",
+                      "href": null
+                    }
+                  ]
+                },
+                "Priority": {
+                  "id": "notion%3A%2F%2Ftasks%2Fpriority_property",
+                  "type": "select",
+                  "select": {
+                    "id": "priority_medium",
+                    "name": "Medium",
+                    "color": "yellow"
+                  }
+                },
+                "Estimates": {
+                  "id": "notion%3A%2F%2Ftasks%2Festimates_property",
+                  "type": "select",
+                  "select": {
+                    "id": "1",
+                    "name": "1",
+                    "color": "purple"
+                  }
+                },
+                "Internal Project": {
+                  "id": "K%3Ea%7B",
+                  "type": "rollup",
+                  "rollup": {
+                    "type": "array",
+                    "array": [
+                      {
+                        "type": "checkbox",
+                        "checkbox": false
+                      }
+                    ],
+                    "function": "show_original"
+                  }
+                }
+              },
+              "url": "https://www.notion.so/Redesign-Barbershop-Website-168a3f9bf4f5805599a2c4816835f839",
+              "public_url": null,
+              "request_id": "9dc77d0a-aadb-4a12-bd95-5fdce3ac2c56"
+            }
+          },
+          "webhookUrl": "https://n8n.dashboard-lim.com/webhook/49744bd2-9ca4-4d07-84f4-2528ad87ef2e",
+          "executionMode": "production"
+        }
+      }
+    ],
+    "New Page In Notion Automation Log": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.dashboard-lim.com",
+            "user-agent": "NotionAutomation",
+            "content-length": "2033",
+            "baggage": "sentry-environment=production,sentry-release=0.0.3611,sentry-public_key=529a6d1990e5471d874257842c4f4ad8,sentry-trace_id=a23db2360db54243a7311911301982be",
+            "content-type": "application/json",
+            "sentry-trace": "a23db2360db54243a7311911301982be-a6e9367f8b407f91",
+            "server": "Heroku",
+            "traceparent": "00-685d432000000000705912859a06b298-79c7a1a043bb1be4-00",
+            "tracestate": "dd=t.tid:685d432000000000;t.dm:-4;s:-1;p:79c7a1a043bb1be4",
+            "via": "1.1 heroku-router",
+            "x-datadog-parent-id": "8775160108657875940",
+            "x-datadog-sampling-priority": "-1",
+            "x-datadog-tags": "_dd.p.tid=685d432000000000",
+            "x-datadog-trace-id": "8095522170199257752",
+            "x-forwarded-for": "44.241.75.17",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-request-id": "5d022b94-bf3b-8e5d-4b6c-fcf9228c58b4",
+            "x-request-start": "1750942500263"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "source": {
+              "type": "automation",
+              "automation_id": "21da3f9b-f4f5-8092-9e3f-004dd8f6536d",
+              "action_id": "21da3f9b-f4f5-80d2-9d4a-005a97387a31",
+              "event_id": "53ef36ea-248d-42c0-8f12-8b643eaa97e5",
+              "attempt": 1
+            },
+            "data": {
+              "object": "page",
+              "id": "21ea3f9b-f4f5-80d2-ba9e-d52fc73ca7c5",
+              "created_time": "2025-06-26T12:54:00.000Z",
+              "last_edited_time": "2025-06-26T12:54:00.000Z",
+              "created_by": {
+                "object": "user",
+                "id": "1a9d872b-594c-8188-abf1-00029b565b13"
+              },
+              "last_edited_by": {
+                "object": "user",
+                "id": "1a9d872b-594c-8188-abf1-00029b565b13"
+              },
+              "cover": null,
+              "icon": null,
+              "parent": {
+                "type": "database_id",
+                "database_id": "208a3f9b-f4f5-8043-af45-e5836923f274"
+              },
+              "archived": false,
+              "in_trash": false,
+              "properties": {
+                "Status": {
+                  "id": "LiOO",
+                  "type": "rollup",
+                  "rollup": {
+                    "type": "array",
+                    "array": [
+                      {
+                        "type": "status",
+                        "status": {
+                          "id": "8951eab1-7d97-4728-978a-199c5dd9d429",
+                          "name": "Not started",
+                          "color": "default"
+                        }
+                      }
+                    ],
+                    "function": "show_original"
+                  }
+                },
+                "Internal Project?": {
+                  "id": "MTx%40",
+                  "type": "formula",
+                  "formula": {
+                    "type": "boolean",
+                    "boolean": false
+                  }
+                },
+                "Client": {
+                  "id": "%5EUTo",
+                  "type": "rollup",
+                  "rollup": {
+                    "type": "array",
+                    "array": [
+                      {
+                        "type": "relation",
+                        "relation": [
+                          {
+                            "id": "143a3f9b-f4f5-81c7-823d-c8ec7a6885c2"
+                          }
+                        ]
+                      }
+                    ],
+                    "function": "show_original"
+                  }
+                },
+                "Client Asana Project ID": {
+                  "id": "f%7D~%5E",
+                  "type": "formula",
+                  "formula": {
+                    "type": "string",
+                    "string": "1208801420015062"
+                  }
+                },
+                "Task ID": {
+                  "id": "vA%5CN",
+                  "type": "formula",
+                  "formula": {
+                    "type": "string",
+                    "string": "21ea3f9bf4f580ffa50bd4493ec8256d"
+                  }
+                },
+                "Created time": {
+                  "id": "zTLx",
+                  "type": "created_time",
+                  "created_time": "2025-06-26T12:54:00.000Z"
+                },
+                "Task": {
+                  "id": "~zZt",
+                  "type": "relation",
+                  "relation": [
+                    {
+                      "id": "21ea3f9b-f4f5-80ff-a50b-d4493ec8256d"
+                    }
+                  ],
+                  "has_more": false
+                },
+                "Name": {
+                  "id": "title",
+                  "type": "title",
+                  "title": [
+                    {
+                      "type": "text",
+                      "text": {
+                        "content": "Push Task to Asana",
+                        "link": null
+                      },
+                      "annotations": {
+                        "bold": false,
+                        "italic": false,
+                        "strikethrough": false,
+                        "underline": false,
+                        "code": false,
+                        "color": "default"
+                      },
+                      "plain_text": "Push Task to Asana",
+                      "href": null
+                    }
+                  ]
+                }
+              },
+              "url": "https://www.notion.so/Push-Task-to-Asana-21ea3f9bf4f580d2ba9ed52fc73ca7c5",
+              "public_url": null,
+              "request_id": "9fc44fc6-c21c-4846-b06c-5c68d785d4c4"
+            }
+          },
+          "webhookUrl": "https://n8n.dashboard-lim.com/webhook/805d28aa-9043-460b-a774-933329f8e395",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Get Task Page Details": {
+      "main": [
+        [
+          {
+            "node": "Path H: No Asana Project ID (But Existing Relation)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Path A: New Push to Asana": {
+      "main": [
+        [
+          {
+            "node": "Client Relation Exists",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Asana Task already exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status = start, not started, blank": {
+      "main": [
+        [
+          {
+            "node": "Required Fields Present",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Incorrect Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project Name": {
+      "main": [
+        [
+          {
+            "node": "Get Client [by Company] Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Path B: In Progress": {
+      "main": [
+        [
+          {
+            "node": "Find Task by ID in Asana",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Asana ID or Project ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Task by ID in Asana": {
+      "main": [
+        [
+          {
+            "node": "Asana Task Status = New Requests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Asana Task Status = New Requests": {
+      "main": [
+        [
+          {
+            "node": "Get Sections",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract In Progress Section": {
+      "main": [
+        [
+          {
+            "node": "Move to 'In Progress' Section",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Push Comments = True (B)": {
+      "main": [
+        [
+          {
+            "node": "Push External Notes Into a Comment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Task by ID (D)": {
+      "main": [
+        [
+          {
+            "node": "Task is Not Already Blocked",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Task is Not Already Blocked": {
+      "main": [
+        [
+          {
+            "node": "Get Sections2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Task by ID (E1)": {
+      "main": [
+        [
+          {
+            "node": "Task is Not Already Won't Do",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Task is Not Already Won't Do": {
+      "main": [
+        [
+          {
+            "node": "Get Sections3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Task by ID (E2)": {
+      "main": [
+        [
+          {
+            "node": "Get Sections4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack Task Completed": {
+      "main": [
+        [
+          {
+            "node": "Push Comments = True (B)7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Path H: No Asana Project ID (But Existing Relation)": {
+      "main": [
+        [
+          {
+            "node": "Get Client Page",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Path A: New Push to Asana",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Client Page": {
+      "main": [
+        [
+          {
+            "node": "Slack Error Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Task Data1": {
+      "main": [
+        [
+          {
+            "node": "Get Type, Priority, Tag Ids1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Type, Priority, Tag Ids1": {
+      "main": [
+        [
+          {
+            "node": "Create Asana Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Project Sections": {
+      "main": [
+        [
+          {
+            "node": "Get 'New Requests' Section gid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Asana Task": {
+      "main": [
+        [
+          {
+            "node": "Add notion Page to asana",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get 'New Requests' Section gid": {
+      "main": [
+        [
+          {
+            "node": "Move to 'New Requests' Section",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move to 'New Requests' Section": {
+      "main": [
+        [
+          {
+            "node": "Add The Asana Task Id in Notion1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add The Asana Task Id in Notion1": {
+      "main": [
+        [
+          {
+            "node": "Get Project Name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Sections": {
+      "main": [
+        [
+          {
+            "node": "Extract In Progress Section",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Sections1": {
+      "main": [
+        [
+          {
+            "node": "Extract Review Section",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Review Section": {
+      "main": [
+        [
+          {
+            "node": "Move to 'Review' Section",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Sections2": {
+      "main": [
+        [
+          {
+            "node": "Extract Blocked Section",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Blocked Section": {
+      "main": [
+        [
+          {
+            "node": "Move to 'Blocked' Section",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move to 'In Progress' Section": {
+      "main": [
+        [
+          {
+            "node": "Push Comments = True (B)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move to 'Review' Section": {
+      "main": [
+        [
+          {
+            "node": "Push Comments = True (B)4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move to 'Blocked' Section": {
+      "main": [
+        [
+          {
+            "node": "Push Comments = True (B)5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Sections3": {
+      "main": [
+        [
+          {
+            "node": "Extract Won't do",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move to 'Blocked' Section1": {
+      "main": [
+        [
+          {
+            "node": "Push Comments = True (B)6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Sections4": {
+      "main": [
+        [
+          {
+            "node": "Extract Completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move to 'Completed' Section": {
+      "main": [
+        [
+          {
+            "node": "Slack Task Completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Path B: In Progress",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Path C: In Review1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Path D: Blocked",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Path E: Won't Do",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Path F: Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New Page In Notion Automation Log": {
+      "main": [
+        [
+          {
+            "node": "Get Task Page Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Won't do": {
+      "main": [
+        [
+          {
+            "node": "Move to 'Blocked' Section1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Completed": {
+      "main": [
+        [
+          {
+            "node": "Move to 'Completed' Section",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Task Description",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Client [by Company] Page": {
+      "main": [
+        [
+          {
+            "node": "Get Slack Channel ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Task Description": {
+      "main": [
+        [
+          {
+            "node": "Type = New Feature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Slack Channel ID": {
+      "main": [
+        [
+          {
+            "node": "Generate Task Description",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Type = New Feature": {
+      "main": [
+        [
+          {
+            "node": "New Feature Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Improvement Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Client Relation Exists": {
+      "main": [
+        [
+          {
+            "node": "Status = start, not started, blank",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Client Relation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Required Fields Present": {
+      "main": [
+        [
+          {
+            "node": "Prepare Task Data1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Missing Properties",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Incorrect Status": {
+      "main": [
+        [
+          {
+            "node": "Push Back to 'Not Started'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Missing Properties": {
+      "main": [
+        [
+          {
+            "node": "Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Asana ID or Project ID": {
+      "main": [
+        [
+          {
+            "node": "Push back to 'Not Started'1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add notion Page to asana": {
+      "main": [
+        [
+          {
+            "node": "Get Project Sections",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Improvement Request": {
+      "main": [
+        [
+          {
+            "node": "Add Description1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New Feature Request": {
+      "main": [
+        [
+          {
+            "node": "Add Description",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Notion1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion1": {
+      "main": [
+        [
+          {
+            "node": "Clean Properties",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Path H: No Asana Project ID (But Existing Relation)1": {
+      "main": [
+        [
+          {
+            "node": "Get Client Page1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check if Internal Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Client Page1": {
+      "main": [
+        [
+          {
+            "node": "Slack Error Notification1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Path C: In Review1": {
+      "main": [
+        [
+          {
+            "node": "Get Sections1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Asana ID or Project ID5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Push Comments = True (B)4": {
+      "main": [
+        [
+          {
+            "node": "Push External Notes Into a Comment4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Asana ID or Project ID5": {
+      "main": [
+        [
+          {
+            "node": "Push back to 'Not Started'5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Asana ID or Project ID6": {
+      "main": [
+        [
+          {
+            "node": "Push back to 'Not Started'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Asana ID or Project ID7": {
+      "main": [
+        [
+          {
+            "node": "Push back to 'Not Started'2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Asana ID or Project ID8": {
+      "main": [
+        [
+          {
+            "node": "Push back to 'Not Started'3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Push Comments = True (B)5": {
+      "main": [
+        [
+          {
+            "node": "Push External Notes Into a Comment5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Push Comments = True (B)6": {
+      "main": [
+        [
+          {
+            "node": "Push External Notes Into a Comment6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Push Comments = True (B)7": {
+      "main": [
+        [
+          {
+            "node": "Push External Notes Into a Comment7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Path D: Blocked": {
+      "main": [
+        [
+          {
+            "node": "Find Task by ID (D)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Asana ID or Project ID6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Path E: Won't Do": {
+      "main": [
+        [
+          {
+            "node": "Find Task by ID (E1)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Asana ID or Project ID7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Path F: Done": {
+      "main": [
+        [
+          {
+            "node": "Find Task by ID (E2)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Asana ID or Project ID8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if Internal Task": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean Properties": {
+      "main": [
+        [
+          {
+            "node": "Path H: No Asana Project ID (But Existing Relation)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "110fb6e1-7af3-4a5d-87d1-7f4b282281de",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e38dd5482639bd61b927f3a5d8425551f6a7f244804be8ea5d2b80e21bfa779c"
+  },
+  "id": "AESBj4XzY5cNbhCV",
+  "tags": [
+    {
+      "createdAt": "2025-06-03T16:48:26.081Z",
+      "updatedAt": "2025-06-03T16:48:26.081Z",
+      "id": "rYJyJH5GXc7DNXCp",
+      "name": "slack"
+    },
+    {
+      "createdAt": "2025-06-03T16:48:26.066Z",
+      "updatedAt": "2025-06-04T06:38:45.421Z",
+      "id": "PmpUyKyZAbu5FGcU",
+      "name": "dashboardlim_tag1"
+    },
+    {
+      "createdAt": "2025-06-03T16:48:26.086Z",
+      "updatedAt": "2025-06-26T11:35:32.539Z",
+      "id": "7jyuFRITNXzSGSj0",
+      "name": "notion"
+    },
+    {
+      "createdAt": "2025-06-03T16:48:26.067Z",
+      "updatedAt": "2025-06-26T11:35:37.030Z",
+      "id": "5266pdZJudxTTEvm",
+      "name": "asana"
+    }
+  ]
+}
+}

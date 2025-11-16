@@ -4,12 +4,17 @@ Predefined Crew Configurations and Flow Templates for Grokputer.
 Provides ready-to-use CrewAI-inspired setups for common agent orchestration patterns.
 """
 
+from typing import Any, Dict, List
+
 from src.agents.crew_orchestrator import (
-    CrewOrchestrator, CrewMember, CrewRole, FlowStep,
-    FlowExecution, FlowState
+    CrewMember,
+    CrewOrchestrator,
+    CrewRole,
+    FlowExecution,
+    FlowState,
+    FlowStep,
 )
 from src.core.base_agent import BaseAgent
-from typing import List, Dict, Any
 
 
 class CrewTemplates:
@@ -22,7 +27,7 @@ class CrewTemplates:
         validator: BaseAgent,
         executor: BaseAgent,
         analyzer: BaseAgent = None,
-        learner: BaseAgent = None
+        learner: BaseAgent = None,
     ) -> List[CrewMember]:
         """
         Create a standard task execution crew.
@@ -41,57 +46,58 @@ class CrewTemplates:
                 role=CrewRole.COORDINATOR,
                 capabilities={"task_decomposition", "planning", "coordination"},
                 priority=5,
-                max_concurrent_tasks=2
+                max_concurrent_tasks=2,
             ),
             CrewMember(
                 agent=observer,
                 role=CrewRole.OBSERVER,
                 capabilities={"screen_capture", "state_observation", "context_gathering"},
                 priority=4,
-                max_concurrent_tasks=1
+                max_concurrent_tasks=1,
             ),
             CrewMember(
                 agent=validator,
                 role=CrewRole.VALIDATOR,
                 capabilities={"safety_check", "validation", "risk_assessment"},
                 priority=5,
-                max_concurrent_tasks=3
+                max_concurrent_tasks=3,
             ),
             CrewMember(
                 agent=executor,
                 role=CrewRole.EXECUTOR,
                 capabilities={"command_execution", "tool_use", "action_performing"},
                 priority=4,
-                max_concurrent_tasks=2
-            )
+                max_concurrent_tasks=2,
+            ),
         ]
 
         if analyzer:
-            members.append(CrewMember(
-                agent=analyzer,
-                role=CrewRole.ANALYZER,
-                capabilities={"performance_monitoring", "metrics_collection", "health_check"},
-                priority=3,
-                max_concurrent_tasks=1
-            ))
+            members.append(
+                CrewMember(
+                    agent=analyzer,
+                    role=CrewRole.ANALYZER,
+                    capabilities={"performance_monitoring", "metrics_collection", "health_check"},
+                    priority=3,
+                    max_concurrent_tasks=1,
+                )
+            )
 
         if learner:
-            members.append(CrewMember(
-                agent=learner,
-                role=CrewRole.LEARNER,
-                capabilities={"pattern_recognition", "learning", "adaptation"},
-                priority=3,
-                max_concurrent_tasks=1
-            ))
+            members.append(
+                CrewMember(
+                    agent=learner,
+                    role=CrewRole.LEARNER,
+                    capabilities={"pattern_recognition", "learning", "adaptation"},
+                    priority=3,
+                    max_concurrent_tasks=1,
+                )
+            )
 
         return members
 
     @staticmethod
     def create_research_crew(
-        coordinator: BaseAgent,
-        analyzer: BaseAgent,
-        learner: BaseAgent,
-        memory_manager: BaseAgent = None
+        coordinator: BaseAgent, analyzer: BaseAgent, learner: BaseAgent, memory_manager: BaseAgent = None
     ) -> List[CrewMember]:
         """
         Create a research and analysis crew.
@@ -104,41 +110,40 @@ class CrewTemplates:
                 role=CrewRole.COORDINATOR,
                 capabilities={"research_planning", "query_decomposition", "synthesis"},
                 priority=5,
-                max_concurrent_tasks=2
+                max_concurrent_tasks=2,
             ),
             CrewMember(
                 agent=analyzer,
                 role=CrewRole.ANALYZER,
                 capabilities={"data_analysis", "pattern_analysis", "insights_generation"},
                 priority=4,
-                max_concurrent_tasks=2
+                max_concurrent_tasks=2,
             ),
             CrewMember(
                 agent=learner,
                 role=CrewRole.LEARNER,
                 capabilities={"knowledge_extraction", "pattern_learning", "model_training"},
                 priority=4,
-                max_concurrent_tasks=1
-            )
+                max_concurrent_tasks=1,
+            ),
         ]
 
         if memory_manager:
-            members.append(CrewMember(
-                agent=memory_manager,
-                role=CrewRole.MEMORY_MANAGER,
-                capabilities={"memory_retrieval", "context_storage", "knowledge_persistence"},
-                priority=3,
-                max_concurrent_tasks=1
-            ))
+            members.append(
+                CrewMember(
+                    agent=memory_manager,
+                    role=CrewRole.MEMORY_MANAGER,
+                    capabilities={"memory_retrieval", "context_storage", "knowledge_persistence"},
+                    priority=3,
+                    max_concurrent_tasks=1,
+                )
+            )
 
         return members
 
     @staticmethod
     def create_development_crew(
-        coordinator: BaseAgent,
-        analyzer: BaseAgent,
-        improver: BaseAgent,
-        validator: BaseAgent
+        coordinator: BaseAgent, analyzer: BaseAgent, improver: BaseAgent, validator: BaseAgent
     ) -> List[CrewMember]:
         """
         Create a software development crew.
@@ -151,29 +156,29 @@ class CrewTemplates:
                 role=CrewRole.COORDINATOR,
                 capabilities={"code_planning", "architecture_design", "task_breakdown"},
                 priority=5,
-                max_concurrent_tasks=2
+                max_concurrent_tasks=2,
             ),
             CrewMember(
                 agent=analyzer,
                 role=CrewRole.ANALYZER,
                 capabilities={"code_analysis", "bug_detection", "performance_analysis"},
                 priority=4,
-                max_concurrent_tasks=2
+                max_concurrent_tasks=2,
             ),
             CrewMember(
                 agent=improver,
                 role=CrewRole.IMPROVER,
                 capabilities={"code_optimization", "refactoring", "enhancement"},
                 priority=4,
-                max_concurrent_tasks=2
+                max_concurrent_tasks=2,
             ),
             CrewMember(
                 agent=validator,
                 role=CrewRole.VALIDATOR,
                 capabilities={"code_review", "testing", "quality_assurance"},
                 priority=5,
-                max_concurrent_tasks=3
-            )
+                max_concurrent_tasks=3,
+            ),
         ]
 
 
@@ -193,14 +198,14 @@ class FlowTemplates:
                 description="Capture initial system state and context",
                 required_role=CrewRole.OBSERVER,
                 task_type="screen_capture",
-                timeout=30.0
+                timeout=30.0,
             ),
             FlowStep(
                 step_id="decompose_task",
                 description="Break down the task into executable steps",
                 required_role=CrewRole.COORDINATOR,
                 task_type="task_decomposition",
-                timeout=60.0
+                timeout=60.0,
             ),
             FlowStep(
                 step_id="validate_plan",
@@ -208,7 +213,7 @@ class FlowTemplates:
                 required_role=CrewRole.VALIDATOR,
                 task_type="safety_check",
                 dependencies=["decompose_task"],
-                timeout=45.0
+                timeout=45.0,
             ),
             FlowStep(
                 step_id="execute_actions",
@@ -216,7 +221,7 @@ class FlowTemplates:
                 required_role=CrewRole.EXECUTOR,
                 task_type="command_execution",
                 dependencies=["validate_plan"],
-                timeout=300.0  # 5 minutes
+                timeout=300.0,  # 5 minutes
             ),
             FlowStep(
                 step_id="observe_results",
@@ -224,7 +229,7 @@ class FlowTemplates:
                 required_role=CrewRole.OBSERVER,
                 task_type="state_observation",
                 dependencies=["execute_actions"],
-                timeout=30.0
+                timeout=30.0,
             ),
             FlowStep(
                 step_id="validate_outcome",
@@ -232,7 +237,7 @@ class FlowTemplates:
                 required_role=CrewRole.VALIDATOR,
                 task_type="validation",
                 dependencies=["observe_results"],
-                timeout=45.0
+                timeout=45.0,
             ),
             FlowStep(
                 step_id="analyze_performance",
@@ -240,7 +245,7 @@ class FlowTemplates:
                 required_role=CrewRole.ANALYZER,
                 task_type="performance_monitoring",
                 dependencies=["validate_outcome"],
-                timeout=30.0
+                timeout=30.0,
             ),
             FlowStep(
                 step_id="learn_patterns",
@@ -248,8 +253,8 @@ class FlowTemplates:
                 required_role=CrewRole.LEARNER,
                 task_type="pattern_recognition",
                 dependencies=["analyze_performance"],
-                timeout=60.0
-            )
+                timeout=60.0,
+            ),
         ]
 
     @staticmethod
@@ -265,7 +270,7 @@ class FlowTemplates:
                 description="Define the scope and objectives of the research",
                 required_role=CrewRole.COORDINATOR,
                 task_type="research_planning",
-                timeout=60.0
+                timeout=60.0,
             ),
             FlowStep(
                 step_id="gather_information",
@@ -273,7 +278,7 @@ class FlowTemplates:
                 required_role=CrewRole.ANALYZER,
                 task_type="data_analysis",
                 dependencies=["define_research_scope"],
-                timeout=180.0  # 3 minutes
+                timeout=180.0,  # 3 minutes
             ),
             FlowStep(
                 step_id="analyze_patterns",
@@ -281,7 +286,7 @@ class FlowTemplates:
                 required_role=CrewRole.ANALYZER,
                 task_type="pattern_analysis",
                 dependencies=["gather_information"],
-                timeout=120.0
+                timeout=120.0,
             ),
             FlowStep(
                 step_id="extract_knowledge",
@@ -289,7 +294,7 @@ class FlowTemplates:
                 required_role=CrewRole.LEARNER,
                 task_type="knowledge_extraction",
                 dependencies=["analyze_patterns"],
-                timeout=90.0
+                timeout=90.0,
             ),
             FlowStep(
                 step_id="synthesize_findings",
@@ -297,8 +302,8 @@ class FlowTemplates:
                 required_role=CrewRole.COORDINATOR,
                 task_type="synthesis",
                 dependencies=["extract_knowledge"],
-                timeout=120.0
-            )
+                timeout=120.0,
+            ),
         ]
 
     @staticmethod
@@ -314,7 +319,7 @@ class FlowTemplates:
                 description="Perform comprehensive code analysis",
                 required_role=CrewRole.ANALYZER,
                 task_type="code_analysis",
-                timeout=120.0
+                timeout=120.0,
             ),
             FlowStep(
                 step_id="identify_issues",
@@ -322,7 +327,7 @@ class FlowTemplates:
                 required_role=CrewRole.ANALYZER,
                 task_type="bug_detection",
                 dependencies=["analyze_codebase"],
-                timeout=90.0
+                timeout=90.0,
             ),
             FlowStep(
                 step_id="review_code_quality",
@@ -330,7 +335,7 @@ class FlowTemplates:
                 required_role=CrewRole.VALIDATOR,
                 task_type="code_review",
                 dependencies=["identify_issues"],
-                timeout=60.0
+                timeout=60.0,
             ),
             FlowStep(
                 step_id="suggest_improvements",
@@ -338,7 +343,7 @@ class FlowTemplates:
                 required_role=CrewRole.IMPROVER,
                 task_type="code_optimization",
                 dependencies=["review_code_quality"],
-                timeout=90.0
+                timeout=90.0,
             ),
             FlowStep(
                 step_id="validate_improvements",
@@ -346,8 +351,8 @@ class FlowTemplates:
                 required_role=CrewRole.VALIDATOR,
                 task_type="testing",
                 dependencies=["suggest_improvements"],
-                timeout=120.0
-            )
+                timeout=120.0,
+            ),
         ]
 
 
@@ -371,7 +376,7 @@ class CrewManager:
         validator: BaseAgent,
         executor: BaseAgent,
         analyzer: BaseAgent = None,
-        learner: BaseAgent = None
+        learner: BaseAgent = None,
     ) -> str:
         """Set up a standard task execution crew."""
         members = self.templates.create_task_execution_crew(
@@ -392,12 +397,10 @@ class CrewManager:
         coordinator: BaseAgent,
         analyzer: BaseAgent,
         learner: BaseAgent,
-        memory_manager: BaseAgent = None
+        memory_manager: BaseAgent = None,
     ) -> str:
         """Set up a research and analysis crew."""
-        members = self.templates.create_research_crew(
-            coordinator, analyzer, learner, memory_manager
-        )
+        members = self.templates.create_research_crew(coordinator, analyzer, learner, memory_manager)
         self.orchestrator.create_crew(crew_id, members)
 
         # Set up the research flow
@@ -408,17 +411,10 @@ class CrewManager:
         return flow_id
 
     def setup_development_crew(
-        self,
-        crew_id: str,
-        coordinator: BaseAgent,
-        analyzer: BaseAgent,
-        improver: BaseAgent,
-        validator: BaseAgent
+        self, crew_id: str, coordinator: BaseAgent, analyzer: BaseAgent, improver: BaseAgent, validator: BaseAgent
     ) -> str:
         """Set up a software development crew."""
-        members = self.templates.create_development_crew(
-            coordinator, analyzer, improver, validator
-        )
+        members = self.templates.create_development_crew(coordinator, analyzer, improver, validator)
         self.orchestrator.create_crew(crew_id, members)
 
         # Set up the code review flow
@@ -428,7 +424,9 @@ class CrewManager:
 
         return flow_id
 
-    async def execute_task_flow(self, crew_id: str, task_description: str, context: Dict[str, Any] = None) -> Dict[str, Any]:
+    async def execute_task_flow(
+        self, crew_id: str, task_description: str, context: Dict[str, Any] = None
+    ) -> Dict[str, Any]:
         """
         Execute a complete task using the appropriate crew and flow.
 
@@ -447,11 +445,7 @@ class CrewManager:
                 raise ValueError(f"No suitable flow found for crew '{crew_id}' and task type '{task_type}'")
 
         # Execute the flow
-        execution_context = {
-            "task_description": task_description,
-            "task_type": task_type,
-            **(context or {})
-        }
+        execution_context = {"task_description": task_description, "task_type": task_type, **(context or {})}
 
         return await self.orchestrator.execute_flow(crew_id, flow_id, execution_context)
 

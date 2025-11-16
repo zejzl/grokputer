@@ -5,18 +5,21 @@ Integrates NLI with Redis caching and SQLite persistence for optimal performance
 
 import asyncio
 import logging
-from typing import Dict, Any, Optional, List
 from datetime import datetime
+from typing import Any, Dict, List, Optional
 
-from src.interfaces.natural_language_interface import NaturalLanguageInterface, ConversationContext
-from src.core.conversation_cache import ConversationCache
-from src.agents.coordinator import Coordinator
 from db_config import (
+    get_conversation_analytics,
     get_conversation_history,
     get_user_conversations,
     get_user_preferences,
     save_conversation_analytics,
-    get_conversation_analytics,
+)
+from src.agents.coordinator import Coordinator
+from src.core.conversation_cache import ConversationCache
+from src.interfaces.natural_language_interface import (
+    ConversationContext,
+    NaturalLanguageInterface,
 )
 
 logger = logging.getLogger(__name__)

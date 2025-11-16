@@ -8,17 +8,18 @@ Implements a three-tier memory architecture:
 """
 
 import asyncio
-import time
 import logging
-from typing import Dict, Any, List, Optional, Tuple
-from dataclasses import dataclass, field
-from collections import deque, defaultdict
 import threading
-from .interfaces import MemoryConfig, MemoryBackend
-from .hyde_generator import HyDEGenerator
-from ..knowledge_graph import KnowledgeGraph, Entity, Relationship
+import time
+from collections import defaultdict, deque
+from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional, Tuple
+
+from ..encryption import get_encryptor, randomize_decrypt, randomize_encrypt
 from ..exceptions import MemoryError, handle_error
-from ..encryption import get_encryptor, randomize_encrypt, randomize_decrypt
+from ..knowledge_graph import Entity, KnowledgeGraph, Relationship
+from .hyde_generator import HyDEGenerator
+from .interfaces import MemoryBackend, MemoryConfig
 
 logger = logging.getLogger(__name__)
 
@@ -230,6 +231,7 @@ def create_memory_backend(config: MemoryConfig) -> Optional[MemoryBackend]:
     if config.backend == "redis":
         try:
             from .backends.redis_store import RedisStore
+
             backend = RedisStore(config)
             # Test connection
             backend.get_connection()
@@ -240,6 +242,7 @@ def create_memory_backend(config: MemoryConfig) -> Optional[MemoryBackend]:
     elif config.backend == "pinecone":
         try:
             from .backends.pinecone_store import PineconeStore
+
             return PineconeStore(config)
         except Exception as e:
             logger.warning(f"Failed to initialize Pinecone: {e}. Using fallback memory.")
@@ -274,10 +277,11 @@ class HierarchicalMemoryManager(MemoryBackend):
         self.knowledge_graph = KnowledgeGraph()
 
         # Initialize HyDE generator if enabled
-        self.hyde_generator = HyDEGenerator(
-            num_hypotheticals=config.hyde_num_hypotheticals,
-            model=config.hyde_model
-        ) if getattr(config, 'enable_hyde', False) else None
+        self.hyde_generator = (
+            HyDEGenerator(num_hypotheticals=config.hyde_num_hypotheticals, model=config.hyde_model)
+            if getattr(config, "enable_hyde", False)
+            else None
+        )
 
         # Memory fusion settings
         self.fusion_weights = {
@@ -457,7 +461,7 @@ class HierarchicalMemoryManager(MemoryBackend):
         long_term_results = []
         if self.long_term_backend:
             try:
-                if hasattr(self.long_term_backend, 'retrieve_context'):
+                if hasattr(self.long_term_backend, "retrieve_context"):
                     long_term_results = await self.long_term_backend.retrieve_context(agent_id, query, top_k * 2)
                 else:
                     # Fallback for non-async backends

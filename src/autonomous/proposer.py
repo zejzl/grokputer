@@ -2,16 +2,16 @@
 ProposalGeneratorAgent - Converts findings into actionable code change proposals.
 """
 
+import difflib
 import uuid
+from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
-from datetime import datetime
-import difflib
 
 from openai import OpenAI
 
 from .models.findings import Finding
-from .models.proposals import Proposal, Alternative
+from .models.proposals import Alternative, Proposal
 
 
 class ProposalGeneratorAgent:

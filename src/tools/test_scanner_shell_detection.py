@@ -4,9 +4,9 @@ Test the improved scanner's shell injection detection.
 """
 
 import asyncio
+import sys
 import tempfile
 from pathlib import Path
-import sys
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent / "src"))

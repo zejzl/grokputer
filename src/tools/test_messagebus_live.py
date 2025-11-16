@@ -11,7 +11,7 @@ from pathlib import Path
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from src.core.message_bus import MessageBus, Message, MessagePriority
+from src.core.message_bus import Message, MessageBus, MessagePriority
 
 
 async def claude_agent(bus: MessageBus, message_for_grok: str):

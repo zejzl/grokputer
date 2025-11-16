@@ -6,13 +6,17 @@ to make intelligent decisions and generate actionable insights.
 """
 
 import asyncio
+import json
 import logging
-from typing import Dict, Any, List, Optional, Union, Tuple
 from dataclasses import dataclass, field
 from datetime import datetime
-import json
+from typing import Any, Dict, List, Optional, Tuple, Union
 
-from .multimodal_processor import MultiModalProcessor, MultiModalInput, MultiModalAnalysis
+from .multimodal_processor import (
+    MultiModalAnalysis,
+    MultiModalInput,
+    MultiModalProcessor,
+)
 from .ui_understanding import UIUnderstandingModule
 from .vision_processor import VisionProcessor
 

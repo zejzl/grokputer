@@ -7,14 +7,15 @@ Integrates with all agents for comprehensive monitoring and bottleneck identific
 
 import asyncio
 import logging
-import time
-import psutil
-from typing import Dict, Any, List, Optional
-from datetime import datetime, timedelta
 import threading
+import time
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
+
+import psutil
 
 from src.core.base_agent import BaseAgent
-from src.core.message_bus import MessageBus, Message, MessagePriority
+from src.core.message_bus import Message, MessageBus, MessagePriority
 from src.tools.alerts import get_haiku_alerts
 
 logger = logging.getLogger(__name__)

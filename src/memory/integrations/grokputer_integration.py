@@ -1,6 +1,7 @@
-from ..managers.memory_factory import create_memory_backend
+from typing import Any, Dict, List
+
 from ..interfaces import MemoryConfig
-from typing import Dict, Any, List
+from ..managers.memory_factory import create_memory_backend
 
 
 class GrokputerMemoryIntegration:

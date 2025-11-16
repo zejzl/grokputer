@@ -1,0 +1,6 @@
+[2025-11-14 08:32:23] [CRITICAL] System_Disk: Critical disk usage: 1431698240%
+[2025-11-14 08:32:28] [WARNING] Application_Logs: Found 17 log files with errors in the last 24 hours
+[2025-11-14 08:32:59] [CRITICAL] System_Disk: Critical disk usage: 1428710420%
+[2025-11-14 08:33:04] [WARNING] Application_Logs: Found 17 log files with errors in the last 24 hours
+[2025-11-14 10:32:19] [CRITICAL] System_Disk: Critical disk usage: 1418827120%
+[2025-11-14 10:32:24] [WARNING] Application_Logs: Found 21 log files with errors in the last 24 hours

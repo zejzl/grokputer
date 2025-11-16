@@ -1,0 +1,119 @@
+Session: pantheon_20251114_103833
+Task: apply pending improvement proposals for test coverage
+Started: 2025-11-14T10:38:33.987594
+Swarm Mode: True
+--------------------------------------------------------------------------------
+
+[10:38:33.988] [AGENT START] observer
+[10:38:33.988] [AGENT START] observer
+[10:38:33.988] [AGENT START] coordinator_learner
+[10:38:34.002] [AGENT START] coordinator
+[10:38:34.002] [AGENT START] reasoner
+[10:38:34.004] [AGENT START] actor
+[10:38:34.004] [AGENT START] actor
+[10:38:34.005] [AGENT START] validator
+[10:38:34.005] [AGENT START] validator
+[10:38:34.016] [AGENT START] hierarchical_memory
+[10:38:34.017] [AGENT START] learner
+[10:38:34.017] [AGENT START] learner
+[10:38:34.018] [AGENT START] executor
+[10:38:34.018] [AGENT START] analyzer
+[10:38:34.024] [AGENT START] improver
+[10:38:34.025] [AGENT START] character_analyzer
+[10:38:34.026] [AGENT START] story_generator
+[10:38:34.026] [AGENT START] visionary
+[10:38:34.027] [AGENT START] love_agent
+[10:38:34.027] [AGENT START] documentation_agent
+[10:38:34.028] [AGENT START] maf_coordinator
+[10:38:34.043] [AGENT START] pantheon_coordinator
+[10:38:34.044] [AGENT START] pantheon_coordinator
+[10:38:34.044] [AGENT START] observer
+[10:38:34.154] [AGENT START] coordinator
+[10:38:34.262] [AGENT START] actor
+[10:38:34.370] [AGENT START] validator
+[10:38:34.477] [AGENT START] pantheon_coordinator
+[10:38:34.478] [AGENT START] pantheon_coordinator
+[10:38:34.586] [AGENT START] pantheon_coordinator
+[10:38:34.587] [AGENT START] pantheon_coordinator
+[10:38:35.595] [AGENT ACTIVITY] pantheon_coordinator -> Pantheon handling task: apply pending improvement proposals for test coverage
+[10:38:35.595] [AGENT ACTIVITY] learner -> processing
+[10:38:35.596] [AGENT ACTIVITY] learner -> idle
+[10:38:39.275] [AGENT START] actor
+[10:38:44.279] [AGENT START] actor
+[10:38:46.980] [AGENT ERROR] pantheon_coordinator: 'Message' object has no attribute 'get'
+[10:38:49.295] [AGENT START] actor
+[10:39:04.050] [AGENT WAIT] observer
+[10:39:04.375] [AGENT WAIT] validator
+[10:39:04.593] [AGENT WAIT] pantheon_coordinator
+[10:39:16.987] [AGENT WAIT] pantheon_coordinator
+[10:39:34.062] [AGENT WAIT] observer
+[10:39:34.384] [AGENT WAIT] validator
+[10:39:34.602] [AGENT WAIT] pantheon_coordinator
+[10:39:47.003] [AGENT WAIT] pantheon_coordinator
+[10:40:04.077] [AGENT WAIT] observer
+[10:40:04.387] [AGENT WAIT] validator
+[10:40:04.605] [AGENT WAIT] pantheon_coordinator
+[10:40:17.009] [AGENT WAIT] pantheon_coordinator
+[10:40:34.090] [AGENT WAIT] observer
+[10:40:34.399] [AGENT WAIT] validator
+[10:40:34.615] [AGENT WAIT] pantheon_coordinator
+[10:40:47.016] [AGENT WAIT] pantheon_coordinator
+[10:41:04.100] [AGENT WAIT] observer
+[10:41:04.409] [AGENT WAIT] validator
+[10:41:04.627] [AGENT WAIT] pantheon_coordinator
+[10:41:17.032] [AGENT WAIT] pantheon_coordinator
+[10:41:34.110] [AGENT WAIT] observer
+[10:41:34.420] [AGENT WAIT] validator
+[10:41:34.638] [AGENT WAIT] pantheon_coordinator
+[10:41:47.047] [AGENT WAIT] pantheon_coordinator
+[10:42:04.121] [AGENT WAIT] observer
+[10:42:04.431] [AGENT WAIT] validator
+[10:42:04.652] [AGENT WAIT] pantheon_coordinator
+[10:42:17.061] [AGENT WAIT] pantheon_coordinator
+[10:42:34.127] [AGENT WAIT] observer
+[10:42:34.436] [AGENT WAIT] validator
+[10:42:34.655] [AGENT WAIT] pantheon_coordinator
+[10:42:47.067] [AGENT WAIT] pantheon_coordinator
+[10:43:04.137] [AGENT WAIT] observer
+[10:43:04.446] [AGENT WAIT] validator
+[10:43:04.662] [AGENT WAIT] pantheon_coordinator
+[10:43:17.080] [AGENT WAIT] pantheon_coordinator
+[10:43:34.142] [AGENT WAIT] observer
+[10:43:34.451] [AGENT WAIT] validator
+[10:43:34.667] [AGENT WAIT] pantheon_coordinator
+[10:43:35.611] [AGENT STOP] observer
+[10:43:35.611] [AGENT STOP] validator
+[10:43:35.612] [AGENT ACTIVITY] pantheon_coordinator -> Stopping observer
+[10:43:35.612] [AGENT ACTIVITY] pantheon_coordinator -> Stopping coordinator
+[10:43:35.612] [AGENT ACTIVITY] pantheon_coordinator -> Stopping actor
+[10:43:35.613] [AGENT ACTIVITY] pantheon_coordinator -> Stopping validator
+[10:43:35.613] [AGENT ACTIVITY] pantheon_coordinator -> Stopping learner
+[10:43:35.615] [AGENT ACTIVITY] pantheon_coordinator -> Stopping memory
+[10:43:35.615] [AGENT ACTIVITY] pantheon_coordinator -> Stopping executor
+[10:43:35.615] [AGENT ACTIVITY] pantheon_coordinator -> Stopping analyzer
+[10:43:35.615] [AGENT ACTIVITY] pantheon_coordinator -> Stopping improver
+[10:43:35.616] [AGENT ACTIVITY] pantheon_coordinator -> Stopping character_analyzer
+[10:43:35.616] [AGENT ACTIVITY] pantheon_coordinator -> Stopping story_generator
+[10:43:35.616] [AGENT ACTIVITY] pantheon_coordinator -> Stopping visionary
+[10:43:35.617] [AGENT ACTIVITY] pantheon_coordinator -> Stopping love_agent
+[10:43:35.617] [AGENT ACTIVITY] pantheon_coordinator -> Stopping documentation_agent
+[10:43:35.617] [AGENT ACTIVITY] pantheon_coordinator -> Stopping maf_coordinator
+[10:43:35.617] [AGENT STOP] pantheon_coordinator
+[10:43:35.618] 
+================================================================================
+Session Summary: pantheon_20251114_103833
+================================================================================
+Task: apply pending improvement proposals for test coverage
+Duration: 301.63s
+Iterations: 0
+Tool Executions: 0
+API Calls: 0
+Errors: 1
+
+Swarm Metrics:
+  Handoffs: 0
+  Avg Latency: 0.00ms
+  Messages: 0
+  Heartbeats: 120
+  Agents: 18
+================================================================================

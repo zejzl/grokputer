@@ -6,10 +6,10 @@ Provides consensus detection, agreement analysis, and decision making from multi
 """
 
 import logging
-from typing import List, Dict, Any, Optional, Tuple
+import statistics
 from dataclasses import dataclass, field
 from enum import Enum
-import statistics
+from typing import Any, Dict, List, Optional, Tuple
 
 from .message_models import CollaborationMessage, ConsensusSignal
 from .provider_registry import ProviderInstance

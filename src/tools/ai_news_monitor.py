@@ -1,8 +1,9 @@
-import schedule
-import time
 import os
+import time
 from datetime import datetime
+
 import requests
+import schedule
 from bs4 import BeautifulSoup
 
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Test Qwen with autonomous.py analysis."""
 import os
+
 from llama_cpp import Llama
 
 # Load the model

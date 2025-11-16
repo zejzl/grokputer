@@ -2,7 +2,7 @@
 # Standardized error handling across the system
 
 import logging
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 

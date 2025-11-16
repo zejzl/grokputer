@@ -5,13 +5,14 @@ Adapts DPO to optimize agent parameters based on performance preferences.
 Uses preference pairs of parameter settings to directly optimize without reward models.
 """
 
+import logging
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Tuple
+
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from typing import Dict, List, Tuple, Any, Optional
-import logging
-from dataclasses import dataclass
-import numpy as np
 
 logger = logging.getLogger(__name__)
 

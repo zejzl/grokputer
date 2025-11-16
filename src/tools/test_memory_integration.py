@@ -1,6 +1,7 @@
+from datetime import datetime
+
 from src.memory.interfaces import MemoryConfig
 from src.memory.managers.persistent_manager import PersistentMemoryManager
-from datetime import datetime
 
 # Load config (assuming .env loaded)
 config = MemoryConfig()

@@ -6,20 +6,20 @@ Scalable message bus supporting distributed agents across multiple nodes.
 Features Redis clustering for high availability and load balancing for optimal performance.
 """
 
-import asyncio
-import logging
-import time
-import json
-import hashlib
-import threading
-from typing import Dict, Any, Optional, List, Set
-from dataclasses import dataclass, field
 import argparse
+import asyncio
+import hashlib
+import json
+import logging
 import signal
 import sys
+import threading
+import time
+from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional, Set
 
 # Import existing MessageBus
-from .message_bus import MessageBus, Message, MessagePriority
+from .message_bus import Message, MessageBus, MessagePriority
 
 logger = logging.getLogger(__name__)
 
@@ -27,11 +27,13 @@ logger = logging.getLogger(__name__)
 try:
     import redis
     from redis.cluster import RedisCluster
+
     REDIS_AVAILABLE = True
 except ImportError:
     redis = None
     RedisCluster = None
     REDIS_AVAILABLE = False
+
 
 class DistributedMessageBus(MessageBus):
     """
@@ -51,7 +53,7 @@ class DistributedMessageBus(MessageBus):
         node_id: str = None,
         load_balancing_enabled: bool = True,
         auto_discovery: bool = True,
-        **kwargs
+        **kwargs,
     ):
         """
         Initialize distributed message bus.
@@ -70,7 +72,7 @@ class DistributedMessageBus(MessageBus):
         self.auto_discovery = auto_discovery
 
         # Redis cluster setup
-        self.redis_hosts = redis_hosts or [{'host': 'localhost', 'port': 6379}]
+        self.redis_hosts = redis_hosts or [{"host": "localhost", "port": 6379}]
         self.redis_cluster = None
         self.redis_available = False
 
@@ -90,7 +92,9 @@ class DistributedMessageBus(MessageBus):
         # Initialize Redis connection
         self._init_redis_cluster()
 
-        logger.info(f"DistributedMessageBus initialized: node_id={self.node_id}, redis_available={self.redis_available}")
+        logger.info(
+            f"DistributedMessageBus initialized: node_id={self.node_id}, redis_available={self.redis_available}"
+        )
 
     def _init_redis_cluster(self):
         """Initialize Redis cluster connection."""
@@ -102,10 +106,7 @@ class DistributedMessageBus(MessageBus):
             # Try to connect to Redis cluster
             startup_nodes = [redis.ClusterNode(**host) for host in self.redis_hosts]
             self.redis_cluster = RedisCluster(
-                startup_nodes=startup_nodes,
-                decode_responses=True,
-                skip_full_coverage_check=True,
-                max_connections=20
+                startup_nodes=startup_nodes, decode_responses=True, skip_full_coverage_check=True, max_connections=20
             )
 
             # Test connection
@@ -130,19 +131,15 @@ class DistributedMessageBus(MessageBus):
             return
 
         node_info = {
-            'node_id': self.node_id,
-            'registered_agents': list(self.queues.keys()),
-            'load_factor': 0.0,
-            'last_seen': time.time(),
-            'status': 'active'
+            "node_id": self.node_id,
+            "registered_agents": list(self.queues.keys()),
+            "load_factor": 0.0,
+            "last_seen": time.time(),
+            "status": "active",
         }
 
         try:
-            self.redis_cluster.setex(
-                f"node:{self.node_id}",
-                300,  # 5 minute TTL
-                json.dumps(node_info)
-            )
+            self.redis_cluster.setex(f"node:{self.node_id}", 300, json.dumps(node_info))  # 5 minute TTL
 
             # Add to cluster nodes set
             self.redis_cluster.sadd("cluster_nodes", self.node_id)
@@ -213,10 +210,10 @@ class DistributedMessageBus(MessageBus):
 
         try:
             message_data = {
-                'message': message.to_dict(),
-                'target_node': target_node,
-                'source_node': self.node_id,
-                'timestamp': time.time()
+                "message": message.to_dict(),
+                "target_node": target_node,
+                "source_node": self.node_id,
+                "timestamp": time.time(),
             }
 
             # Publish to Redis channel for target node
@@ -256,11 +253,8 @@ class DistributedMessageBus(MessageBus):
                     from_agent=message.from_agent,
                     to_agent=f"node:{node_id}",  # Special routing
                     message_type="broadcast",
-                    content={
-                        'original_message': message.to_dict(),
-                        'exclude': exclude
-                    },
-                    priority=message.priority
+                    content={"original_message": message.to_dict(), "exclude": exclude},
+                    priority=message.priority,
                 )
 
                 await self._send_remote(broadcast_msg, node_id)
@@ -270,7 +264,7 @@ class DistributedMessageBus(MessageBus):
         stats = self.get_stats()
 
         if not self.redis_available:
-            stats['cluster'] = {'status': 'unavailable'}
+            stats["cluster"] = {"status": "unavailable"}
             return stats
 
         try:
@@ -282,16 +276,16 @@ class DistributedMessageBus(MessageBus):
                 if node_data:
                     nodes_info[node_id] = json.loads(node_data)
 
-            stats['cluster'] = {
-                'status': 'active',
-                'total_nodes': len(self.cluster_nodes) + 1,  # +1 for this node
-                'nodes': nodes_info,
-                'load_balancing': self.load_balancing_enabled,
-                'auto_discovery': self.auto_discovery
+            stats["cluster"] = {
+                "status": "active",
+                "total_nodes": len(self.cluster_nodes) + 1,  # +1 for this node
+                "nodes": nodes_info,
+                "load_balancing": self.load_balancing_enabled,
+                "auto_discovery": self.auto_discovery,
             }
 
         except Exception as e:
-            stats['cluster'] = {'status': 'error', 'error': str(e)}
+            stats["cluster"] = {"status": "error", "error": str(e)}
 
         return stats
 
@@ -357,8 +351,10 @@ class DistributedMessageBus(MessageBus):
             # Periodic health checks
             if int(time.time()) % 60 == 0:  # Every minute
                 stats = self.get_cluster_stats()
-                logger.info(f"Daemon health: {stats['total_messages']} messages, "
-                          f"{stats['cluster'].get('total_nodes', 1)} nodes")
+                logger.info(
+                    f"Daemon health: {stats['total_messages']} messages, "
+                    f"{stats['cluster'].get('total_nodes', 1)} nodes"
+                )
 
     async def _listen_for_remote_messages(self):
         """Listen for messages from other nodes."""
@@ -374,20 +370,20 @@ class DistributedMessageBus(MessageBus):
 
             while not self.shutdown_event.is_set():
                 message = pubsub.get_message(timeout=1.0)
-                if message and message['type'] == 'message':
+                if message and message["type"] == "message":
                     try:
-                        data = json.loads(message['data'])
-                        remote_msg_data = data['message']
+                        data = json.loads(message["data"])
+                        remote_msg_data = data["message"]
 
                         # Reconstruct message
                         remote_msg = Message(
-                            from_agent=remote_msg_data['from'],
-                            to_agent=remote_msg_data['to'],
-                            message_type=remote_msg_data['type'],
-                            content=remote_msg_data['content'],
-                            priority=MessagePriority[remote_msg_data['priority']],
-                            correlation_id=remote_msg_data.get('correlation_id'),
-                            timestamp=remote_msg_data['timestamp']
+                            from_agent=remote_msg_data["from"],
+                            to_agent=remote_msg_data["to"],
+                            message_type=remote_msg_data["type"],
+                            content=remote_msg_data["content"],
+                            priority=MessagePriority[remote_msg_data["priority"]],
+                            correlation_id=remote_msg_data.get("correlation_id"),
+                            timestamp=remote_msg_data["timestamp"],
                         )
 
                         # Route locally
@@ -409,7 +405,7 @@ class DistributedMessageBus(MessageBus):
                 optimizations = self.optimize_performance()
 
                 # Log significant optimizations
-                if optimizations['optimizations_performed']:
+                if optimizations["optimizations_performed"]:
                     logger.info(f"Auto-optimization performed: {len(optimizations['optimizations_performed'])} actions")
 
                 # Update cluster loads
@@ -418,6 +414,7 @@ class DistributedMessageBus(MessageBus):
 
             except Exception as e:
                 logger.error(f"Auto-optimization error: {e}")
+
 
 class LoadBalancer:
     """
@@ -438,7 +435,7 @@ class LoadBalancer:
                 node_data = redis_cluster.get(node_key)
                 if node_data:
                     node_info = json.loads(node_data)
-                    self.node_loads[node_id] = node_info.get('load_factor', 0.0)
+                    self.node_loads[node_id] = node_info.get("load_factor", 0.0)
             except Exception as e:
                 logger.error(f"Failed to get load for node {node_id}: {e}")
 
@@ -462,6 +459,7 @@ class LoadBalancer:
                 for under_node in underloaded:
                     logger.info(f"Suggest migrating agents from {over_node} to {under_node}")
 
+
 def main():
     """Main function for running distributed message bus."""
     parser = argparse.ArgumentParser(description="Distributed Message Bus")
@@ -478,11 +476,9 @@ def main():
     logging.basicConfig(level=logging.INFO)
 
     # Create distributed bus
-    redis_hosts = [{'host': args.redis_host, 'port': args.redis_port}]
+    redis_hosts = [{"host": args.redis_host, "port": args.redis_port}]
     bus = DistributedMessageBus(
-        redis_hosts=redis_hosts,
-        node_id=args.node_id,
-        load_balancing_enabled=not args.no_load_balancing
+        redis_hosts=redis_hosts, node_id=args.node_id, load_balancing_enabled=not args.no_load_balancing
     )
 
     if args.daemon:
@@ -510,6 +506,7 @@ def main():
             logger.info("Shutting down...")
         finally:
             asyncio.run(bus.shutdown())
+
 
 if __name__ == "__main__":
     main()

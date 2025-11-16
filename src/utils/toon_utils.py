@@ -5,11 +5,15 @@ Provides async encoding/decoding with token savings estimates.
 
 import asyncio
 from typing import Any, Dict, Tuple
-from toon import encode, decode  # python-toon library
+
+from toon_format import decode, encode  # python-toon library
+
 
 class ToonDecodeError(Exception):
     """Raised when TOON decoding fails."""
+
     pass
+
 
 async def encode_for_swarm(data: Dict[str, Any]) -> str:
     """
@@ -23,6 +27,7 @@ async def encode_for_swarm(data: Dict[str, Any]) -> str:
     except Exception as e:
         raise ToonDecodeError(f"TOON encode failed: {e}")
 
+
 async def decode_from_swarm(toon_str: str) -> Dict[str, Any]:
     """
     Decode TOON string back to dict.
@@ -35,12 +40,14 @@ async def decode_from_swarm(toon_str: str) -> Dict[str, Any]:
     except Exception as e:
         raise ToonDecodeError(f"TOON decode failed: {e}")
 
+
 async def estimate_savings(original: Dict[str, Any]) -> Tuple[str, float]:
     """
     Estimate TOON savings for data.
     Returns (toon_str, savings_percentage).
     """
     import json
+
     json_str = json.dumps(original, default=str)
     toon_str = await encode_for_swarm(original)
     json_len = len(json_str)

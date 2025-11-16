@@ -7,15 +7,15 @@ ZA GROKA. ZA VRZIBRZI. ZA SERVER.
 
 import asyncio
 import json
+import logging
+import multiprocessing as mp
+import queue as std_queue
 import socket
 import threading
 import time
-from typing import Dict, List, Optional, Any, Callable
 from dataclasses import dataclass
-import logging
-import multiprocessing as mp
-from multiprocessing import Queue, Process
-import queue as std_queue
+from multiprocessing import Process, Queue
+from typing import Any, Callable, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class DistributedMessage:
     """Message format for inter-process communication."""
+
     source_process: str
     target_process: str
     agent_id: str
@@ -36,18 +37,20 @@ class DistributedMessage:
             self.timestamp = time.time()
 
     def to_json(self) -> str:
-        return json.dumps({
-            'source_process': self.source_process,
-            'target_process': self.target_process,
-            'agent_id': self.agent_id,
-            'message_type': self.message_type,
-            'content': self.content,
-            'correlation_id': self.correlation_id,
-            'timestamp': self.timestamp
-        })
+        return json.dumps(
+            {
+                "source_process": self.source_process,
+                "target_process": self.target_process,
+                "agent_id": self.agent_id,
+                "message_type": self.message_type,
+                "content": self.content,
+                "correlation_id": self.correlation_id,
+                "timestamp": self.timestamp,
+            }
+        )
 
     @classmethod
-    def from_json(cls, json_str: str) -> 'DistributedMessage':
+    def from_json(cls, json_str: str) -> "DistributedMessage":
         data = json.loads(json_str)
         return cls(**data)
 
@@ -92,7 +95,7 @@ class ProcessCommunicator:
 
         logger.info(f"[{self.process_id}] Process communicator stopped")
 
-    def connect_to_process(self, target_process_id: str, host: str = 'localhost', port: int = None):
+    def connect_to_process(self, target_process_id: str, host: str = "localhost", port: int = None):
         """Connect to another Grokputer process."""
         if not port:
             # Try to find the process on a range of ports
@@ -123,9 +126,9 @@ class ProcessCommunicator:
         if message.target_process in self.client_sockets:
             try:
                 sock = self.client_sockets[message.target_process]
-                data = message.to_json().encode('utf-8')
+                data = message.to_json().encode("utf-8")
                 # Send message length first, then data
-                sock.send(len(data).to_bytes(4, byteorder='big'))
+                sock.send(len(data).to_bytes(4, byteorder="big"))
                 sock.send(data)
                 return True
             except Exception as e:
@@ -152,7 +155,7 @@ class ProcessCommunicator:
         self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
         try:
-            self.server_socket.bind(('localhost', self.port))
+            self.server_socket.bind(("localhost", self.port))
             self.server_socket.listen(5)
             self.port = self.server_socket.getsockname()[1]  # Get actual port if 0 was used
             logger.info(f"[{self.process_id}] Listening on port {self.port}")
@@ -163,11 +166,7 @@ class ProcessCommunicator:
                     logger.info(f"[{self.process_id}] Accepted connection from {addr}")
 
                     # Start a thread to handle this client
-                    client_thread = threading.Thread(
-                        target=self._handle_client,
-                        args=(client_sock,),
-                        daemon=True
-                    )
+                    client_thread = threading.Thread(target=self._handle_client, args=(client_sock,), daemon=True)
                     client_thread.start()
 
                 except OSError:
@@ -190,10 +189,10 @@ class ProcessCommunicator:
                 if not length_bytes:
                     break
 
-                message_length = int.from_bytes(length_bytes, byteorder='big')
+                message_length = int.from_bytes(length_bytes, byteorder="big")
 
                 # Read message data
-                data = b''
+                data = b""
                 while len(data) < message_length:
                     chunk = client_sock.recv(min(4096, message_length - len(data)))
                     if not chunk:
@@ -202,18 +201,14 @@ class ProcessCommunicator:
 
                 if len(data) == message_length:
                     try:
-                        message = DistributedMessage.from_json(data.decode('utf-8'))
+                        message = DistributedMessage.from_json(data.decode("utf-8"))
                         self.message_queue.put(message)
 
                         # Handle message if we have a handler
                         if message.message_type in self.message_handlers:
                             handler = self.message_handlers[message.message_type]
                             # Run handler in a thread to avoid blocking
-                            handler_thread = threading.Thread(
-                                target=handler,
-                                args=(message,),
-                                daemon=True
-                            )
+                            handler_thread = threading.Thread(target=handler, args=(message,), daemon=True)
                             handler_thread.start()
 
                     except Exception as e:
@@ -235,7 +230,7 @@ class DistributedMessageBus:
         self.running = False
 
         # Register message handlers
-        self.communicator.register_handler('message', self._handle_distributed_message)
+        self.communicator.register_handler("message", self._handle_distributed_message)
 
     async def start(self):
         """Start the distributed message bus."""
@@ -253,12 +248,18 @@ class DistributedMessageBus:
         self.communicator.stop()
         logger.info(f"[{self.process_id}] Distributed MessageBus stopped")
 
-    def connect_to_process(self, target_process_id: str, host: str = 'localhost', port: int = None) -> bool:
+    def connect_to_process(self, target_process_id: str, host: str = "localhost", port: int = None) -> bool:
         """Connect to another Grokputer process."""
         return self.communicator.connect_to_process(target_process_id, host, port)
 
-    async def send(self, from_agent: str, to_agent: str, message_type: str, content: Dict[str, Any],
-                   correlation_id: Optional[str] = None):
+    async def send(
+        self,
+        from_agent: str,
+        to_agent: str,
+        message_type: str,
+        content: Dict[str, Any],
+        correlation_id: Optional[str] = None,
+    ):
         """Send a message, potentially to another process."""
         # Determine target process
         target_process = self._get_process_for_agent(to_agent)
@@ -274,7 +275,7 @@ class DistributedMessageBus:
                 agent_id=to_agent,
                 message_type=message_type,
                 content=content,
-                correlation_id=correlation_id
+                correlation_id=correlation_id,
             )
             self.communicator.send_message(message)
 
@@ -284,10 +285,7 @@ class DistributedMessageBus:
             self.local_queues[agent_id] = asyncio.Queue()
 
         try:
-            return await asyncio.wait_for(
-                self.local_queues[agent_id].get(),
-                timeout=timeout
-            )
+            return await asyncio.wait_for(self.local_queues[agent_id].get(), timeout=timeout)
         except asyncio.TimeoutError:
             return None
 
@@ -297,17 +295,18 @@ class DistributedMessageBus:
             self.local_queues[agent_id] = asyncio.Queue()
         logger.info(f"[{self.process_id}] Registered agent: {agent_id}")
 
-    async def _send_local(self, from_agent: str, to_agent: str, message_type: str, content: Dict[str, Any],
-                          correlation_id: Optional[str]):
+    async def _send_local(
+        self, from_agent: str, to_agent: str, message_type: str, content: Dict[str, Any], correlation_id: Optional[str]
+    ):
         """Send a message locally."""
         if to_agent in self.local_queues:
             message = {
-                'from_agent': from_agent,
-                'to_agent': to_agent,
-                'message_type': message_type,
-                'content': content,
-                'correlation_id': correlation_id,
-                'timestamp': time.time()
+                "from_agent": from_agent,
+                "to_agent": to_agent,
+                "message_type": message_type,
+                "content": content,
+                "correlation_id": correlation_id,
+                "timestamp": time.time(),
             }
             await self.local_queues[to_agent].put(message)
 
@@ -318,12 +317,12 @@ class DistributedMessageBus:
             if message:
                 # Convert to local message format and deliver
                 local_message = {
-                    'from_agent': message.agent_id,
-                    'to_agent': message.agent_id,  # This should be the local agent
-                    'message_type': message.message_type,
-                    'content': message.content,
-                    'correlation_id': message.correlation_id,
-                    'timestamp': message.timestamp
+                    "from_agent": message.agent_id,
+                    "to_agent": message.agent_id,  # This should be the local agent
+                    "message_type": message.message_type,
+                    "content": message.content,
+                    "correlation_id": message.correlation_id,
+                    "timestamp": message.timestamp,
                 }
 
                 # Find the target agent in this process
@@ -353,9 +352,9 @@ class DistributedMessageBus:
     def get_connection_info(self) -> Dict[str, Any]:
         """Get connection information for this process."""
         return {
-            'process_id': self.process_id,
-            'port': self.communicator.port,
-            'connected_processes': list(self.communicator.client_sockets.keys())
+            "process_id": self.process_id,
+            "port": self.communicator.port,
+            "connected_processes": list(self.communicator.client_sockets.keys()),
         }
 
 
@@ -380,8 +379,8 @@ def connect_processes(process_a: str, process_b: str):
     info_b = bus_b.get_connection_info()
 
     # Connect them
-    bus_a.connect_to_process(process_b, port=info_b['port'])
-    bus_b.connect_to_process(process_a, port=info_a['port'])
+    bus_a.connect_to_process(process_b, port=info_b["port"])
+    bus_b.connect_to_process(process_a, port=info_a["port"])
 
     logger.info(f"Connected processes {process_a} and {process_b}")
 

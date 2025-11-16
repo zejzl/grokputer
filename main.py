@@ -187,7 +187,8 @@ async def _list_models_for_provider(provider: str, api_key: Optional[str]):
 @click.option("--distributed", is_flag=True, help="Enable distributed multi-process communication")
 @click.option("--process-id", default="main", help="Process ID for distributed communication")
 @click.option("--connect-to", help="Comma-separated list of process IDs to connect to")
-def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, swarm, agent_roles, messagebus, pantheon, providers, maf_config, review_mode, analytics, agent_name, limit, performance, list_models, syntax_check, quick_check, mcp, todo_daemon: bool = False, distributed: bool = False, process_id: str = "main", connect_to: Optional[str] = None):
+@click.option("--grok4git", is_flag=True, help="Run grok4git CLI mode")
+def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, swarm, agent_roles, messagebus, pantheon, providers, maf_config, review_mode, analytics, agent_name, limit, performance, list_models, syntax_check, quick_check, mcp, todo_daemon: bool = False, distributed: bool = False, process_id: str = "main", connect_to: Optional[str] = None, grok4git: bool = False):
     """
     Grokputer - VRZIBRZI Node
     Main entry point for the observe-reason-act loop.
@@ -208,6 +209,14 @@ def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, sw
 
     if syntax_check or quick_check:
         asyncio.run(_run_syntax_check(quick=quick_check))
+        return
+
+    if grok4git:
+        try:
+            from vault.git_resources.grok4git.grok4git.main import main as grok4git_main
+            grok4git_main()
+        except ImportError as e:
+            print(f"Error importing grok4git: {e}")
         return
 
     # Setup logging early
@@ -1080,7 +1089,8 @@ async def _run_single_agent_mode(
         grokputer = Grokputer(debug=debug, provider=provider, model=model)
         if not skip_boot:
             grokputer.boot()
-        await asyncio.run(grokputer.run_task(task=task, max_iterations=max_iterations))
+        # Already in async context, don't use asyncio.run()
+        await grokputer.run_task(task=task, max_iterations=max_iterations)
     except Exception as e:
         print(f"Fatal error in single agent mode: {e}")
         raise

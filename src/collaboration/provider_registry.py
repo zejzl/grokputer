@@ -5,12 +5,12 @@ Dynamic provider loading and capability management system for multi-provider AI 
 Supports registration, discovery, and capability-based provider selection.
 """
 
+import asyncio
 import logging
-from typing import Dict, List, Any, Optional, Type, Callable
+import time
 from dataclasses import dataclass, field
 from enum import Enum
-import asyncio
-import time
+from typing import Any, Callable, Dict, List, Optional, Type
 
 logger = logging.getLogger(__name__)
 

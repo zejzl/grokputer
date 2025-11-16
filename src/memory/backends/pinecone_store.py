@@ -1,17 +1,20 @@
 try:
     import pinecone
+
     PINECONE_AVAILABLE = True
 except ImportError:
     pinecone = None
     PINECONE_AVAILABLE = False
 
-from sentence_transformers import SentenceTransformer
-from ..interfaces import BaseVectorStore, MemoryConfig, MemoryBackend
-from ..hyde_generator import HyDEGenerator
-from typing import List, Dict, Any, Optional
-import logging
 import json
+import logging
 import time
+from typing import Any, Dict, List, Optional
+
+from sentence_transformers import SentenceTransformer
+
+from ..hyde_generator import HyDEGenerator
+from ..interfaces import BaseVectorStore, MemoryBackend, MemoryConfig
 
 logger = logging.getLogger(__name__)
 
@@ -127,12 +130,14 @@ class PineconeStore(BaseVectorStore, MemoryBackend):
 
         # Add agent and episode metadata
         metadata = episode_data.copy()
-        metadata.update({
-            "agent_id": agent_id,
-            "episode_type": episode_data.get("type", "general"),
-            "timestamp": episode_data.get("timestamp", time.time()),
-            "importance": episode_data.get("importance", 1.0)
-        })
+        metadata.update(
+            {
+                "agent_id": agent_id,
+                "episode_type": episode_data.get("type", "general"),
+                "timestamp": episode_data.get("timestamp", time.time()),
+                "importance": episode_data.get("importance", 1.0),
+            }
+        )
 
         try:
             self.embed_and_store(text_content, metadata)
@@ -169,7 +174,7 @@ class PineconeStore(BaseVectorStore, MemoryBackend):
             "agent_id": agent_id,
             "backend": "pinecone",
             "hyde_enabled": self.enable_hyde,
-            "pinecone_available": True
+            "pinecone_available": True,
         }
 
     def _episode_to_text(self, episode_data: Dict[str, Any]) -> str:

@@ -1,5 +1,79 @@
+# Environment
 .env
-AE.MD-e '\n__pycache__/\n*.pyc\n*.pyo\n*.pyd\n.Python\nbuild/\ndevelop-eggs/\ndist/\ndownloads/\neggs/\n.eggs/\nlib/\nlib64/\nparts/\nsdist/\nvar/\nwheels/\n*.egg-info/\n.installed.cfg\n*.egg\n\n# IDE\n.vscode/\n.idea/\n*.swp\n*.swo\n\n# OS\n.DS_Store\nThumbs.db\n\n# Logs\nlogs/\n*.log\n\n# Env\nvenv/\nenv/\n\n# Temp\n*.tmp\n\n# Docker\n.docker/\n' 
--e "\n# Vault (sensitive data)\nvault/" 
+.env.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+*.py[cod]
+*$py.class
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-*
+
+# OS
+.DS_Store
+Thumbs.db
+*.bak
+
+# Logs
+logs/
+*.log
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# Temp files
+*.tmp
+temp/
+*.temp
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Vault (sensitive data)
+vault/
+
+# Backups
 bckp*
 bckup*
+backup_*
+backups/
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Session saves
+saves/*.toon
+saves/auto_backup_*
+
+# Reports
+reports/

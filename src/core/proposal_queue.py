@@ -1,6 +1,8 @@
 import json
-import redis
 from typing import Dict, List, Optional
+
+import redis
+
 from src.config import config  # For Redis URL
 
 

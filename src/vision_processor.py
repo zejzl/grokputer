@@ -10,17 +10,18 @@ Provides comprehensive visual understanding capabilities including:
 """
 
 import asyncio
-import logging
-import numpy as np
-import cv2
-from PIL import Image
-import io
 import base64
+import io
+import json
+import logging
 import os
-from typing import Dict, Any, List, Optional, Tuple
 from dataclasses import dataclass, field
 from datetime import datetime
-import json
+from typing import Any, Dict, List, Optional, Tuple
+
+import cv2
+import numpy as np
+from PIL import Image
 
 from src.ocr.ocr_processor import OCRProcessor
 

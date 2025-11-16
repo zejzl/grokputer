@@ -5,8 +5,9 @@ Integrates cognitive enhancement capabilities with the agent system
 for improved context retention and processing.
 """
 
-from typing import Dict, Any, List, Optional
 import logging
+from typing import Any, Dict, List, Optional
+
 from ..cognitive.flash_attention import CognitiveEnhancer
 
 logger = logging.getLogger(__name__)

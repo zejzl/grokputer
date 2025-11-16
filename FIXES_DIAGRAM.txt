@@ -1,0 +1,146 @@
+================================================================================
+                        GROKPUTER BUG FIXES - VISUAL GUIDE
+================================================================================
+
+BUG #1: ACTOR AGENT REGISTRATION FAILURE
+================================================================================
+
+BEFORE (BROKEN):
+┌─────────────────────────────────────────────────────────────────┐
+│ ActorAgent.is_healthy()                                         │
+│                                                                 │
+│   def is_healthy(self) -> bool:                                │
+│       return True          <---- EARLY EXIT! Code below ignored│
+│                                                                 │
+│       # UNREACHABLE CODE:                                      │
+│       self.message_bus.register_agent(self.agent_id)  ✗       │
+│       self.deadlock_detector.register_agent(self.agent_id) ✗  │
+│                                                                 │
+│   Result: Agent NEVER registers → "Unknown agent: actor" ✗    │
+└─────────────────────────────────────────────────────────────────┘
+
+AFTER (FIXED):
+┌─────────────────────────────────────────────────────────────────┐
+│ ActorAgent.is_healthy()                                         │
+│                                                                 │
+│   def is_healthy(self) -> bool:                                │
+│       # Registration happens FIRST                             │
+│       if self.message_bus and self.agent_id not in queues:    │
+│           self.message_bus.register_agent(self.agent_id) ✓    │
+│                                                                 │
+│       if self.deadlock_detector:                               │
+│           self.deadlock_detector.register_agent(...) ✓         │
+│                                                                 │
+│       return True          <---- Now at the END                │
+│                                                                 │
+│   Result: Agent registers successfully ✓                       │
+└─────────────────────────────────────────────────────────────────┘
+
+Impact: Pantheon mode FUNCTIONAL, no more permanent failures
+
+
+BUG #2: NESTED EVENT LOOP ERROR
+================================================================================
+
+BEFORE (BROKEN):
+┌─────────────────────────────────────────────────────────────────┐
+│ Call Stack:                                                     │
+│                                                                 │
+│   main() [SYNC]                                                │
+│       │                                                          │
+│       ├─> asyncio.run(_run_single_agent_mode())  [ASYNC ENTRY]│
+│                   │                                             │
+│                   └─> await asyncio.run(grokputer.run_task())  │
+│                                     ↑                           │
+│                                     │                           │
+│                              NESTED EVENT LOOP ✗                │
+│                              RuntimeError!                      │
+│                                                                 │
+│   Error: "asyncio.run() cannot be called from running loop" ✗ │
+└─────────────────────────────────────────────────────────────────┘
+
+AFTER (FIXED):
+┌─────────────────────────────────────────────────────────────────┐
+│ Call Stack:                                                     │
+│                                                                 │
+│   main() [SYNC]                                                │
+│       │                                                          │
+│       ├─> asyncio.run(_run_single_agent_mode())  [ASYNC ENTRY]│
+│                   │                                             │
+│                   └─> await grokputer.run_task()  ✓            │
+│                          ↑                                      │
+│                          │                                      │
+│                    Direct await - no nesting ✓                 │
+│                                                                 │
+│   Result: Single async context, proper event loop ✓            │
+└─────────────────────────────────────────────────────────────────┘
+
+Impact: Single-agent mode WORKS, no crashes
+
+
+BUG #3: MISSING OS IMPORT
+================================================================================
+
+BEFORE (BROKEN):
+┌─────────────────────────────────────────────────────────────────┐
+│ documentation_agent.py                                          │
+│                                                                 │
+│   Imports:                                                      │
+│   ├── import ast                                               │
+│   ├── import asyncio                                           │
+│   ├── import logging                                           │
+│   └── (NO import os)  ✗                                       │
+│                                                                 │
+│   Code:                                                         │
+│       api_key = os.getenv("GROK_API_KEY")  ✗                  │
+│                 ↑                                              │
+│                 │                                              │
+│            NameError: 'os' is not defined ✗                   │
+│                                                                 │
+│   Result: AI client initialization FAILS ✗                    │
+└─────────────────────────────────────────────────────────────────┘
+
+AFTER (FIXED):
+┌─────────────────────────────────────────────────────────────────┐
+│ documentation_agent.py                                          │
+│                                                                 │
+│   Imports:                                                      │
+│   ├── import ast                                               │
+│   ├── import asyncio                                           │
+│   ├── import logging                                           │
+│   └── import os  ✓  <---- ADDED                               │
+│                                                                 │
+│   Code:                                                         │
+│       api_key = os.getenv("GROK_API_KEY")  ✓                  │
+│                                                                 │
+│   Result: AI client initialization SUCCEEDS ✓                 │
+└─────────────────────────────────────────────────────────────────┘
+
+Impact: DocumentationAgent fully FUNCTIONAL
+
+
+================================================================================
+                              SUMMARY OF FIXES
+================================================================================
+
+┌──────────────────────┬──────────────┬─────────────┬─────────────────────┐
+│ Bug                  │ Severity     │ Status      │ Impact              │
+├──────────────────────┼──────────────┼─────────────┼─────────────────────┤
+│ Actor Registration   │ CRITICAL     │ FIXED ✓     │ Pantheon working    │
+│ Nested Event Loop    │ HIGH         │ FIXED ✓     │ Single-agent working│
+│ Missing os Import    │ MEDIUM       │ FIXED ✓     │ Doc agent working   │
+└──────────────────────┴──────────────┴─────────────┴─────────────────────┘
+
+System Status:
+  BEFORE: All critical modes BROKEN ✗
+  AFTER:  All critical modes FUNCTIONAL ✓
+
+Files Modified: 3
+  • src/agents/actor_agent.py (11 lines changed)
+  • main.py (2 lines changed)
+  • src/agents/documentation_agent.py (1 line added)
+
+Verification: PASSED ✓
+Ready for Testing: YES ✓
+
+================================================================================

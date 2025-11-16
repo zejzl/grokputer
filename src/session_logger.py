@@ -4,10 +4,10 @@ Session logging utilities for Grokputer.
 Stub implementation for basic functionality.
 """
 
-from datetime import datetime
-from typing import Dict, Any, Optional
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
+from typing import Any, Dict, Optional
 
 
 @dataclass

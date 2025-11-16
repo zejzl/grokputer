@@ -6,9 +6,10 @@ Compare DPO vs baseline parameter optimization effectiveness.
 
 import asyncio
 import time
+
+from src.grok_client import GrokClient
 from src.self_improvement.dpo_optimizer import AgentDPO, PreferencePair
 from src.self_improvement.preference_collector import PreferenceCollector
-from src.grok_client import GrokClient
 
 
 async def evaluate_dpo():

@@ -6,25 +6,26 @@ Part of ORAM Pantheon/Swarm.
 """
 
 import asyncio
-import logging
-import json
-import time
 import heapq
-from typing import Dict, Any, List, Tuple
-from enum import Enum
+import json
+import logging
+import time
 from collections import defaultdict
+from enum import Enum
+from typing import Any, Dict, List, Tuple
 
-# Existing imports
-from src.core.base_agent import BaseAgent
-from src.core.message_bus import MessageBus, Message, MessagePriority
-from src.grok_client import GrokClient, FallbackGrokClient
-from src.observability.session_logger import SessionLogger
-from src.observability.deadlock_detector import DeadlockDetector
-from src.cognitive.agent_integration import CognitiveCoordinatorMixin
+from src.agents.learner import LearnerAgent
 
 # New imports for enhanced decomposition
 from src.agents.validator import ValidatorAgent
-from src.agents.learner import LearnerAgent
+from src.cognitive.agent_integration import CognitiveCoordinatorMixin
+
+# Existing imports
+from src.core.base_agent import BaseAgent
+from src.core.message_bus import Message, MessageBus, MessagePriority
+from src.grok_client import FallbackGrokClient, GrokClient
+from src.observability.deadlock_detector import DeadlockDetector
+from src.observability.session_logger import SessionLogger
 
 # DPO optimization
 from src.self_improvement.dpo_optimizer import AgentDPO
@@ -172,12 +173,7 @@ class Coordinator(BaseAgent, CognitiveCoordinatorMixin):
         cognitive_enabled: bool = True,
     ):
         # Initialize BaseAgent first
-        super().__init__(
-            agent_id="coordinator",
-            message_bus=message_bus,
-            session_logger=session_logger,
-            config=config
-        )
+        super().__init__(agent_id="coordinator", message_bus=message_bus, session_logger=session_logger, config=config)
 
         config = config or {
             "debug": False,
@@ -341,7 +337,9 @@ Output as JSON list only, no extra text: [{{"id": "sub1", "type": "...", "target
 
             iteration_count += 1
             if iteration_count >= max_iterations:
-                self.logger.warning(f"[COORDINATOR] Max iterations ({max_iterations}) reached, stopping to prevent infinite loop")
+                self.logger.warning(
+                    f"[COORDINATOR] Max iterations ({max_iterations}) reached, stopping to prevent infinite loop"
+                )
                 break
 
             msg_type = message.message_type
@@ -428,10 +426,7 @@ Output as JSON list only, no extra text: [{{"id": "sub1", "type": "...", "target
         # Step 2: Initial decomposition with learner-enhanced prompt
         enhanced_prompt = self._build_enhanced_prompt(task_desc, learner_insights)
         try:
-            subtasks = await asyncio.wait_for(
-                self._decompose_with_prompt(enhanced_prompt, task_desc),
-                timeout=30.0
-            )
+            subtasks = await asyncio.wait_for(self._decompose_with_prompt(enhanced_prompt, task_desc), timeout=30.0)
             # Rate limit: chill between API calls
             await asyncio.sleep(1.0)
         except asyncio.TimeoutError:
@@ -624,13 +619,15 @@ Example format:
                 try:
                     score = await asyncio.wait_for(
                         self._score_subtask_feasibility(subtask, task_desc),
-                        timeout=10.0  # 10 second timeout per subtask
+                        timeout=10.0,  # 10 second timeout per subtask
                     )
                     validation_results.append((subtask, score))
                     # Rate limit between validations
                     await asyncio.sleep(0.5)
                 except asyncio.TimeoutError:
-                    self.logger.warning(f"[COORDINATOR] Subtask validation timed out: {subtask.get('description', 'unknown')}")
+                    self.logger.warning(
+                        f"[COORDINATOR] Subtask validation timed out: {subtask.get('description', 'unknown')}"
+                    )
                     validation_results.append((subtask, 0.0))  # Low score for timeout
 
             # Check if all subtasks meet threshold
@@ -654,13 +651,13 @@ Example format:
                     # Get refined subtask from Grok with timeout
                     try:
                         refinement_response = await asyncio.wait_for(
-                            self.grok_client.create_message(
-                                task=refinement_prompt, conversation_history=None
-                            ),
-                            timeout=20.0  # 20 second timeout for refinement
+                            self.grok_client.create_message(task=refinement_prompt, conversation_history=None),
+                            timeout=20.0,  # 20 second timeout for refinement
                         )
                     except asyncio.TimeoutError:
-                        self.logger.warning(f"[COORDINATOR] Refinement timed out for subtask: {subtask.get('description', 'unknown')}")
+                        self.logger.warning(
+                            f"[COORDINATOR] Refinement timed out for subtask: {subtask.get('description', 'unknown')}"
+                        )
                         refinement_response = {"status": "error", "content": "Timeout during refinement"}
 
                     if refinement_response["status"] == "success":
@@ -669,7 +666,10 @@ Example format:
                                 refined_json = json.loads(refinement_response["content"])
                             except json.JSONDecodeError as e:
                                 self.logger.error(f"[COORDINATOR] Failed to parse refinement JSON: {e}")
-                                refined_json = {"description": subtask.get("description", "unknown"), "error": "JSON parse failed"}
+                                refined_json = {
+                                    "description": subtask.get("description", "unknown"),
+                                    "error": "JSON parse failed",
+                                }
                             # Rate limit between refinements
                             await asyncio.sleep(0.5)
                             if isinstance(refined_json, dict):
@@ -1376,12 +1376,13 @@ Output only the JSON object, no additional text.
 # Example usage (for testing)
 if __name__ == "__main__":
     # Stub setup
-    from src.core.message_bus import MessageBus
-    from src.observability.session_logger import SessionLogger
-    from src.observability.deadlock_detector import DeadlockDetector
-    from src.grok_client import GrokClient
     import logging
     from pathlib import Path
+
+    from src.core.message_bus import MessageBus
+    from src.grok_client import GrokClient
+    from src.observability.deadlock_detector import DeadlockDetector
+    from src.observability.session_logger import SessionLogger
 
     logging.basicConfig(level=logging.INFO)
 

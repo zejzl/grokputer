@@ -5,13 +5,14 @@ Phase 2: Enables recall, learning from history.
 """
 
 import asyncio
-import logging
 import json
+import logging
+import os
 import sqlite3
 from datetime import datetime, timedelta
-from typing import Dict, Any, Optional, List
 from pathlib import Path
-import os
+from typing import Any, Dict, List, Optional
+
 import redis.asyncio as redis  # pip install redis
 
 from src.core.message_bus import MessageBus  # For pub/sub integration

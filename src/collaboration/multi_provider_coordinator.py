@@ -7,15 +7,26 @@ weighted voting, and consensus-based decision making.
 
 import asyncio
 import logging
-from datetime import datetime
-from typing import List, Optional, Dict, Any, Set
 from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Set
 
-from .provider_registry import ProviderRegistry, ProviderInstance, ProviderCapability, provider_registry
-from .provider_pool import ProviderPool, provider_pool
-from .message_models import CollaborationMessage, MessageType, AgentRole, FinalPlan, ConsensusSignal
 from .consensus import ConsensusDetector
+from .message_models import (
+    AgentRole,
+    CollaborationMessage,
+    ConsensusSignal,
+    FinalPlan,
+    MessageType,
+)
 from .output_generator import OutputGenerator
+from .provider_pool import ProviderPool, provider_pool
+from .provider_registry import (
+    ProviderCapability,
+    ProviderInstance,
+    ProviderRegistry,
+    provider_registry,
+)
 
 logger = logging.getLogger(__name__)
 

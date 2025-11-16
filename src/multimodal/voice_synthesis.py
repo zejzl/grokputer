@@ -6,14 +6,15 @@ Text-to-speech functionality for interactive demos and accessibility.
 Supports multiple TTS engines and voice customization.
 """
 
-import logging
 import asyncio
-from typing import Optional, Dict, Any
-import threading
+import logging
 import queue
+import threading
 import time
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
+
 
 class VoiceSynthesizer:
     """
@@ -45,25 +46,26 @@ class VoiceSynthesizer:
         if self.backend == "pyttsx3" or self.backend == "auto":
             try:
                 import pyttsx3
+
                 self.engine = pyttsx3.init()
                 self.backend = "pyttsx3"
 
                 # Configure voice
-                voices = self.engine.getProperty('voices')
+                voices = self.engine.getProperty("voices")
                 if voices:
                     # Select a female voice if available
                     for voice in voices:
-                        if 'female' in voice.name.lower() or 'zira' in voice.name.lower():
-                            self.engine.setProperty('voice', voice.id)
+                        if "female" in voice.name.lower() or "zira" in voice.name.lower():
+                            self.engine.setProperty("voice", voice.id)
                             break
 
                 # Set speech rate
-                rate = self.voice_config.get('rate', 180)
-                self.engine.setProperty('rate', rate)
+                rate = self.voice_config.get("rate", 180)
+                self.engine.setProperty("rate", rate)
 
                 # Set volume
-                volume = self.voice_config.get('volume', 0.8)
-                self.engine.setProperty('volume', volume)
+                volume = self.voice_config.get("volume", 0.8)
+                self.engine.setProperty("volume", volume)
 
                 logger.info("Pyttsx3 TTS engine initialized")
                 return
@@ -74,8 +76,9 @@ class VoiceSynthesizer:
 
         if self.backend == "gtts" or self.backend == "auto":
             try:
-                from gtts import gTTS
                 import pygame
+                from gtts import gTTS
+
                 self.gtts = gTTS
                 self.pygame = pygame
                 self.backend = "gtts"
@@ -120,7 +123,7 @@ class VoiceSynthesizer:
                 return True
 
             elif self.backend == "gtts":
-                tts = self.gtts(text=text, lang='en', slow=False)
+                tts = self.gtts(text=text, lang="en", slow=False)
                 tts.save("temp_speech.mp3")
 
                 self.pygame.mixer.init()
@@ -133,6 +136,7 @@ class VoiceSynthesizer:
 
                 # Cleanup
                 import os
+
                 try:
                     os.remove("temp_speech.mp3")
                 except:
@@ -167,23 +171,25 @@ class VoiceSynthesizer:
     def get_available_voices(self) -> list:
         """Get list of available voices."""
         if self.backend == "pyttsx3":
-            voices = self.engine.getProperty('voices')
+            voices = self.engine.getProperty("voices")
             return [voice.name for voice in voices] if voices else []
         return []
 
     def set_voice(self, voice_name: str):
         """Set the voice by name."""
         if self.backend == "pyttsx3":
-            voices = self.engine.getProperty('voices')
+            voices = self.engine.getProperty("voices")
             for voice in voices:
                 if voice_name.lower() in voice.name.lower():
-                    self.engine.setProperty('voice', voice.id)
+                    self.engine.setProperty("voice", voice.id)
                     logger.info(f"Voice set to: {voice.name}")
                     return
             logger.warning(f"Voice '{voice_name}' not found")
 
+
 # Global synthesizer instance
 _voice_synthesizer = None
+
 
 def get_voice_synthesizer() -> VoiceSynthesizer:
     """Get the global voice synthesizer instance."""
@@ -191,6 +197,7 @@ def get_voice_synthesizer() -> VoiceSynthesizer:
     if _voice_synthesizer is None:
         _voice_synthesizer = VoiceSynthesizer()
     return _voice_synthesizer
+
 
 def speak_text(text: str, async_mode: bool = True) -> bool:
     """
@@ -206,6 +213,7 @@ def speak_text(text: str, async_mode: bool = True) -> bool:
     synthesizer = get_voice_synthesizer()
     return synthesizer.speak(text, async_mode)
 
+
 async def demo_voice_synthesis():
     """Demo function for voice synthesis."""
     print("Voice Synthesis Demo")
@@ -218,7 +226,7 @@ async def demo_voice_synthesis():
         "Hello! This is a voice synthesis demo.",
         "Grokputer is an advanced AI system.",
         "Voice synthesis makes interactions more natural.",
-        "Thank you for listening to this demonstration."
+        "Thank you for listening to this demonstration.",
     ]
 
     for text in test_texts:
@@ -227,6 +235,7 @@ async def demo_voice_synthesis():
         await asyncio.sleep(1)  # Brief pause between utterances
 
     print("Demo complete!")
+
 
 if __name__ == "__main__":
     asyncio.run(demo_voice_synthesis())

@@ -4,17 +4,19 @@ Creates appropriate memory backend based on configuration with graceful fallback
 """
 
 import logging
-from ..interfaces import MemoryConfig, MemoryBackend
+
 from ..backends.redis_store import RedisMemoryBackend
+from ..interfaces import MemoryBackend, MemoryConfig
 
 try:
     from ..backends.pinecone_store import PineconeStore
+
     PINECONE_STORE_AVAILABLE = True
 except ImportError:
     PINECONE_STORE_AVAILABLE = False
 
-from .persistent_manager import PersistentMemoryManager
 from ..hierarchical_memory import HierarchicalMemoryManager
+from .persistent_manager import PersistentMemoryManager
 
 logger = logging.getLogger(__name__)
 

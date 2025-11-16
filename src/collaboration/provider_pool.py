@@ -7,11 +7,11 @@ Provides high-availability provider access with automatic failover and recovery.
 
 import asyncio
 import logging
+import random
 import time
-from typing import Dict, List, Optional, Any, Callable
 from dataclasses import dataclass, field
 from enum import Enum
-import random
+from typing import Any, Callable, Dict, List, Optional
 
 from .provider_registry import ProviderInstance, ProviderRegistry, provider_registry
 

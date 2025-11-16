@@ -2,7 +2,8 @@
 # Part of ORAM Pantheon/Swarm.
 
 import logging
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
+
 from src.core.base_agent import BaseAgent
 from src.core.message_bus import Message, MessagePriority
 

@@ -7,13 +7,16 @@ for unified agent communication and coordination.
 
 import asyncio
 import logging
-from typing import Dict, Any, List, Optional
 from dataclasses import dataclass
+from typing import Any, Dict, List, Optional
 
-from src.core.message_bus import MessageBus, Message, MessagePriority
-from src.collaboration.orchestrator import Orchestrator, OrchestrationResult
-from src.collaboration.multi_provider_coordinator import CollaborationConfig, ProviderRole
 from src.collaboration.message_models import CollaborationMessage, MessageType
+from src.collaboration.multi_provider_coordinator import (
+    CollaborationConfig,
+    ProviderRole,
+)
+from src.collaboration.orchestrator import OrchestrationResult, Orchestrator
+from src.core.message_bus import Message, MessageBus, MessagePriority
 
 logger = logging.getLogger(__name__)
 
@@ -201,7 +204,7 @@ class MAFMessageBusCoordinator:
             collaboration_config = maf_config_loader.load_config(config_name)
 
             # Configure providers
-            from src.collaboration import ProviderRole, ProviderCapability
+            from src.collaboration import ProviderCapability, ProviderRole
 
             provider_roles = []
             for provider_name in providers:

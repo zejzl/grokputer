@@ -1,7 +1,7 @@
-import sqlite3
 import random
-from pathlib import Path
+import sqlite3
 from collections import defaultdict
+from pathlib import Path
 
 DB_PATH = Path.cwd() / "db" / "db.db"
 

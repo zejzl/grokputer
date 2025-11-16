@@ -12,18 +12,24 @@ Extends BaseAgent for lifecycle management.
 
 import asyncio
 import logging
-import subprocess
 import shlex
+import subprocess
 import time
-from typing import Dict, Any, Optional
 from pathlib import Path
-from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+from typing import Any, Dict, Optional
 
-from src.core.base_agent import BaseAgent
-from src.core.action_executor import ActionExecutor, ActionPriority
-from src.core.message_bus import MessageBus, Message, MessagePriority
-from src.observability.session_logger import SessionLogger
+from tenacity import (
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_exponential,
+)
+
 from src import config
+from src.core.action_executor import ActionExecutor, ActionPriority
+from src.core.base_agent import BaseAgent
+from src.core.message_bus import Message, MessageBus, MessagePriority
+from src.observability.session_logger import SessionLogger
 
 logger = logging.getLogger(__name__)
 

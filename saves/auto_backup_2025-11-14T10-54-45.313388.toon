@@ -1,0 +1,14 @@
+timestamp: 2025-11-14T10-54-45.313388
+player: auto_backup
+game_data:
+  level: 5
+  score: 1500
+  inventory[2]: sword,potion
+  position:
+    x: 10
+    y: 20
+  timestamp: 1763114085.3133852
+  auto_backup: true
+metadata:
+  version: "1.0"
+  location: "saves\\auto_backup_2025-11-14T10-54-45.313388.toon"

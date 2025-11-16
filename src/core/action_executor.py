@@ -5,20 +5,21 @@ Single-threaded executor ensures PyAutoGUI calls are serialized to avoid
 race conditions in multi-agent environment. Provides async interface for agents.
 """
 
+import asyncio
+import base64
+import io
+import logging
+import shlex
+import subprocess
 import threading
-from queue import PriorityQueue, Queue, Empty
-from typing import Dict, Any, Optional, List
+import time
 from dataclasses import dataclass, field
 from enum import IntEnum
-import asyncio
-import time
-import logging
+from queue import Empty, PriorityQueue, Queue
+from typing import Any, Dict, List, Optional
+
 import pyautogui
 from PIL import Image
-import io
-import base64
-import subprocess
-import shlex
 
 logger = logging.getLogger(__name__)
 

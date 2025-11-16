@@ -12,17 +12,17 @@ Extends BaseAgent for lifecycle management.
 """
 
 import asyncio
+import hashlib
 import logging
 import time
-import hashlib
-from typing import Dict, Any, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 
+from src import config
 from src.core.base_agent import BaseAgent
-from src.core.message_bus import MessageBus, Message, MessagePriority
+from src.core.message_bus import Message, MessageBus, MessagePriority
+from src.grok_client import GrokClient
 from src.observability.session_logger import SessionLogger
 from src.screen_observer import ScreenObserver
-from src.grok_client import GrokClient
-from src import config
 
 logger = logging.getLogger(__name__)
 

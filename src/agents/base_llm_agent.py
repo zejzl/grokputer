@@ -2,11 +2,15 @@
 Abstract base class for LLM agents in collaboration mode.
 """
 
+import logging
 from abc import ABC, abstractmethod
 from typing import List
-import logging
 
-from src.collaboration.message_models import CollaborationMessage, AgentRole, MessageType
+from src.collaboration.message_models import (
+    AgentRole,
+    CollaborationMessage,
+    MessageType,
+)
 
 logger = logging.getLogger(__name__)
 

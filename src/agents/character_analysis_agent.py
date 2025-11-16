@@ -4,14 +4,14 @@ CharacterAnalysisAgent - Analyzes literary characters and validates archetypes
 Specialized agent for literary analysis, character development, and safety validation
 """
 
-import re
-import json
-from typing import Dict, List, Optional, Tuple
-from datetime import datetime
 import asyncio
+import json
+import re
+from datetime import datetime
+from typing import Dict, List, Optional, Tuple
 
 from src.core.base_agent import BaseAgent
-from src.core.message_bus import MessageBus, Message, MessagePriority
+from src.core.message_bus import Message, MessageBus, MessagePriority
 from src.observability.session_logger import SessionLogger
 
 

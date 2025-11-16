@@ -3,13 +3,14 @@ Grok API wrapper for collaboration mode (refactored from grok_client.py).
 """
 
 import asyncio
+import logging
 from typing import List
+
 from openai import AsyncOpenAI
 from tenacity import retry, stop_after_attempt, wait_exponential
-import logging
 
 from src.agents.base_llm_agent import BaseLLMAgent
-from src.collaboration.message_models import CollaborationMessage, AgentRole
+from src.collaboration.message_models import AgentRole, CollaborationMessage
 
 logger = logging.getLogger(__name__)
 

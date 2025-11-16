@@ -1,17 +1,19 @@
 import asyncio
+import hashlib  # For perceptual hashing (doc integrity)
 import json
 import os
 import re
 from datetime import datetime
-from typing import Dict, List, Any
 from pathlib import Path
-import hashlib  # For perceptual hashing (doc integrity)
+from typing import Any, Dict, List
 
 # Grokputer imports (adapt to your src structure)
 try:
-    from src.grok_client import GrokClient  # Async Grok API wrapper
+    from src.core.base_agent import (
+        BaseAgent,  # Pantheon base (fallback to dict if not available)
+    )
     from src.core.config import Config  # For API keys, etc.
-    from src.core.base_agent import BaseAgent  # Pantheon base (fallback to dict if not available)
+    from src.grok_client import GrokClient  # Async Grok API wrapper
 
     # from src.core.message_bus import MessageBus  # For future inter-agent comms
 except ImportError:

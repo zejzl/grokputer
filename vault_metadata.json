@@ -1,0 +1,3890 @@
+[
+    {
+        "path": ".\\infinitiyandbyeond.PNG",
+        "filename": "infinitiyandbyeond.PNG",
+        "size_bytes": 288485,
+        "modified_time": "Mon Nov 10 04:12:19 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "."
+    },
+    {
+        "path": ".\\ORAM.png",
+        "filename": "ORAM.png",
+        "size_bytes": 49489,
+        "modified_time": "Thu Nov 13 00:17:07 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "."
+    },
+    {
+        "path": ".\\grokputer_base\\customer-support-agent\\tutorial\\access-keys.png",
+        "filename": "access-keys.png",
+        "size_bytes": 61707,
+        "modified_time": "Wed Nov 12 11:16:13 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "grokputer_base\\customer-support-agent\\tutorial"
+    },
+    {
+        "path": ".\\grokputer_base\\customer-support-agent\\tutorial\\attach.png",
+        "filename": "attach.png",
+        "size_bytes": 164538,
+        "modified_time": "Wed Nov 12 11:16:13 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "grokputer_base\\customer-support-agent\\tutorial"
+    },
+    {
+        "path": ".\\grokputer_base\\customer-support-agent\\tutorial\\bedrock.png",
+        "filename": "bedrock.png",
+        "size_bytes": 27193,
+        "modified_time": "Wed Nov 12 11:16:13 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "grokputer_base\\customer-support-agent\\tutorial"
+    },
+    {
+        "path": ".\\grokputer_base\\customer-support-agent\\tutorial\\choose-source.png",
+        "filename": "choose-source.png",
+        "size_bytes": 223324,
+        "modified_time": "Wed Nov 12 11:16:13 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "grokputer_base\\customer-support-agent\\tutorial"
+    },
+    {
+        "path": ".\\grokputer_base\\customer-support-agent\\tutorial\\create-knowledge-base.png",
+        "filename": "create-knowledge-base.png",
+        "size_bytes": 84900,
+        "modified_time": "Wed Nov 12 11:16:13 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "grokputer_base\\customer-support-agent\\tutorial"
+    },
+    {
+        "path": ".\\grokputer_base\\customer-support-agent\\tutorial\\create-user.png",
+        "filename": "create-user.png",
+        "size_bytes": 60124,
+        "modified_time": "Wed Nov 12 11:16:13 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "grokputer_base\\customer-support-agent\\tutorial"
+    },
+    {
+        "path": ".\\grokputer_base\\customer-support-agent\\tutorial\\preview.png",
+        "filename": "preview.png",
+        "size_bytes": 964524,
+        "modified_time": "Wed Nov 12 11:16:13 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "grokputer_base\\customer-support-agent\\tutorial"
+    },
+    {
+        "path": ".\\grokputer_base\\financial-data-analyst\\public\\hero.png",
+        "filename": "hero.png",
+        "size_bytes": 943010,
+        "modified_time": "Wed Nov 12 11:16:13 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "grokputer_base\\financial-data-analyst\\public"
+    },
+    {
+        "path": ".\\grokputer_base\\financial-data-analyst\\public\\image-analysis.png",
+        "filename": "image-analysis.png",
+        "size_bytes": 857733,
+        "modified_time": "Wed Nov 12 11:16:13 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "grokputer_base\\financial-data-analyst\\public"
+    },
+    {
+        "path": ".\\htmlcov\\favicon_32_cb_58284776.png",
+        "filename": "favicon_32_cb_58284776.png",
+        "size_bytes": 1732,
+        "modified_time": "Fri Nov 14 02:07:55 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "htmlcov"
+    },
+    {
+        "path": ".\\htmlcov\\keybd_closed_cb_ce680311.png",
+        "filename": "keybd_closed_cb_ce680311.png",
+        "size_bytes": 9004,
+        "modified_time": "Fri Nov 14 02:07:55 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "htmlcov"
+    },
+    {
+        "path": ".\\vault\\grok prompts.jpg",
+        "filename": "grok prompts.jpg",
+        "size_bytes": 994112,
+        "modified_time": "Wed Mar  5 00:16:44 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\build\\client\\apple-touch-icon-precomposed.png",
+        "filename": "apple-touch-icon-precomposed.png",
+        "size_bytes": 36882,
+        "modified_time": "Sun Jan 26 21:25:24 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\build\\client"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\build\\client\\apple-touch-icon.png",
+        "filename": "apple-touch-icon.png",
+        "size_bytes": 36882,
+        "modified_time": "Sun Jan 26 21:25:24 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\build\\client"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\build\\client\\logo-dark-styled.png",
+        "filename": "logo-dark-styled.png",
+        "size_bytes": 22549,
+        "modified_time": "Sun Jan 26 21:25:24 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\build\\client"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\build\\client\\logo-dark.png",
+        "filename": "logo-dark.png",
+        "size_bytes": 36140,
+        "modified_time": "Sun Jan 26 21:25:24 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\build\\client"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\build\\client\\logo-light-styled.png",
+        "filename": "logo-light-styled.png",
+        "size_bytes": 36882,
+        "modified_time": "Sun Jan 26 21:25:24 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\build\\client"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\build\\client\\logo-light.png",
+        "filename": "logo-light.png",
+        "size_bytes": 63308,
+        "modified_time": "Sun Jan 26 21:25:24 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\build\\client"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\build\\client\\social_preview_index.jpg",
+        "filename": "social_preview_index.jpg",
+        "size_bytes": 128624,
+        "modified_time": "Sun Jan 26 21:25:24 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\build\\client"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\docs\\images\\api-key-ui-section.png",
+        "filename": "api-key-ui-section.png",
+        "size_bytes": 35549,
+        "modified_time": "Sun Jan 26 21:25:24 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\docs\\images\\bolt-settings-button.png",
+        "filename": "bolt-settings-button.png",
+        "size_bytes": 701361,
+        "modified_time": "Sun Jan 26 21:25:24 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\docs\\images\\provider-base-url.png",
+        "filename": "provider-base-url.png",
+        "size_bytes": 168833,
+        "modified_time": "Sun Jan 26 21:25:24 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\Coding\\BoltDIY updated by claude\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\infinitiyandbyeond.PNG",
+        "filename": "infinitiyandbyeond.PNG",
+        "size_bytes": 288485,
+        "modified_time": "Mon Nov 10 04:12:19 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\networkx\\drawing\\tests\\baseline\\test_display_complex.png",
+        "filename": "test_display_complex.png",
+        "size_bytes": 142315,
+        "modified_time": "Sun Nov  9 16:25:37 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\networkx\\drawing\\tests\\baseline"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\networkx\\drawing\\tests\\baseline\\test_display_empty_graph.png",
+        "filename": "test_display_empty_graph.png",
+        "size_bytes": 3257,
+        "modified_time": "Sun Nov  9 16:25:37 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\networkx\\drawing\\tests\\baseline"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\networkx\\drawing\\tests\\baseline\\test_display_house_with_colors.png",
+        "filename": "test_display_house_with_colors.png",
+        "size_bytes": 26002,
+        "modified_time": "Sun Nov  9 16:25:37 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\networkx\\drawing\\tests\\baseline"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\networkx\\drawing\\tests\\baseline\\test_display_labels_and_colors.png",
+        "filename": "test_display_labels_and_colors.png",
+        "size_bytes": 70446,
+        "modified_time": "Sun Nov  9 16:25:37 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\networkx\\drawing\\tests\\baseline"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\networkx\\drawing\\tests\\baseline\\test_display_shortest_path.png",
+        "filename": "test_display_shortest_path.png",
+        "size_bytes": 35897,
+        "modified_time": "Sun Nov  9 16:25:37 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\networkx\\drawing\\tests\\baseline"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\networkx\\drawing\\tests\\baseline\\test_house_with_colors.png",
+        "filename": "test_house_with_colors.png",
+        "size_bytes": 21918,
+        "modified_time": "Sun Nov  9 16:25:37 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\networkx\\drawing\\tests\\baseline"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\sympy\\plotting\\tests\\test_region_and.png",
+        "filename": "test_region_and.png",
+        "size_bytes": 6864,
+        "modified_time": "Sun Nov  9 16:25:08 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\sympy\\plotting\\tests"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\sympy\\plotting\\tests\\test_region_not.png",
+        "filename": "test_region_not.png",
+        "size_bytes": 7939,
+        "modified_time": "Sun Nov  9 16:25:08 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\sympy\\plotting\\tests"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\sympy\\plotting\\tests\\test_region_or.png",
+        "filename": "test_region_or.png",
+        "size_bytes": 8809,
+        "modified_time": "Sun Nov  9 16:25:08 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\sympy\\plotting\\tests"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\sympy\\plotting\\tests\\test_region_xor.png",
+        "filename": "test_region_xor.png",
+        "size_bytes": 10002,
+        "modified_time": "Sun Nov  9 16:25:08 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\qwen_env\\Lib\\site-packages\\sympy\\plotting\\tests"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets\\demo-alacritty.png",
+        "filename": "demo-alacritty.png",
+        "size_bytes": 105928,
+        "modified_time": "Tue Nov 11 00:43:46 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets\\demo-cava-2.gif",
+        "filename": "demo-cava-2.gif",
+        "size_bytes": 861138,
+        "modified_time": "Tue Nov 11 00:43:46 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets\\demo-cava.gif",
+        "filename": "demo-cava.gif",
+        "size_bytes": 469717,
+        "modified_time": "Tue Nov 11 00:43:46 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets\\demo-eww.gif",
+        "filename": "demo-eww.gif",
+        "size_bytes": 188295,
+        "modified_time": "Tue Nov 11 00:43:46 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets\\demo-eww.png",
+        "filename": "demo-eww.png",
+        "size_bytes": 117170,
+        "modified_time": "Tue Nov 11 00:43:46 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets\\demo-firefox.png",
+        "filename": "demo-firefox.png",
+        "size_bytes": 55045,
+        "modified_time": "Tue Nov 11 00:43:46 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets\\demo-hypr-2.gif",
+        "filename": "demo-hypr-2.gif",
+        "size_bytes": 1607537,
+        "modified_time": "Tue Nov 11 00:43:46 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets\\demo-hypr.gif",
+        "filename": "demo-hypr.gif",
+        "size_bytes": 188295,
+        "modified_time": "Tue Nov 11 00:43:46 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets\\demo-neofetch.gif",
+        "filename": "demo-neofetch.gif",
+        "size_bytes": 482383,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets\\demo-neofetch.png",
+        "filename": "demo-neofetch.png",
+        "size_bytes": 15459,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets\\demo-rofi-2.png",
+        "filename": "demo-rofi-2.png",
+        "size_bytes": 346979,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets\\demo-rofi.png",
+        "filename": "demo-rofi.png",
+        "size_bytes": 297370,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets\\demo-waybar-2.png",
+        "filename": "demo-waybar-2.png",
+        "size_bytes": 12428,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets\\demo-waybar-2_1.png",
+        "filename": "demo-waybar-2_1.png",
+        "size_bytes": 21441,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets\\demo-waybar.png",
+        "filename": "demo-waybar.png",
+        "size_bytes": 30676,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets\\demo.gif",
+        "filename": "demo.gif",
+        "size_bytes": 6130291,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\dotfiles\\hypr\\wallpapers\\bg_wallpaper.png",
+        "filename": "bg_wallpaper.png",
+        "size_bytes": 1294575,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\dotfiles\\hypr\\wallpapers"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\dotfiles\\hypr\\wallpapers\\black.png",
+        "filename": "black.png",
+        "size_bytes": 5012,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\dotfiles\\hypr\\wallpapers"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\dotfiles\\rofi\\image.png",
+        "filename": "image.png",
+        "size_bytes": 2253782,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\dionysus\\dotfiles\\rofi"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\graphiti\\examples\\langgraph-agent\\tinybirds-jess.png",
+        "filename": "tinybirds-jess.png",
+        "size_bytes": 246122,
+        "modified_time": "Thu Nov  6 17:30:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\graphiti\\examples\\langgraph-agent"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\graphiti\\images\\arxiv-screenshot.png",
+        "filename": "arxiv-screenshot.png",
+        "size_bytes": 535574,
+        "modified_time": "Thu Nov  6 17:30:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\graphiti\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\graphiti\\images\\graphiti-graph-intro.gif",
+        "filename": "graphiti-graph-intro.gif",
+        "size_bytes": 173365,
+        "modified_time": "Thu Nov  6 17:30:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\graphiti\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\graphiti\\images\\graphiti-intro-slides-stock-2.gif",
+        "filename": "graphiti-intro-slides-stock-2.gif",
+        "size_bytes": 756899,
+        "modified_time": "Thu Nov  6 17:30:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\graphiti\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\mcp-vault\\grok-mcp\\node_modules\\zod-to-json-schema\\.github\\CR_logotype-full-color.png",
+        "filename": "CR_logotype-full-color.png",
+        "size_bytes": 11047,
+        "modified_time": "Fri Nov  7 01:29:08 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\mcp-vault\\grok-mcp\\node_modules\\zod-to-json-schema\\.github"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\moondev.png",
+        "filename": "moondev.png",
+        "size_bytes": 342439,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\charts\\BTC_15m_1737367731.png",
+        "filename": "BTC_15m_1737367731.png",
+        "size_bytes": 48238,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\charts"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\13893.png",
+        "filename": "13893.png",
+        "size_bytes": 765140,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\19740.png",
+        "filename": "19740.png",
+        "size_bytes": 756652,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\24049.png",
+        "filename": "24049.png",
+        "size_bytes": 873765,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\42451.png",
+        "filename": "42451.png",
+        "size_bytes": 768845,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\51648.png",
+        "filename": "51648.png",
+        "size_bytes": 679750,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\60650.png",
+        "filename": "60650.png",
+        "size_bytes": 736742,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\62990.png",
+        "filename": "62990.png",
+        "size_bytes": 698047,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\67376.png",
+        "filename": "67376.png",
+        "size_bytes": 697841,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\76920.png",
+        "filename": "76920.png",
+        "size_bytes": 693068,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\82591.png",
+        "filename": "82591.png",
+        "size_bytes": 768000,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\97268.png",
+        "filename": "97268.png",
+        "size_bytes": 698959,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_095304_44b10b55.png",
+        "filename": "ai_chat_screenshot_20250203_095304_44b10b55.png",
+        "size_bytes": 25976,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_095426_8e4dad4f.png",
+        "filename": "ai_chat_screenshot_20250203_095426_8e4dad4f.png",
+        "size_bytes": 25957,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_095548_a4d24a00.png",
+        "filename": "ai_chat_screenshot_20250203_095548_a4d24a00.png",
+        "size_bytes": 25821,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_100017_55c6e16a.png",
+        "filename": "ai_chat_screenshot_20250203_100017_55c6e16a.png",
+        "size_bytes": 141230,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_100138_c26d05ce.png",
+        "filename": "ai_chat_screenshot_20250203_100138_c26d05ce.png",
+        "size_bytes": 142867,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_100300_1e126b7e.png",
+        "filename": "ai_chat_screenshot_20250203_100300_1e126b7e.png",
+        "size_bytes": 140587,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_100425_7cc4f0a0.png",
+        "filename": "ai_chat_screenshot_20250203_100425_7cc4f0a0.png",
+        "size_bytes": 140127,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_100546_07b15af2.png",
+        "filename": "ai_chat_screenshot_20250203_100546_07b15af2.png",
+        "size_bytes": 127856,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_100708_070c5d49.png",
+        "filename": "ai_chat_screenshot_20250203_100708_070c5d49.png",
+        "size_bytes": 164845,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_102048_abb1a712.png",
+        "filename": "ai_chat_screenshot_20250203_102048_abb1a712.png",
+        "size_bytes": 148463,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_102501_55493e13.png",
+        "filename": "ai_chat_screenshot_20250203_102501_55493e13.png",
+        "size_bytes": 146214,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_102640_657e0e2c.png",
+        "filename": "ai_chat_screenshot_20250203_102640_657e0e2c.png",
+        "size_bytes": 132516,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_104019_2f31448e.png",
+        "filename": "ai_chat_screenshot_20250203_104019_2f31448e.png",
+        "size_bytes": 154704,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_104434_1d7231b9.png",
+        "filename": "ai_chat_screenshot_20250203_104434_1d7231b9.png",
+        "size_bytes": 140887,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_104611_00b24f5f.png",
+        "filename": "ai_chat_screenshot_20250203_104611_00b24f5f.png",
+        "size_bytes": 133764,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_104748_088b61ae.png",
+        "filename": "ai_chat_screenshot_20250203_104748_088b61ae.png",
+        "size_bytes": 149975,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_105451_b19a27c7.png",
+        "filename": "ai_chat_screenshot_20250203_105451_b19a27c7.png",
+        "size_bytes": 113996,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_105930_7d088e04.png",
+        "filename": "ai_chat_screenshot_20250203_105930_7d088e04.png",
+        "size_bytes": 117942,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_110137_8749192f.png",
+        "filename": "ai_chat_screenshot_20250203_110137_8749192f.png",
+        "size_bytes": 97438,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_110315_07ec67ce.png",
+        "filename": "ai_chat_screenshot_20250203_110315_07ec67ce.png",
+        "size_bytes": 92572,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_110451_1eadb6e7.png",
+        "filename": "ai_chat_screenshot_20250203_110451_1eadb6e7.png",
+        "size_bytes": 110198,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_113232_35de4a87.png",
+        "filename": "ai_chat_screenshot_20250203_113232_35de4a87.png",
+        "size_bytes": 104384,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_113756_52b3df6d.png",
+        "filename": "ai_chat_screenshot_20250203_113756_52b3df6d.png",
+        "size_bytes": 97505,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_114517_17499683.png",
+        "filename": "ai_chat_screenshot_20250203_114517_17499683.png",
+        "size_bytes": 205774,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_072032_6c8c5688.png",
+        "filename": "ai_chat_screenshot_20250204_072032_6c8c5688.png",
+        "size_bytes": 231259,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_072332_12542242.png",
+        "filename": "ai_chat_screenshot_20250204_072332_12542242.png",
+        "size_bytes": 227540,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_074046_e030b365.png",
+        "filename": "ai_chat_screenshot_20250204_074046_e030b365.png",
+        "size_bytes": 227627,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_075254_a1b52ed9.png",
+        "filename": "ai_chat_screenshot_20250204_075254_a1b52ed9.png",
+        "size_bytes": 146505,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_075433_7e801d23.png",
+        "filename": "ai_chat_screenshot_20250204_075433_7e801d23.png",
+        "size_bytes": 149036,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_075610_89a3c12b.png",
+        "filename": "ai_chat_screenshot_20250204_075610_89a3c12b.png",
+        "size_bytes": 157189,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_075914_b8dade35.png",
+        "filename": "ai_chat_screenshot_20250204_075914_b8dade35.png",
+        "size_bytes": 151649,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_080051_f464f7f7.png",
+        "filename": "ai_chat_screenshot_20250204_080051_f464f7f7.png",
+        "size_bytes": 146573,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_080229_52e7301d.png",
+        "filename": "ai_chat_screenshot_20250204_080229_52e7301d.png",
+        "size_bytes": 161863,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_080407_97458025.png",
+        "filename": "ai_chat_screenshot_20250204_080407_97458025.png",
+        "size_bytes": 155643,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_080544_c8221a19.png",
+        "filename": "ai_chat_screenshot_20250204_080544_c8221a19.png",
+        "size_bytes": 148818,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_100544_0bc62d98.png",
+        "filename": "ai_chat_screenshot_20250204_100544_0bc62d98.png",
+        "size_bytes": 220127,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_100718_ae84de8c.png",
+        "filename": "ai_chat_screenshot_20250204_100718_ae84de8c.png",
+        "size_bytes": 140349,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_100926_1b052c71.png",
+        "filename": "ai_chat_screenshot_20250204_100926_1b052c71.png",
+        "size_bytes": 167090,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_101105_961cd27a.png",
+        "filename": "ai_chat_screenshot_20250204_101105_961cd27a.png",
+        "size_bytes": 155956,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_101242_54f403ce.png",
+        "filename": "ai_chat_screenshot_20250204_101242_54f403ce.png",
+        "size_bytes": 152182,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_101419_7b9bec7b.png",
+        "filename": "ai_chat_screenshot_20250204_101419_7b9bec7b.png",
+        "size_bytes": 157616,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_101656_c8c36fb7.png",
+        "filename": "ai_chat_screenshot_20250204_101656_c8c36fb7.png",
+        "size_bytes": 161323,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_101915_16af9605.png",
+        "filename": "ai_chat_screenshot_20250204_101915_16af9605.png",
+        "size_bytes": 161963,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_102052_c58e6186.png",
+        "filename": "ai_chat_screenshot_20250204_102052_c58e6186.png",
+        "size_bytes": 157555,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_102229_cf7fb8a0.png",
+        "filename": "ai_chat_screenshot_20250204_102229_cf7fb8a0.png",
+        "size_bytes": 156393,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_102447_8ab2125e.png",
+        "filename": "ai_chat_screenshot_20250204_102447_8ab2125e.png",
+        "size_bytes": 153884,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_102626_a253f75c.png",
+        "filename": "ai_chat_screenshot_20250204_102626_a253f75c.png",
+        "size_bytes": 158779,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_102804_cabbad01.png",
+        "filename": "ai_chat_screenshot_20250204_102804_cabbad01.png",
+        "size_bytes": 150732,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_102946_f16bbe12.png",
+        "filename": "ai_chat_screenshot_20250204_102946_f16bbe12.png",
+        "size_bytes": 193605,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_103145_bcd0fd82.png",
+        "filename": "ai_chat_screenshot_20250204_103145_bcd0fd82.png",
+        "size_bytes": 149531,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_103323_dcffa86b.png",
+        "filename": "ai_chat_screenshot_20250204_103323_dcffa86b.png",
+        "size_bytes": 154595,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_103500_22e71af0.png",
+        "filename": "ai_chat_screenshot_20250204_103500_22e71af0.png",
+        "size_bytes": 152079,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_103638_5ce2c893.png",
+        "filename": "ai_chat_screenshot_20250204_103638_5ce2c893.png",
+        "size_bytes": 157919,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_103819_9b2b7a03.png",
+        "filename": "ai_chat_screenshot_20250204_103819_9b2b7a03.png",
+        "size_bytes": 140553,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_103957_ac3efccc.png",
+        "filename": "ai_chat_screenshot_20250204_103957_ac3efccc.png",
+        "size_bytes": 159691,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_104134_89be8068.png",
+        "filename": "ai_chat_screenshot_20250204_104134_89be8068.png",
+        "size_bytes": 161722,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_104313_1ce04a44.png",
+        "filename": "ai_chat_screenshot_20250204_104313_1ce04a44.png",
+        "size_bytes": 155525,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_104453_2333f4b1.png",
+        "filename": "ai_chat_screenshot_20250204_104453_2333f4b1.png",
+        "size_bytes": 155693,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_104630_401510e7.png",
+        "filename": "ai_chat_screenshot_20250204_104630_401510e7.png",
+        "size_bytes": 135481,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_104922_7de80916.png",
+        "filename": "ai_chat_screenshot_20250204_104922_7de80916.png",
+        "size_bytes": 150797,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_105059_429919d2.png",
+        "filename": "ai_chat_screenshot_20250204_105059_429919d2.png",
+        "size_bytes": 145314,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_105238_3f76c908.png",
+        "filename": "ai_chat_screenshot_20250204_105238_3f76c908.png",
+        "size_bytes": 161530,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_105425_dc94ff6b.png",
+        "filename": "ai_chat_screenshot_20250204_105425_dc94ff6b.png",
+        "size_bytes": 165203,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_105601_deb3c5ce.png",
+        "filename": "ai_chat_screenshot_20250204_105601_deb3c5ce.png",
+        "size_bytes": 170521,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_105738_2070b336.png",
+        "filename": "ai_chat_screenshot_20250204_105738_2070b336.png",
+        "size_bytes": 160796,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_105915_447a597f.png",
+        "filename": "ai_chat_screenshot_20250204_105915_447a597f.png",
+        "size_bytes": 167934,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_110055_09b090a0.png",
+        "filename": "ai_chat_screenshot_20250204_110055_09b090a0.png",
+        "size_bytes": 139078,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_110232_244d0c99.png",
+        "filename": "ai_chat_screenshot_20250204_110232_244d0c99.png",
+        "size_bytes": 165957,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_110409_d6b65cb1.png",
+        "filename": "ai_chat_screenshot_20250204_110409_d6b65cb1.png",
+        "size_bytes": 164818,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_110545_827de36f.png",
+        "filename": "ai_chat_screenshot_20250204_110545_827de36f.png",
+        "size_bytes": 162902,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_110722_4eb70719.png",
+        "filename": "ai_chat_screenshot_20250204_110722_4eb70719.png",
+        "size_bytes": 168320,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_110859_d79668f4.png",
+        "filename": "ai_chat_screenshot_20250204_110859_d79668f4.png",
+        "size_bytes": 156215,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_111037_f48e4912.png",
+        "filename": "ai_chat_screenshot_20250204_111037_f48e4912.png",
+        "size_bytes": 174691,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_111343_52f39513.png",
+        "filename": "ai_chat_screenshot_20250204_111343_52f39513.png",
+        "size_bytes": 171308,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_111520_1951eb55.png",
+        "filename": "ai_chat_screenshot_20250204_111520_1951eb55.png",
+        "size_bytes": 179362,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_111710_ad1963f7.png",
+        "filename": "ai_chat_screenshot_20250204_111710_ad1963f7.png",
+        "size_bytes": 148430,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_111847_285e3e2d.png",
+        "filename": "ai_chat_screenshot_20250204_111847_285e3e2d.png",
+        "size_bytes": 147791,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_112026_7877c5dc.png",
+        "filename": "ai_chat_screenshot_20250204_112026_7877c5dc.png",
+        "size_bytes": 150709,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_112207_f568df9e.png",
+        "filename": "ai_chat_screenshot_20250204_112207_f568df9e.png",
+        "size_bytes": 154422,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_112630_684b017f.png",
+        "filename": "ai_chat_screenshot_20250204_112630_684b017f.png",
+        "size_bytes": 222381,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_114623_13923d99.png",
+        "filename": "ai_chat_screenshot_20250204_114623_13923d99.png",
+        "size_bytes": 171620,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_114800_e44a2831.png",
+        "filename": "ai_chat_screenshot_20250204_114800_e44a2831.png",
+        "size_bytes": 157356,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_114938_78cde168.png",
+        "filename": "ai_chat_screenshot_20250204_114938_78cde168.png",
+        "size_bytes": 178584,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_115115_1e22c9f8.png",
+        "filename": "ai_chat_screenshot_20250204_115115_1e22c9f8.png",
+        "size_bytes": 173713,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_115251_2727284f.png",
+        "filename": "ai_chat_screenshot_20250204_115251_2727284f.png",
+        "size_bytes": 180392,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_115429_9aa5075f.png",
+        "filename": "ai_chat_screenshot_20250204_115429_9aa5075f.png",
+        "size_bytes": 182333,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_115605_385fb0f2.png",
+        "filename": "ai_chat_screenshot_20250204_115605_385fb0f2.png",
+        "size_bytes": 170045,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-104221.png",
+        "filename": "execution_20250201-104221.png",
+        "size_bytes": 382440,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-104632.png",
+        "filename": "execution_20250201-104632.png",
+        "size_bytes": 34785,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-105143.png",
+        "filename": "execution_20250201-105143.png",
+        "size_bytes": 949893,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-110122.png",
+        "filename": "execution_20250201-110122.png",
+        "size_bytes": 765440,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-110643.png",
+        "filename": "execution_20250201-110643.png",
+        "size_bytes": 4719466,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-111846.png",
+        "filename": "execution_20250201-111846.png",
+        "size_bytes": 2362624,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-112104.png",
+        "filename": "execution_20250201-112104.png",
+        "size_bytes": 2542920,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-112346.png",
+        "filename": "execution_20250201-112346.png",
+        "size_bytes": 2565113,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-112532.png",
+        "filename": "execution_20250201-112532.png",
+        "size_bytes": 2551525,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-113014.png",
+        "filename": "execution_20250201-113014.png",
+        "size_bytes": 2748823,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-113217.png",
+        "filename": "execution_20250201-113217.png",
+        "size_bytes": 2838537,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-113638.png",
+        "filename": "execution_20250201-113638.png",
+        "size_bytes": 2873319,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-113818.png",
+        "filename": "execution_20250201-113818.png",
+        "size_bytes": 2764615,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-114039.png",
+        "filename": "execution_20250201-114039.png",
+        "size_bytes": 2807885,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-114534.png",
+        "filename": "execution_20250201-114534.png",
+        "size_bytes": 2644459,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-114915.png",
+        "filename": "execution_20250201-114915.png",
+        "size_bytes": 2547294,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-114942.png",
+        "filename": "execution_20250201-114942.png",
+        "size_bytes": 2775045,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-115509.png",
+        "filename": "execution_20250201-115509.png",
+        "size_bytes": 902397,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-120337.png",
+        "filename": "execution_20250201-120337.png",
+        "size_bytes": 769255,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\moondev_code_execution_20250201_120558_075877_46c7fdb5.png",
+        "filename": "moondev_code_execution_20250201_120558_075877_46c7fdb5.png",
+        "size_bytes": 693965,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\screenshot_20250201-100155.png",
+        "filename": "screenshot_20250201-100155.png",
+        "size_bytes": 9008336,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\screenshot_20250201-100301.png",
+        "filename": "screenshot_20250201-100301.png",
+        "size_bytes": 1483295,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\screenshot_20250201-100329.png",
+        "filename": "screenshot_20250201-100329.png",
+        "size_bytes": 1436496,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails\\thumbnail_20250715_094242_1.png",
+        "filename": "thumbnail_20250715_094242_1.png",
+        "size_bytes": 2310453,
+        "modified_time": "Sun Oct 26 15:47:28 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails\\thumbnail_20250715_094303_2.png",
+        "filename": "thumbnail_20250715_094303_2.png",
+        "size_bytes": 3025043,
+        "modified_time": "Sun Oct 26 15:47:28 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails\\thumbnail_20250715_094326_3.png",
+        "filename": "thumbnail_20250715_094326_3.png",
+        "size_bytes": 2801465,
+        "modified_time": "Sun Oct 26 15:47:28 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails\\thumbnail_20250715_095037_1.png",
+        "filename": "thumbnail_20250715_095037_1.png",
+        "size_bytes": 2492306,
+        "modified_time": "Sun Oct 26 15:47:28 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails\\thumbnail_20250715_095102_2.png",
+        "filename": "thumbnail_20250715_095102_2.png",
+        "size_bytes": 2998035,
+        "modified_time": "Sun Oct 26 15:47:28 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails\\thumbnail_20250715_095124_3.png",
+        "filename": "thumbnail_20250715_095124_3.png",
+        "size_bytes": 2635000,
+        "modified_time": "Sun Oct 26 15:47:28 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\videos\\youtube_materials\\EaMh2ILYJS4\\EaMh2ILYJS4_thumbnail.jpg",
+        "filename": "EaMh2ILYJS4_thumbnail.jpg",
+        "size_bytes": 33314,
+        "modified_time": "Sun Oct 26 15:47:28 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\videos\\youtube_materials\\EaMh2ILYJS4"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images\\0930143b3705a04d7241c8c377151c23.jpg",
+        "filename": "0930143b3705a04d7241c8c377151c23.jpg",
+        "size_bytes": 46549,
+        "modified_time": "Wed Apr  8 10:37:08 2020",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images\\1154526-AMYj_big.png",
+        "filename": "1154526-AMYj_big.png",
+        "size_bytes": 22631,
+        "modified_time": "Thu Apr  9 19:11:58 2020",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images\\1280px-Abies_koreana_(szyszki).png",
+        "filename": "1280px-Abies_koreana_(szyszki).png",
+        "size_bytes": 2198999,
+        "modified_time": "Mon Apr  6 19:27:44 2020",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images\\1586022004856.jpg",
+        "filename": "1586022004856.jpg",
+        "size_bytes": 81265,
+        "modified_time": "Sun Apr  5 00:52:04 2020",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images\\1761481003308961.jpg",
+        "filename": "1761481003308961.jpg",
+        "size_bytes": 179117,
+        "modified_time": "Sun Oct 26 16:23:09 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images\\428c5e566eb89a59a70c3e0f53bd53a0.jpg",
+        "filename": "428c5e566eb89a59a70c3e0f53bd53a0.jpg",
+        "size_bytes": 537322,
+        "modified_time": "Wed Apr  8 10:38:04 2020",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images\\966a681a4f0ac8455251ee6daccc2674dbb9d970b137c8d704605dfe9fa22896.gif",
+        "filename": "966a681a4f0ac8455251ee6daccc2674dbb9d970b137c8d704605dfe9fa22896.gif",
+        "size_bytes": 1667205,
+        "modified_time": "Sat May 23 07:42:30 2020",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images\\978-1-84882-590-1_1_Fig3_HTML.jpg",
+        "filename": "978-1-84882-590-1_1_Fig3_HTML.jpg",
+        "size_bytes": 476762,
+        "modified_time": "Wed Apr  8 10:35:00 2020",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images\\claudeandgrokcollab.PNG",
+        "filename": "claudeandgrokcollab.PNG",
+        "size_bytes": 201688,
+        "modified_time": "Fri Nov  7 00:10:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images\\docker_screenshot.png",
+        "filename": "docker_screenshot.png",
+        "size_bytes": 6136,
+        "modified_time": "Sun Nov  9 04:07:27 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images\\grok prompts.jpg",
+        "filename": "grok prompts.jpg",
+        "size_bytes": 994112,
+        "modified_time": "Wed Mar  5 00:16:44 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images\\meme1.jpg",
+        "filename": "meme1.jpg",
+        "size_bytes": 32713,
+        "modified_time": "Wed Nov  5 23:44:00 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images\\meme2.png",
+        "filename": "meme2.png",
+        "size_bytes": 1225364,
+        "modified_time": "Wed Nov  5 23:48:28 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images\\meme3.jpg",
+        "filename": "meme3.jpg",
+        "size_bytes": 76511,
+        "modified_time": "Wed Nov  5 23:41:56 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images\\meme4.jpg",
+        "filename": "meme4.jpg",
+        "size_bytes": 36963,
+        "modified_time": "Wed Nov  5 23:46:03 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images\\meme5.png",
+        "filename": "meme5.png",
+        "size_bytes": 163001,
+        "modified_time": "Wed Nov  5 18:33:50 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images\\screenshot.png",
+        "filename": "screenshot.png",
+        "size_bytes": 339316,
+        "modified_time": "Sat Nov  8 17:31:53 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images\\tabs.bmp",
+        "filename": "tabs.bmp",
+        "size_bytes": 6220854,
+        "modified_time": "Fri Nov  7 00:35:38 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\images"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\Milestones\\claudesbroadcastrecievedomg.PNG",
+        "filename": "claudesbroadcastrecievedomg.PNG",
+        "size_bytes": 120864,
+        "modified_time": "Sat Nov  8 01:03:18 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\Milestones"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\Milestones\\grokputer_01.PNG",
+        "filename": "grokputer_01.PNG",
+        "size_bytes": 76918,
+        "modified_time": "Sat Nov  8 02:32:16 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\Milestones"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\Milestones\\grokputer_02.PNG",
+        "filename": "grokputer_02.PNG",
+        "size_bytes": 108720,
+        "modified_time": "Sat Nov  8 02:35:15 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\Milestones"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\Milestones\\grokputer_03.PNG",
+        "filename": "grokputer_03.PNG",
+        "size_bytes": 97121,
+        "modified_time": "Sat Nov  8 02:44:05 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\Milestones"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\Milestones\\justkeepswhatwereat40hoursalready.PNG",
+        "filename": "justkeepswhatwereat40hoursalready.PNG",
+        "size_bytes": 115651,
+        "modified_time": "Sat Nov  8 01:57:12 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\Milestones"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\Milestones\\swarm.PNG",
+        "filename": "swarm.PNG",
+        "size_bytes": 61701,
+        "modified_time": "Sat Nov  8 02:15:46 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\Milestones"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\Milestones\\theydocompound.PNG",
+        "filename": "theydocompound.PNG",
+        "size_bytes": 138689,
+        "modified_time": "Sat Nov  8 01:37:14 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\Milestones"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\Milestones\\weregettingsomeinfoback.PNG",
+        "filename": "weregettingsomeinfoback.PNG",
+        "size_bytes": 124450,
+        "modified_time": "Sat Nov  8 01:14:05 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\Milestones"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted\\5 rules.PNG",
+        "filename": "5 rules.PNG",
+        "size_bytes": 1066119,
+        "modified_time": "Tue Dec 17 13:39:40 2019",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted\\collabmodeworksaswell.PNG",
+        "filename": "collabmodeworksaswell.PNG",
+        "size_bytes": 294248,
+        "modified_time": "Mon Nov 10 13:00:34 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted\\infinitiyandbyeond.PNG",
+        "filename": "infinitiyandbyeond.PNG",
+        "size_bytes": 288485,
+        "modified_time": "Mon Nov 10 04:12:19 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted\\AI Notes\\meme1.jpg",
+        "filename": "meme1.jpg",
+        "size_bytes": 32713,
+        "modified_time": "Wed Nov  5 23:44:00 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted\\AI Notes"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted\\AI Notes\\meme2.png",
+        "filename": "meme2.png",
+        "size_bytes": 1225364,
+        "modified_time": "Wed Nov  5 23:48:28 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted\\AI Notes"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted\\AI Notes\\meme3.jpg",
+        "filename": "meme3.jpg",
+        "size_bytes": 76511,
+        "modified_time": "Wed Nov  5 23:41:56 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted\\AI Notes"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted\\AI Notes\\meme4.jpg",
+        "filename": "meme4.jpg",
+        "size_bytes": 36963,
+        "modified_time": "Wed Nov  5 23:46:03 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted\\AI Notes"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted\\AI Notes\\meme5.png",
+        "filename": "meme5.png",
+        "size_bytes": 163001,
+        "modified_time": "Wed Nov  5 18:33:50 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted\\AI Notes"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted\\claude code tips n tricks\\G4nWJCEWwAAVFF4.jpg",
+        "filename": "G4nWJCEWwAAVFF4.jpg",
+        "size_bytes": 216654,
+        "modified_time": "Sun Nov  2 00:08:05 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted\\claude code tips n tricks"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted\\claude code tips n tricks\\G4skbCMX0AAGBZH.jpg",
+        "filename": "G4skbCMX0AAGBZH.jpg",
+        "size_bytes": 137017,
+        "modified_time": "Sun Nov  2 00:08:13 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\unsorted\\claude code tips n tricks"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\zejzl1\\MIVEHIND_files\\88x31.png",
+        "filename": "88x31.png",
+        "size_bytes": 1672,
+        "modified_time": "Sat May 23 05:40:00 2020",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\zejzl1\\MIVEHIND_files"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\zejzl1\\MIVEHIND_files\\button-1.gif",
+        "filename": "button-1.gif",
+        "size_bytes": 1358,
+        "modified_time": "Sat May 23 05:40:00 2020",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\zejzl1\\MIVEHIND_files"
+    },
+    {
+        "path": ".\\vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\zejzl1\\MIVEHIND_files\\rss-16px.png",
+        "filename": "rss-16px.png",
+        "size_bytes": 782,
+        "modified_time": "Sat May 23 05:40:00 2020",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\backup_old_branch\\GC_STABLE_11\\grokputer\\vault\\zejzl1\\MIVEHIND_files"
+    },
+    {
+        "path": ".\\vault\\git_resources\\dionysus\\assets\\demo-alacritty.png",
+        "filename": "demo-alacritty.png",
+        "size_bytes": 105928,
+        "modified_time": "Tue Nov 11 00:43:46 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\dionysus\\assets\\demo-cava-2.gif",
+        "filename": "demo-cava-2.gif",
+        "size_bytes": 861138,
+        "modified_time": "Tue Nov 11 00:43:46 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\dionysus\\assets\\demo-cava.gif",
+        "filename": "demo-cava.gif",
+        "size_bytes": 469717,
+        "modified_time": "Tue Nov 11 00:43:46 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\dionysus\\assets\\demo-eww.gif",
+        "filename": "demo-eww.gif",
+        "size_bytes": 188295,
+        "modified_time": "Tue Nov 11 00:43:46 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\dionysus\\assets\\demo-eww.png",
+        "filename": "demo-eww.png",
+        "size_bytes": 117170,
+        "modified_time": "Tue Nov 11 00:43:46 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\dionysus\\assets\\demo-firefox.png",
+        "filename": "demo-firefox.png",
+        "size_bytes": 55045,
+        "modified_time": "Tue Nov 11 00:43:46 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\dionysus\\assets\\demo-hypr-2.gif",
+        "filename": "demo-hypr-2.gif",
+        "size_bytes": 1607537,
+        "modified_time": "Tue Nov 11 00:43:46 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\dionysus\\assets\\demo-hypr.gif",
+        "filename": "demo-hypr.gif",
+        "size_bytes": 188295,
+        "modified_time": "Tue Nov 11 00:43:46 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\dionysus\\assets\\demo-neofetch.gif",
+        "filename": "demo-neofetch.gif",
+        "size_bytes": 482383,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\dionysus\\assets\\demo-neofetch.png",
+        "filename": "demo-neofetch.png",
+        "size_bytes": 15459,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\dionysus\\assets\\demo-rofi-2.png",
+        "filename": "demo-rofi-2.png",
+        "size_bytes": 346979,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\dionysus\\assets\\demo-rofi.png",
+        "filename": "demo-rofi.png",
+        "size_bytes": 297370,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\dionysus\\assets\\demo-waybar-2.png",
+        "filename": "demo-waybar-2.png",
+        "size_bytes": 12428,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\dionysus\\assets\\demo-waybar-2_1.png",
+        "filename": "demo-waybar-2_1.png",
+        "size_bytes": 21441,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\dionysus\\assets\\demo-waybar.png",
+        "filename": "demo-waybar.png",
+        "size_bytes": 30676,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\dionysus\\assets\\demo.gif",
+        "filename": "demo.gif",
+        "size_bytes": 6130291,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\dionysus\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\dionysus\\dotfiles\\hypr\\wallpapers\\bg_wallpaper.png",
+        "filename": "bg_wallpaper.png",
+        "size_bytes": 1294575,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\dionysus\\dotfiles\\hypr\\wallpapers"
+    },
+    {
+        "path": ".\\vault\\git_resources\\dionysus\\dotfiles\\hypr\\wallpapers\\black.png",
+        "filename": "black.png",
+        "size_bytes": 5012,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\dionysus\\dotfiles\\hypr\\wallpapers"
+    },
+    {
+        "path": ".\\vault\\git_resources\\dionysus\\dotfiles\\rofi\\image.png",
+        "filename": "image.png",
+        "size_bytes": 2253782,
+        "modified_time": "Tue Nov 11 00:43:47 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\dionysus\\dotfiles\\rofi"
+    },
+    {
+        "path": ".\\vault\\git_resources\\graphiti\\examples\\langgraph-agent\\tinybirds-jess.png",
+        "filename": "tinybirds-jess.png",
+        "size_bytes": 246122,
+        "modified_time": "Thu Nov  6 17:30:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\graphiti\\examples\\langgraph-agent"
+    },
+    {
+        "path": ".\\vault\\git_resources\\graphiti\\images\\arxiv-screenshot.png",
+        "filename": "arxiv-screenshot.png",
+        "size_bytes": 535574,
+        "modified_time": "Thu Nov  6 17:30:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\graphiti\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\graphiti\\images\\graphiti-graph-intro.gif",
+        "filename": "graphiti-graph-intro.gif",
+        "size_bytes": 173365,
+        "modified_time": "Thu Nov  6 17:30:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\graphiti\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\graphiti\\images\\graphiti-intro-slides-stock-2.gif",
+        "filename": "graphiti-intro-slides-stock-2.gif",
+        "size_bytes": 756899,
+        "modified_time": "Thu Nov  6 17:30:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\graphiti\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\mcp-vault\\grok-mcp\\node_modules\\zod-to-json-schema\\.github\\CR_logotype-full-color.png",
+        "filename": "CR_logotype-full-color.png",
+        "size_bytes": 11047,
+        "modified_time": "Fri Nov  7 01:29:08 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\mcp-vault\\grok-mcp\\node_modules\\zod-to-json-schema\\.github"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\moondev.png",
+        "filename": "moondev.png",
+        "size_bytes": 342439,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\charts\\BTC_15m_1737367731.png",
+        "filename": "BTC_15m_1737367731.png",
+        "size_bytes": 48238,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\charts"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\13893.png",
+        "filename": "13893.png",
+        "size_bytes": 765140,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\19740.png",
+        "filename": "19740.png",
+        "size_bytes": 756652,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\24049.png",
+        "filename": "24049.png",
+        "size_bytes": 873765,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\42451.png",
+        "filename": "42451.png",
+        "size_bytes": 768845,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\51648.png",
+        "filename": "51648.png",
+        "size_bytes": 679750,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\60650.png",
+        "filename": "60650.png",
+        "size_bytes": 736742,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\62990.png",
+        "filename": "62990.png",
+        "size_bytes": 698047,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\67376.png",
+        "filename": "67376.png",
+        "size_bytes": 697841,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\76920.png",
+        "filename": "76920.png",
+        "size_bytes": 693068,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\82591.png",
+        "filename": "82591.png",
+        "size_bytes": 768000,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\97268.png",
+        "filename": "97268.png",
+        "size_bytes": 698959,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_095304_44b10b55.png",
+        "filename": "ai_chat_screenshot_20250203_095304_44b10b55.png",
+        "size_bytes": 25976,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_095426_8e4dad4f.png",
+        "filename": "ai_chat_screenshot_20250203_095426_8e4dad4f.png",
+        "size_bytes": 25957,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_095548_a4d24a00.png",
+        "filename": "ai_chat_screenshot_20250203_095548_a4d24a00.png",
+        "size_bytes": 25821,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_100017_55c6e16a.png",
+        "filename": "ai_chat_screenshot_20250203_100017_55c6e16a.png",
+        "size_bytes": 141230,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_100138_c26d05ce.png",
+        "filename": "ai_chat_screenshot_20250203_100138_c26d05ce.png",
+        "size_bytes": 142867,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_100300_1e126b7e.png",
+        "filename": "ai_chat_screenshot_20250203_100300_1e126b7e.png",
+        "size_bytes": 140587,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_100425_7cc4f0a0.png",
+        "filename": "ai_chat_screenshot_20250203_100425_7cc4f0a0.png",
+        "size_bytes": 140127,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_100546_07b15af2.png",
+        "filename": "ai_chat_screenshot_20250203_100546_07b15af2.png",
+        "size_bytes": 127856,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_100708_070c5d49.png",
+        "filename": "ai_chat_screenshot_20250203_100708_070c5d49.png",
+        "size_bytes": 164845,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_102048_abb1a712.png",
+        "filename": "ai_chat_screenshot_20250203_102048_abb1a712.png",
+        "size_bytes": 148463,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_102501_55493e13.png",
+        "filename": "ai_chat_screenshot_20250203_102501_55493e13.png",
+        "size_bytes": 146214,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_102640_657e0e2c.png",
+        "filename": "ai_chat_screenshot_20250203_102640_657e0e2c.png",
+        "size_bytes": 132516,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_104019_2f31448e.png",
+        "filename": "ai_chat_screenshot_20250203_104019_2f31448e.png",
+        "size_bytes": 154704,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_104434_1d7231b9.png",
+        "filename": "ai_chat_screenshot_20250203_104434_1d7231b9.png",
+        "size_bytes": 140887,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_104611_00b24f5f.png",
+        "filename": "ai_chat_screenshot_20250203_104611_00b24f5f.png",
+        "size_bytes": 133764,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_104748_088b61ae.png",
+        "filename": "ai_chat_screenshot_20250203_104748_088b61ae.png",
+        "size_bytes": 149975,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_105451_b19a27c7.png",
+        "filename": "ai_chat_screenshot_20250203_105451_b19a27c7.png",
+        "size_bytes": 113996,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_105930_7d088e04.png",
+        "filename": "ai_chat_screenshot_20250203_105930_7d088e04.png",
+        "size_bytes": 117942,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_110137_8749192f.png",
+        "filename": "ai_chat_screenshot_20250203_110137_8749192f.png",
+        "size_bytes": 97438,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_110315_07ec67ce.png",
+        "filename": "ai_chat_screenshot_20250203_110315_07ec67ce.png",
+        "size_bytes": 92572,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_110451_1eadb6e7.png",
+        "filename": "ai_chat_screenshot_20250203_110451_1eadb6e7.png",
+        "size_bytes": 110198,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_113232_35de4a87.png",
+        "filename": "ai_chat_screenshot_20250203_113232_35de4a87.png",
+        "size_bytes": 104384,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_113756_52b3df6d.png",
+        "filename": "ai_chat_screenshot_20250203_113756_52b3df6d.png",
+        "size_bytes": 97505,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250203_114517_17499683.png",
+        "filename": "ai_chat_screenshot_20250203_114517_17499683.png",
+        "size_bytes": 205774,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_072032_6c8c5688.png",
+        "filename": "ai_chat_screenshot_20250204_072032_6c8c5688.png",
+        "size_bytes": 231259,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_072332_12542242.png",
+        "filename": "ai_chat_screenshot_20250204_072332_12542242.png",
+        "size_bytes": 227540,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_074046_e030b365.png",
+        "filename": "ai_chat_screenshot_20250204_074046_e030b365.png",
+        "size_bytes": 227627,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_075254_a1b52ed9.png",
+        "filename": "ai_chat_screenshot_20250204_075254_a1b52ed9.png",
+        "size_bytes": 146505,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_075433_7e801d23.png",
+        "filename": "ai_chat_screenshot_20250204_075433_7e801d23.png",
+        "size_bytes": 149036,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_075610_89a3c12b.png",
+        "filename": "ai_chat_screenshot_20250204_075610_89a3c12b.png",
+        "size_bytes": 157189,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_075914_b8dade35.png",
+        "filename": "ai_chat_screenshot_20250204_075914_b8dade35.png",
+        "size_bytes": 151649,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_080051_f464f7f7.png",
+        "filename": "ai_chat_screenshot_20250204_080051_f464f7f7.png",
+        "size_bytes": 146573,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_080229_52e7301d.png",
+        "filename": "ai_chat_screenshot_20250204_080229_52e7301d.png",
+        "size_bytes": 161863,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_080407_97458025.png",
+        "filename": "ai_chat_screenshot_20250204_080407_97458025.png",
+        "size_bytes": 155643,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_080544_c8221a19.png",
+        "filename": "ai_chat_screenshot_20250204_080544_c8221a19.png",
+        "size_bytes": 148818,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_100544_0bc62d98.png",
+        "filename": "ai_chat_screenshot_20250204_100544_0bc62d98.png",
+        "size_bytes": 220127,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_100718_ae84de8c.png",
+        "filename": "ai_chat_screenshot_20250204_100718_ae84de8c.png",
+        "size_bytes": 140349,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_100926_1b052c71.png",
+        "filename": "ai_chat_screenshot_20250204_100926_1b052c71.png",
+        "size_bytes": 167090,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_101105_961cd27a.png",
+        "filename": "ai_chat_screenshot_20250204_101105_961cd27a.png",
+        "size_bytes": 155956,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_101242_54f403ce.png",
+        "filename": "ai_chat_screenshot_20250204_101242_54f403ce.png",
+        "size_bytes": 152182,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_101419_7b9bec7b.png",
+        "filename": "ai_chat_screenshot_20250204_101419_7b9bec7b.png",
+        "size_bytes": 157616,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_101656_c8c36fb7.png",
+        "filename": "ai_chat_screenshot_20250204_101656_c8c36fb7.png",
+        "size_bytes": 161323,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_101915_16af9605.png",
+        "filename": "ai_chat_screenshot_20250204_101915_16af9605.png",
+        "size_bytes": 161963,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_102052_c58e6186.png",
+        "filename": "ai_chat_screenshot_20250204_102052_c58e6186.png",
+        "size_bytes": 157555,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_102229_cf7fb8a0.png",
+        "filename": "ai_chat_screenshot_20250204_102229_cf7fb8a0.png",
+        "size_bytes": 156393,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_102447_8ab2125e.png",
+        "filename": "ai_chat_screenshot_20250204_102447_8ab2125e.png",
+        "size_bytes": 153884,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_102626_a253f75c.png",
+        "filename": "ai_chat_screenshot_20250204_102626_a253f75c.png",
+        "size_bytes": 158779,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_102804_cabbad01.png",
+        "filename": "ai_chat_screenshot_20250204_102804_cabbad01.png",
+        "size_bytes": 150732,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_102946_f16bbe12.png",
+        "filename": "ai_chat_screenshot_20250204_102946_f16bbe12.png",
+        "size_bytes": 193605,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_103145_bcd0fd82.png",
+        "filename": "ai_chat_screenshot_20250204_103145_bcd0fd82.png",
+        "size_bytes": 149531,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_103323_dcffa86b.png",
+        "filename": "ai_chat_screenshot_20250204_103323_dcffa86b.png",
+        "size_bytes": 154595,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_103500_22e71af0.png",
+        "filename": "ai_chat_screenshot_20250204_103500_22e71af0.png",
+        "size_bytes": 152079,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_103638_5ce2c893.png",
+        "filename": "ai_chat_screenshot_20250204_103638_5ce2c893.png",
+        "size_bytes": 157919,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_103819_9b2b7a03.png",
+        "filename": "ai_chat_screenshot_20250204_103819_9b2b7a03.png",
+        "size_bytes": 140553,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_103957_ac3efccc.png",
+        "filename": "ai_chat_screenshot_20250204_103957_ac3efccc.png",
+        "size_bytes": 159691,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_104134_89be8068.png",
+        "filename": "ai_chat_screenshot_20250204_104134_89be8068.png",
+        "size_bytes": 161722,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_104313_1ce04a44.png",
+        "filename": "ai_chat_screenshot_20250204_104313_1ce04a44.png",
+        "size_bytes": 155525,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_104453_2333f4b1.png",
+        "filename": "ai_chat_screenshot_20250204_104453_2333f4b1.png",
+        "size_bytes": 155693,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_104630_401510e7.png",
+        "filename": "ai_chat_screenshot_20250204_104630_401510e7.png",
+        "size_bytes": 135481,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_104922_7de80916.png",
+        "filename": "ai_chat_screenshot_20250204_104922_7de80916.png",
+        "size_bytes": 150797,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_105059_429919d2.png",
+        "filename": "ai_chat_screenshot_20250204_105059_429919d2.png",
+        "size_bytes": 145314,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_105238_3f76c908.png",
+        "filename": "ai_chat_screenshot_20250204_105238_3f76c908.png",
+        "size_bytes": 161530,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_105425_dc94ff6b.png",
+        "filename": "ai_chat_screenshot_20250204_105425_dc94ff6b.png",
+        "size_bytes": 165203,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_105601_deb3c5ce.png",
+        "filename": "ai_chat_screenshot_20250204_105601_deb3c5ce.png",
+        "size_bytes": 170521,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_105738_2070b336.png",
+        "filename": "ai_chat_screenshot_20250204_105738_2070b336.png",
+        "size_bytes": 160796,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_105915_447a597f.png",
+        "filename": "ai_chat_screenshot_20250204_105915_447a597f.png",
+        "size_bytes": 167934,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_110055_09b090a0.png",
+        "filename": "ai_chat_screenshot_20250204_110055_09b090a0.png",
+        "size_bytes": 139078,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_110232_244d0c99.png",
+        "filename": "ai_chat_screenshot_20250204_110232_244d0c99.png",
+        "size_bytes": 165957,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_110409_d6b65cb1.png",
+        "filename": "ai_chat_screenshot_20250204_110409_d6b65cb1.png",
+        "size_bytes": 164818,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_110545_827de36f.png",
+        "filename": "ai_chat_screenshot_20250204_110545_827de36f.png",
+        "size_bytes": 162902,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_110722_4eb70719.png",
+        "filename": "ai_chat_screenshot_20250204_110722_4eb70719.png",
+        "size_bytes": 168320,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_110859_d79668f4.png",
+        "filename": "ai_chat_screenshot_20250204_110859_d79668f4.png",
+        "size_bytes": 156215,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_111037_f48e4912.png",
+        "filename": "ai_chat_screenshot_20250204_111037_f48e4912.png",
+        "size_bytes": 174691,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_111343_52f39513.png",
+        "filename": "ai_chat_screenshot_20250204_111343_52f39513.png",
+        "size_bytes": 171308,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_111520_1951eb55.png",
+        "filename": "ai_chat_screenshot_20250204_111520_1951eb55.png",
+        "size_bytes": 179362,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_111710_ad1963f7.png",
+        "filename": "ai_chat_screenshot_20250204_111710_ad1963f7.png",
+        "size_bytes": 148430,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_111847_285e3e2d.png",
+        "filename": "ai_chat_screenshot_20250204_111847_285e3e2d.png",
+        "size_bytes": 147791,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_112026_7877c5dc.png",
+        "filename": "ai_chat_screenshot_20250204_112026_7877c5dc.png",
+        "size_bytes": 150709,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_112207_f568df9e.png",
+        "filename": "ai_chat_screenshot_20250204_112207_f568df9e.png",
+        "size_bytes": 154422,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_112630_684b017f.png",
+        "filename": "ai_chat_screenshot_20250204_112630_684b017f.png",
+        "size_bytes": 222381,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_114623_13923d99.png",
+        "filename": "ai_chat_screenshot_20250204_114623_13923d99.png",
+        "size_bytes": 171620,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_114800_e44a2831.png",
+        "filename": "ai_chat_screenshot_20250204_114800_e44a2831.png",
+        "size_bytes": 157356,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_114938_78cde168.png",
+        "filename": "ai_chat_screenshot_20250204_114938_78cde168.png",
+        "size_bytes": 178584,
+        "modified_time": "Sun Oct 26 15:47:25 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_115115_1e22c9f8.png",
+        "filename": "ai_chat_screenshot_20250204_115115_1e22c9f8.png",
+        "size_bytes": 173713,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_115251_2727284f.png",
+        "filename": "ai_chat_screenshot_20250204_115251_2727284f.png",
+        "size_bytes": 180392,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_115429_9aa5075f.png",
+        "filename": "ai_chat_screenshot_20250204_115429_9aa5075f.png",
+        "size_bytes": 182333,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\ai_chat_screenshot_20250204_115605_385fb0f2.png",
+        "filename": "ai_chat_screenshot_20250204_115605_385fb0f2.png",
+        "size_bytes": 170045,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-104221.png",
+        "filename": "execution_20250201-104221.png",
+        "size_bytes": 382440,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-104632.png",
+        "filename": "execution_20250201-104632.png",
+        "size_bytes": 34785,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-105143.png",
+        "filename": "execution_20250201-105143.png",
+        "size_bytes": 949893,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-110122.png",
+        "filename": "execution_20250201-110122.png",
+        "size_bytes": 765440,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-110643.png",
+        "filename": "execution_20250201-110643.png",
+        "size_bytes": 4719466,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-111846.png",
+        "filename": "execution_20250201-111846.png",
+        "size_bytes": 2362624,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-112104.png",
+        "filename": "execution_20250201-112104.png",
+        "size_bytes": 2542920,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-112346.png",
+        "filename": "execution_20250201-112346.png",
+        "size_bytes": 2565113,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-112532.png",
+        "filename": "execution_20250201-112532.png",
+        "size_bytes": 2551525,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-113014.png",
+        "filename": "execution_20250201-113014.png",
+        "size_bytes": 2748823,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-113217.png",
+        "filename": "execution_20250201-113217.png",
+        "size_bytes": 2838537,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-113638.png",
+        "filename": "execution_20250201-113638.png",
+        "size_bytes": 2873319,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-113818.png",
+        "filename": "execution_20250201-113818.png",
+        "size_bytes": 2764615,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-114039.png",
+        "filename": "execution_20250201-114039.png",
+        "size_bytes": 2807885,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-114534.png",
+        "filename": "execution_20250201-114534.png",
+        "size_bytes": 2644459,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-114915.png",
+        "filename": "execution_20250201-114915.png",
+        "size_bytes": 2547294,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-114942.png",
+        "filename": "execution_20250201-114942.png",
+        "size_bytes": 2775045,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-115509.png",
+        "filename": "execution_20250201-115509.png",
+        "size_bytes": 902397,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\execution_20250201-120337.png",
+        "filename": "execution_20250201-120337.png",
+        "size_bytes": 769255,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\moondev_code_execution_20250201_120558_075877_46c7fdb5.png",
+        "filename": "moondev_code_execution_20250201_120558_075877_46c7fdb5.png",
+        "size_bytes": 693965,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\screenshot_20250201-100155.png",
+        "filename": "screenshot_20250201-100155.png",
+        "size_bytes": 9008336,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\screenshot_20250201-100301.png",
+        "filename": "screenshot_20250201-100301.png",
+        "size_bytes": 1483295,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots\\screenshot_20250201-100329.png",
+        "filename": "screenshot_20250201-100329.png",
+        "size_bytes": 1436496,
+        "modified_time": "Sun Oct 26 15:47:26 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\code_runner\\screenshots"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails\\thumbnail_20250715_094242_1.png",
+        "filename": "thumbnail_20250715_094242_1.png",
+        "size_bytes": 2310453,
+        "modified_time": "Sun Oct 26 15:47:28 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails\\thumbnail_20250715_094303_2.png",
+        "filename": "thumbnail_20250715_094303_2.png",
+        "size_bytes": 3025043,
+        "modified_time": "Sun Oct 26 15:47:28 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails\\thumbnail_20250715_094326_3.png",
+        "filename": "thumbnail_20250715_094326_3.png",
+        "size_bytes": 2801465,
+        "modified_time": "Sun Oct 26 15:47:28 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails\\thumbnail_20250715_095037_1.png",
+        "filename": "thumbnail_20250715_095037_1.png",
+        "size_bytes": 2492306,
+        "modified_time": "Sun Oct 26 15:47:28 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails\\thumbnail_20250715_095102_2.png",
+        "filename": "thumbnail_20250715_095102_2.png",
+        "size_bytes": 2998035,
+        "modified_time": "Sun Oct 26 15:47:28 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails\\thumbnail_20250715_095124_3.png",
+        "filename": "thumbnail_20250715_095124_3.png",
+        "size_bytes": 2635000,
+        "modified_time": "Sun Oct 26 15:47:28 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\stream_thumbnails"
+    },
+    {
+        "path": ".\\vault\\git_resources\\moon-dev-ai-agents\\src\\data\\videos\\youtube_materials\\EaMh2ILYJS4\\EaMh2ILYJS4_thumbnail.jpg",
+        "filename": "EaMh2ILYJS4_thumbnail.jpg",
+        "size_bytes": 33314,
+        "modified_time": "Sun Oct 26 15:47:28 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\moon-dev-ai-agents\\src\\data\\videos\\youtube_materials\\EaMh2ILYJS4"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\app\\assets\\background.png",
+        "filename": "background.png",
+        "size_bytes": 15741,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\app\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\app\\assets\\setup.bmp",
+        "filename": "setup.bmp",
+        "size_bytes": 77418,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\app\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\app\\darwin\\Ollama.app\\Contents\\Resources\\ollama.png",
+        "filename": "ollama.png",
+        "size_bytes": 374,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\app\\darwin\\Ollama.app\\Contents\\Resources"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\app\\darwin\\Ollama.app\\Contents\\Resources\\ollama@2x.png",
+        "filename": "ollama@2x.png",
+        "size_bytes": 661,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\app\\darwin\\Ollama.app\\Contents\\Resources"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\app\\darwin\\Ollama.app\\Contents\\Resources\\ollamaDark.png",
+        "filename": "ollamaDark.png",
+        "size_bytes": 363,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\app\\darwin\\Ollama.app\\Contents\\Resources"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\app\\darwin\\Ollama.app\\Contents\\Resources\\ollamaDark@2x.png",
+        "filename": "ollamaDark@2x.png",
+        "size_bytes": 745,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\app\\darwin\\Ollama.app\\Contents\\Resources"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\app\\darwin\\Ollama.app\\Contents\\Resources\\ollamaUpdate.png",
+        "filename": "ollamaUpdate.png",
+        "size_bytes": 381,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\app\\darwin\\Ollama.app\\Contents\\Resources"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\app\\darwin\\Ollama.app\\Contents\\Resources\\ollamaUpdate@2x.png",
+        "filename": "ollamaUpdate@2x.png",
+        "size_bytes": 648,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\app\\darwin\\Ollama.app\\Contents\\Resources"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\app\\darwin\\Ollama.app\\Contents\\Resources\\ollamaUpdateDark.png",
+        "filename": "ollamaUpdateDark.png",
+        "size_bytes": 412,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\app\\darwin\\Ollama.app\\Contents\\Resources"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\app\\darwin\\Ollama.app\\Contents\\Resources\\ollamaUpdateDark@2x.png",
+        "filename": "ollamaUpdateDark@2x.png",
+        "size_bytes": 771,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\app\\darwin\\Ollama.app\\Contents\\Resources"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\app\\ui\\app\\public\\hello.png",
+        "filename": "hello.png",
+        "size_bytes": 21771,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\app\\ui\\app\\public"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\ollama.png",
+        "filename": "ollama.png",
+        "size_bytes": 7487,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\cline-mcp.png",
+        "filename": "cline-mcp.png",
+        "size_bytes": 569400,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\cline-settings.png",
+        "filename": "cline-settings.png",
+        "size_bytes": 77680,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\codex-mcp.png",
+        "filename": "codex-mcp.png",
+        "size_bytes": 970636,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\favicon.png",
+        "filename": "favicon.png",
+        "size_bytes": 890,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\goose-cli.png",
+        "filename": "goose-cli.png",
+        "size_bytes": 163778,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\goose-mcp-1.png",
+        "filename": "goose-mcp-1.png",
+        "size_bytes": 897733,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\goose-mcp-2.png",
+        "filename": "goose-mcp-2.png",
+        "size_bytes": 932479,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\goose-settings.png",
+        "filename": "goose-settings.png",
+        "size_bytes": 111667,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\intellij-chat-sidebar.png",
+        "filename": "intellij-chat-sidebar.png",
+        "size_bytes": 70915,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\intellij-current-model.png",
+        "filename": "intellij-current-model.png",
+        "size_bytes": 108749,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\intellij-local-models.png",
+        "filename": "intellij-local-models.png",
+        "size_bytes": 80981,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\logo-dark.png",
+        "filename": "logo-dark.png",
+        "size_bytes": 3377,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\logo.png",
+        "filename": "logo.png",
+        "size_bytes": 2765,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\n8n-chat-model.png",
+        "filename": "n8n-chat-model.png",
+        "size_bytes": 88920,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\n8n-chat-node.png",
+        "filename": "n8n-chat-node.png",
+        "size_bytes": 71333,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\n8n-credential-creation.png",
+        "filename": "n8n-credential-creation.png",
+        "size_bytes": 43948,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\n8n-models.png",
+        "filename": "n8n-models.png",
+        "size_bytes": 132903,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\n8n-ollama-form.png",
+        "filename": "n8n-ollama-form.png",
+        "size_bytes": 53813,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\ollama-keys.png",
+        "filename": "ollama-keys.png",
+        "size_bytes": 154049,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\ollama-settings.png",
+        "filename": "ollama-settings.png",
+        "size_bytes": 3740227,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\signup.png",
+        "filename": "signup.png",
+        "size_bytes": 81360,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\vscode-model-options.png",
+        "filename": "vscode-model-options.png",
+        "size_bytes": 78488,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\vscode-models.png",
+        "filename": "vscode-models.png",
+        "size_bytes": 56791,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\vscode-sidebar.png",
+        "filename": "vscode-sidebar.png",
+        "size_bytes": 25766,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\welcome.png",
+        "filename": "welcome.png",
+        "size_bytes": 238659,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\xcode-chat-icon.png",
+        "filename": "xcode-chat-icon.png",
+        "size_bytes": 190485,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\xcode-intelligence-window.png",
+        "filename": "xcode-intelligence-window.png",
+        "size_bytes": 186678,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\xcode-locally-hosted.png",
+        "filename": "xcode-locally-hosted.png",
+        "size_bytes": 149175,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\zed-ollama-dropdown.png",
+        "filename": "zed-ollama-dropdown.png",
+        "size_bytes": 39329,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\docs\\images\\zed-settings.png",
+        "filename": "zed-settings.png",
+        "size_bytes": 58513,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\docs\\images"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\macapp\\assets\\iconDarkTemplate.png",
+        "filename": "iconDarkTemplate.png",
+        "size_bytes": 402,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\macapp\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\macapp\\assets\\iconDarkTemplate@2x.png",
+        "filename": "iconDarkTemplate@2x.png",
+        "size_bytes": 741,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\macapp\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\macapp\\assets\\iconDarkUpdateTemplate.png",
+        "filename": "iconDarkUpdateTemplate.png",
+        "size_bytes": 440,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\macapp\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\macapp\\assets\\iconDarkUpdateTemplate@2x.png",
+        "filename": "iconDarkUpdateTemplate@2x.png",
+        "size_bytes": 763,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\macapp\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\macapp\\assets\\iconTemplate.png",
+        "filename": "iconTemplate.png",
+        "size_bytes": 447,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\macapp\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\macapp\\assets\\iconTemplate@2x.png",
+        "filename": "iconTemplate@2x.png",
+        "size_bytes": 891,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\macapp\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\macapp\\assets\\iconUpdateTemplate.png",
+        "filename": "iconUpdateTemplate.png",
+        "size_bytes": 443,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\macapp\\assets"
+    },
+    {
+        "path": ".\\vault\\git_resources\\ollama\\macapp\\assets\\iconUpdateTemplate@2x.png",
+        "filename": "iconUpdateTemplate@2x.png",
+        "size_bytes": 844,
+        "modified_time": "Tue Nov 11 14:00:57 2025",
+        "ocr_text": "",
+        "confidence": 0.0,
+        "subdir": "vault\\git_resources\\ollama\\macapp\\assets"
+    }
+]

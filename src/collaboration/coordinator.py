@@ -7,12 +7,18 @@ import logging
 from datetime import datetime
 from typing import List, Optional
 
-from src.core.message_bus import MessageBus, MessagePriority
 from src.agents.claude_agent import ClaudeAgent
 from src.agents.grok_agent import GrokAgent
-from src.collaboration.message_models import CollaborationMessage, MessageType, AgentRole, FinalPlan, ConsensusSignal
 from src.collaboration.consensus import ConsensusDetector
+from src.collaboration.message_models import (
+    AgentRole,
+    CollaborationMessage,
+    ConsensusSignal,
+    FinalPlan,
+    MessageType,
+)
 from src.collaboration.output_generator import OutputGenerator
+from src.core.message_bus import MessageBus, MessagePriority
 
 logger = logging.getLogger(__name__)
 

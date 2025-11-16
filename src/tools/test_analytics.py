@@ -3,8 +3,8 @@
 Simple test script for analytics tools.
 """
 
-import sys
 import asyncio
+import sys
 from pathlib import Path
 
 # Add src to path

@@ -5,12 +5,13 @@ Implements safety measures against godmode activation from vault content
 """
 
 import logging
-import time
-import psutil
 import threading
-from typing import Dict, List, Optional, Callable
+import time
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from typing import Callable, Dict, List, Optional
+
+import psutil
 
 logger = logging.getLogger(__name__)
 

@@ -1,0 +1,56 @@
+{
+  "session_id": "pantheon_20251114_084738",
+  "task": "implement quicksort",
+  "duration_seconds": 301.6810517311096,
+  "iterations": 0,
+  "tool_executions": [],
+  "api_calls": [],
+  "errors": [
+    {
+      "agent": "pantheon_coordinator",
+      "error": "'Message' object has no attribute 'get'",
+      "timestamp": 1763106461.6590884
+    }
+  ],
+  "swarm_mode": true,
+  "swarm": {
+    "agent_states": {
+      "observer": "stopped",
+      "coordinator_learner": "started",
+      "coordinator": "started",
+      "reasoner": "started",
+      "actor": "started",
+      "validator": "stopped",
+      "hierarchical_memory": "started",
+      "learner": "idle",
+      "executor": "started",
+      "analyzer": "started",
+      "improver": "started",
+      "character_analyzer": "started",
+      "story_generator": "started",
+      "visionary": "started",
+      "love_agent": "started",
+      "documentation_agent": "started",
+      "maf_coordinator": "started",
+      "pantheon_coordinator": "stopped"
+    },
+    "agent_message_counts": {},
+    "agent_errors": {
+      "pantheon_coordinator": [
+        "'Message' object has no attribute 'get'"
+      ]
+    },
+    "total_handoffs": 0,
+    "handoff_latencies": [],
+    "message_count": 0,
+    "avg_handoff_latency": 0.0,
+    "max_handoff_latency": 0.0,
+    "coordinator_decisions": 0,
+    "task_decompositions": 0,
+    "confirmations_requested": 0,
+    "confirmations_approved": 0,
+    "heartbeats_received": 120,
+    "deadlocks_detected": 0,
+    "agent_restarts": 0
+  }
+}

@@ -4,13 +4,15 @@ Simple graph: Planner -> Coder -> Tester (with retry loop on failure).
 State shared via dict; integrates with MessageBus for events.
 """
 
-from typing import Dict, Any, TypedDict, Annotated
-from langgraph.graph import StateGraph, END
-from langgraph.graph.message import add_messages
-import operator
-from src.core.message_bus import MessageBus  # Existing bus
-from src.core.action_executor import ActionExecutor  # For coder actions
 import logging
+import operator
+from typing import Annotated, Any, Dict, TypedDict
+
+from langgraph.graph import END, StateGraph
+from langgraph.graph.message import add_messages
+
+from src.core.action_executor import ActionExecutor  # For coder actions
+from src.core.message_bus import MessageBus  # Existing bus
 
 logger = logging.getLogger(__name__)
 

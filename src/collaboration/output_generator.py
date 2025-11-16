@@ -2,13 +2,17 @@
 Output generator for synthesizing and saving collaboration results.
 """
 
+import json
+import logging
 from datetime import datetime
 from pathlib import Path
 from typing import List
-import logging
-import json
 
-from src.collaboration.message_models import CollaborationMessage, ConsensusSignal, FinalPlan
+from src.collaboration.message_models import (
+    CollaborationMessage,
+    ConsensusSignal,
+    FinalPlan,
+)
 
 logger = logging.getLogger(__name__)
 

@@ -9,16 +9,16 @@ Author: Claude Code
 Date: 2025-11-08
 """
 
-import asyncio
 import ast
+import asyncio
 import logging
-from typing import Dict, Any, Optional
 from datetime import datetime
+from typing import Any, Dict, Optional
 
-from ..core.base_agent import BaseAgent, AgentState
-from ..core.message_bus import MessageBus, Message, MessagePriority
-from ..observability.session_logger import SessionLogger
 from .. import config
+from ..core.base_agent import AgentState, BaseAgent
+from ..core.message_bus import Message, MessageBus, MessagePriority
+from ..observability.session_logger import SessionLogger
 
 
 class WebDevAgent(BaseAgent):

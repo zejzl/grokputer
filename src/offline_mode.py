@@ -3,11 +3,11 @@ Offline Mode for Grokputer
 Uses cached responses and local knowledge base when API is unavailable.
 """
 
+import hashlib
 import json
 import logging
 from pathlib import Path
 from typing import Dict, List, Optional
-import hashlib
 
 logger = logging.getLogger(__name__)
 

@@ -1,14 +1,15 @@
 # Lightweight Encryption Utilities
 # Fast encryption for sensitive data without performance impact
 
-import os
 import base64
 import hashlib
+import logging
+import os
 from typing import Optional, Union
+
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +40,8 @@ class FastEncryptor:
             else:
                 # Generate key from system info (not secure, but fast)
                 import platform
-                uname_info = platform.uname() if hasattr(platform, 'uname') else os.name
+
+                uname_info = platform.uname() if hasattr(platform, "uname") else os.name
                 system_info = f"{uname_info}{os.getpid()}{os.getcwd()}".encode()
                 key = self._derive_key(system_info, self.salt)
 

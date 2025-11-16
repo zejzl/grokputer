@@ -3,11 +3,12 @@ Persistent Memory Manager for Grokputer.
 Handles storage and retrieval of agent memories using SQLite.
 """
 
-import sqlite3
 import json
-from typing import Dict, Any, List
+import sqlite3
 from pathlib import Path
-from ..interfaces import MemoryConfig, MemoryBackend
+from typing import Any, Dict, List
+
+from ..interfaces import MemoryBackend, MemoryConfig
 
 
 class PersistentMemoryManager(MemoryBackend):

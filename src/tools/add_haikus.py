@@ -1,6 +1,7 @@
 import sqlite3
-from db_config import get_connection, QUERIES
 from datetime import datetime
+
+from db_config import QUERIES, get_connection
 
 # Add haikus table if not exists
 conn = get_connection()

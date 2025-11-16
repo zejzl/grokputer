@@ -5,9 +5,9 @@ Prevents harmful learning patterns and ensures responsible AI development
 """
 
 import logging
-from typing import Dict, List, Set, Optional, Tuple
-from datetime import datetime
 import re
+from datetime import datetime
+from typing import Dict, List, Optional, Set, Tuple
 
 logger = logging.getLogger(__name__)
 

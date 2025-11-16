@@ -12,15 +12,15 @@ Capabilities:
 
 import asyncio
 import logging
-from typing import Dict, List, Optional, Any
-from datetime import datetime, timedelta
-from collections import defaultdict, deque
-from dataclasses import dataclass, asdict
 import time
+from collections import defaultdict, deque
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
 
-from src.core.base_agent import BaseAgent
-from src.core.message_bus import MessageBus, Message, MessagePriority
 from src.cognitive.agent_integration import CognitiveAnalyzerMixin
+from src.core.base_agent import BaseAgent
+from src.core.message_bus import Message, MessageBus, MessagePriority
 from src.tools.alerts import get_haiku_alerts
 
 logger = logging.getLogger(__name__)
@@ -209,7 +209,7 @@ class AnalyzerAgent(CognitiveAnalyzerMixin, BaseAgent):
                 await self.alerts.trigger_manual_alert(
                     task_name=f"Task Failure: {task_type}",
                     task_type=task_type,
-                    task_id=content.get("task_id", f"{task_type}_{int(time.time())}")
+                    task_id=content.get("task_id", f"{task_type}_{int(time.time())}"),
                 )
                 self.stats["alerts_triggered"] += 1
             except Exception as e:

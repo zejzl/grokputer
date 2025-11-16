@@ -1,0 +1,10 @@
+1413 src/agents/coordinator.py
+853 src/tools.py
+834 src/multimodal_reasoning_engine.py
+788 src/cognitive/distributed_orchestrator.py
+771 src/core/message_bus.py
+764 src/vision_processor.py
+727 src/memory/hierarchical_memory.py
+680 src/interfaces/natural_language_interface.py
+672 src/agents/learner.py
+621 src/audio_processor.py

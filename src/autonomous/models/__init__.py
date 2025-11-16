@@ -2,8 +2,8 @@
 Pydantic models for autonomous agent system.
 """
 
-from .findings import Finding, CodeSmell, ScanReport
-from .proposals import Proposal, Alternative, ValidationResult
+from .findings import CodeSmell, Finding, ScanReport
+from .proposals import Alternative, Proposal, ValidationResult
 
 __all__ = [
     "Finding",

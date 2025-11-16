@@ -9,11 +9,11 @@ Note: Requires HRM dependencies (PyTorch, CUDA, etc.) - install from HRM repo if
 
 import asyncio
 import logging
-from typing import Dict, Any, Optional, List
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 from src.core.base_agent import BaseAgent
-from src.core.message_bus import MessageBus, Message, MessagePriority
+from src.core.message_bus import Message, MessageBus, MessagePriority
 
 logger = logging.getLogger(__name__)
 
@@ -21,16 +21,19 @@ logger = logging.getLogger(__name__)
 try:
     # Assuming HRM is cloned to src/external/HRM or similar
     import sys
+
     hrm_path = Path(__file__).parent.parent / "external" / "HRM"
     if hrm_path.exists():
         sys.path.insert(0, str(hrm_path))
         from evaluate import evaluate_model  # Assuming HRM has this
+
         HRM_AVAILABLE = True
     else:
         HRM_AVAILABLE = False
 except ImportError:
     HRM_AVAILABLE = False
     logger.warning("HRM not available - HRM Reasoner will use fallback reasoning")
+
 
 class HRMReasonerAgent(BaseAgent):
     """

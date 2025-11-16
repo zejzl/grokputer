@@ -7,12 +7,12 @@ Integrates Coordinator for delegation, Memory for workflow state.
 
 import asyncio
 import logging
-from typing import Dict, Any, List, Optional
-from enum import Enum
 from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, List, Optional
 
 from src.core.base_agent import BaseAgent
-from src.core.message_bus import MessageBus, Message, MessagePriority
+from src.core.message_bus import Message, MessageBus, MessagePriority
 
 logger = logging.getLogger(__name__)
 

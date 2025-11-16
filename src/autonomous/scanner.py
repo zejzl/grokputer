@@ -4,12 +4,12 @@ CodeScannerAgent - Analyzes code for issues, smells, and improvement opportuniti
 
 import ast
 import re
+import uuid
+from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, Set
-from datetime import datetime
-import uuid
 
-from .models.findings import Finding, CodeSmell, ScanReport
+from .models.findings import CodeSmell, Finding, ScanReport
 
 
 class CodeScannerAgent:

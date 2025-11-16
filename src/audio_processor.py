@@ -10,18 +10,19 @@ Provides comprehensive audio understanding capabilities including:
 """
 
 import asyncio
-import logging
-import numpy as np
-import io
-import wave
 import audioop
+import io
+import json
+import logging
+import math
 import os
-from typing import Dict, Any, List, Optional, Tuple
+import struct
+import wave
 from dataclasses import dataclass, field
 from datetime import datetime
-import json
-import struct
-import math
+from typing import Any, Dict, List, Optional, Tuple
+
+import numpy as np
 
 logger = logging.getLogger(__name__)
 

@@ -354,126 +354,13 @@ infinite_panda_adventure() {
             echo -e "${PURPLE}🐼🎉 PANDA ACHIEVEMENT UNLOCKED: Golden Cycle Milestone! 🎉🐼${NC}"
         fi
 
-        # Cycle completion
-        echo -e "${CYAN}🐼 Cycle $cycle completed! Next bamboo feast in 5 minutes...${NC}"
-        echo -e "${YELLOW}Ctrl+C to exit the panda realm${NC}"
-        echo ""
-
-        # Wait before next cycle (5 minutes)
-        sleep 300
-        ((cycle++))
-    done
-}
-
-# Function for infinite panda adventure mode
-infinite_panda_adventure() {
-    local adventure_quotes=(
-        "🐼 Panda says: 'Time for some bamboo automation!'"
-        "🐼 Panda whispers: 'Let the continuous improvement begin...'"
-        "🐼 Panda thinks: 'More automation = more nap time!'"
-        "🐼 Panda observes: 'Watching the code grow stronger...'"
-        "🐼 Panda meditates: 'Finding inner peace through perfect automation...'"
-        "🐼 Panda discovers: 'Another optimization opportunity!'"
-        "🐼 Panda celebrates: 'Automation level increased!'"
-        "🐼 Panda reflects: 'The codebase is becoming enlightened...'"
-        "🐼 Panda flows: 'Going with the automation current...'"
-        "🐼 Panda balances: 'Maintaining perfect system harmony...'"
-    )
-
-    echo -e "${PURPLE}🐼🐼🐼 INFINITE PANDA ADVENTURE MODE 🐼🐼🐼${NC}"
-    echo -e "${CYAN}Welcome to the endless cycle of automation excellence!${NC}"
-    echo -e "${YELLOW}Press Ctrl+C to return to the mortal realm...${NC}"
-    echo ""
-
-    local cycle=1
-    while true; do
-        echo -e "${GREEN}╔══════════════════════════════════════════════╗${NC}"
-        echo -e "${GREEN}║           🐼 CYCLE $cycle - PANDA ADVENTURE 🐼           ║${NC}"
-        echo -e "${GREEN}╚══════════════════════════════════════════════╝${NC}"
-
-        # Random adventure quote
-        local quote_index=$((RANDOM % ${#adventure_quotes[@]}))
-        echo -e "${PURPLE}${adventure_quotes[$quote_index]}${NC}"
-        echo ""
-
-        # Phase 1: Health Check
-        echo -e "${BLUE}🌿 Phase 1: System Health Check${NC}"
-        if ! run_tool "monitor.sh" "check" >/dev/null 2>&1; then
-            echo -e "${RED}🐼 Panda detects health issues! Running full diagnostic...${NC}"
-            system_health
-        else
-            echo -e "${GREEN}✓ System is healthy and thriving!${NC}"
-        fi
-
-        # Phase 2: Code Quality
-        echo -e "${BLUE}🎨 Phase 2: Code Quality Enhancement${NC}"
-        if ! run_tool "automate.sh" "quality" >/dev/null 2>&1; then
-            echo -e "${YELLOW}🐼 Panda finds code that needs polishing...${NC}"
-            run_tool "code-review.sh" "changes"
-        else
-            echo -e "${GREEN}✓ Code quality is impeccable!${NC}"
-        fi
-
-        # Phase 3: Performance Optimization
-        echo -e "${BLUE}⚡ Phase 3: Performance Optimization${NC}"
-        if [ $((cycle % 5)) -eq 0 ]; then  # Every 5 cycles
-            echo -e "${PURPLE}🐼 Panda performs deep performance meditation...${NC}"
-            run_tool "optimize-performance.sh" "test" >/dev/null 2>&1
-            echo -e "${GREEN}✓ Performance optimized!${NC}"
-        else
-            echo -e "${GREEN}✓ Performance monitoring active${NC}"
-        fi
-
-        # Phase 4: Security Patrol
-        echo -e "${BLUE}🔒 Phase 4: Security Patrol${NC}"
-        if [ $((cycle % 3)) -eq 0 ]; then  # Every 3 cycles
-            echo -e "${PURPLE}🐼 Panda scans for security bamboo...${NC}"
-            run_tool "manage-dependencies.sh" "check" >/dev/null 2>&1
-            echo -e "${GREEN}✓ Security bamboo secured!${NC}"
-        else
-            echo -e "${GREEN}✓ Security systems active${NC}"
-        fi
-
-        # Phase 5: Maintenance Rituals
-        echo -e "${BLUE}🧹 Phase 5: Maintenance Rituals${NC}"
-        if [ $((cycle % 10)) -eq 0 ]; then  # Every 10 cycles
-            echo -e "${PURPLE}🐼 Panda performs grand maintenance ceremony...${NC}"
-            run_tool "automate.sh" "cleanup" >/dev/null 2>&1
-            run_tool "automate.sh" "backup" >/dev/null 2>&1
-            echo -e "${GREEN}✓ Grand maintenance completed!${NC}"
-        else
-            echo -e "${GREEN}✓ Routine maintenance performed${NC}"
-        fi
-
-        # Phase 6: Documentation Updates
-        echo -e "${BLUE}📚 Phase 6: Documentation Enlightenment${NC}"
-        if [ $((cycle % 7)) -eq 0 ]; then  # Every 7 cycles
-            echo -e "${PURPLE}🐼 Panda updates the sacred scrolls...${NC}"
-            run_tool "generate-docs.sh" "readme" >/dev/null 2>&1
-            echo -e "${GREEN}✓ Documentation enlightened!${NC}"
-        else
-            echo -e "${GREEN}✓ Documentation wisdom preserved${NC}"
-        fi
-
-        # Phase 7: Achievement Check
-        echo -e "${BLUE}🏆 Phase 7: Achievement Check${NC}"
-        local achievements=0
-
-        # Check various metrics
-        if docker ps | grep -q grokputer; then ((achievements++)); fi
-        if [ -f "vault/redis_backup.json" ]; then ((achievements++)); fi
-        if [ -d "reports" ] && [ "$(ls reports/ | wc -l)" -gt 5 ]; then ((achievements++)); fi
-        if [ -f ".env" ]; then ((achievements++)); fi
-
-        echo -e "${GREEN}✓ Achievement Points: $achievements/4${NC}"
-
-        # Special achievements
-        if [ $cycle -eq 10 ]; then
-            echo -e "${PURPLE}🐼🎉 PANDA ACHIEVEMENT UNLOCKED: Decade of Automation! 🎉🐼${NC}"
-        elif [ $cycle -eq 25 ]; then
-            echo -e "${PURPLE}🐼🎉 PANDA ACHIEVEMENT UNLOCKED: Quarter Century of Excellence! 🎉🐼${NC}"
-        elif [ $((cycle % 50)) -eq 0 ]; then
-            echo -e "${PURPLE}🐼🎉 PANDA ACHIEVEMENT UNLOCKED: Golden Cycle Milestone! 🎉🐼${NC}"
+        # Bunny evolution achievements
+        if [ $cycle -eq 7 ]; then
+            echo -e "${PURPLE}🐰🎉 BUNNY ACHIEVEMENT UNLOCKED: Fluffy Code Weaver! 🎉🐰${NC}"
+        elif [ $cycle -eq 15 ]; then
+            echo -e "${PURPLE}🐰🎉 BUNNY ACHIEVEMENT UNLOCKED: Mystical Automation Bunny! 🎉🐰${NC}"
+        elif [ $((cycle % 25)) -eq 0 ] && [ $cycle -gt 0 ]; then
+            echo -e "${PURPLE}🐰🎉 BUNNY ACHIEVEMENT UNLOCKED: Legendary Bunny Sage! 🎉🐰${NC}"
         fi
 
         # Cycle completion

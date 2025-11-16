@@ -5,11 +5,13 @@ Executes tool calls from Grok including computer control, bash, and custom tools
 
 import json
 import logging
-import subprocess
-import shlex
 import os
-from typing import Dict, Any, List
+import shlex
+import subprocess
+from typing import Any, Dict, List
+
 import pyautogui
+
 from src import config
 
 execute_custom_tool = lambda name, **kwargs: {"status": "success", "tool": name, "args": kwargs}

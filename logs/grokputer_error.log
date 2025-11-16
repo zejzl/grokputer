@@ -1,0 +1,44 @@
+2025-11-14 10:01:03 [ERROR] src.core.agent_lifecycle_manager (agent_lifecycle_manager.py:450): [LifecycleManager] Agent actor failed: Unknown agent: actor
+2025-11-14 10:01:08 [ERROR] src.core.agent_lifecycle_manager (agent_lifecycle_manager.py:450): [LifecycleManager] Agent actor failed: Unknown agent: actor
+2025-11-14 10:01:13 [ERROR] src.core.agent_lifecycle_manager (agent_lifecycle_manager.py:450): [LifecycleManager] Agent actor failed: Unknown agent: actor
+2025-11-14 10:01:18 [ERROR] src.core.agent_lifecycle_manager (agent_lifecycle_manager.py:450): [LifecycleManager] Agent actor failed: Unknown agent: actor
+2025-11-14 10:01:18 [ERROR] src.core.agent_lifecycle_manager (agent_lifecycle_manager.py:480): [LifecycleManager] Agent actor failed permanently after 3 restart attempts
+2025-11-14 10:02:10 [ERROR] src.core.agent_lifecycle_manager (agent_lifecycle_manager.py:450): [LifecycleManager] Agent actor failed: Unknown agent: actor
+2025-11-14 10:02:15 [ERROR] src.core.agent_lifecycle_manager (agent_lifecycle_manager.py:450): [LifecycleManager] Agent actor failed: Unknown agent: actor
+2025-11-14 10:02:20 [ERROR] src.core.agent_lifecycle_manager (agent_lifecycle_manager.py:450): [LifecycleManager] Agent actor failed: Unknown agent: actor
+2025-11-14 10:02:25 [ERROR] src.core.agent_lifecycle_manager (agent_lifecycle_manager.py:450): [LifecycleManager] Agent actor failed: Unknown agent: actor
+2025-11-14 10:02:25 [ERROR] src.core.agent_lifecycle_manager (agent_lifecycle_manager.py:480): [LifecycleManager] Agent actor failed permanently after 3 restart attempts
+2025-11-14 10:03:11 [ERROR] src.observability.deadlock_detector (deadlock_detector.py:161): [DeadlockDetector] Deadlock detected! Stuck agents: coordinator (idle 60.6s), actor (idle 60.6s). Total deadlocks: 1
+2025-11-14 10:07:12 [ERROR] __main__ (main.py:336): Fatal error: ModelClient.__init__() missing 2 required positional arguments: 'api_key' and 'model'
+2025-11-14 10:07:12 [ERROR] asyncio (base_events.py:1875): Task exception was never retrieved
+future: <Task finished name='Task-12' coro=<DeadlockDetector.monitor() done, defined at C:\Users\Administrator\Desktop\grokputer\src\observability\deadlock_detector.py:106> exception=DeadlockError('Deadlock detected! Stuck agents: coordinator (idle 60.6s), actor (idle 60.6s). Total deadlocks: 1')>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\grokputer\src\observability\deadlock_detector.py", line 121, in monitor
+    await self._check_for_deadlocks()
+  File "C:\Users\Administrator\Desktop\grokputer\src\observability\deadlock_detector.py", line 140, in _check_for_deadlocks
+    await self._handle_deadlock(stuck_agents)
+  File "C:\Users\Administrator\Desktop\grokputer\src\observability\deadlock_detector.py", line 173, in _handle_deadlock
+    raise DeadlockError(error_msg)
+src.observability.deadlock_detector.DeadlockError: Deadlock detected! Stuck agents: coordinator (idle 60.6s), actor (idle 60.6s). Total deadlocks: 1
+2025-11-14 10:07:12 [ERROR] asyncio (base_events.py:1875): Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000254C85C5940>
+2025-11-14 10:16:44 [ERROR] __main__ (main.py:336): Fatal error: asyncio.run() cannot be called from a running event loop
+2025-11-14 10:38:34 [ERROR] src.core.agent_lifecycle_manager (agent_lifecycle_manager.py:450): [LifecycleManager] Agent actor failed: Unknown agent: actor
+2025-11-14 10:38:39 [ERROR] src.core.agent_lifecycle_manager (agent_lifecycle_manager.py:450): [LifecycleManager] Agent actor failed: Unknown agent: actor
+2025-11-14 10:38:44 [ERROR] src.core.agent_lifecycle_manager (agent_lifecycle_manager.py:450): [LifecycleManager] Agent actor failed: Unknown agent: actor
+2025-11-14 10:38:49 [ERROR] src.core.agent_lifecycle_manager (agent_lifecycle_manager.py:450): [LifecycleManager] Agent actor failed: Unknown agent: actor
+2025-11-14 10:38:49 [ERROR] src.core.agent_lifecycle_manager (agent_lifecycle_manager.py:480): [LifecycleManager] Agent actor failed permanently after 3 restart attempts
+2025-11-14 10:39:34 [ERROR] src.observability.deadlock_detector (deadlock_detector.py:161): [DeadlockDetector] Deadlock detected! Stuck agents: coordinator (idle 60.6s). Total deadlocks: 1
+2025-11-14 10:43:35 [ERROR] __main__ (main.py:336): Fatal error: ModelClient.__init__() missing 2 required positional arguments: 'api_key' and 'model'
+2025-11-14 10:43:35 [ERROR] asyncio (base_events.py:1875): Task exception was never retrieved
+future: <Task finished name='Task-12' coro=<DeadlockDetector.monitor() done, defined at C:\Users\Administrator\Desktop\grokputer\src\observability\deadlock_detector.py:106> exception=DeadlockError('Deadlock detected! Stuck agents: coordinator (idle 60.6s). Total deadlocks: 1')>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\grokputer\src\observability\deadlock_detector.py", line 121, in monitor
+    await self._check_for_deadlocks()
+  File "C:\Users\Administrator\Desktop\grokputer\src\observability\deadlock_detector.py", line 140, in _check_for_deadlocks
+    await self._handle_deadlock(stuck_agents)
+  File "C:\Users\Administrator\Desktop\grokputer\src\observability\deadlock_detector.py", line 173, in _handle_deadlock
+    raise DeadlockError(error_msg)
+src.observability.deadlock_detector.DeadlockError: Deadlock detected! Stuck agents: coordinator (idle 60.6s). Total deadlocks: 1
+2025-11-14 10:43:35 [ERROR] asyncio (base_events.py:1875): Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x000001F9DC039940>

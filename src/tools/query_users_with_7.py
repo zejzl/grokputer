@@ -1,4 +1,5 @@
 import sqlite3
+
 from db_config import get_connection
 
 # Query for unique agents who have a 7 in any individual_rolls

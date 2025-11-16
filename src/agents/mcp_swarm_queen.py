@@ -1,5 +1,6 @@
-import redis
 import sys
+
+import redis
 
 
 class MCP_Swarm_Queen:

@@ -7,16 +7,21 @@ Manages the flow of multi-provider collaboration with proper error handling and 
 
 import asyncio
 import logging
-from typing import List, Dict, Any, Optional, Set
+import time
 from dataclasses import dataclass, field
 from enum import Enum
-import time
+from typing import Any, Dict, List, Optional, Set
 
-from .provider_registry import ProviderRegistry, ProviderInstance, ProviderCapability, provider_registry
-from .provider_pool import ProviderPool, provider_pool
-from .multi_provider_coordinator import ProviderRole, CollaborationConfig
-from .message_models import CollaborationMessage, MessageType, AgentRole
 from .consensus_manager import ConsensusManager, ConsensusResult
+from .message_models import AgentRole, CollaborationMessage, MessageType
+from .multi_provider_coordinator import CollaborationConfig, ProviderRole
+from .provider_pool import ProviderPool, provider_pool
+from .provider_registry import (
+    ProviderCapability,
+    ProviderInstance,
+    ProviderRegistry,
+    provider_registry,
+)
 
 logger = logging.getLogger(__name__)
 

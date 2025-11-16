@@ -10,17 +10,18 @@ Capabilities:
 """
 
 import asyncio
+import json
 import logging
 import random
-import numpy as np
-from typing import Dict, List, Optional, Any, Tuple
+from collections import Counter, defaultdict, deque
+from dataclasses import asdict, dataclass
 from datetime import datetime
-from collections import defaultdict, Counter, deque
-import json
-from dataclasses import dataclass, asdict
+from typing import Any, Dict, List, Optional, Tuple
+
+import numpy as np
 
 from src.core.base_agent import BaseAgent
-from src.core.message_bus import MessageBus, Message, MessagePriority
+from src.core.message_bus import Message, MessageBus, MessagePriority
 
 logger = logging.getLogger(__name__)
 

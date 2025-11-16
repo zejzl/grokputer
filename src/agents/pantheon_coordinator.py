@@ -15,24 +15,24 @@ The 9 Agents (ALL IMPLEMENTED):
 
 import asyncio
 import logging
-from typing import Dict, List, Optional, Any
 from datetime import datetime
+from typing import Any, Dict, List, Optional
 
-from src.core.base_agent import BaseAgent
-from src.core.message_bus import MessageBus, Message, MessagePriority
-from src.agents.coordinator import Coordinator
-from src.agents.observer import Observer
 from src.agents.actor import Actor
-from src.agents.validator import ValidatorAgent
+from src.agents.analyzer import AnalyzerAgent
+from src.agents.character_analysis_agent import CharacterAnalysisAgent
+from src.agents.coordinator import Coordinator
+from src.agents.executor_agent import ExecutorAgent
+from src.agents.improver import ImproverAgent
 from src.agents.learner import LearnerAgent
+from src.agents.observer import Observer
+from src.agents.story_generation_agent import StoryGenerationAgent
+from src.agents.validator import ValidatorAgent
+from src.core.base_agent import BaseAgent
+from src.core.message_bus import Message, MessageBus, MessagePriority
+from src.memory.backends.redis_store import RedisMemoryBackend
 from src.memory.hierarchical_memory import HierarchicalMemoryManager
 from src.memory.interfaces import MemoryConfig
-from src.memory.backends.redis_store import RedisMemoryBackend
-from src.agents.executor_agent import ExecutorAgent
-from src.agents.analyzer import AnalyzerAgent
-from src.agents.improver import ImproverAgent
-from src.agents.character_analysis_agent import CharacterAnalysisAgent
-from src.agents.story_generation_agent import StoryGenerationAgent
 
 logger = logging.getLogger(__name__)
 

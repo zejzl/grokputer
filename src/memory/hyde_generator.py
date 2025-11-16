@@ -7,6 +7,7 @@ Uses Grok LLM to create relevant hypothetical content that bridges semantic gaps
 
 import logging
 from typing import List
+
 from ..grok_client import FallbackGrokClient
 
 logger = logging.getLogger(__name__)
@@ -56,7 +57,7 @@ class HyDEGenerator:
 
             # Split by separator
             documents = [doc.strip() for doc in response.split("---") if doc.strip()]
-            documents = documents[:self.num_hypotheticals]  # Limit to requested number
+            documents = documents[: self.num_hypotheticals]  # Limit to requested number
 
             logger.debug(f"Generated {len(documents)} hypothetical documents for query: {query[:50]}...")
             return documents
@@ -71,6 +72,7 @@ class HyDEGenerator:
         Note: This blocks - prefer async version in production.
         """
         import asyncio
+
         try:
             # Create new event loop for this thread
             loop = asyncio.new_event_loop()

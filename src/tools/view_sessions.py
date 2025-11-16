@@ -5,12 +5,13 @@ Session viewer utility for Grokputer.
 View and analyze past execution sessions.
 """
 
-import sys
 import json
-import click
-from pathlib import Path
+import sys
 from datetime import datetime
+from pathlib import Path
 from typing import Optional
+
+import click
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent))

@@ -1,6 +1,6 @@
 import os
-import time
 import subprocess
+import time
 
 # Launch Notepad from WSL (calls Windows)
 print("Opening Notepad from WSL...")

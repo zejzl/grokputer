@@ -5,10 +5,11 @@ Provides efficient attention mechanisms for enhanced context retention and proce
 PyTorch-independent implementation using numpy for broader compatibility.
 """
 
-import math
-import numpy as np
-from typing import Optional, Tuple, List, Dict, Any, Union
 import logging
+import math
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+import numpy as np
 
 logger = logging.getLogger(__name__)
 

@@ -7,16 +7,17 @@ Collects preferences from successful runs and optimizes agent parameters.
 """
 
 import asyncio
+import json
 import logging
 import time
 from pathlib import Path
-import json
 
+from src.grok_client import GrokClient
 from src.self_improvement.dpo_optimizer import AgentDPO
 from src.self_improvement.preference_collector import PreferenceCollector
-from src.grok_client import GrokClient
 
 logger = logging.getLogger(__name__)
+
 
 class SelfImprovementLoop:
     """
@@ -31,7 +32,7 @@ class SelfImprovementLoop:
         self.dpo = AgentDPO(
             param_space=self.config["param_space"],
             learning_rate=self.config.get("learning_rate", 1e-3),
-            beta=self.config.get("beta", 0.1)
+            beta=self.config.get("beta", 0.1),
         )
 
         # Initialize preference collector
@@ -43,7 +44,7 @@ class SelfImprovementLoop:
             "loops_completed": 0,
             "pairs_collected": 0,
             "avg_training_loss": 0.0,
-            "last_optimization": None
+            "last_optimization": None,
         }
 
         logger.info("Self-improvement loop initialized")
@@ -51,28 +52,24 @@ class SelfImprovementLoop:
     def _load_config(self) -> dict:
         """Load configuration from file."""
         if self.config_path.exists():
-            with open(self.config_path, 'r') as f:
+            with open(self.config_path, "r") as f:
                 return json.load(f)
         else:
             # Default config
             return {
-                "param_space": {
-                    "temperature": [0.1, 1.0],
-                    "max_tokens": [50, 500],
-                    "timeout": [5, 30]
-                },
+                "param_space": {"temperature": [0.1, 1.0], "max_tokens": [50, 500], "timeout": [5, 30]},
                 "learning_rate": 1e-3,
                 "beta": 0.1,
                 "use_grok": False,
                 "training_interval": 3600,  # 1 hour
                 "collection_batch_size": 10,
-                "save_interval": 100  # Save model every 100 loops
+                "save_interval": 100,  # Save model every 100 loops
             }
 
     def _save_config(self):
         """Save current config."""
         self.config_path.parent.mkdir(exist_ok=True)
-        with open(self.config_path, 'w') as f:
+        with open(self.config_path, "w") as f:
             json.dump(self.config, f, indent=2)
 
     def _save_model(self):
@@ -116,9 +113,8 @@ class SelfImprovementLoop:
                 if len(self.dpo.preference_pairs) >= 5:
                     loss = self.dpo.train_step(batch_size=min(32, len(self.dpo.preference_pairs)))
                     self.training_stats["avg_training_loss"] = (
-                        (self.training_stats["avg_training_loss"] * self.training_stats["loops_completed"] + loss) /
-                        (self.training_stats["loops_completed"] + 1)
-                    )
+                        self.training_stats["avg_training_loss"] * self.training_stats["loops_completed"] + loss
+                    ) / (self.training_stats["loops_completed"] + 1)
 
                     logger.info(f"Loop {loop_num + 1}: collected {collected} pairs, training loss {loss:.4f}")
 
@@ -150,7 +146,7 @@ class SelfImprovementLoop:
         """Save training statistics."""
         stats_path = Path("logs/self_improvement_stats.json")
         stats_path.parent.mkdir(exist_ok=True)
-        with open(stats_path, 'w') as f:
+        with open(stats_path, "w") as f:
             json.dump(self.training_stats, f, indent=2, default=str)
 
     def get_current_optimal_params(self, task_description: str) -> dict:
@@ -180,6 +176,7 @@ class SelfImprovementLoop:
         else:
             logger.error("Failed to add human feedback")
 
+
 async def main():
     """Main function for running self-improvement loop."""
     import argparse
@@ -206,6 +203,7 @@ async def main():
     stats = loop.collector.get_collection_stats()
     print(f"Final training stats: {loop.training_stats}")
     print(f"Collection stats: {stats}")
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)

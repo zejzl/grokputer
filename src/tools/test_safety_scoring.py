@@ -10,7 +10,11 @@ from pathlib import Path
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from src.config import get_command_safety_score, requires_confirmation, REQUIRE_CONFIRMATION
+from src.config import (
+    REQUIRE_CONFIRMATION,
+    get_command_safety_score,
+    requires_confirmation,
+)
 
 # Test commands with varying risk levels
 test_commands = [

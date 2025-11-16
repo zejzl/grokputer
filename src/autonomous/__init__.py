@@ -7,8 +7,8 @@ validate changes, and implement them with human oversight.
 
 __version__ = "0.1.0"
 
-from .scanner import CodeScannerAgent
 from .proposer import ProposalGeneratorAgent
+from .scanner import CodeScannerAgent
 
 __all__ = [
     "CodeScannerAgent",

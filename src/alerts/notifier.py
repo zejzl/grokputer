@@ -3,17 +3,18 @@ Notification system for critical events in Grokputer swarm.
 Supports Email (SMTP) and Slack webhooks.
 """
 
-import os
 import asyncio
-import aiohttp
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from typing import Optional, List, Dict, Any
-from datetime import datetime
-from enum import Enum
 import json
 import logging
+import os
+import smtplib
+from datetime import datetime
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from enum import Enum
+from typing import Any, Dict, List, Optional
+
+import aiohttp
 
 logger = logging.getLogger(__name__)
 

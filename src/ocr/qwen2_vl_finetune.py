@@ -4,16 +4,23 @@ Qwen2-VL Fine-tuning for OCR Enhancement
 This script fine-tunes Qwen2-VL model for improved OCR performance on images and code screenshots.
 """
 
-import os
-import torch
-from torch.utils.data import Dataset
-from PIL import Image
-import json
-from transformers import Qwen2VLForConditionalGeneration, AutoTokenizer, AutoProcessor, TrainingArguments, Trainer
-from peft import LoraConfig, get_peft_model
 import argparse
-from typing import List, Dict, Any
+import json
 import logging
+import os
+from typing import Any, Dict, List
+
+import torch
+from peft import LoraConfig, get_peft_model
+from PIL import Image
+from torch.utils.data import Dataset
+from transformers import (
+    AutoProcessor,
+    AutoTokenizer,
+    Qwen2VLForConditionalGeneration,
+    Trainer,
+    TrainingArguments,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

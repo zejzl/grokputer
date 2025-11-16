@@ -5,17 +5,18 @@ Provides fast access to active conversations with automatic persistence to SQLit
 
 import json
 import logging
-from typing import Dict, Any, Optional, List
-import redis.asyncio as redis
 from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
+
+import redis.asyncio as redis
 
 from db_config import (
     create_conversation,
-    save_conversation_message,
     get_conversation_history,
-    update_conversation_status,
-    save_user_preference,
     get_user_preferences,
+    save_conversation_message,
+    save_user_preference,
+    update_conversation_status,
 )
 
 logger = logging.getLogger(__name__)

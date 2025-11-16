@@ -1,5 +1,6 @@
-from src.core.base_agent import BaseAgent
 import asyncio
+
+from src.core.base_agent import BaseAgent
 
 
 class VisionaryAgent(BaseAgent):

@@ -6,12 +6,13 @@ Scores suggestions by impact (success rate, duration, API usage) and effort.
 Integrates with Pantheon Coordinator for dynamic next steps.
 """
 
-import logging
-from typing import List, Dict, Any
-from dataclasses import dataclass
 import asyncio
-from src.core.base_agent import BaseAgent
+import logging
+from dataclasses import dataclass
+from typing import Any, Dict, List
+
 from analytics import generate_report  # For metrics
+from src.core.base_agent import BaseAgent
 from src.grok_client import FallbackGrokClient  # For reasoning
 
 logger = logging.getLogger(__name__)

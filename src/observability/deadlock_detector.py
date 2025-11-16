@@ -8,8 +8,8 @@ agents are waiting on each other indefinitely.
 import asyncio
 import logging
 import time
-from typing import Dict, Optional, Callable
 from dataclasses import dataclass, field
+from typing import Callable, Dict, Optional
 
 logger = logging.getLogger(__name__)
 

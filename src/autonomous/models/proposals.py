@@ -4,7 +4,8 @@ Pydantic models for code change proposals.
 
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Literal, Any, Optional
+from typing import Any, Dict, List, Literal, Optional
+
 from pydantic import BaseModel, Field
 
 

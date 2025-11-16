@@ -5,16 +5,16 @@ Provides conversational interface for interacting with Grokputer agents.
 Handles natural language task parsing, dialogue management, and feedback collection.
 """
 
-import re
+import json
 import logging
-from typing import Dict, List, Any, Optional, Tuple
+import re
 from dataclasses import dataclass
 from datetime import datetime
-import json
+from typing import Any, Dict, List, Optional, Tuple
 
-from src.grok_client import GrokClient
 from src.agents.coordinator import Coordinator
 from src.core.message_bus import MessageBus
+from src.grok_client import GrokClient
 
 logger = logging.getLogger(__name__)
 
@@ -616,9 +616,9 @@ if __name__ == "__main__":
     # Mock coordinator for testing
     class MockCoordinator:
         def __init__(self):
+            from src.grok_client import GrokClient
             from src.self_improvement.dpo_optimizer import AgentDPO
             from src.self_improvement.preference_collector import PreferenceCollector
-            from src.grok_client import GrokClient
 
             param_space = {"temperature": (0.1, 1.0), "max_tokens": (50, 500), "timeout": (5, 30)}
             self.dpo_optimizer = AgentDPO(param_space)

@@ -7,14 +7,14 @@ Automatically generates training data for DPO optimization.
 
 import asyncio
 import logging
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass
 import random
 import time
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Tuple
 
-from src.self_improvement.dpo_optimizer import PreferencePair, AgentDPO
 from src.grok_client import GrokClient
+from src.self_improvement.dpo_optimizer import AgentDPO, PreferencePair
 
 logger = logging.getLogger(__name__)
 

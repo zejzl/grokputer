@@ -5,10 +5,10 @@ Provides high-level understanding of user interfaces from screenshots and visual
 """
 
 import asyncio
-import logging
-from typing import Dict, Any, List, Optional, Tuple
-from dataclasses import dataclass, field
 import json
+import logging
+from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional, Tuple
 
 from .vision_processor import VisionProcessor
 

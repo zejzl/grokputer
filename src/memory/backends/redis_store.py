@@ -5,9 +5,11 @@ Provides Redis-based storage for agent memories with connection handling and gra
 
 import json
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
+
 import redis
-from ..interfaces import MemoryConfig, MemoryBackend
+
+from ..interfaces import MemoryBackend, MemoryConfig
 
 logger = logging.getLogger(__name__)
 

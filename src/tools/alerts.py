@@ -5,11 +5,12 @@ Provides poetic notifications when tasks complete in the swarm.
 Integrates with MessageBus to listen for task completion events.
 """
 
-import random
 import asyncio
 import logging
-from typing import Optional, Dict, Any
-from src.core.message_bus import MessageBus, Message
+import random
+from typing import Any, Dict, Optional
+
+from src.core.message_bus import Message, MessageBus
 
 logger = logging.getLogger(__name__)
 

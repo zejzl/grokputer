@@ -2,9 +2,9 @@
 Memory system interfaces for Grokputer.
 """
 
-from typing import Dict, Any, Protocol, Optional
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, Dict, Optional, Protocol
 
 
 @dataclass

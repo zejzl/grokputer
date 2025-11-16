@@ -6,14 +6,15 @@ Part of ORAM Pantheon/Swarm.
 
 import asyncio
 import logging
-from typing import Dict, Any
 from pathlib import Path
+from typing import Any, Dict
+
+from src.core.action_executor import ActionExecutor
 
 # Existing imports (assume src path added)
-from src.core.message_bus import MessageBus, Message, MessagePriority
-from src.core.action_executor import ActionExecutor
-from src.observability.session_logger import SessionLogger
+from src.core.message_bus import Message, MessageBus, MessagePriority
 from src.observability.deadlock_detector import DeadlockDetector
+from src.observability.session_logger import SessionLogger
 
 
 class ActorAgent:
@@ -38,15 +39,15 @@ class ActorAgent:
         self.action_queue = asyncio.Queue()
 
     def is_healthy(self) -> bool:
-        return True
-
-        # Register with message bus
-        self.message_bus.register_agent(self.agent_id)
+        # Register with message bus if not already registered
+        if self.message_bus and self.agent_id not in self.message_bus.queues:
+            self.message_bus.register_agent(self.agent_id)
 
         if self.deadlock_detector:
             self.deadlock_detector.register_agent(self.agent_id)
 
         self.logger.info(f"[ACTOR] {self.agent_id} initialized")
+        return True
 
     async def run(self):
         """
@@ -184,11 +185,12 @@ class ActorAgent:
 # Example usage (for testing)
 if __name__ == "__main__":
     # Stub setup for standalone test
-    from src.core.message_bus import MessageBus
-    from src.observability.session_logger import SessionLogger
-    from src.observability.deadlock_detector import DeadlockDetector
-    from src.core.action_executor import ActionExecutor
     import logging
+
+    from src.core.action_executor import ActionExecutor
+    from src.core.message_bus import MessageBus
+    from src.observability.deadlock_detector import DeadlockDetector
+    from src.observability.session_logger import SessionLogger
 
     logging.basicConfig(level=logging.INFO)
 

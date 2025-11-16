@@ -6,13 +6,13 @@ Integrates with Redis for persistent learning across sessions.
 """
 
 import asyncio
-import logging
 import json
-from typing import Dict, Any, List, Optional
+import logging
 from datetime import datetime
+from typing import Any, Dict, List, Optional
 
 from src.core.base_agent import BaseAgent
-from src.core.message_bus import MessageBus, Message, MessagePriority
+from src.core.message_bus import Message, MessageBus, MessagePriority
 
 logger = logging.getLogger(__name__)
 

@@ -1,6 +1,7 @@
-import redis
 import os
 import sys
+
+import redis
 
 
 class MaxModeAgent:

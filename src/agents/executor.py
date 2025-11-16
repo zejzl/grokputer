@@ -12,16 +12,16 @@ A specialized variant of Actor with:
 
 import asyncio
 import logging
-from typing import Dict, List, Optional, Any, Callable
-from datetime import datetime, timedelta
-from enum import Enum
-from dataclasses import dataclass, asdict
 import time
 from collections import defaultdict, deque
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
+from enum import Enum
+from typing import Any, Callable, Dict, List, Optional
 
 from src.agents.actor import Actor
-from src.core.message_bus import MessageBus, Message, MessagePriority
 from src.core.action_executor import ActionExecutor
+from src.core.message_bus import Message, MessageBus, MessagePriority
 
 logger = logging.getLogger(__name__)
 

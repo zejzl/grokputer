@@ -11,19 +11,20 @@ This provides Crew-style orchestration while maintaining Pantheon architecture.
 
 import asyncio
 import logging
-from typing import Dict, List, Optional, Any, Callable, Set
 from dataclasses import dataclass, field
-from enum import Enum
 from datetime import datetime
+from enum import Enum
+from typing import Any, Callable, Dict, List, Optional, Set
 
-from src.core.message_bus import MessageBus, Message, MessagePriority
 from src.core.base_agent import BaseAgent
+from src.core.message_bus import Message, MessageBus, MessagePriority
 
 logger = logging.getLogger(__name__)
 
 
 class CrewRole(Enum):
     """CrewAI-inspired agent roles."""
+
     COORDINATOR = "coordinator"
     EXECUTOR = "executor"
     ANALYZER = "analyzer"
@@ -37,6 +38,7 @@ class CrewRole(Enum):
 
 class FlowState(Enum):
     """Flow execution states."""
+
     PENDING = "pending"
     RUNNING = "running"
     COMPLETED = "completed"
@@ -47,6 +49,7 @@ class FlowState(Enum):
 @dataclass
 class CrewMember:
     """Represents a member of a Crew with their role and capabilities."""
+
     agent: BaseAgent
     role: CrewRole
     capabilities: Set[str] = field(default_factory=set)
@@ -66,6 +69,7 @@ class CrewMember:
 @dataclass
 class FlowStep:
     """A step in a Flow workflow."""
+
     step_id: str
     description: str
     required_role: CrewRole
@@ -83,6 +87,7 @@ class FlowStep:
 @dataclass
 class FlowExecution:
     """Execution state of a Flow."""
+
     flow_id: str
     steps: Dict[str, FlowStep]
     state: FlowState = FlowState.PENDING
@@ -137,10 +142,7 @@ class CrewOrchestrator:
             flow_id: Unique identifier for the flow
             steps: List of FlowStep objects defining the workflow
         """
-        flow_execution = FlowExecution(
-            flow_id=flow_id,
-            steps={step.step_id: step for step in steps}
-        )
+        flow_execution = FlowExecution(flow_id=flow_id, steps={step.step_id: step for step in steps})
 
         self.active_flows[flow_id] = flow_execution
         self.flow_completion_events[flow_id] = asyncio.Event()
@@ -213,10 +215,7 @@ class CrewOrchestrator:
 
         while pending_steps or executing_steps:
             # Find ready steps
-            ready_steps = [
-                step_id for step_id in pending_steps
-                if flow.steps[step_id].is_ready(flow.completed_steps)
-            ]
+            ready_steps = [step_id for step_id in pending_steps if flow.steps[step_id].is_ready(flow.completed_steps)]
 
             # Start ready steps
             for step_id in ready_steps:
@@ -232,10 +231,7 @@ class CrewOrchestrator:
                 break
 
             # Wait for at least one step to complete
-            done, pending = await asyncio.wait(
-                executing_steps.values(),
-                return_when=asyncio.FIRST_COMPLETED
-            )
+            done, pending = await asyncio.wait(executing_steps.values(), return_when=asyncio.FIRST_COMPLETED)
 
             # Collect completed step_ids and their tasks
             completed_steps = []
@@ -285,7 +281,7 @@ class CrewOrchestrator:
                 "task_type": step.task_type,
                 "description": step.description,
                 "context": flow.results,
-                "timeout": step.timeout
+                "timeout": step.timeout,
             }
 
             message = Message(
@@ -293,7 +289,7 @@ class CrewOrchestrator:
                 to_agent=agent.agent_id,
                 message_type="crew_task",
                 content=task_data,
-                priority=MessagePriority.HIGH
+                priority=MessagePriority.HIGH,
             )
 
             # Send task to agent
@@ -303,7 +299,7 @@ class CrewOrchestrator:
                 message_type=message.message_type,
                 content=message.content,
                 priority=message.priority,
-                timeout=step.timeout
+                timeout=step.timeout,
             )
 
             if response and response.content.get("status") == "success":
@@ -319,9 +315,7 @@ class CrewOrchestrator:
         candidates = []
 
         for agent_id, member in crew.items():
-            if (member.role == step.required_role and
-                member.can_handle(step.task_type) and
-                member.is_available()):
+            if member.role == step.required_role and member.can_handle(step.task_type) and member.is_available():
                 candidates.append((agent_id, member.priority))
 
         if not candidates:
@@ -331,8 +325,13 @@ class CrewOrchestrator:
         candidates.sort(key=lambda x: x[1], reverse=True)
         return candidates[0][0]
 
-    async def delegate_task(self, crew_id: str, task_type: str, task_data: Dict[str, Any],
-                          priority: MessagePriority = MessagePriority.NORMAL) -> Any:
+    async def delegate_task(
+        self,
+        crew_id: str,
+        task_type: str,
+        task_data: Dict[str, Any],
+        priority: MessagePriority = MessagePriority.NORMAL,
+    ) -> Any:
         """
         Delegate a task to the most suitable agent in a crew.
 
@@ -371,11 +370,8 @@ class CrewOrchestrator:
                 from_agent="crew_orchestrator",
                 to_agent=best_agent.agent.agent_id,
                 message_type="delegated_task",
-                content={
-                    "task_type": task_type,
-                    "task_data": task_data
-                },
-                priority=priority
+                content={"task_type": task_type, "task_data": task_data},
+                priority=priority,
             )
 
             response = await self.message_bus.send_request(
@@ -384,7 +380,7 @@ class CrewOrchestrator:
                 message_type=message.message_type,
                 content=message.content,
                 priority=message.priority,
-                timeout=300
+                timeout=300,
             )
 
             if response and response.content.get("status") == "success":
@@ -410,10 +406,10 @@ class CrewOrchestrator:
                     "role": member.role.value,
                     "capabilities": list(member.capabilities),
                     "active_tasks": member.active_tasks,
-                    "available": member.is_available()
+                    "available": member.is_available(),
                 }
                 for agent_id, member in crew.items()
-            ]
+            ],
         }
 
     def get_flow_status(self, flow_id: str) -> Dict[str, Any]:
@@ -430,5 +426,5 @@ class CrewOrchestrator:
             "failed_steps": len(flow.failed_steps),
             "assigned_agents": flow.assigned_agents,
             "start_time": flow.start_time.isoformat() if flow.start_time else None,
-            "end_time": flow.end_time.isoformat() if flow.end_time else None
+            "end_time": flow.end_time.isoformat() if flow.end_time else None,
         }

@@ -1,9 +1,10 @@
-import pytesseract
-from PIL import Image
-import cv2
 import asyncio
 import os
 import zlib  # For TOON compression
+
+import cv2
+import pytesseract
+from PIL import Image
 
 
 class OCRProcessor:

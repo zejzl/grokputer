@@ -9,6 +9,7 @@ import pytest
 import tempfile
 import os
 from unittest.mock import Mock, patch
+from PIL import Image, ImageDraw
 
 # Skip all tests if required dependencies are missing
 pytest.importorskip("PIL", reason="PIL not installed")

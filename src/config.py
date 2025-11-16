@@ -5,6 +5,7 @@ Loads settings from environment variables and provides constants.
 
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -70,7 +71,7 @@ OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4")
 
 # Anthropic (Claude)
 ANTHROPIC_API_KEY = get_secure_env("ANTHROPIC_API_KEY", "")
-CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-sonnet-4-5-20250929")
+CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-opus-4-20250514")
 
 # Ollama (Local)
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")

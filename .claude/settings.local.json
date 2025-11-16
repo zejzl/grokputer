@@ -29,7 +29,12 @@
       "Bash(cat:*)",
       "Bash(find:*)",
       "Bash(COLLABORATION.tmp)",
-      "Bash(git stash:*)"
+      "Bash(git stash:*)",
+      "Bash(pytest:*)",
+      "Bash(git clone:*)",
+      "Bash(streamlit run:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(test:*)"
     ],
     "deny": [],
     "ask": []

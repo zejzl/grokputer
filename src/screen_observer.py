@@ -8,13 +8,15 @@ asyncio.to_thread() to safely integrate with async code:
     screenshot = await asyncio.to_thread(screen_observer.screenshot_to_base64)
 """
 
+import asyncio
 import base64
 import logging
 from io import BytesIO
 from typing import Optional, Tuple
-import asyncio
+
 import pyautogui
 from PIL import Image
+
 from src import config
 
 logger = logging.getLogger(__name__)

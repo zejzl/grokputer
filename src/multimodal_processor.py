@@ -7,12 +7,12 @@ multi-modal understanding and knowledge extraction.
 
 import asyncio
 import logging
-from typing import Dict, Any, List, Optional, Union
 from dataclasses import dataclass, field
 from datetime import datetime
+from typing import Any, Dict, List, Optional, Union
 
+from .audio_processor import AudioAnalysis, AudioProcessor
 from .vision_processor import VisionProcessor, VisualAnalysis
-from .audio_processor import AudioProcessor, AudioAnalysis
 
 logger = logging.getLogger(__name__)
 

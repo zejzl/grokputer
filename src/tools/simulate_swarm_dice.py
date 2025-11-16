@@ -1,4 +1,5 @@
 import random
+
 from src.tools.dice_roller import roll_dice
 
 # 12 Agent names

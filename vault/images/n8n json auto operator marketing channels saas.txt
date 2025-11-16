@@ -1,0 +1,4292 @@
+
+{
+  "name": "(Temp) Workflow - Freddie Request",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "1e9419f0-a2a2-47e3-aba8-0e543df41874",
+      "typeVersion": 1.1,
+      "name": "Workflow Input Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -4180,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "get",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json['Page ID'] }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -3800,
+        840
+      ],
+      "id": "8ccfb7b3-4ccc-4051-ac90-3e7f1e199d73",
+      "name": "Notion",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "fcd680ec-bfe4-491b-b1d6-c4bee2b43b6e",
+                    "leftValue": "={{ $json.property_status }}",
+                    "rightValue": "Draft",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Draft"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1becb0cf-1004-4817-b03d-a6f1950af57c",
+                    "leftValue": "={{ $json.property_status }}",
+                    "rightValue": "To Review",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "To Review"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "2c6f1a95-4bfe-4b6b-83ae-80f39c432249",
+                    "leftValue": "={{ $json.property_status }}",
+                    "rightValue": "Approved",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Approved"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -3600,
+        920
+      ],
+      "id": "a852971f-2118-481d-99b5-3015d3eb4cc9",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJZNZL3",
+          "mode": "list",
+          "cachedResultName": "n8n-content"
+        },
+        "text": "=⚠️ Error \n• {{ $json.property_formatted_started_date }}—<{{ $json.url }}|YTP-{{ $json.property_formatted_id }}>—\"{{ $json.name }}\" \n• Pushed back to backlog due to incorrect status change.\n• Please check and make sure to follow the correct content flow (i.e Backlog -> To Write -> Draft -> To Review)",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "botProfile": {
+            "imageValues": {
+              "profilePhotoType": "image",
+              "icon_url": "https://slack-imgs.com/?c=1&o1=gu&url=https%3A%2F%2Femoji.slack-edge.com%2FT01LPLK6K1T%2Fslack-icons_data-feed-alert-internal%2F050eb7ffa86f93be.png"
+            }
+          },
+          "link_names": true,
+          "mrkdwn": true,
+          "unfurl_links": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -2960,
+        480
+      ],
+      "id": "bd4b2985-453d-47de-ac0f-6126909aa42b",
+      "name": "Slack1",
+      "webhookId": "431ccaa3-cc10-4395-b906-d6c68adb4657",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "4JyGLRgATNjhWAtu",
+          "name": "Slack account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Status = \\'Next: Draft\\'').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Status|status",
+              "statusValue": "Backlog"
+            },
+            {
+              "key": "Automation Error|checkbox",
+              "checkboxValue": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -2740,
+        480
+      ],
+      "id": "ca641f42-b148-46ea-b9b1-2ec384032f55",
+      "name": "Notion1",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "Archive",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "simplifyOutput": false
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2120,
+        300
+      ],
+      "id": "8f40327b-a333-4974-b1c0-687aed74bb84",
+      "name": "Create Archive Folder",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tEaYEc8LPviAPE8U",
+          "name": "Google Drive account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "Original Assets",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Create Content Folder').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "simplifyOutput": false
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2180,
+        60
+      ],
+      "id": "c90c1cc6-9f56-4cb9-b497-9ff9f16e91a8",
+      "name": "Create Original Assets Folder",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tEaYEc8LPviAPE8U",
+          "name": "Google Drive account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "folderId": "={{ $('Create Content Folder').item.json.id }}",
+        "title": "=YTP -{{ $('Status = \\'Next: Draft\\'').item.json.property_formatted_id }}- Script"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        -2620,
+        100
+      ],
+      "id": "827795d8-6edd-42e3-a35c-26b18dfbd7d8",
+      "name": "Create Docs File",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "5i9sYwEmKr8D4kLq",
+          "name": "Google Docs account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "simple": false,
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "locationChoice": "location",
+              "text": "=Script\n---\n{{ $('Status = \\'Next: Draft\\'').item.json.property_script }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        -2600,
+        300
+      ],
+      "id": "953223c9-2332-47ba-b157-86c4d0399f70",
+      "name": "Update Docs File with Content",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "5i9sYwEmKr8D4kLq",
+          "name": "Google Docs account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "75db3e08-1b46-4c0c-8319-95f2f055e544",
+              "leftValue": "={{ $('Status = \\'Next: Draft\\'').item.json.property_image }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "1216cfaf-145e-4bdf-b1e4-deff81d6e7b7",
+              "leftValue": "={{ $('Status = \\'Next: Draft\\'').item.json.property_thumbnail_ideas }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1840,
+        340
+      ],
+      "id": "1f403368-a94c-4f03-a665-3c5782e86b56",
+      "name": "Images Attached?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8c23fb85-6a66-4fae-8db2-bae2768bfb17",
+              "name": "property_image",
+              "value": "={{ $('Status = \\'Next: Draft\\'').item.json.property_image }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1200,
+        -120
+      ],
+      "id": "9943d489-f97e-4ec3-88d8-2b371cf25b29",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "property_image",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -980,
+        -120
+      ],
+      "id": "54039213-d3d3-4210-a19c-ff455ebab9e7",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.property_image }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -760,
+        -120
+      ],
+      "id": "16b59387-4548-484c-935c-70a97f53fba9",
+      "name": "Convert Image URL to Binary Data"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0d0b3b36-d642-470e-8fb1-4ef5c04ee44f",
+              "name": "formattedDate",
+              "value": "={{ $('Status = \\'Next: Draft\\'').item.json.property_formatted_start_date }}",
+              "type": "string"
+            },
+            {
+              "id": "9efe4bdf-a464-4075-bf25-e32a0b76a8f5",
+              "name": "formattedID",
+              "value": "={{ $('Status = \\'Next: Draft\\'').item.json.property_formatted_id }}",
+              "type": "string"
+            },
+            {
+              "id": "46754f30-8679-44d6-897d-81a099076048",
+              "name": "Content Title",
+              "value": "={{ $('Status = \\'Next: Draft\\'').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "04ceea0b-97f4-43c9-a562-f12a1a9302d0",
+              "name": "Original Asset URL",
+              "value": "={{ $('Create Original Assets Folder').item.json.webViewLink }}",
+              "type": "string"
+            },
+            {
+              "id": "2fd07cb9-cbbe-4d15-b898-7c626b865826",
+              "name": "Main Content Folder",
+              "value": "={{ $('Create Content Folder').item.json.webViewLink }}",
+              "type": "string"
+            },
+            {
+              "id": "a7191a4d-46f9-46fd-87bd-cdd6ef8f1b1b",
+              "name": "Google Doc Script ID",
+              "value": "={{ $('Update Docs File with Content').item.json.documentId }}",
+              "type": "string"
+            },
+            {
+              "id": "3c21a70a-e5d3-4de3-b861-84732ead07de",
+              "name": "Notion Page URL",
+              "value": "={{ $('Notion').item.json.url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1420,
+        -40
+      ],
+      "id": "89827825-fa3b-4ab4-8466-78173f5eada4",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJZNZL3",
+          "mode": "list",
+          "cachedResultName": "n8n-content"
+        },
+        "text": "=✍️ [Drafting] Content moved to *Draft* phase\n\n•{{ $json.formattedDate }}|<{{ $json['Notion Page URL'] }} | DLC-{{ $json.formattedID }}>—\"{{ $json['Content Title'] }}\" \n\n• Stage: \"Title & Topic\" to \"*Script in Progress*\" \n\n• Login to *Main* Google Folder, <{{ $json['Main Content Folder'] }}|Click Here> \n• *To View All Original Assets*, <{{ $json['Original Asset URL'] }}|Click Here> \n• Review _Drafted_ Content Script, <https://docs.google.com/document/d/{{ $json['Google Doc Script ID'] }}|Click Here>",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "link_names": true,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        120,
+        80
+      ],
+      "id": "670afa7e-482e-40d3-bcb7-f8dd694af629",
+      "name": "Slack2",
+      "webhookId": "c1f65d7b-d284-4205-a600-9af6422dd5c4",
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "4JyGLRgATNjhWAtu",
+          "name": "Slack account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "=data",
+        "name": "=Image Added on {{ $now.toFormat('dd-MM-yyyy-tt') }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Create Original Assets Folder').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -540,
+        -120
+      ],
+      "id": "b38d29db-6576-4a0b-bea8-43f802fbf541",
+      "name": "Upload Images",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tEaYEc8LPviAPE8U",
+          "name": "Google Drive account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "={{ $json.property_formatted_start_date }} - YTP-{{ $json.property_formatted_id }} — \"{{ $json.name }}\"",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1PQ-Xu6TpjJzSkNYNQ32OP9hFWdtXGZrI",
+          "mode": "list",
+          "cachedResultName": "YT Content Folder",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1PQ-Xu6TpjJzSkNYNQ32OP9hFWdtXGZrI"
+        },
+        "options": {
+          "simplifyOutput": false,
+          "folderColorRgb": "#F21F1F"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -3000,
+        120
+      ],
+      "id": "989ef2c2-dcda-471a-a701-3b79b174006b",
+      "name": "Create Content Folder",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tEaYEc8LPviAPE8U",
+          "name": "Google Drive account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "Final Assets",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "simplifyOutput": false
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2800,
+        260
+      ],
+      "id": "03789349-67ce-48a7-a6b2-35a8c471530a",
+      "name": "Create Final Assets Folder",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tEaYEc8LPviAPE8U",
+          "name": "Google Drive account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        -120
+      ],
+      "id": "0ef40154-ad46-44e2-910e-9f31ad272264",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "operation": "share",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.documentId }}",
+          "mode": "id"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "writer",
+            "type": "anyone",
+            "allowFileDiscovery": true
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2400,
+        300
+      ],
+      "id": "82e76a7a-a5f7-448c-884b-0c9ee414f9c9",
+      "name": "Grant Edit Access to Google Doc",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tEaYEc8LPviAPE8U",
+          "name": "Google Drive account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJZNZL3",
+          "mode": "list",
+          "cachedResultName": "n8n-marketing-content"
+        },
+        "text": "=✍️ [Drafting] Content moved to *Draft* phase\n\n• {{ $json.formattedDate }} | <{{ $('Status = \\'Next: Draft\\'').item.json.url }}|YTP-{{ $json.formattedID }}> — \"{{ $json['Content Title'] }}\" \n\n• Stage: \"Title & TN\" to \"Script in Progress\" \n\n• Login to *Main* Google Folder, <{{ $json['Main Content Folder'] }}|Click Here> \n• *To View All Original Assets*, <{{ $json['Original Asset URL'] }}|Click Here> \n• Review _Drafted_ Content Script, <https://docs.google.com/document/d/{{ $json['Google Doc Script ID'] }}|Click Here>",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "link_names": true,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -1420,
+        480
+      ],
+      "id": "9809bf2a-f60a-4a48-8c87-eaf3467d67d8",
+      "name": "Slack3",
+      "webhookId": "c1f65d7b-d284-4205-a600-9af6422dd5c4",
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "credentials": {
+        "slackApi": {
+          "id": "HS1DzZvPFdQrahn5",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0d0b3b36-d642-470e-8fb1-4ef5c04ee44f",
+              "name": "formattedDate",
+              "value": "={{ $('Status = \\'Next: Draft\\'').item.json.property_formatted_started_date }}",
+              "type": "string"
+            },
+            {
+              "id": "9efe4bdf-a464-4075-bf25-e32a0b76a8f5",
+              "name": "formattedID",
+              "value": "={{ $('Status = \\'Next: Draft\\'').item.json.property_formatted_id }}",
+              "type": "string"
+            },
+            {
+              "id": "46754f30-8679-44d6-897d-81a099076048",
+              "name": "Content Title",
+              "value": "={{ $('Status = \\'Next: Draft\\'').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "04ceea0b-97f4-43c9-a562-f12a1a9302d0",
+              "name": "Original Asset URL",
+              "value": "={{ $('Create Original Assets Folder').item.json.webViewLink }}",
+              "type": "string"
+            },
+            {
+              "id": "2fd07cb9-cbbe-4d15-b898-7c626b865826",
+              "name": "Main Content Folder",
+              "value": "={{ $('Create Content Folder').item.json.webViewLink }}",
+              "type": "string"
+            },
+            {
+              "id": "a7191a4d-46f9-46fd-87bd-cdd6ef8f1b1b",
+              "name": "Google Doc Script ID",
+              "value": "={{ $('Update Docs File with Content').item.json.documentId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1640,
+        480
+      ],
+      "id": "94c36a09-beff-46eb-8150-8ed25329d373",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Notion').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Automation Status|status",
+              "statusValue": "Next: To Review"
+            },
+            {
+              "key": "Google Doc Script ID|rich_text",
+              "textContent": "={{ $('Merge2').item.json['Google Doc Script ID'] }}"
+            },
+            {
+              "key": "Final Assets Folder ID|rich_text",
+              "textContent": "={{ $('Create Final Assets Folder').item.json.id }}"
+            },
+            {
+              "key": "Google Drive - Orignal Assets Folder|url",
+              "urlValue": "={{ $('Create Original Assets Folder').item.json.webViewLink }}"
+            },
+            {
+              "key": "Google Drive Final Assets|url",
+              "urlValue": "={{ $('Create Final Assets Folder').item.json.webViewLink }}"
+            },
+            {
+              "key": "Original Assets Folder ID|rich_text",
+              "textContent": "={{ $('Create Original Assets Folder').item.json.id }}"
+            },
+            {
+              "key": "Google Doc Script File|url",
+              "urlValue": "=https://docs.google.com/document/d/{{ $('Merge2').item.json['Google Doc Script ID'] }}"
+            },
+            {
+              "key": "Google Drive Folder |url",
+              "urlValue": "={{ $('Create Content Folder').item.json.webViewLink }}"
+            },
+            {
+              "key": "Google Drive Folder ID|rich_text",
+              "textContent": "={{ $('Create Content Folder').item.json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        340,
+        80
+      ],
+      "id": "1bc4a3b2-ec35-48c8-a2c3-db1e383ed090",
+      "name": "Update Notion: 'Next:To Review'",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Notion').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Automation Status|status",
+              "statusValue": "Next: To Review"
+            },
+            {
+              "key": "Google Doc Script ID|rich_text",
+              "textContent": "={{ $('Update Docs File with Content').item.json.documentId }}"
+            },
+            {
+              "key": "Final Assets Folder ID|rich_text",
+              "textContent": "={{ $('Create Final Assets Folder').item.json.id }}"
+            },
+            {
+              "key": "Google Drive Original Assets|url",
+              "urlValue": "={{ $('Create Original Assets Folder').item.json.webViewLink }}"
+            },
+            {
+              "key": "Google Drive Final Assets|url",
+              "urlValue": "={{ $('Create Final Assets Folder').item.json.webViewLink }}"
+            },
+            {
+              "key": "Original Assets Folder ID|rich_text",
+              "textContent": "={{ $('Create Original Assets Folder').item.json.id }}"
+            },
+            {
+              "key": "Google Doc Script File|url",
+              "urlValue": "=https://docs.google.com/document/d/{{ $('Update Docs File with Content').item.json.documentId }}"
+            },
+            {
+              "key": "Google Drive Folder|url",
+              "urlValue": "={{ $('Create Content Folder').item.json.webViewLink }}"
+            },
+            {
+              "key": "Google Drive Folder ID|rich_text",
+              "textContent": "={{ $('Create Content Folder').item.json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -1200,
+        480
+      ],
+      "id": "3f50cbac-1746-48b5-b691-3a4248bc35ed",
+      "name": "Update Notion: 'Next:To Review'1",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "901fb74e-e681-4e9f-bbed-d2a70fa1fba3",
+              "leftValue": "={{ $json.property_automation_status }}",
+              "rightValue": "Next: Draft",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -3280,
+        400
+      ],
+      "id": "4d77d0dd-3992-460e-a0be-bed262d45bc6",
+      "name": "Status = 'Next: Draft'"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJZNZL3",
+          "mode": "list",
+          "cachedResultName": "n8n-marketing-content"
+        },
+        "text": "=⚠️ Error  \n\n• {{ $('Correct Publish Date').item.json.property_formatted_started_date }}—<{{ $json.url }}|YTP-{{ $json.property_formatted_id }}>—\"{{ $json.name }}\" \n\n• Pushed back to 'Script in Progress' due to incorrect target publish date. \n\n• Please check and make sure the target publish date is accurate (i.e., the target publish date should not be before today’s date).",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "botProfile": {
+            "imageValues": {
+              "profilePhotoType": "image",
+              "icon_url": "https://slack-imgs.com/?c=1&o1=gu&url=https%3A%2F%2Femoji.slack-edge.com%2FT01LPLK6K1T%2Fslack-icons_data-feed-alert-internal%2F050eb7ffa86f93be.png"
+            }
+          },
+          "link_names": true,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -2640,
+        860
+      ],
+      "id": "e52a2767-2212-490f-852c-962f266eb485",
+      "name": "Error: Wrong Publish Date",
+      "webhookId": "f527d155-213c-4d07-83c4-1dee6da3f5f8",
+      "credentials": {
+        "slackApi": {
+          "id": "HS1DzZvPFdQrahn5",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "=",
+        "returnAll": true,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "={{ $json.property_original_assets_folder_id }}",
+            "mode": "id"
+          }
+        },
+        "options": {
+          "fields": [
+            "id",
+            "name",
+            "webViewLink"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2640,
+        660
+      ],
+      "id": "44cbda30-a3f9-4b60-8ea0-f302656508b2",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tEaYEc8LPviAPE8U",
+          "name": "Google Drive account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c39c4299-b7a7-497d-b773-87ec6c91b8c2",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "Archive",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -2420,
+        660
+      ],
+      "id": "c246d2fb-2653-49dc-b182-4004d30748b5",
+      "name": "Filter",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive').item.json.id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Correct Publish Date').item.json.property_final_assets_folder_id }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1480,
+        740
+      ],
+      "id": "21364999-c9c4-45bc-8c5c-2e2e9cdd5c4e",
+      "name": "Move to Final Asset Folder",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tEaYEc8LPviAPE8U",
+          "name": "Google Drive account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJZNZL3",
+          "mode": "list",
+          "cachedResultName": "n8n-marketing-content"
+        },
+        "text": "=📝 [*Review*] Content moved from \"Draft\" to \"Review\" stage. \n\n• {{ $('Correct Publish Date').item.json.property_formatted_started_date }}—<{{ $('Correct Publish Date').item.json.url }}|YTP-{{ $('Correct Publish Date').item.json.property_formatted_id }}>—\"{{ $('Correct Publish Date').item.json.name }}\" \n\n• Stage: \"Script in Progress\" to \"Script in Review\" \n• Login to *Main* Google Folder, <{{ $('Correct Publish Date').item.json.property_google_drive_folder }}|Click Here> \n• *To View All Final Assets*, <{{ $('Correct Publish Date').item.json.property_google_drive_final_assets }}|Click Here> \n• Review _Final_ Content Script, <{{ $('Correct Publish Date').item.json.property_google_doc_script_file }}|Click Here>",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "link_names": true,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -1180,
+        760
+      ],
+      "id": "e18ada28-0aaf-4e35-874f-a8b4bb05ad48",
+      "name": "Send message to Marketing team",
+      "webhookId": "7bbba8a9-ad05-4840-98d3-288f5e3a6ea6",
+      "executeOnce": true,
+      "credentials": {
+        "slackApi": {
+          "id": "HS1DzZvPFdQrahn5",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "56308846-0e21-4081-9ae6-86137496801e",
+              "leftValue": "={{ Date.parse($json.property_targeted_publish_date.start || $json.property_target_publish_date) }}",
+              "rightValue": "={{ Date.now() }}",
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2860,
+        760
+      ],
+      "id": "093ba345-1f47-4280-9b04-12d14b3b02bc",
+      "name": "Correct Publish Date"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJPDWAX",
+          "mode": "list",
+          "cachedResultName": "n8n-marketing-content-approval-testing"
+        },
+        "text": "=📝 [*Review*] Content moved from \"Draft\" to \"Review\" stage. \n\n• {{ $('Correct Publish Date').item.json.property_formatted_started_date }}—<{{ $('Correct Publish Date').item.json.url }}|YTP-{{ $('Correct Publish Date').item.json.property_formatted_id }}>—\"{{ $('Correct Publish Date').item.json.name }}\" \n\n• Stage: \"Script in Progress\" to \"Script in Review\" \n• Login to *Main* Google Folder, <{{ $('Correct Publish Date').item.json.property_google_drive_folder }}|Click Here> \n• *To View All Final Assets*, <{{ $('Correct Publish Date').item.json.property_google_drive_final_assets }}|Click Here> \n• Review _Final_ Content Script, <{{ $('Correct Publish Date').item.json.property_google_doc_script_file }}|Click Here>",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "link_names": true,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -1400,
+        980
+      ],
+      "id": "1754f2bb-2bf4-4bf1-b3e8-8934368c47f1",
+      "name": "Send message to Marketing Approval: Script Approval",
+      "webhookId": "7bbba8a9-ad05-4840-98d3-288f5e3a6ea6",
+      "executeOnce": true,
+      "credentials": {
+        "slackApi": {
+          "id": "HS1DzZvPFdQrahn5",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f7888d00-8614-44b2-8d6c-37e0cc251780",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2040,
+        740
+      ],
+      "id": "d708b931-967f-46a5-b31d-7b7d759f25ec",
+      "name": "If1",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Correct Publish Date').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Automation Error|checkbox",
+              "checkboxValue": true
+            },
+            {
+              "key": "Status|status",
+              "statusValue": "Draft"
+            },
+            {
+              "key": "YT Status|select",
+              "selectValue": "Script in Progress"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -1740,
+        980
+      ],
+      "id": "a4a00fff-c198-41bc-be35-78bee45ff796",
+      "name": "Automation Error: True",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "311ed124-19f9-4e61-9920-334713cf48a1",
+                    "leftValue": "={{ $json.property_yt_status }}",
+                    "rightValue": "Filming in Progress",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Filming in Progress"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "0bc18695-7b0f-4cf3-aad6-84e1e8678770",
+                    "leftValue": "={{ $json.property_yt_status }}",
+                    "rightValue": "Video Edit in Progress",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Video Edit in Progress"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1d93c29a-f94d-41cf-a776-77da8117e2e1",
+                    "leftValue": "={{ $json.property_yt_status }}",
+                    "rightValue": "Script Approved",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Script Approved"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -3220,
+        1620
+      ],
+      "id": "a82c5444-c462-4747-95e6-baec4ededc26",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJPDWAX",
+          "mode": "list",
+          "cachedResultName": "n8n-marketing-content-approval-testing"
+        },
+        "messageType": "block",
+        "blocksUi": "={\n\t\"blocks\": [\n\t\t{\n\t\t\t\"type\": \"section\",\n\t\t\t\"text\": {\n\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\"text\": \"Do you approve this request?\"\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\t\"type\": \"actions\",\n\t\t\t\"elements\": [\n\t\t\t\t{\n\t\t\t\t\t\"type\": \"button\",\n\t\t\t\t\t\"text\": {\n\t\t\t\t\t\t\"type\": \"plain_text\",\n\t\t\t\t\t\t\"text\": \"Approve\"\n\t\t\t\t\t},\n\t\t\t\t\t\"style\": \"primary\",\n\t\t\t\t\t\"value\": \"approve\"\n\t\t\t\t}\n\t\t\t]\n\t\t}\n\t]\n}",
+        "text": "=",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -960,
+        860
+      ],
+      "id": "2372eb7d-a3fe-4d6c-9862-5e3b585a0fd9",
+      "name": "Send Approval Message with Button",
+      "webhookId": "a8a1e5d3-be59-4e9c-8457-f6e13d970be9",
+      "executeOnce": false,
+      "credentials": {
+        "slackApi": {
+          "id": "HS1DzZvPFdQrahn5",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "Thumbnail Ideas & References",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Create Content Folder').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "folderColorRgb": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1900,
+        80
+      ],
+      "id": "e9a8166b-166e-40e8-b7aa-492a6fe97432",
+      "name": "Create Thumbnail Folder",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tEaYEc8LPviAPE8U",
+          "name": "Google Drive account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Status = \\'Next: Draft\\'').item.json.property_image }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "array",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Images"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "639775ba-a615-4b1a-b897-d6ff63e5a453",
+                    "leftValue": "={{ $('Status = \\'Next: Draft\\'').item.json.property_thumbnail_ideas }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "array",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Thumbnails"
+            }
+          ]
+        },
+        "options": {
+          "allMatchingOutputs": true
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -1640,
+        80
+      ],
+      "id": "f6f4a2a7-9b9c-40fc-9c6b-2cbe4c528db6",
+      "name": "Switch2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8c23fb85-6a66-4fae-8db2-bae2768bfb17",
+              "name": "property_image",
+              "value": "={{ $('Status = \\'Next: Draft\\'').item.json.property_image }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1200,
+        280
+      ],
+      "id": "6184f67b-4f95-4293-8877-af662b14ff85",
+      "name": "Edit Fields6"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "property_image",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -980,
+        280
+      ],
+      "id": "fa32d42d-4254-41bd-a5bf-80494d8089fd",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.property_image }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -760,
+        280
+      ],
+      "id": "1b3c0f3a-b279-48b6-9ef4-1978430349e0",
+      "name": "Convert Image URL to Binary Data1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0d0b3b36-d642-470e-8fb1-4ef5c04ee44f",
+              "name": "formattedDate",
+              "value": "={{ $('Status = \\'Next: Draft\\'').item.json.property_formatted_start_date }}",
+              "type": "string"
+            },
+            {
+              "id": "9efe4bdf-a464-4075-bf25-e32a0b76a8f5",
+              "name": "formattedID",
+              "value": "={{ $('Status = \\'Next: Draft\\'').item.json.property_formatted_id }}",
+              "type": "string"
+            },
+            {
+              "id": "46754f30-8679-44d6-897d-81a099076048",
+              "name": "Content Title",
+              "value": "={{ $('Status = \\'Next: Draft\\'').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "04ceea0b-97f4-43c9-a562-f12a1a9302d0",
+              "name": "Original Asset URL",
+              "value": "={{ $('Create Original Assets Folder').item.json.webViewLink }}",
+              "type": "string"
+            },
+            {
+              "id": "2fd07cb9-cbbe-4d15-b898-7c626b865826",
+              "name": "Main Content Folder",
+              "value": "={{ $('Create Content Folder').item.json.webViewLink }}",
+              "type": "string"
+            },
+            {
+              "id": "a7191a4d-46f9-46fd-87bd-cdd6ef8f1b1b",
+              "name": "Google Doc Script ID",
+              "value": "={{ $('Update Docs File with Content').item.json.documentId }}",
+              "type": "string"
+            },
+            {
+              "id": "1991e8fb-a493-4067-88c2-a85078761b11",
+              "name": "Notion Page URL",
+              "value": "={{ $('Notion').item.json.url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1420,
+        200
+      ],
+      "id": "aaf32357-6b39-43f3-953d-c1070c2f4ac6",
+      "name": "Edit Fields8"
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "=data",
+        "name": "=Thumbnail Idea Added on {{ $now.toFormat('dd-MM-yyyy-tt') }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Create Thumbnail Folder').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -540,
+        280
+      ],
+      "id": "557d7285-72ae-47d1-a950-ae90cb361c10",
+      "name": "Upload Images1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tEaYEc8LPviAPE8U",
+          "name": "Google Drive account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        280
+      ],
+      "id": "6575e52a-a23a-4007-8692-c21a02aeba6f",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "numberInputs": 4,
+        "options": {
+          "includeUnpaired": true
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -100,
+        60
+      ],
+      "id": "5bbc0b40-8165-42c4-9a5d-5f2c3ddb1a23",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Correct Publish Date').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Script Approval TS|rich_text",
+              "textContent": "={{ $json.message_timestamp }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -680,
+        860
+      ],
+      "id": "84464920-6953-4886-92cc-93a8aba3a891",
+      "name": "Set Approval Request ID",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJZNZL3",
+          "mode": "list",
+          "cachedResultName": "n8n-content"
+        },
+        "text": "=⚠️ Error  \n\n• {{ $('Correct Publish Date3').item.json.property_formatted_started_date }}—<{{ $json.url }}|YTP-{{ $json.property_formatted_id }}>—\"{{ $json.name }}\" \n\n• Pushed back to \"Filming in Progress\" due to incorrect target publish date. \n\n• Please check and make sure the target publish date is accurate (i.e., the target publish date should not be before today’s date).",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "link_names": true,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -1760,
+        1800
+      ],
+      "id": "ccd918da-4b8b-4bef-8e2a-59f6fe8df92f",
+      "name": "Error: Wrong Publish Date1",
+      "webhookId": "f527d155-213c-4d07-83c4-1dee6da3f5f8",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "4JyGLRgATNjhWAtu",
+          "name": "Slack account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c39c4299-b7a7-497d-b773-87ec6c91b8c2",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "Archive",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -1540,
+        1600
+      ],
+      "id": "c334e665-e1c6-4689-87f2-a93ec54d70dc",
+      "name": "Filter1",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJZNZL3",
+          "mode": "list",
+          "cachedResultName": "n8n-marketing-content"
+        },
+        "text": "=:film_projector: *[Action Required]* YT card moved to \"Video Edit in Progress\" stage\n\n• {{ $('Correct Publish Date3').item.json.property_formatted_started_date }}—<{{ $('Correct Publish Date3').item.json.url }}|YTP-{{ $('Correct Publish Date3').item.json.property_formatted_id }}>—\"{{ $('Correct Publish Date3').item.json.name }}\"\n\n• Stage: \"Filming in Progress\" ➝ \"*Vid Edit in Progress*\"\n\n• :frame_with_picture: *Thumbnail ideas + references*,<{{ $('Correct Publish Date3').item.json.property_google_drive_folder }} |  Click Here>\n• :memo: *Final Script*, <{{ $('Correct Publish Date3').item.json.property_google_doc_script_file }} |  Click Here>\n• :film_frames: *Raw Footage*, <{{ $('Search Original Assets').item.json.webViewLink }} | Click Here >\n• :gift: Giveaway Assets (if any), Click Here\n",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "link_names": true,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -620,
+        1320
+      ],
+      "id": "6621ec03-6f72-4aff-8a5f-f47703a31e51",
+      "name": "Send message to Marketing team1",
+      "webhookId": "7bbba8a9-ad05-4840-98d3-288f5e3a6ea6",
+      "executeOnce": true,
+      "credentials": {
+        "slackApi": {
+          "id": "HS1DzZvPFdQrahn5",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f7888d00-8614-44b2-8d6c-37e0cc251780",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -840,
+        1620
+      ],
+      "id": "1079fb32-d1ff-45e4-8c9f-190751602a0e",
+      "name": "If3",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Correct Publish Date3').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Automation Error|checkbox",
+              "checkboxValue": true
+            },
+            {
+              "key": "YT Status|select",
+              "selectValue": "Filming in Progress"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -400,
+        1720
+      ],
+      "id": "b6e27a89-6bbe-453a-bfaf-946e781f1601",
+      "name": "Automation Error: True1",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9e155fcd-f7f1-41cb-8e92-d62482e4dd27",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "Thumbnail Ideas & References",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -1700,
+        740
+      ],
+      "id": "6728e56c-8668-47b8-9c8f-a8ac83fa1cc6",
+      "name": "Filter2"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJZNZL3",
+          "mode": "list",
+          "cachedResultName": "n8n-marketing-content"
+        },
+        "text": "=⚠️ Error  \n\n• {{ $json.property_formatted_started_date }}—<{{ $json.url }}|YTP-{{ $json.property_formatted_id }}>—\"{{ $json.name }}\" \n\n• Pushed back to draft due to incorrect target publish date. \n\n• Please check and make sure the target publish date is accurate (i.e., the target publish date should not be before today’s date).",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "botProfile": {
+            "imageValues": {
+              "profilePhotoType": "image",
+              "icon_url": "https://slack-imgs.com/?c=1&o1=gu&url=https%3A%2F%2Femoji.slack-edge.com%2FT01LPLK6K1T%2Fslack-icons_data-feed-alert-internal%2F050eb7ffa86f93be.png"
+            }
+          },
+          "link_names": true,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -2420,
+        1320
+      ],
+      "id": "6c558136-27ff-42f3-a5b9-d32e1a94995d",
+      "name": "Error: Wrong Publish Date2",
+      "webhookId": "f527d155-213c-4d07-83c4-1dee6da3f5f8",
+      "credentials": {
+        "slackApi": {
+          "id": "HS1DzZvPFdQrahn5",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJZNZL3",
+          "mode": "list",
+          "cachedResultName": "n8n-marketing-content"
+        },
+        "text": "=🎥 [*Filming*] YT Content moved from \"Script Approved\" to \"Filming in Progress\" stage. \n\n• {{ $('Correct Publish Date2').item.json.property_formatted_started_date }}—<{{ $('Correct Publish Date2').item.json.url }}|YTP-{{ $('Correct Publish Date2').item.json.property_formatted_id }}>—\"{{ $('Correct Publish Date2').item.json.name }}\" \n\nStage: \"Script Approved\" to \"*Filming in Progress*\"\n\n• *To View Main Content Folder*, <{{ $('Correct Publish Date2').item.json.property_google_drive_folder }}|Click Here> \n• 🖼️ *Thumbnail & References*, <{{ $('Grab TN & References').item.json.webViewLink }}|Click Here> \n• 🎞️ *To View Raw Footage Folder*, <{{ $json.webViewLink }}|Click Here> \n• 📝 *Final Script*, <{{ $('Correct Publish Date2').item.json.property_google_doc_script_file }}|Click Here>",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "link_names": true,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -1760,
+        1220
+      ],
+      "id": "588af4c2-6e6b-490c-8f0d-0ca3e7d8de2f",
+      "name": "Send message to marketing editing",
+      "webhookId": "7bbba8a9-ad05-4840-98d3-288f5e3a6ea6",
+      "executeOnce": true,
+      "credentials": {
+        "slackApi": {
+          "id": "HS1DzZvPFdQrahn5",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "Raw Footage",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Correct Publish Date2').item.json.property_final_assets_folder_id }}",
+          "mode": "id"
+        },
+        "options": {
+          "simplifyOutput": false
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1980,
+        1220
+      ],
+      "id": "02d8ad1f-fb98-4592-b576-4b116cf62abe",
+      "name": "Create Raw Footage Folder",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tEaYEc8LPviAPE8U",
+          "name": "Google Drive account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Correct Publish Date').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Status|status",
+              "statusValue": "Draft"
+            },
+            {
+              "key": "YT Status|select",
+              "selectValue": "Script in Progress"
+            },
+            {
+              "key": "Automation Status|status",
+              "statusValue": "Next: To Review"
+            },
+            {
+              "key": "Automation Error|checkbox",
+              "checkboxValue": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -2420,
+        860
+      ],
+      "id": "70175e1e-4ffc-413d-a5c6-3eba7f16063b",
+      "name": "Revert back to Draft (Script in Progress) & Error",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c10d0c5c-1eb1-4c74-b8dc-99a224eab53e",
+              "name": "Page ID",
+              "value": "={{ $json[\"Content Page ID\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "604a0fc9-d259-43c2-aa4e-7e1fcdb64daa",
+              "name": "Content Log ID",
+              "value": "={{ $json[\"Content Log Page ID\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "2faeed87-fc35-4837-be8c-7db60e428910",
+              "name": "Pipeline",
+              "value": "={{ $json.Pipeline }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3980,
+        960
+      ],
+      "id": "d3caf6f9-c94c-4458-8924-ccd881bb16ad",
+      "name": "Set Page ID"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "=",
+        "returnAll": true,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "={{ $json.property_google_drive_folder_id }}",
+            "mode": "id"
+          }
+        },
+        "options": {
+          "fields": [
+            "id",
+            "name",
+            "webViewLink"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2420,
+        1120
+      ],
+      "id": "f3533fc8-7552-43da-bfa1-c4defac862a0",
+      "name": "SearchMain",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tEaYEc8LPviAPE8U",
+          "name": "Google Drive account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "=",
+        "returnAll": true,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "={{ $json.property_final_assets_folder_id }}",
+            "mode": "id"
+          }
+        },
+        "options": {
+          "fields": [
+            "id",
+            "name",
+            "webViewLink"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1760,
+        1600
+      ],
+      "id": "6a517e5a-ea11-4e27-a375-feacaaf208f6",
+      "name": "Search Original Assets",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tEaYEc8LPviAPE8U",
+          "name": "Google Drive account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {
+          "driveId": {
+            "mode": "list",
+            "value": "My Drive"
+          },
+          "folderId": {
+            "__rl": true,
+            "value": "={{ $json.id }}",
+            "mode": "id"
+          }
+        },
+        "options": {
+          "fields": [
+            "id",
+            "name",
+            "webViewLink",
+            "mimeType"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1060,
+        1620
+      ],
+      "id": "11fdf5d1-832d-49e7-bca0-ba0dc23d0793",
+      "name": "Search Raw Footage",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "tEaYEc8LPviAPE8U",
+          "name": "Google Drive account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Correct Publish Date3').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Automation Status|status",
+              "statusValue": "Next: Scheduled"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -400,
+        1320
+      ],
+      "id": "957f464b-e6ac-45c7-9552-27cbbd918e18",
+      "name": "Set Next: Scheduled",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c39c4299-b7a7-497d-b773-87ec6c91b8c2",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "Thumbnail Ideas & References",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -2200,
+        1220
+      ],
+      "id": "ea64bd9d-0e93-4caa-837f-e5fb31937216",
+      "name": "Grab TN & References",
+      "alwaysOutputData": false,
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Correct Publish Date2').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Automation Status|status",
+              "statusValue": "Next: Video Edit"
+            },
+            {
+              "key": "Raw Footage Folder|url",
+              "urlValue": "={{ $('Create Raw Footage Folder').item.json.webViewLink }}"
+            },
+            {
+              "key": "Raw Footage ID|rich_text",
+              "textContent": "={{ $('Create Raw Footage Folder').item.json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -1540,
+        1220
+      ],
+      "id": "d38db98e-f7da-4287-a14f-07881661ca5d",
+      "name": "Set Next: Video Edit & TN",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Correct Publish Date2').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "YT Status|select",
+              "selectValue": "Script Approved"
+            },
+            {
+              "key": "Automation Status|status",
+              "statusValue": "Next: Filming"
+            },
+            {
+              "key": "Automation Error|checkbox",
+              "checkboxValue": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -2200,
+        1420
+      ],
+      "id": "eec5d477-cf4e-4c4f-9547-75c72d84e719",
+      "name": "Push Back to: Next: Filming & Script Approved",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Correct Publish Date3').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Automation Error|checkbox",
+              "checkboxValue": true
+            },
+            {
+              "key": "YT Status|select",
+              "selectValue": "Filming in Progress"
+            },
+            {
+              "key": "Automation Status|status",
+              "statusValue": "Next: Video Edit"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -1540,
+        1800
+      ],
+      "id": "0ceb208d-6752-4f11-a1cf-0beac8af43fc",
+      "name": "Push Back to Next: Video Edit & Filming in Progress",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4b0576e0-a293-480e-9f4e-e573607508bd",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1260,
+        1720
+      ],
+      "id": "f3964989-c8f9-4a23-a0c4-158ba566b51a",
+      "name": "Check if Raw Folder Exists"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Correct Publish Date3').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Automation Error|checkbox",
+              "checkboxValue": true
+            },
+            {
+              "key": "YT Status|select",
+              "selectValue": "Filming in Progress"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -820,
+        1820
+      ],
+      "id": "d05c6bd9-7e6b-4aec-99f0-a4396ad67f46",
+      "name": "Automation Error: True2",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJZNZL3",
+          "mode": "list",
+          "cachedResultName": "n8n-marketing-content"
+        },
+        "text": "=🚀 [Posted] Approved content has been posted.\n• {{ $json.property_formatted_started_date }}—<{{ $json.url }}|YTP-{{ $json.property_formatted_id }}>—\"{{ $json.name }}\"\n• Stage: \"Approved\" to \"Posted\" 🎉 \n• Login to Main Google Folder, <{{ $json.property_google_drive_folder }}|Click Here>\n• To View All Final Assets, <{{ $json.property_google_drive_final_assets }}|Click Here>\n• Review Posted Content (All) across Platforms. 🌕",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "link_names": true,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -80,
+        1600
+      ],
+      "id": "3171201c-f2dc-41f5-8a91-97f2c82e813c",
+      "name": "Send message to Marketing team2",
+      "webhookId": "7bbba8a9-ad05-4840-98d3-288f5e3a6ea6",
+      "executeOnce": true,
+      "credentials": {
+        "slackApi": {
+          "id": "HS1DzZvPFdQrahn5",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Switch').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Automation Status|status",
+              "statusValue": "Done"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        140,
+        1600
+      ],
+      "id": "b4a12009-eb91-4cf3-818e-c423cfd5e373",
+      "name": "Notion3",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJZNZL3",
+          "mode": "list",
+          "cachedResultName": "n8n-marketing-content"
+        },
+        "text": "=:warning: Error \n\n• {{ $('Correct Publish Date').item.json.property_formatted_started_date }}—<{{ $('Correct Publish Date').item.json.url }}|YTP-{{ $('Correct Publish Date').item.json.property_formatted_id }}>—\"{{ $('Correct Publish Date').item.json.name }}\" \n\n• Pushed to 'Script in Progress' with No Assets in the <{{ $('Switch').item.json.property_google_drive_orignal_assets_folder }} | Original Assets> Drive Folder. \n\n• Please Upload the Assets & Uncheck the \"Automation Error?\" Checkbox in the Notion page when done.",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "botProfile": {
+            "imageValues": {
+              "profilePhotoType": "image",
+              "icon_url": "https://slack-imgs.com/?c=1&o1=gu&url=https%3A%2F%2Femoji.slack-edge.com%2FT01LPLK6K1T%2Fslack-icons_data-feed-alert-internal%2F050eb7ffa86f93be.png"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -2020,
+        980
+      ],
+      "id": "0147c0a2-52c1-4a4d-bdc5-80e8e4f45065",
+      "name": "Send: No Assets",
+      "webhookId": "c312da0d-d8ff-44ed-a9d3-f7b111a5a2eb",
+      "credentials": {
+        "slackApi": {
+          "id": "HS1DzZvPFdQrahn5",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJZNZL3",
+          "mode": "list",
+          "cachedResultName": "n8n-marketing-content"
+        },
+        "text": "=[*Scheduled*] Content moved from 'Video Edit & TN' to 'Scheduled'\n\n• {{ $('Switch').item.json.property_formatted_started_date }}—<{{ $json.url }}|YTP-{{ $json.property_formatted_id }}>—\"{{ $json.name }}\" \n\n*Note* Here we would trigger the zapier flow to metricool",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "mrkdwn": true
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        140,
+        1200
+      ],
+      "id": "c64352cc-47b8-42ed-813e-722abfb3f0a4",
+      "name": "Slack4",
+      "webhookId": "0635077a-0ee0-4025-8436-1ca68774ac1f",
+      "credentials": {
+        "slackApi": {
+          "id": "HS1DzZvPFdQrahn5",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Switch').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Automation Status|status",
+              "statusValue": "Next: Posted"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        360,
+        1200
+      ],
+      "id": "a808d8eb-144f-48dc-9740-152c72a80ee5",
+      "name": "Notion4",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "56308846-0e21-4081-9ae6-86137496801e",
+              "leftValue": "={{ Date.parse($json.property_targeted_publish_date.start || $json.property_target_publish_date) }}",
+              "rightValue": "={{ Date.now() }}",
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2640,
+        1220
+      ],
+      "id": "167547e3-2402-48da-af83-77f588fb502b",
+      "name": "Correct Publish Date2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "56308846-0e21-4081-9ae6-86137496801e",
+              "leftValue": "={{ Date.parse($json.property_targeted_publish_date.start || $json.property_target_publish_date) }}",
+              "rightValue": "={{ Date.now() }}",
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1980,
+        1700
+      ],
+      "id": "1475f315-97ca-44df-9ff3-326db8e97da8",
+      "name": "Correct Publish Date3"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJZNZL3",
+          "mode": "list",
+          "cachedResultName": "n8n-marketing-content"
+        },
+        "text": "=:warning: Error   \n\n• {{ $('Correct Publish Date3').item.json.property_formatted_started_date }}—<{{ $('Correct Publish Date3').item.json.url }}|YTP-{{ $('Correct Publish Date3').item.json.property_formatted_id }}>—\"{{ $('Correct Publish Date3').item.json.name }}\"   \n\n• Pushed to 'Filming in Progress' with No Assets in the <{{ $('Switch').item.json.property_raw_footage_folder }} | Raw Footage> Drive Folder.   \n\n• Please Upload the Assets & Uncheck the \"Automation Error?\" Checkbox in the Notion page when done.",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "botProfile": {
+            "imageValues": {
+              "profilePhotoType": "image",
+              "icon_url": "https://slack-imgs.com/?c=1&o1=gu&url=https%3A%2F%2Femoji.slack-edge.com%2FT01LPLK6K1T%2Fslack-icons_data-feed-alert-internal%2F050eb7ffa86f93be.png"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -620,
+        1720
+      ],
+      "id": "79dd3e7b-9a6b-417b-8713-a121f9c48687",
+      "name": "ERROR: NO RAW FOOTAGE",
+      "webhookId": "c312da0d-d8ff-44ed-a9d3-f7b111a5a2eb",
+      "credentials": {
+        "slackApi": {
+          "id": "HS1DzZvPFdQrahn5",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJZNZL3",
+          "mode": "list",
+          "cachedResultName": "n8n-content"
+        },
+        "text": "=:warning: Error   \n\n• {{ $('Correct Publish Date3').item.json.property_formatted_started_date }}—<{{ $('Correct Publish Date3').item.json.url }}|YTP-{{ $('Correct Publish Date3').item.json.property_formatted_id }}>—\"{{ $('Correct Publish Date3').item.json.name }}\"   \n\n• Pushed to review with No Assets in the <{{ $('Switch').item.json.property_google_drive_orignal_assets_folder }} | Original Assets> Drive Folder.   \n\n• Please Upload the Assets & Uncheck the \"Automation Error?\" Checkbox in the Notion page when done.",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "botProfile": {
+            "imageValues": {
+              "profilePhotoType": "image",
+              "icon_url": "https://slack-imgs.com/?c=1&o1=gu&url=https%3A%2F%2Femoji.slack-edge.com%2FT01LPLK6K1T%2Fslack-icons_data-feed-alert-internal%2F050eb7ffa86f93be.png"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -1040,
+        1820
+      ],
+      "id": "a1b948e5-02ee-45a3-87b7-a0833c7c1f56",
+      "name": "ERROR: NO Original ASSETS",
+      "webhookId": "c312da0d-d8ff-44ed-a9d3-f7b111a5a2eb",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "4JyGLRgATNjhWAtu",
+          "name": "Slack account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJZNZL3",
+          "mode": "list",
+          "cachedResultName": "n8n-marketing-content"
+        },
+        "text": "=⚠️ Error \n• {{ $json.property_formatted_started_date }}—<{{ $json.url }}|YTP-{{ $json.property_formatted_id }}>—\"{{ $json.name }}\" \n• Pushed back to backlog due to incorrect status change.\n• Please check and make sure to follow the correct content flow (i.e Backlog -> To Write -> Draft -> To Review)",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "botProfile": {
+            "imageValues": {
+              "profilePhotoType": "image",
+              "icon_url": "https://slack-imgs.com/?c=1&o1=gu&url=https%3A%2F%2Femoji.slack-edge.com%2FT01LPLK6K1T%2Fslack-icons_data-feed-alert-internal%2F050eb7ffa86f93be.png"
+            }
+          },
+          "link_names": true,
+          "mrkdwn": true,
+          "unfurl_links": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -2860,
+        1060
+      ],
+      "id": "e475695f-f840-4caa-bb52-34a121f7f12a",
+      "name": "Slack5",
+      "webhookId": "431ccaa3-cc10-4395-b906-d6c68adb4657",
+      "credentials": {
+        "slackApi": {
+          "id": "HS1DzZvPFdQrahn5",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Status = Next: To Review').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Status|status",
+              "statusValue": "Backlog"
+            },
+            {
+              "key": "Automation Error|checkbox",
+              "checkboxValue": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -2640,
+        1060
+      ],
+      "id": "f521d673-db8c-4645-b3ba-6568b2a372db",
+      "name": "Notion5",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "901fb74e-e681-4e9f-bbed-d2a70fa1fba3",
+              "leftValue": "={{ $json.property_automation_status }}",
+              "rightValue": "Next: To Review",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -3080,
+        860
+      ],
+      "id": "a671e2f8-cbfb-4d61-87d3-2b010e7457b9",
+      "name": "Status = Next: To Review"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "901fb74e-e681-4e9f-bbed-d2a70fa1fba3",
+              "leftValue": "={{ $json.property_automation_status }}",
+              "rightValue": "Next: Filming",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2860,
+        1320
+      ],
+      "id": "1410afad-55f1-4652-b21d-af95417b2b3c",
+      "name": "Status = Next: Filming"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJZNZL3",
+          "mode": "list",
+          "cachedResultName": "n8n-marketing-content"
+        },
+        "text": "=⚠️ Error \n• {{ $json.property_formatted_start_date }}—<{{ $json.url }}|YTP-{{ $json.property_formatted_id }}>—\"{{ $json.name }}\" \n• Pushed back to backlog due to incorrect status change.\n• Please check and make sure to follow the correct content flow (i.e Backlog -> To Write -> Draft -> To Review)",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "botProfile": {
+            "imageValues": {
+              "profilePhotoType": "image",
+              "icon_url": "https://slack-imgs.com/?c=1&o1=gu&url=https%3A%2F%2Femoji.slack-edge.com%2FT01LPLK6K1T%2Fslack-icons_data-feed-alert-internal%2F050eb7ffa86f93be.png"
+            }
+          },
+          "link_names": true,
+          "mrkdwn": true,
+          "unfurl_links": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -2640,
+        1520
+      ],
+      "id": "1c3c8d81-f580-4fef-abba-c8bf95075cda",
+      "name": "Slack6",
+      "webhookId": "431ccaa3-cc10-4395-b906-d6c68adb4657",
+      "credentials": {
+        "slackApi": {
+          "id": "HS1DzZvPFdQrahn5",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Status = Next: Filming').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Status|status",
+              "statusValue": "Backlog"
+            },
+            {
+              "key": "Automation Error|checkbox",
+              "checkboxValue": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -2420,
+        1520
+      ],
+      "id": "e56698fc-916d-4fef-b705-4a669a94ac00",
+      "name": "Notion6",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "901fb74e-e681-4e9f-bbed-d2a70fa1fba3",
+              "leftValue": "={{ $json.property_automation_status }}",
+              "rightValue": "Next: Video Edit",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2240,
+        1720
+      ],
+      "id": "7a16c65a-8f9e-474f-a8bf-5a718ebc82d9",
+      "name": "Status = Next: Video Edit"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJZNZL3",
+          "mode": "list",
+          "cachedResultName": "n8n-marketing-content"
+        },
+        "text": "=⚠️ Error \n• {{ $json.property_formatted_started_date }}—<{{ $json.url }}|YTP-{{ $json.property_formatted_id }}>—\"{{ $json.name }}\" \n• Pushed back to backlog due to incorrect status change.\n• Please check and make sure to follow the correct content flow (i.e Backlog -> To Write -> Draft -> To Review)",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "botProfile": {
+            "imageValues": {
+              "profilePhotoType": "image",
+              "icon_url": "https://slack-imgs.com/?c=1&o1=gu&url=https%3A%2F%2Femoji.slack-edge.com%2FT01LPLK6K1T%2Fslack-icons_data-feed-alert-internal%2F050eb7ffa86f93be.png"
+            }
+          },
+          "link_names": true,
+          "mrkdwn": true,
+          "unfurl_links": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -1980,
+        2000
+      ],
+      "id": "e498ea9e-6024-4c6d-8749-2ea1f8fa5102",
+      "name": "Slack7",
+      "webhookId": "431ccaa3-cc10-4395-b906-d6c68adb4657",
+      "credentials": {
+        "slackApi": {
+          "id": "HS1DzZvPFdQrahn5",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Status = Next: Video Edit').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Status|status",
+              "statusValue": "Backlog"
+            },
+            {
+              "key": "Automation Error|checkbox",
+              "checkboxValue": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -1760,
+        2000
+      ],
+      "id": "26a6dada-af96-492b-8dc2-562a6fc617c4",
+      "name": "Notion7",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJZNZL3",
+          "mode": "list",
+          "cachedResultName": "n8n-marketing-content"
+        },
+        "text": "=⚠️ Error \n• {{ $json.property_formatted_start_date }}—<{{ $json.url }}|YTP-{{ $json.property_formatted_id }}>—\"{{ $json.name }}\" \n• Pushed back to backlog due to incorrect status change.\n• Please check and make sure to follow the correct content flow (i.e Backlog -> To Write -> Draft -> To Review)",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "botProfile": {
+            "imageValues": {
+              "profilePhotoType": "image",
+              "icon_url": "https://slack-imgs.com/?c=1&o1=gu&url=https%3A%2F%2Femoji.slack-edge.com%2FT01LPLK6K1T%2Fslack-icons_data-feed-alert-internal%2F050eb7ffa86f93be.png"
+            }
+          },
+          "link_names": true,
+          "mrkdwn": true,
+          "unfurl_links": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        140,
+        1400
+      ],
+      "id": "890c1248-eff0-48fb-b52f-edf1038268c0",
+      "name": "Slack8",
+      "webhookId": "431ccaa3-cc10-4395-b906-d6c68adb4657",
+      "credentials": {
+        "slackApi": {
+          "id": "HS1DzZvPFdQrahn5",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Status = Next: Scheduled').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Status|status",
+              "statusValue": "Backlog"
+            },
+            {
+              "key": "Automation Error|checkbox",
+              "checkboxValue": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        360,
+        1400
+      ],
+      "id": "6d700ed5-8f15-4ff7-a791-6a8b3adc6f25",
+      "name": "Notion8",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0c594757-c345-4e5b-abcd-176fda8acb18",
+              "leftValue": "={{ $json.property_automation_status }}",
+              "rightValue": "Next: Scheduled",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -80,
+        1300
+      ],
+      "id": "e56471ec-b983-40ab-9b69-35eacb835dd1",
+      "name": "Status = Next: Scheduled"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -2520,
+        1780
+      ],
+      "id": "57483035-1b13-44ae-997b-3ae4c825f180",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08TMJZNZL3",
+          "mode": "list",
+          "cachedResultName": "n8n-marketing-content"
+        },
+        "text": "=⚠️ Error \n• {{ $json.property_formatted_started_date }}—<{{ $json.url }}|YTP-{{ $json.property_formatted_id }}>—\"{{ $json.name }}\" \n• Pushed back to backlog due to incorrect status change.\n• Please check and make sure to follow the correct content flow (i.e Backlog -> To Write -> Draft -> To Review)",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "botProfile": {
+            "imageValues": {
+              "profilePhotoType": "image",
+              "icon_url": "https://slack-imgs.com/?c=1&o1=gu&url=https%3A%2F%2Femoji.slack-edge.com%2FT01LPLK6K1T%2Fslack-icons_data-feed-alert-internal%2F050eb7ffa86f93be.png"
+            }
+          },
+          "link_names": true,
+          "mrkdwn": true,
+          "unfurl_links": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -2520,
+        1980
+      ],
+      "id": "f6a66960-0bd4-4db1-9ed0-d35099ce73ff",
+      "name": "Slack9",
+      "webhookId": "431ccaa3-cc10-4395-b906-d6c68adb4657",
+      "credentials": {
+        "slackApi": {
+          "id": "HS1DzZvPFdQrahn5",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Status = Next: Approved').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Status|status",
+              "statusValue": "Backlog"
+            },
+            {
+              "key": "Automation Error|checkbox",
+              "checkboxValue": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -2340,
+        1980
+      ],
+      "id": "65a7aaed-11ff-4315-938a-897b7e479a20",
+      "name": "Notion9",
+      "credentials": {
+        "notionApi": {
+          "id": "PlWQCWe4vvjqO5tP",
+          "name": "Notion Working API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a67e59b1-0ad2-4e0b-9876-578e50c4f5f1",
+              "leftValue": "={{ $json.property_automation_status }}",
+              "rightValue": "Next: Approved",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2740,
+        1880
+      ],
+      "id": "b8e1d513-aa57-44f8-a843-c81a3ba5cda8",
+      "name": "Status = Next: Approved"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Workflow Input Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Page ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Status = 'Next: Draft'",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Status = Next: To Review",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack1": {
+      "main": [
+        [
+          {
+            "node": "Notion1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Archive Folder": {
+      "main": [
+        [
+          {
+            "node": "Create Thumbnail Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Original Assets Folder": {
+      "main": [
+        [
+          {
+            "node": "Create Archive Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Docs File": {
+      "main": [
+        [
+          {
+            "node": "Update Docs File with Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Docs File with Content": {
+      "main": [
+        [
+          {
+            "node": "Grant Edit Access to Google Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Images Attached?": {
+      "main": [
+        [
+          {
+            "node": "Switch2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Convert Image URL to Binary Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Image URL to Binary Data": {
+      "main": [
+        [
+          {
+            "node": "Upload Images",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Slack2": {
+      "main": [
+        [
+          {
+            "node": "Update Notion: 'Next:To Review'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Images": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Content Folder": {
+      "main": [
+        [
+          {
+            "node": "Create Final Assets Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Final Assets Folder": {
+      "main": [
+        [
+          {
+            "node": "Create Docs File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Grant Edit Access to Google Doc": {
+      "main": [
+        [
+          {
+            "node": "Create Original Assets Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack3": {
+      "main": [
+        [
+          {
+            "node": "Update Notion: 'Next:To Review'1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Slack3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status = 'Next: Draft'": {
+      "main": [
+        [
+          {
+            "node": "Create Content Folder",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Slack1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error: Wrong Publish Date": {
+      "main": [
+        [
+          {
+            "node": "Revert back to Draft (Script in Progress) & Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move to Final Asset Folder": {
+      "main": [
+        [
+          {
+            "node": "Send message to Marketing Approval: Script Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message to Marketing team": {
+      "main": [
+        [
+          {
+            "node": "Send Approval Message with Button",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Correct Publish Date": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error: Wrong Publish Date",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message to Marketing Approval: Script Approval": {
+      "main": [
+        [
+          {
+            "node": "Send message to Marketing team",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Filter2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send: No Assets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Status = Next: Filming",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Status = Next: Video Edit",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Status = Next: Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Approval Message with Button": {
+      "main": [
+        [
+          {
+            "node": "Set Approval Request ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Thumbnail Folder": {
+      "main": [
+        [
+          {
+            "node": "Images Attached?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Convert Image URL to Binary Data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Image URL to Binary Data1": {
+      "main": [
+        [
+          {
+            "node": "Upload Images1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields8": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Upload Images1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Slack2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error: Wrong Publish Date1": {
+      "main": [
+        [
+          {
+            "node": "Push Back to Next: Video Edit & Filming in Progress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter1": {
+      "main": [
+        [
+          {
+            "node": "Check if Raw Folder Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message to Marketing team1": {
+      "main": [
+        [
+          {
+            "node": "Set Next: Scheduled",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Send message to Marketing team1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ERROR: NO RAW FOOTAGE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter2": {
+      "main": [
+        [
+          {
+            "node": "Move to Final Asset Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error: Wrong Publish Date2": {
+      "main": [
+        [
+          {
+            "node": "Push Back to: Next: Filming & Script Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message to marketing editing": {
+      "main": [
+        [
+          {
+            "node": "Set Next: Video Edit & TN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Raw Footage Folder": {
+      "main": [
+        [
+          {
+            "node": "Send message to marketing editing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Page ID": {
+      "main": [
+        [
+          {
+            "node": "Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SearchMain": {
+      "main": [
+        [
+          {
+            "node": "Grab TN & References",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Original Assets": {
+      "main": [
+        [
+          {
+            "node": "Filter1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Raw Footage": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Grab TN & References": {
+      "main": [
+        [
+          {
+            "node": "Create Raw Footage Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if Raw Folder Exists": {
+      "main": [
+        [
+          {
+            "node": "Search Raw Footage",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ERROR: NO Original ASSETS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message to Marketing team2": {
+      "main": [
+        [
+          {
+            "node": "Notion3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send: No Assets": {
+      "main": [
+        [
+          {
+            "node": "Automation Error: True",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack4": {
+      "main": [
+        [
+          {
+            "node": "Notion4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Correct Publish Date2": {
+      "main": [
+        [
+          {
+            "node": "SearchMain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error: Wrong Publish Date2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Correct Publish Date3": {
+      "main": [
+        [
+          {
+            "node": "Search Original Assets",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error: Wrong Publish Date1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ERROR: NO RAW FOOTAGE": {
+      "main": [
+        [
+          {
+            "node": "Automation Error: True1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ERROR: NO Original ASSETS": {
+      "main": [
+        [
+          {
+            "node": "Automation Error: True2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack5": {
+      "main": [
+        [
+          {
+            "node": "Notion5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status = Next: To Review": {
+      "main": [
+        [
+          {
+            "node": "Correct Publish Date",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Slack5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status = Next: Filming": {
+      "main": [
+        [
+          {
+            "node": "Correct Publish Date2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Slack6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack6": {
+      "main": [
+        [
+          {
+            "node": "Notion6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status = Next: Video Edit": {
+      "main": [
+        [
+          {
+            "node": "Correct Publish Date3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Slack7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack7": {
+      "main": [
+        [
+          {
+            "node": "Notion7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack8": {
+      "main": [
+        [
+          {
+            "node": "Notion8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status = Next: Scheduled": {
+      "main": [
+        [
+          {
+            "node": "Slack4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Slack8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack9": {
+      "main": [
+        [
+          {
+            "node": "Notion9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status = Next: Approved": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Slack9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Next: Scheduled": {
+      "main": [
+        [
+          {
+            "node": "Status = Next: Scheduled",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Automation Error: True1": {
+      "main": [
+        [
+          {
+            "node": "Send message to Marketing team2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1d7a8b72-c432-4cde-bb17-bbb9eb7898b6",
+  "meta": {
+    "instanceId": "e38dd5482639bd61b927f3a5d8425551f6a7f244804be8ea5d2b80e21bfa779c"
+  },
+  "id": "t18TAlVOoJhazJ6B",
+  "tags": []
+}
+AI CONTENT AGENT WORKFLOW IN N8N - DASHBOARDLIM.json
+Prikazan je element AI CONTENT AGENT WORKFLOW IN N8N - DASHBOARDLIM.json.

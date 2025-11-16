@@ -6,14 +6,25 @@ Uses MAF orchestrator for complex multi-perspective tasks.
 
 import asyncio
 import logging
-from typing import Dict, Any, List, Optional
 from datetime import datetime
+from typing import Any, Dict, List, Optional
 
+from src.collaboration.message_models import (
+    AgentRole,
+    CollaborationMessage,
+    MessageType,
+)
+from src.collaboration.multi_provider_coordinator import (
+    CollaborationConfig,
+    ProviderRole,
+)
+from src.collaboration.orchestrator import (
+    OrchestrationConfig,
+    OrchestrationStrategy,
+    Orchestrator,
+)
 from src.core.base_agent import BaseAgent
-from src.core.message_bus import MessageBus, Message, MessagePriority
-from src.collaboration.orchestrator import Orchestrator, OrchestrationConfig, OrchestrationStrategy
-from src.collaboration.multi_provider_coordinator import CollaborationConfig, ProviderRole
-from src.collaboration.message_models import CollaborationMessage, MessageType, AgentRole
+from src.core.message_bus import Message, MessageBus, MessagePriority
 from src.observability.session_logger import SessionLogger
 
 
@@ -66,9 +77,7 @@ class MAFCoordinator(BaseAgent):
 
         return task_type in maf_task_types or explicit_maf
 
-    async def _orchestrate_maf_task(
-        self, task_prompt: str, task_type: str, content: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    async def _orchestrate_maf_task(self, task_prompt: str, task_type: str, content: Dict[str, Any]) -> Dict[str, Any]:
         """Orchestrate a task using MAF."""
         try:
             # Create collaboration config
@@ -90,8 +99,9 @@ class MAFCoordinator(BaseAgent):
                 if consensus and consensus.is_consensus:
                     # Find the most recent synthesizer or final message
                     synthesizer_msgs = [
-                        msg for msg in result.messages
-                        if hasattr(msg, 'sender_role') and msg.sender_role == "synthesizer"
+                        msg
+                        for msg in result.messages
+                        if hasattr(msg, "sender_role") and msg.sender_role == "synthesizer"
                     ]
                     if synthesizer_msgs:
                         final_content = synthesizer_msgs[-1].content
