@@ -24,6 +24,9 @@ Grokputer enables xAI's Grok to control your computer through screen observation
 - 🚀 **Performance Optimized**: API connection pooling, memory leak prevention, concurrency controls (30-50% improvement potential)
 - 📊 **Advanced Analytics**: Comprehensive monitoring of memory, messaging, and system performance
 - 🛠️ **Error Resilience**: Custom exception hierarchy with retry logic and graceful degradation
+- 🤝 **Multi-Agent Collaboration**: Pantheon system with 9 specialized agents (Observer, Reasoner, Actor, Validator, Learner, Memory, Executor, Analyzer, Improver)
+- 💬 **MessageBus**: High-performance async message bus (42K+ msg/sec, <0.05ms latency)
+- 🔄 **GG Framework**: Workflow automation engine (n8n/Make.com style) - PLANNING COMPLETE
 
 ---
 
@@ -220,6 +223,46 @@ python main.py --providers grok,claude --task "real analysis with APIs"
 - ✅ Error handling and fallbacks
 
 See `docs/MAF_SYSTEM.md` for detailed documentation.
+
+### GG Framework Mode (Workflow Engine)
+
+**NEW**: Visual workflow automation system inspired by n8n/Make.com for Grokputer!
+
+**Status**: 🔄 PLANNING COMPLETE - Implementation ready
+
+```bash
+# Run workflow (planned)
+python main.py --workflow examples/notion_asana_sync.py
+
+# With Pantheon delegation (planned)
+python main.py --pantheon --workflow examples/complex_workflow.py
+
+# View task breakdown
+cat GG_TASK_PLAN.md
+```
+
+**How it works** (planned):
+1. Define workflows using Python Flow DSL
+2. Nodes execute sequentially or in parallel
+3. Pantheon agents handle complex AI tasks via MessageBus
+4. Self-healing automatically retries failed steps
+5. State persistence across workflow runs
+
+**Planned Features**:
+- ✅ Node-based execution (HTTP, Transform, Conditional, AI)
+- ✅ API integrations (Notion, Asana, Slack)
+- ✅ Pantheon integration via MessageBus adapter
+- ✅ Self-healing with automatic retry
+- ✅ Learning loop for workflow optimization
+
+**Implementation Plan**:
+- **Phase 1-2**: Core engine, nodes (BaseNode, HTTP, Transform, Conditional, AI)
+- **Phase 3**: API integrations (Notion, Asana, Slack)
+- **Phase 4**: Pantheon integration
+- **Phase 5**: Learning and self-healing
+- **Phase 6**: Examples and tests
+
+Total: 18 tasks across 6 phases. See `GG_TASK_PLAN.md` for detailed breakdown.
 
 ### Docker Usage
 
