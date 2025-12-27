@@ -76,7 +76,6 @@ Enter session ID (or 'latest'): latest
 # Direct usage
 python -c "from src.agents.session_improver import SessionImprover; SessionImprover().improve_session('latest')"
 ```
-
 #### 5. Offline Mode
 Uses cached session history and local knowledge base when APIs are unavailable:
 - Matches tasks to similar past executions
