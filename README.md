@@ -5,7 +5,7 @@
 An advanced multi-agent AI system that enables xAI's Grok API to control your computer through screen observation, reasoning, and action execution. Features single-agent mode, Claude-Grok collaboration, and async multi-agent swarms.
 
 
-![action_screenshot](https://github.com/zejzl/grokputer/infinityandbeyond.PNG)
+![action_screenshot](https://github.com/zejzl/grokputer/blob/main/infinitiyandbyeond.PNG)
 
 ---
 
