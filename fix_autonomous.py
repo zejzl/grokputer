@@ -22,6 +22,7 @@ if insert_pos != -1:
         '@click.option("--evolve-chance", type=float, default=0.3, help="Chance of param evolution")',
         '@click.option("--no-redis", is_flag=True, help="Disable Redis persistence")',
         "def daemon(target: str, interval: int, evolve_chance: float, no_redis: bool):",
+    # Limited to 3 iterations by default to avoid infinite loops
         '    """',
         "    Run daemon mode for continuous code monitoring and evolution.",
         "",
@@ -87,7 +88,7 @@ if insert_pos != -1:
         "            r = None",
         '    console.print(f"[bold green]Starting autonomous daemon on {target_path} (interval: {interval}s)[/bold green]")',
         "    try:",
-        "        while True:",
+        "        for _ in range(3):",
         "            await async_daemon_cycle(target_path, agents, evolve_chance, r, scanner)",
         "            await asyncio.sleep(interval)",
         "    except KeyboardInterrupt:",
