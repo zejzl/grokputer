@@ -1,0 +1,163 @@
+# File Organizer Configuration for Grokputer
+# AI-powered image classification and organization settings
+
+# Classification mode
+# - local: Only use computer vision heuristics (fast, private, ~60-70% accuracy)
+# - hybrid: Local first, AI for ambiguous cases (balanced, ~85-95% accuracy, RECOMMENDED)
+# - api: Always use AI (best accuracy, higher cost)
+mode: hybrid
+
+# Confidence threshold for local classification
+# Images with confidence below this will be sent to AI for analysis (in hybrid mode)
+confidence_threshold: 0.7
+
+# Dry-run mode (preview only, no actual file moves)
+# IMPORTANT: Set to false to actually move files
+dry_run: true
+
+# Conflict resolution strategy when destination file already exists
+# - skip: Skip the file and leave it in place
+# - rename: Rename with _1, _2, etc. suffix
+# - dedupe: Skip if identical, rename if different
+# - overwrite: Replace existing file (DANGEROUS!)
+conflict_strategy: rename
+
+# Batch size for concurrent classification
+# Higher values = faster but more memory/API calls
+batch_size: 10
+
+# File patterns to match
+file_patterns:
+  - "*.jpg"
+  - "*.jpeg"
+  - "*.png"
+  - "*.gif"
+  - "*.webp"
+  - "*.bmp"
+  - "*.tiff"
+
+# Exclude patterns (files/folders to skip)
+exclude_patterns:
+  - "*/.*"  # Hidden files/folders
+  - "*/System Volume Information/*"
+  - "*/\$RECYCLE.BIN/*"
+  - "*/Thumbs.db"
+  - "*/.DS_Store"
+
+# Default categories (built-in)
+# These are always available and use AI/CV classification
+default_categories:
+  wallpaper:
+    description: "High-quality background images, abstract art, nature scenes for desktop backgrounds"
+    folder_name: "Wallpapers"
+
+  landscape:
+    description: "Outdoor nature photos (mountains, forests, beaches, scenery)"
+    folder_name: "Landscapes"
+
+  portrait:
+    description: "Photos of people (headshots, group photos, selfies)"
+    folder_name: "Portraits"
+
+  screenshot:
+    description: "UI screenshots, app captures, web pages, text-heavy with UI elements"
+    folder_name: "Screenshots"
+
+  document:
+    description: "Scanned documents, PDFs, text-heavy business content"
+    folder_name: "Documents"
+
+  art:
+    description: "Digital art, drawings, paintings, creative graphics"
+    folder_name: "Art"
+
+  photo:
+    description: "General photos that don't fit other categories"
+    folder_name: "Photos"
+
+  unsorted:
+    description: "Images with low confidence or ambiguous content"
+    folder_name: "Unsorted"
+
+# Custom categories
+# Add your own categories here with descriptions
+# NOTE: Adult content categories require user consent for API processing
+custom_categories:
+  # Example: Add your custom categories
+  # adult:
+  #   description: "Adult content images (18+)"
+  #   folder_name: "Adult"
+  #   requires_consent: true
+  #
+  # memes:
+  #   description: "Funny memes and image macros"
+  #   folder_name: "Memes"
+
+# Privacy settings
+privacy:
+  # Require explicit consent before sending adult content to API
+  require_consent_for_sensitive: true
+
+  # Skip adult content analysis (will be placed in 'unsorted')
+  skip_sensitive_content: false
+
+  # Log file paths being processed (for debugging)
+  log_file_paths: true
+
+# Performance settings
+performance:
+  # Enable caching of classification results
+  enable_cache: true
+
+  # Cache file location (null for default ~/.grokputer/organizer_cache.db)
+  cache_file: null
+
+  # Verify file integrity after move operations
+  verify_move: true
+
+  # Maximum files to process in one run (0 = unlimited)
+  max_files_per_run: 0
+
+# Logging settings
+logging:
+  # Log level (DEBUG, INFO, WARNING, ERROR)
+  level: INFO
+
+  # Log file location (null for console only)
+  log_file: null
+
+  # Enable detailed progress logging
+  verbose: false
+
+# Organization presets
+# Quick configuration profiles for common use cases
+presets:
+  safe:
+    # Maximum safety: dry-run, local-only, no overwrites
+    mode: local
+    dry_run: true
+    conflict_strategy: skip
+
+  balanced:
+    # Recommended: hybrid AI, preview mode, smart conflicts
+    mode: hybrid
+    dry_run: true
+    conflict_strategy: dedupe
+
+  aggressive:
+    # Full AI, actual moves, deduplicate
+    mode: api
+    dry_run: false
+    conflict_strategy: dedupe
+
+  fast:
+    # Local-only, large batches, quick processing
+    mode: local
+    dry_run: false
+    conflict_strategy: rename
+    batch_size: 20
+
+# Example usage in code:
+# from src.agents.file_organizer_agent import FileOrganizerAgent
+# config = load_config("config/organizer_config.yaml", preset="balanced")
+# agent = FileOrganizerAgent(bus, logger, config)

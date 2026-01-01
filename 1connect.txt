@@ -1,0 +1,59 @@
+Microsoft Windows [Version 10.0.19045.6466]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Administrator>netstat
+
+Active Connections
+
+  Proto  Local Address          Foreign Address        State
+  TCP    127.0.0.1:51819        www:51840              ESTABLISHED
+  TCP    127.0.0.1:51821        www:51839              ESTABLISHED
+  TCP    127.0.0.1:51839        www:51821              ESTABLISHED
+  TCP    127.0.0.1:51840        www:51819              ESTABLISHED
+  TCP    127.0.0.1:51890        www:62909              ESTABLISHED
+  TCP    127.0.0.1:62909        www:51890              ESTABLISHED
+^C
+C:\Users\Administrator>ipconfig
+
+Windows IP Configuration
+
+
+Unknown adapter Local Area Connection:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . :
+
+Ethernet adapter Ethernet:
+
+   Connection-specific DNS Suffix  . :
+   Link-local IPv6 Address . . . . . : fe80::43ca:97d3:8f9e:6067%3
+   IPv4 Address. . . . . . . . . . . : 192.168.0.11
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 192.168.0.1
+
+Unknown adapter OpenVPN Connect DCO Adapter:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . :
+
+Ethernet adapter vEthernet (WSL):
+
+   Connection-specific DNS Suffix  . :
+   Link-local IPv6 Address . . . . . : fe80::2641:2ebc:82b9:4934%39
+   IPv4 Address. . . . . . . . . . . : 172.27.128.1
+   Subnet Mask . . . . . . . . . . . : 255.255.240.0
+   Default Gateway . . . . . . . . . :
+
+C:\Users\Administrator>
+
+
+
+
+
+
+
+
+
+
+
+

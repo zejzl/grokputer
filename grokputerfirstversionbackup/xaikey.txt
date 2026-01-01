@@ -1,0 +1,25 @@
+collection: collection_cd86e646-b929-49fe-aa28-e0498e0d0a5a
+
+key: xai-JgBsxcWxsauXW9bDhm67h3qF1pDyRqTjc52T4THXOoealzcarVRCIGDQTDnuAFXZr7emdpD1UJ31EZvB
+key claude:
+key gemini: AIzaSyB-9lSPZhYoSspNIwzlqNkRvefxVYo7HGw
+
+curl https://api.x.ai/v1/chat/completions \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer xai-JgBsxcWxsauXW9bDhm67h3qF1pDyRqTjc52T4THXOoealzcarVRCIGDQTDnuAFXZr7emdpD1UJ31EZvB" \
+    -d '{
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a test assistant."
+        },
+        {
+          "role": "user",
+          "content": "Testing. Just say hi and hello world and nothing else."
+        }
+      ],
+      "model": "grok-4-latest",
+      "stream": false,
+      "temperature": 0
+    }'
+	
