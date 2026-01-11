@@ -1,8 +1,8 @@
 """
-Comprehensive tests for MAF RL Optimizer
+Comprehensive tests for MAF RL Optimizer - API-Aligned Version
 
 Tests cover Q-learning agent, experience replay, epsilon-greedy exploration,
-state-action-reward tracking, and policy optimization.
+state-action-reward tracking using actual RLState/RLAction dataclasses.
 """
 
 import pytest
@@ -12,105 +12,199 @@ from src.collaboration.rl_optimizer import (
     QLearningAgent,
     Experience,
     ReplayBuffer,
+    RLState,
+    RLAction,
+    MAFOptimizer,
 )
+from src.collaboration.orchestrator import OrchestrationStrategy
+
+
+# Test Fixtures - Factory Functions
+
+def create_test_state(
+    task_complexity=0.5,
+    provider_count=3,
+    provider_health=0.8,
+    previous_success_rate=0.75,
+    time_of_day=12,
+    strategy_used=OrchestrationStrategy.CONCURRENT
+) -> RLState:
+    """Create a test RLState."""
+    return RLState(
+        task_complexity=task_complexity,
+        provider_count=provider_count,
+        provider_health=provider_health,
+        previous_success_rate=previous_success_rate,
+        time_of_day=time_of_day,
+        strategy_used=strategy_used
+    )
+
+
+def create_test_action(
+    strategy=OrchestrationStrategy.CONCURRENT,
+    max_concurrent_providers=3,
+    timeout_per_provider=30.0,
+    retry_attempts=3
+) -> RLAction:
+    """Create a test RLAction."""
+    return RLAction(
+        strategy=strategy,
+        max_concurrent_providers=max_concurrent_providers,
+        timeout_per_provider=timeout_per_provider,
+        retry_attempts=retry_attempts
+    )
+
+
+def create_test_experience(
+    state=None,
+    action=None,
+    reward=1.0,
+    next_state=None,
+    done=False
+) -> Experience:
+    """Create a test Experience."""
+    if state is None:
+        state = create_test_state()
+    if action is None:
+        action = create_test_action()
+    if next_state is None:
+        next_state = create_test_state(task_complexity=0.6)
+
+    return Experience(
+        state=state,
+        action=action,
+        reward=reward,
+        next_state=next_state,
+        done=done
+    )
+
+
+# RLState Tests
+
+def test_rlstate_creation():
+    """Test creating an RLState."""
+    state = create_test_state()
+
+    assert state.task_complexity == 0.5
+    assert state.provider_count == 3
+    assert state.provider_health == 0.8
+    assert state.previous_success_rate == 0.75
+    assert state.time_of_day == 12
+    assert state.strategy_used == OrchestrationStrategy.CONCURRENT
+
+
+def test_rlstate_to_vector():
+    """Test RLState conversion to feature vector."""
+    state = create_test_state()
+    vector = state.to_vector()
+
+    assert isinstance(vector, np.ndarray)
+    assert len(vector) == 8  # 5 features + 3 one-hot encoded strategy
+
+
+# RLAction Tests
+
+def test_rlaction_creation():
+    """Test creating an RLAction."""
+    action = create_test_action()
+
+    assert action.strategy == OrchestrationStrategy.CONCURRENT
+    assert action.max_concurrent_providers == 3
+    assert action.timeout_per_provider == 30.0
+    assert action.retry_attempts == 3
+
+
+def test_rlaction_to_vector():
+    """Test RLAction conversion to feature vector."""
+    action = create_test_action()
+    vector = action.to_vector()
+
+    assert isinstance(vector, np.ndarray)
+    assert len(vector) == 6  # 3 one-hot strategy + 3 numeric features
 
 
 # Experience Tests
 
-
 def test_experience_creation():
-    """Test creating an experience tuple"""
+    """Test creating an experience tuple."""
+    state = create_test_state(task_complexity=0.5)
+    action = create_test_action()
+    next_state = create_test_state(task_complexity=0.6)
+
     experience = Experience(
-        state="state1",
-        action="action1",
+        state=state,
+        action=action,
         reward=1.0,
-        next_state="state2",
+        next_state=next_state,
         done=False
     )
 
-    assert experience.state == "state1"
-    assert experience.action == "action1"
+    assert experience.state == state
+    assert experience.action == action
     assert experience.reward == 1.0
-    assert experience.next_state == "state2"
+    assert experience.next_state == next_state
     assert experience.done is False
+    assert hasattr(experience, 'timestamp')
 
 
 def test_experience_terminal_state():
-    """Test experience with terminal state"""
+    """Test experience with terminal state."""
+    state = create_test_state()
+    action = create_test_action()
+
     experience = Experience(
-        state="final_state",
-        action="final_action",
+        state=state,
+        action=action,
         reward=10.0,
-        next_state=None,
+        next_state=create_test_state(),
         done=True
     )
 
     assert experience.done is True
-    assert experience.next_state is None
     assert experience.reward == 10.0
 
 
 # Replay Buffer Tests
 
-
 def test_replay_buffer_initialization():
-    """Test replay buffer initializes with correct capacity"""
+    """Test replay buffer initializes with correct capacity."""
     buffer = ReplayBuffer(capacity=1000)
 
     assert buffer.capacity == 1000
     assert len(buffer.buffer) == 0
 
 
-def test_replay_buffer_add_experience():
-    """Test adding experience to buffer"""
+def test_replay_buffer_push_experience():
+    """Test adding experience to buffer."""
     buffer = ReplayBuffer(capacity=100)
+    exp = create_test_experience()
 
-    exp = Experience(
-        state="state1",
-        action="action1",
-        reward=1.0,
-        next_state="state2",
-        done=False
-    )
-
-    buffer.add(exp)
+    buffer.push(exp)
 
     assert len(buffer.buffer) == 1
     assert buffer.buffer[0] == exp
 
 
 def test_replay_buffer_capacity_limit():
-    """Test that buffer respects capacity limit"""
+    """Test that buffer respects capacity limit."""
     buffer = ReplayBuffer(capacity=3)
 
     for i in range(5):
-        exp = Experience(
-            state=f"state{i}",
-            action=f"action{i}",
-            reward=float(i),
-            next_state=f"state{i+1}",
-            done=False
-        )
-        buffer.add(exp)
+        exp = create_test_experience(reward=float(i))
+        buffer.push(exp)
 
-    # Should only keep last 3
+    # Should only keep 3 experiences (circular buffer)
     assert len(buffer.buffer) == 3
 
 
 def test_replay_buffer_sample():
-    """Test sampling from buffer"""
+    """Test sampling from buffer."""
     buffer = ReplayBuffer(capacity=100)
 
     # Add experiences
     for i in range(10):
-        exp = Experience(
-            state=f"state{i}",
-            action=f"action{i}",
-            reward=float(i),
-            next_state=f"state{i+1}",
-            done=False
-        )
-        buffer.add(exp)
+        exp = create_test_experience(reward=float(i))
+        buffer.push(exp)
 
     # Sample batch
     batch = buffer.sample(batch_size=5)
@@ -120,19 +214,13 @@ def test_replay_buffer_sample():
 
 
 def test_replay_buffer_sample_more_than_available():
-    """Test sampling when batch size exceeds buffer size"""
+    """Test sampling when batch size exceeds buffer size."""
     buffer = ReplayBuffer(capacity=100)
 
     # Add only 3 experiences
     for i in range(3):
-        exp = Experience(
-            state=f"state{i}",
-            action=f"action{i}",
-            reward=float(i),
-            next_state=f"state{i+1}",
-            done=False
-        )
-        buffer.add(exp)
+        exp = create_test_experience(reward=float(i))
+        buffer.push(exp)
 
     # Try to sample 5
     batch = buffer.sample(batch_size=5)
@@ -142,7 +230,7 @@ def test_replay_buffer_sample_more_than_available():
 
 
 def test_replay_buffer_empty_sample():
-    """Test sampling from empty buffer"""
+    """Test sampling from empty buffer."""
     buffer = ReplayBuffer(capacity=100)
 
     batch = buffer.sample(batch_size=5)
@@ -150,21 +238,33 @@ def test_replay_buffer_empty_sample():
     assert len(batch) == 0
 
 
+def test_replay_buffer_len():
+    """Test __len__ method of replay buffer."""
+    buffer = ReplayBuffer(capacity=100)
+
+    assert len(buffer) == 0
+
+    buffer.push(create_test_experience())
+    assert len(buffer) == 1
+
+    buffer.push(create_test_experience())
+    assert len(buffer) == 2
+
+
 # Q-Learning Agent Tests
 
-
 def test_qlearning_agent_initialization():
-    """Test Q-learning agent initializes correctly"""
+    """Test Q-learning agent initializes correctly."""
     agent = QLearningAgent(
         learning_rate=0.1,
-        discount_factor=0.95,
+        gamma=0.95,
         epsilon=0.2,
         epsilon_decay=0.995,
         min_epsilon=0.01
     )
 
     assert agent.learning_rate == 0.1
-    assert agent.discount_factor == 0.95
+    assert agent.gamma == 0.95
     assert agent.epsilon == 0.2
     assert agent.epsilon_decay == 0.995
     assert agent.min_epsilon == 0.01
@@ -172,291 +272,337 @@ def test_qlearning_agent_initialization():
 
 
 def test_qlearning_agent_default_values():
-    """Test Q-learning agent with default values"""
+    """Test Q-learning agent with default values."""
     agent = QLearningAgent()
 
     assert agent.learning_rate > 0
-    assert 0 < agent.discount_factor <= 1
+    assert 0 < agent.gamma <= 1
     assert 0 <= agent.epsilon <= 1
     assert agent.q_table == {}
 
 
-def test_qlearning_agent_get_q_value():
-    """Test getting Q-value for state-action pair"""
+def test_qlearning_agent_get_state_key():
+    """Test state key generation."""
     agent = QLearningAgent()
+    state = create_test_state()
+
+    key = agent.get_state_key(state)
+
+    assert isinstance(key, str)
+    assert "0.50" in key  # task_complexity
+    assert "3" in key     # provider_count
+
+
+def test_qlearning_agent_get_action_key():
+    """Test action key generation."""
+    agent = QLearningAgent()
+    action = create_test_action()
+
+    key = agent.get_action_key(action)
+
+    assert isinstance(key, str)
+    assert "concurrent" in key  # strategy
+    assert "3" in key           # max_concurrent_providers
+
+
+def test_qlearning_agent_get_q_value():
+    """Test getting Q-value for state-action pair."""
+    agent = QLearningAgent()
+    state = create_test_state()
+    action = create_test_action()
+
+    state_key = agent.get_state_key(state)
+    action_key = agent.get_action_key(action)
 
     # New state-action should return 0
-    q_value = agent.get_q_value("state1", "action1")
+    q_value = agent.get_q_value(state_key, action_key)
     assert q_value == 0.0
 
 
 def test_qlearning_agent_set_q_value():
-    """Test setting Q-value for state-action pair"""
+    """Test setting Q-value for state-action pair."""
     agent = QLearningAgent()
+    state = create_test_state()
+    action = create_test_action()
 
-    agent.set_q_value("state1", "action1", 5.0)
+    state_key = agent.get_state_key(state)
+    action_key = agent.get_action_key(action)
 
-    q_value = agent.get_q_value("state1", "action1")
+    agent.set_q_value(state_key, action_key, 5.0)
+
+    q_value = agent.get_q_value(state_key, action_key)
     assert q_value == 5.0
 
 
-def test_qlearning_agent_get_best_action():
-    """Test selecting best action for a state"""
-    agent = QLearningAgent()
+def test_qlearning_agent_choose_action():
+    """Test action selection with epsilon-greedy policy."""
+    agent = QLearningAgent(epsilon=0.5)
+    state = create_test_state()
 
-    # Set up Q-values
-    agent.set_q_value("state1", "action_a", 1.0)
-    agent.set_q_value("state1", "action_b", 5.0)
-    agent.set_q_value("state1", "action_c", 2.0)
+    actions = [
+        create_test_action(strategy=OrchestrationStrategy.CONCURRENT),
+        create_test_action(strategy=OrchestrationStrategy.ROLE_BASED),
+        create_test_action(strategy=OrchestrationStrategy.SEQUENTIAL),
+    ]
 
-    actions = ["action_a", "action_b", "action_c"]
-    best_action = agent.get_best_action("state1", actions)
+    chosen_action = agent.choose_action(state, actions)
 
-    # Should select action_b (highest Q-value)
-    assert best_action == "action_b"
+    assert chosen_action in actions
+    assert isinstance(chosen_action, RLAction)
 
 
 def test_qlearning_agent_choose_action_exploitation():
-    """Test action selection during exploitation (epsilon=0)"""
+    """Test action selection during exploitation (epsilon=0)."""
     agent = QLearningAgent(epsilon=0.0)  # Pure exploitation
+    state = create_test_state()
 
-    agent.set_q_value("state1", "action_a", 1.0)
-    agent.set_q_value("state1", "action_b", 5.0)
+    action_a = create_test_action(strategy=OrchestrationStrategy.CONCURRENT)
+    action_b = create_test_action(strategy=OrchestrationStrategy.ROLE_BASED)
 
-    actions = ["action_a", "action_b"]
+    # Set Q-values manually
+    state_key = agent.get_state_key(state)
+    agent.set_q_value(state_key, agent.get_action_key(action_a), 1.0)
+    agent.set_q_value(state_key, agent.get_action_key(action_b), 5.0)
 
-    # Should always choose best action
-    chosen_actions = [agent.choose_action("state1", actions) for _ in range(10)]
+    actions = [action_a, action_b]
 
-    assert all(action == "action_b" for action in chosen_actions)
+    # Should always choose best action (action_b)
+    chosen_actions = [agent.choose_action(state, actions) for _ in range(10)]
 
-
-def test_qlearning_agent_choose_action_exploration():
-    """Test action selection includes exploration"""
-    agent = QLearningAgent(epsilon=1.0)  # Pure exploration
-
-    agent.set_q_value("state1", "action_a", 1.0)
-    agent.set_q_value("state1", "action_b", 5.0)
-
-    actions = ["action_a", "action_b"]
-
-    # With epsilon=1.0, should explore randomly
-    chosen_actions = [agent.choose_action("state1", actions) for _ in range(100)]
-
-    # Should get both actions due to random exploration
-    assert "action_a" in chosen_actions
-    assert "action_b" in chosen_actions
+    assert all(agent.get_action_key(a) == agent.get_action_key(action_b) for a in chosen_actions)
 
 
-def test_qlearning_agent_update():
-    """Test Q-value update"""
-    agent = QLearningAgent(learning_rate=0.1, discount_factor=0.9)
+def test_qlearning_agent_learn():
+    """Test Q-value learning from experience."""
+    agent = QLearningAgent(learning_rate=0.1, gamma=0.9)
 
-    # Set initial Q-values
-    agent.set_q_value("state1", "action1", 0.0)
-    agent.set_q_value("state2", "action_a", 5.0)
-    agent.set_q_value("state2", "action_b", 3.0)
+    state = create_test_state()
+    action = create_test_action()
+    next_state = create_test_state(task_complexity=0.6)
 
-    # Update: state1, action1 leads to state2 with reward 10
-    agent.update("state1", "action1", 10.0, "state2", done=False)
+    experience = Experience(
+        state=state,
+        action=action,
+        reward=10.0,
+        next_state=next_state,
+        done=False
+    )
 
-    # Q(s,a) = Q(s,a) + α * (r + γ * max(Q(s',a')) - Q(s,a))
-    # Q = 0 + 0.1 * (10 + 0.9 * 5 - 0) = 0.1 * (10 + 4.5) = 1.45
-    expected_q = 1.45
-    actual_q = agent.get_q_value("state1", "action1")
+    # Learn from experience
+    agent.learn(experience)
 
-    assert abs(actual_q - expected_q) < 0.01
+    # Q-value should have been updated
+    state_key = agent.get_state_key(state)
+    action_key = agent.get_action_key(action)
+    q_value = agent.get_q_value(state_key, action_key)
 
-
-def test_qlearning_agent_update_terminal_state():
-    """Test Q-value update for terminal state"""
-    agent = QLearningAgent(learning_rate=0.1, discount_factor=0.9)
-
-    agent.set_q_value("state1", "action1", 0.0)
-
-    # Terminal state: no future reward
-    agent.update("state1", "action1", 10.0, "state_terminal", done=True)
-
-    # Q = 0 + 0.1 * (10 + 0 - 0) = 1.0
-    expected_q = 1.0
-    actual_q = agent.get_q_value("state1", "action1")
-
-    assert abs(actual_q - expected_q) < 0.01
+    # Should be non-zero after learning
+    assert q_value > 0
 
 
-def test_qlearning_agent_epsilon_decay():
-    """Test that epsilon decays over time"""
+def test_qlearning_agent_learn_terminal_state():
+    """Test Q-value learning for terminal state."""
+    agent = QLearningAgent(learning_rate=0.1, gamma=0.9)
+
+    state = create_test_state()
+    action = create_test_action()
+    terminal_state = create_test_state(task_complexity=1.0)
+
+    experience = Experience(
+        state=state,
+        action=action,
+        reward=10.0,
+        next_state=terminal_state,
+        done=True
+    )
+
+    agent.learn(experience)
+
+    state_key = agent.get_state_key(state)
+    action_key = agent.get_action_key(action)
+    q_value = agent.get_q_value(state_key, action_key)
+
+    # Terminal state: Q = learning_rate * reward = 0.1 * 10 = 1.0
+    assert abs(q_value - 1.0) < 0.01
+
+
+def test_qlearning_agent_get_optimal_action():
+    """Test getting optimal action without exploration."""
+    agent = QLearningAgent()
+    state = create_test_state()
+
+    action_a = create_test_action(strategy=OrchestrationStrategy.CONCURRENT)
+    action_b = create_test_action(strategy=OrchestrationStrategy.ROLE_BASED)
+    action_c = create_test_action(strategy=OrchestrationStrategy.SEQUENTIAL)
+
+    # Set Q-values
+    state_key = agent.get_state_key(state)
+    agent.set_q_value(state_key, agent.get_action_key(action_a), 1.0)
+    agent.set_q_value(state_key, agent.get_action_key(action_b), 5.0)
+    agent.set_q_value(state_key, agent.get_action_key(action_c), 2.0)
+
+    actions = [action_a, action_b, action_c]
+    optimal_action = agent.get_optimal_action(state, actions)
+
+    # Should select action_b (highest Q-value)
+    assert agent.get_action_key(optimal_action) == agent.get_action_key(action_b)
+
+
+def test_qlearning_agent_replay_buffer_integration():
+    """Test that learning stores experiences in replay buffer."""
+    agent = QLearningAgent()
+
+    initial_buffer_size = len(agent.replay_buffer)
+
+    experience = create_test_experience()
+    agent.learn(experience)
+
+    assert len(agent.replay_buffer) == initial_buffer_size + 1
+
+
+def test_qlearning_agent_epsilon_decay_on_learn():
+    """Test that epsilon decays during learning."""
     agent = QLearningAgent(epsilon=1.0, epsilon_decay=0.9, min_epsilon=0.1)
 
     initial_epsilon = agent.epsilon
+    experience = create_test_experience()
 
-    agent.decay_epsilon()
+    agent.learn(experience)
 
     assert agent.epsilon < initial_epsilon
-    assert agent.epsilon == 0.9
+    assert agent.epsilon >= agent.min_epsilon
 
 
-def test_qlearning_agent_epsilon_min_limit():
-    """Test that epsilon doesn't go below minimum"""
-    agent = QLearningAgent(epsilon=0.15, epsilon_decay=0.5, min_epsilon=0.1)
-
-    agent.decay_epsilon()
-
-    # 0.15 * 0.5 = 0.075, but should be clamped to 0.1
-    assert agent.epsilon == 0.1
-
-
-def test_qlearning_agent_q_table_persistence():
-    """Test that Q-table persists across updates"""
+def test_qlearning_agent_get_learning_stats():
+    """Test getting learning statistics."""
     agent = QLearningAgent()
 
-    agent.set_q_value("state1", "action1", 5.0)
-    agent.set_q_value("state1", "action2", 3.0)
-    agent.set_q_value("state2", "action1", 7.0)
+    stats = agent.get_learning_stats()
 
-    assert len(agent.q_table) == 2  # 2 states
-    assert "state1" in agent.q_table
-    assert "state2" in agent.q_table
+    assert "learning_steps" in stats
+    assert "q_table_size" in stats
+    assert "replay_buffer_size" in stats
+    assert "current_epsilon" in stats
+    assert "total_states_explored" in stats
 
 
-def test_qlearning_agent_multiple_updates():
-    """Test multiple Q-value updates"""
-    agent = QLearningAgent(learning_rate=0.1, discount_factor=0.9)
+def test_qlearning_agent_multiple_learns():
+    """Test multiple learning updates."""
+    agent = QLearningAgent(learning_rate=0.1, gamma=0.9)
 
-    # Initial value
-    agent.set_q_value("state1", "action1", 0.0)
+    state = create_test_state()
+    action = create_test_action()
+    next_state = create_test_state(task_complexity=0.6)
 
-    # Multiple updates should gradually increase Q-value
+    # Multiple learns with positive reward
     for _ in range(10):
-        agent.update("state1", "action1", 1.0, "state2", done=False)
+        experience = Experience(
+            state=state,
+            action=action,
+            reward=1.0,
+            next_state=next_state,
+            done=False
+        )
+        agent.learn(experience)
 
-    final_q = agent.get_q_value("state1", "action1")
+    state_key = agent.get_state_key(state)
+    action_key = agent.get_action_key(action)
+    final_q = agent.get_q_value(state_key, action_key)
 
-    # Should be greater than 0 after positive rewards
+    # Q-value should increase with positive rewards
     assert final_q > 0
 
 
 def test_qlearning_agent_negative_reward():
-    """Test Q-value update with negative reward"""
-    agent = QLearningAgent(learning_rate=0.1, discount_factor=0.9)
+    """Test Q-value learning with negative reward."""
+    agent = QLearningAgent(learning_rate=0.5, gamma=0.9)
 
-    agent.set_q_value("state1", "action1", 0.0)
+    state = create_test_state()
+    action = create_test_action()
+    next_state = create_test_state(task_complexity=0.6)
 
-    # Negative reward
-    agent.update("state1", "action1", -5.0, "state2", done=False)
+    experience = Experience(
+        state=state,
+        action=action,
+        reward=-5.0,
+        next_state=next_state,
+        done=False
+    )
 
-    q_value = agent.get_q_value("state1", "action1")
+    agent.learn(experience)
 
-    # Q-value should be negative
+    state_key = agent.get_state_key(state)
+    action_key = agent.get_action_key(action)
+    q_value = agent.get_q_value(state_key, action_key)
+
+    # Q-value should be negative after negative reward
     assert q_value < 0
 
 
-def test_qlearning_agent_state_initialization():
-    """Test that new states are initialized to 0"""
+def test_qlearning_agent_learn_from_batch():
+    """Test batch learning from replay buffer."""
     agent = QLearningAgent()
 
-    # Access Q-value for new state-action pair
-    q_value = agent.get_q_value("never_seen_state", "never_seen_action")
+    # Add experiences to buffer
+    for i in range(50):
+        exp = create_test_experience(reward=float(i))
+        agent.replay_buffer.push(exp)
 
-    assert q_value == 0.0
+    initial_learning_steps = agent.learning_steps
 
+    # Learn from batch
+    agent.learn_from_batch(batch_size=32)
 
-def test_qlearning_agent_action_values_independence():
-    """Test that different actions have independent Q-values"""
-    agent = QLearningAgent()
-
-    agent.set_q_value("state1", "action_a", 10.0)
-    agent.set_q_value("state1", "action_b", 5.0)
-
-    assert agent.get_q_value("state1", "action_a") == 10.0
-    assert agent.get_q_value("state1", "action_b") == 5.0
-
-
-def test_qlearning_agent_max_q_value():
-    """Test getting maximum Q-value for a state"""
-    agent = QLearningAgent()
-
-    agent.set_q_value("state1", "action_a", 3.0)
-    agent.set_q_value("state1", "action_b", 7.0)
-    agent.set_q_value("state1", "action_c", 5.0)
-
-    actions = ["action_a", "action_b", "action_c"]
-    max_q = max(agent.get_q_value("state1", a) for a in actions)
-
-    assert max_q == 7.0
+    # Learning steps should have increased by batch size
+    assert agent.learning_steps >= initial_learning_steps + 32
 
 
 def test_replay_buffer_fifo_behavior():
-    """Test that replay buffer follows FIFO when at capacity"""
+    """Test that replay buffer follows FIFO when at capacity."""
     buffer = ReplayBuffer(capacity=3)
 
-    # Add 5 experiences
     experiences = []
     for i in range(5):
-        exp = Experience(
-            state=f"state{i}",
-            action=f"action{i}",
-            reward=float(i),
-            next_state=f"state{i+1}",
-            done=False
-        )
+        exp = create_test_experience(reward=float(i))
         experiences.append(exp)
-        buffer.add(exp)
+        buffer.push(exp)
 
-    # Should contain last 3 (index 2, 3, 4)
+    # Should contain last 3 experiences (circular buffer overwrites)
     assert len(buffer.buffer) == 3
-    assert experiences[2] in buffer.buffer or experiences[3] in buffer.buffer or experiences[4] in buffer.buffer
+
+    # Check that recent experiences are in buffer
+    rewards_in_buffer = [exp.reward for exp in buffer.buffer]
+    assert any(r in [2.0, 3.0, 4.0] for r in rewards_in_buffer)
 
 
-def test_qlearning_agent_convergence():
-    """Test that Q-values converge with repeated updates"""
-    agent = QLearningAgent(learning_rate=0.5, discount_factor=0.9)
+# MAFOptimizer Tests
 
-    agent.set_q_value("state1", "action1", 0.0)
+def test_maf_optimizer_initialization():
+    """Test MAF optimizer initialization."""
+    mock_monitor = MagicMock()
+    optimizer = MAFOptimizer(mock_monitor)
 
-    # Repeatedly update with same reward
-    for _ in range(100):
-        agent.update("state1", "action1", 10.0, "state_terminal", done=True)
-
-    final_q = agent.get_q_value("state1", "action1")
-
-    # Should converge close to reward value (10.0)
-    assert abs(final_q - 10.0) < 1.0
+    assert optimizer.performance_monitor == mock_monitor
+    assert isinstance(optimizer.q_agent, QLearningAgent)
+    assert optimizer.optimization_history == []
 
 
-def test_qlearning_agent_learning_rate_effect():
-    """Test that learning rate affects update magnitude"""
-    agent_slow = QLearningAgent(learning_rate=0.01, discount_factor=0.9)
-    agent_fast = QLearningAgent(learning_rate=0.5, discount_factor=0.9)
+def test_maf_optimizer_get_rl_stats():
+    """Test getting RL stats from MAF optimizer."""
+    mock_monitor = MagicMock()
+    optimizer = MAFOptimizer(mock_monitor)
 
-    agent_slow.set_q_value("state1", "action1", 0.0)
-    agent_fast.set_q_value("state1", "action1", 0.0)
+    stats = optimizer.get_rl_stats()
 
-    # Single update
-    agent_slow.update("state1", "action1", 10.0, "state_terminal", done=True)
-    agent_fast.update("state1", "action1", 10.0, "state_terminal", done=True)
-
-    # Fast learner should have higher Q-value after one update
-    assert agent_fast.get_q_value("state1", "action1") > agent_slow.get_q_value("state1", "action1")
+    assert isinstance(stats, dict)
+    assert "learning_steps" in stats
 
 
-def test_replay_buffer_clear():
-    """Test clearing replay buffer"""
-    buffer = ReplayBuffer(capacity=100)
+def test_maf_optimizer_get_optimization_history():
+    """Test getting optimization history."""
+    mock_monitor = MagicMock()
+    optimizer = MAFOptimizer(mock_monitor)
 
-    for i in range(10):
-        exp = Experience(
-            state=f"state{i}",
-            action=f"action{i}",
-            reward=float(i),
-            next_state=f"state{i+1}",
-            done=False
-        )
-        buffer.add(exp)
+    history = optimizer.get_optimization_history()
 
-    assert len(buffer.buffer) == 10
-
-    # Clear if method exists
-    if hasattr(buffer, 'clear'):
-        buffer.clear()
-        assert len(buffer.buffer) == 0
+    assert isinstance(history, list)

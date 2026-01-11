@@ -34,7 +34,8 @@
       "Bash(git clone:*)",
       "Bash(streamlit run:*)",
       "WebFetch(domain:github.com)",
-      "Bash(test:*)"
+      "Bash(test:*)",
+      "Bash(git count-objects:*)"
     ],
     "deny": [],
     "ask": []

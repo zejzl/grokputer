@@ -30,6 +30,7 @@ class HealingStrategy(Enum):
     SKIP = "skip"  # Skip failing node and continue
     REPLACE = "replace"  # Replace with fallback node
     INVOKE_IMPROVER = "invoke_improver"  # Ask Pantheon Improver for fix
+    MAGIC_HEAL = "magic_heal"  # Use fairy magic healing
 
 
 @dataclass
