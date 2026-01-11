@@ -48,7 +48,7 @@ def test_consensus_manager_initialization_custom():
 
 def test_consensus_manager_rl_agent_initialization():
     """Test that RL agent is initialized when enabled"""
-    with patch('src.collaboration.consensus_manager.QLearningAgent') as mock_agent:
+    with patch('src.collaboration.rl_optimizer.QLearningAgent') as mock_agent:
         manager = ConsensusManager(enable_rl_optimization=True)
 
         assert mock_agent.called or manager.consensus_rl_agent is None  # May not initialize if import fails

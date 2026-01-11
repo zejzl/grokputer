@@ -11,6 +11,7 @@ from unittest.mock import MagicMock, Mock, patch, AsyncMock
 from src.collaboration.provider_registry import (
     ProviderRegistry,
     ProviderInstance,
+    ProviderMetadata,
     ProviderCapability,
     CircuitBreakerState,
     CircuitBreaker,
@@ -20,40 +21,89 @@ from src.collaboration.provider_registry import (
 )
 
 
-# Provider Instance Tests
+# Helper Functions
 
+def create_test_metadata(
+    name="test_provider",
+    provider_type="grok",
+    model="grok-4",
+    capabilities=None
+) -> ProviderMetadata:
+    """Create test ProviderMetadata."""
+    if capabilities is None:
+        capabilities = [ProviderCapability.TEXT_GENERATION]
+
+    return ProviderMetadata(
+        name=name,
+        provider_type=provider_type,
+        model=model,
+        capabilities=capabilities
+    )
+
+
+# Provider Metadata Tests
+
+def test_provider_metadata_creation():
+    """Test creating provider metadata"""
+    metadata = create_test_metadata(
+        name="test_provider",
+        provider_type="grok",
+        model="grok-4-fast-reasoning",
+        capabilities=[ProviderCapability.TEXT_GENERATION, ProviderCapability.CODE_ANALYSIS]
+    )
+
+    assert metadata.name == "test_provider"
+    assert metadata.provider_type == "grok"
+    assert metadata.model == "grok-4-fast-reasoning"
+    assert ProviderCapability.TEXT_GENERATION in metadata.capabilities
+    assert ProviderCapability.CODE_ANALYSIS in metadata.capabilities
+
+
+def test_provider_metadata_minimal():
+    """Test creating metadata with minimal required fields"""
+    metadata = ProviderMetadata(
+        name="minimal_provider",
+        provider_type="openai",
+        model="gpt-4"
+    )
+
+    assert metadata.name == "minimal_provider"
+    assert metadata.capabilities == []  # Default empty list
+
+
+# Provider Instance Tests
 
 def test_provider_instance_creation():
     """Test creating a provider instance"""
+    metadata = create_test_metadata()
+    client = MagicMock()
+
     provider = ProviderInstance(
-        provider_id="test_provider",
-        provider_type="grok",
-        model="grok-4-fast-reasoning",
-        capabilities=[ProviderCapability.TEXT_GENERATION, ProviderCapability.CODE_ANALYSIS],
+        metadata=metadata,
+        client=client
     )
 
-    assert provider.provider_id == "test_provider"
-    assert provider.provider_type == "grok"
-    assert provider.model == "grok-4-fast-reasoning"
-    assert ProviderCapability.TEXT_GENERATION in provider.capabilities
-    assert ProviderCapability.CODE_ANALYSIS in provider.capabilities
+    assert provider.metadata == metadata
+    assert provider.client == client
+    assert provider.weight == 1.0  # Default weight
+    assert provider.is_active is True
 
 
-def test_provider_instance_minimal():
-    """Test creating a provider with minimal required fields"""
+def test_provider_instance_with_weight():
+    """Test creating provider with custom weight"""
+    metadata = create_test_metadata()
+    client = MagicMock()
+
     provider = ProviderInstance(
-        provider_id="minimal_provider",
-        provider_type="openai",
-        model="gpt-4",
-        capabilities=[ProviderCapability.TEXT_GENERATION]
+        metadata=metadata,
+        client=client,
+        weight=0.8
     )
 
-    assert provider.provider_id == "minimal_provider"
-    assert len(provider.capabilities) == 1
+    assert provider.weight == 0.8
 
 
 # Provider Capability Tests
-
 
 def test_provider_capabilities_exist():
     """Test that all expected capabilities are defined"""
@@ -67,7 +117,6 @@ def test_provider_capabilities_exist():
 
 
 # Circuit Breaker Config Tests
-
 
 def test_circuit_breaker_config_defaults():
     """Test CircuitBreakerConfig default values"""
@@ -92,7 +141,6 @@ def test_circuit_breaker_config_custom():
 
 
 # Circuit Breaker Tests
-
 
 def test_circuit_breaker_initialization():
     """Test circuit breaker initializes in CLOSED state"""
@@ -123,7 +171,6 @@ def test_circuit_breaker_stats_tracking():
 
 # Circuit Breaker State Tests
 
-
 def test_circuit_breaker_states_exist():
     """Test that all circuit breaker states are defined"""
     assert CircuitBreakerState.CLOSED
@@ -140,7 +187,6 @@ def test_circuit_breaker_state_values():
 
 # Provider Registry Tests
 
-
 def test_provider_registry_initialization():
     """Test provider registry initializes empty"""
     registry = ProviderRegistry()
@@ -152,42 +198,39 @@ def test_provider_registry_register_provider():
     """Test registering a provider"""
     registry = ProviderRegistry()
 
-    provider = ProviderInstance(
-        provider_id="provider1",
-        provider_type="grok",
-        model="grok-4",
+    metadata = create_test_metadata(
+        name="provider1",
         capabilities=[ProviderCapability.TEXT_GENERATION]
     )
+    client = MagicMock()
 
-    registry.register(provider)
+    result = registry.register_provider("provider1", client, metadata)
 
+    assert result is True
     assert "provider1" in registry._providers
-    retrieved = registry.get("provider1")
-    assert retrieved == provider
+    retrieved = registry.get_provider("provider1")
+    assert retrieved is not None
+    assert retrieved.metadata.name == "provider1"
 
 
 def test_provider_registry_get_provider():
     """Test getting a provider by ID"""
     registry = ProviderRegistry()
 
-    provider = ProviderInstance(
-        provider_id="provider1",
-        provider_type="grok",
-        model="grok-4",
-        capabilities=[ProviderCapability.TEXT_GENERATION]
-    )
+    metadata = create_test_metadata(name="provider1")
+    client = MagicMock()
+    registry.register_provider("provider1", client, metadata)
 
-    registry.register(provider)
-
-    retrieved = registry.get("provider1")
-    assert retrieved == provider
+    retrieved = registry.get_provider("provider1")
+    assert retrieved is not None
+    assert retrieved.metadata.name == "provider1"
 
 
 def test_provider_registry_get_nonexistent_provider():
     """Test getting a provider that doesn't exist returns None"""
     registry = ProviderRegistry()
 
-    result = registry.get("nonexistent")
+    result = registry.get_provider("nonexistent")
     assert result is None
 
 
@@ -195,48 +238,44 @@ def test_provider_registry_filter_by_capability():
     """Test filtering providers by capability"""
     registry = ProviderRegistry()
 
-    provider1 = ProviderInstance(
-        provider_id="provider1",
-        provider_type="grok",
-        model="grok-4",
+    metadata1 = create_test_metadata(
+        name="provider1",
         capabilities=[ProviderCapability.TEXT_GENERATION, ProviderCapability.CODE_ANALYSIS]
     )
-    provider2 = ProviderInstance(
-        provider_id="provider2",
-        provider_type="dalle",
-        model="dall-e-3",
+    client1 = MagicMock()
+    registry.register_provider("provider1", client1, metadata1)
+
+    metadata2 = create_test_metadata(
+        name="provider2",
         capabilities=[ProviderCapability.CREATIVE_WRITING]
     )
+    client2 = MagicMock()
+    registry.register_provider("provider2", client2, metadata2)
 
-    registry.register(provider1)
-    registry.register(provider2)
-
-    text_providers = registry.get_by_capability(ProviderCapability.TEXT_GENERATION)
+    text_providers = registry.get_providers_by_capability(ProviderCapability.TEXT_GENERATION, only_healthy=False)
     assert len(text_providers) >= 1
-    assert any(p.provider_id == "provider1" for p in text_providers)
+    assert any(p.metadata.name == "provider1" for p in text_providers)
 
 
 def test_provider_registry_multiple_capabilities():
     """Test provider with multiple capabilities"""
     registry = ProviderRegistry()
 
-    provider = ProviderInstance(
-        provider_id="provider1",
-        provider_type="grok",
-        model="grok-4",
+    metadata = create_test_metadata(
+        name="provider1",
         capabilities=[
             ProviderCapability.TEXT_GENERATION,
             ProviderCapability.CODE_ANALYSIS,
             ProviderCapability.CRITICAL_THINKING
         ]
     )
-
-    registry.register(provider)
+    client = MagicMock()
+    registry.register_provider("provider1", client, metadata)
 
     # Should be retrievable by any of its capabilities
-    for cap in provider.capabilities:
-        matching = registry.get_by_capability(cap)
-        assert any(p.provider_id == "provider1" for p in matching)
+    for cap in metadata.capabilities:
+        matching = registry.get_providers_by_capability(cap, only_healthy=False)
+        assert any(p.metadata.name == "provider1" for p in matching)
 
 
 def test_circuit_breaker_open_exception():
@@ -276,21 +315,17 @@ def test_provider_registry_list_all():
     """Test listing all registered providers"""
     registry = ProviderRegistry()
 
-    provider1 = ProviderInstance(
-        provider_id="provider1",
-        provider_type="grok",
-        model="grok-4",
-        capabilities=[ProviderCapability.TEXT_GENERATION]
-    )
-    provider2 = ProviderInstance(
-        provider_id="provider2",
-        provider_type="claude",
-        model="claude-3-opus",
-        capabilities=[ProviderCapability.TEXT_GENERATION]
-    )
+    metadata1 = create_test_metadata(name="provider1")
+    client1 = MagicMock()
+    registry.register_provider("provider1", client1, metadata1)
 
-    registry.register(provider1)
-    registry.register(provider2)
+    metadata2 = create_test_metadata(
+        name="provider2",
+        provider_type="claude",
+        model="claude-3-opus"
+    )
+    client2 = MagicMock()
+    registry.register_provider("provider2", client2, metadata2)
 
     all_providers = list(registry._providers.values())
     assert len(all_providers) == 2
