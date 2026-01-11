@@ -31,21 +31,52 @@
 - `--quick-check`: Run fast syntax check (core files only)
 
 ## Interactive Mode
-Run `python main.py` without arguments to access the interactive menu with these options:
-1. Single Agent (Grok only) - Observe-Reason-Act loop
-2. Collaboration Mode (Grok + Claude) - Dual AI planning
-3. Swarm Mode (Multi-agent) - Async team coordination
-4. Pantheon Mode (9-agent) - Full AI orchestration with validation & learning
-5. Improver Manual - Run self-improvement on specific session/log
-6. Offline Mode - Cached/local fallback (no API, uses vault/KB)
-7. Community Vault Sync - Pull/push evolutions and tools
-8. Save Game - Invoke progress save script
-9. Quit
+**NEW**: Run `python main.py` without arguments (or double-click the file) to access the beautiful ASCII art interactive menu!
+
+```
+╔═══════════════════════════════════════════════════════════════════╗
+║    ████████╗██████╗  ██████╗ ██╗  ██╗██████╗ ██╗   ██╗████████╗███████╗██████╗ ║
+║    ╚══██╔══╝██╔══██╗██╔═══██╗██║ ██╔╝██╔══██╗██║   ██║╚══██╔══╝██╔════╝██╔══██╗║
+║       ██║   ██████╔╝██║   ██║█████╔╝ ██████╔╝██║   ██║   ██║   █████╗  ██████╔╝║
+║       ██║   ██╔══██╗██║   ██║██╔═██╗ ██╔═══╝ ██║   ██║   ██║   ██╔══╝  ██╔══██╗║
+║       ██║   ██║  ██║╚██████╔╝██║  ██╗██║     ╚██████╔╝   ██║   ███████╗██║  ██║║
+║       ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝      ╚═════╝    ╚═╝   ╚══════╝╚═╝  ╚═╝║
+║                                                                   ║
+║    ██╔════╝ ██╔══██╗██╔═══██╗██║ ██╔╝██╔══██╗██║   ██║╚══██╔══╝   ║
+║    ██║   ██║██╔══██╗██║   ██║██╔═██╗ ██╔═══╝ ██║   ██║   ██║      ║
+║     ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝      ╚═════╝    ╚═╝      ║
+║                    VRZIBRZI NODE - INITIALIZED                    ║
+║                                                                   ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+        [INTERACTIVE MODE] Welcome to Grokputer - Choose your agent mode!
+
+        1. Single Agent (Grok only) - Observe-Reason-Act loop
+        2. Collaboration Mode - Multi-provider AI collaboration
+        3. Swarm Mode (Multi-agent) - Async team coordination
+        4. Pantheon Mode (9-agent) - Full agent orchestration
+        5. Offline Mode - Cached/local fallback (no API, uses vault/KB)
+        6. MAF Mode - Multi-Agent Framework with RL optimization
+        7. Save Game - Invoke progress save script
+        8. Quit
+```
+
+**Features:**
+- 🎨 **Beautiful ASCII Art Interface** with VRZIBRZI branding
+- **Guided Task Input** for each mode
+- **User-Friendly** - perfect for double-clicking the file
+- **All Major Modes** accessible through simple numbered menu
 
 ## Save Game: `python save_game.py`
-- `--auto`: Auto-save without prompts
-- `--message` TEXT: Custom git commit message
-- `--interval` INT: Autosave interval in minutes (runs as daemon)
+- `--auto`: Auto-save with default data (perfect for quick saves)
+- `--interval` INT: Auto-save interval in minutes (runs as daemon)
+- `--daemon`: Run as daemon with default 15min interval
+
+**Features:**
+- 💾 **Dual Storage**: Saves to both SQLite database and TOON format files
+- 🔄 **Redis Support**: Optional Redis caching for fast access
+- 📊 **Automatic Backup**: Daemon mode for continuous state preservation
+- 🎯 **TOON Format**: Efficient token-saving format for large datasets
 
 ## Session Viewer: `python view_sessions.py`
 - `session_id`: Session ID to view

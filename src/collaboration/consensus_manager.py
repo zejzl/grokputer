@@ -74,6 +74,7 @@ class ConsensusManager:
         strategy: ConsensusStrategy = ConsensusStrategy.WEIGHTED_VOTE,
         convergence_threshold: float = 0.6,
         min_agreement_ratio: float = 0.5,
+        enable_rl_optimization: bool = True,
     ):
         """
         Initialize consensus manager.
@@ -82,19 +83,37 @@ class ConsensusManager:
             strategy: Default consensus strategy to use
             convergence_threshold: Minimum convergence score for consensus (0-1)
             min_agreement_ratio: Minimum ratio of providers that must agree
+            enable_rl_optimization: Whether to use RL for strategy optimization
         """
         self.strategy = strategy
         self.convergence_threshold = convergence_threshold
         self.min_agreement_ratio = min_agreement_ratio
+        self.enable_rl_optimization = enable_rl_optimization
 
         self.voting_history: List[VotingRound] = []
         self.conflict_resolver = ConflictResolver()
 
-        logger.info(f"ConsensusManager initialized with strategy: {strategy.value}")
+        # Phase 4: RL-based consensus optimization
+        self.consensus_rl_agent = None
+        if enable_rl_optimization:
+            try:
+                from .rl_optimizer import QLearningAgent
+                # Simple RL agent for consensus strategy selection
+                self.consensus_rl_agent = QLearningAgent(
+                    state_dim=4,  # provider_count, agreement_ratio, convergence_score, round_number
+                    action_dim=4,  # weighted_vote, majority_vote, expert_consensus, confidence_weighted
+                    learning_rate=0.1,
+                    epsilon=0.3,  # Lower exploration for consensus
+                )
+                logger.info("RL-based consensus optimization enabled")
+            except ImportError:
+                logger.warning("RL optimizer not available for consensus optimization")
+
+        logger.info(f"ConsensusManager initialized with strategy: {strategy.value}, RL: {enable_rl_optimization}")
 
     def analyze_round(self, messages: List[CollaborationMessage], round_number: int) -> ConsensusSignal:
         """
-        Analyze a round of messages for consensus.
+        Analyze a round of messages for consensus with RL-based strategy optimization.
 
         Args:
             messages: Messages from this round
@@ -119,14 +138,29 @@ class ConsensusManager:
             if msgs:
                 votes[provider_id] = self._extract_vote_from_message(msgs[-1])
 
+        # Phase 4: RL-based strategy selection
+        selected_strategy = self.strategy
+        if self.consensus_rl_agent and len(votes) > 1:
+            selected_strategy = self._rl_select_consensus_strategy(votes, round_number)
+
         # Create voting round
         voting_round = VotingRound(round_number=round_number, votes=votes)
 
-        # Analyze for consensus
-        consensus_result = self._analyze_consensus(votes, round_number)
+        # Analyze for consensus using selected strategy
+        original_strategy = self.strategy
+        self.strategy = selected_strategy  # Temporarily change strategy
+        try:
+            consensus_result = self._analyze_consensus(votes, round_number)
+        finally:
+            self.strategy = original_strategy  # Restore original strategy
+
         voting_round.consensus_result = consensus_result
 
         self.voting_history.append(voting_round)
+
+        # RL learning: update based on consensus quality
+        if self.consensus_rl_agent:
+            self._rl_learn_from_consensus(votes, round_number, consensus_result)
 
         # Convert to ConsensusSignal
         signal = ConsensusSignal(
@@ -140,8 +174,18 @@ class ConsensusManager:
         )
 
         logger.info(
-            f"Round {round_number} consensus: {signal.is_consensus} "
-            f"(confidence: {signal.confidence:.2f}, convergence: {signal.convergence_score:.2f})"
+            f"Round {round_number} consensus analysis completed (strategy: {selected_strategy.value})",
+            extra={
+                "operation": "consensus_analysis",
+                "round_number": round_number,
+                "strategy_used": selected_strategy.value,
+                "is_consensus": signal.is_consensus,
+                "confidence": signal.confidence,
+                "convergence_score": signal.convergence_score,
+                "agreement_indicators_count": len(signal.agreement_indicators),
+                "disagreement_indicators_count": len(signal.disagreement_indicators),
+                "recommendation": signal.recommendation,
+            }
         )
 
         return signal
@@ -256,6 +300,25 @@ class ConsensusManager:
             recommended_action = "CONTINUE"
             reasoning = "Need more discussion to reach consensus"
 
+        # Log consensus decision
+        logger.info(
+            f"Weighted vote consensus result",
+            extra={
+                "operation": "consensus_decision",
+                "strategy": "weighted_vote",
+                "round_number": round_number,
+                "total_votes": len(votes),
+                "unique_responses": len(vote_counts),
+                "winning_value_length": len(str(winning_value)) if winning_value else 0,
+                "agreement_ratio": agreement_ratio,
+                "convergence_score": convergence_score,
+                "is_consensus": is_consensus,
+                "recommended_action": recommended_action,
+                "min_agreement_ratio": self.min_agreement_ratio,
+                "convergence_threshold": self.convergence_threshold,
+            }
+        )
+
         return ConsensusResult(
             is_consensus=is_consensus,
             confidence=min(agreement_ratio, convergence_score),
@@ -319,6 +382,82 @@ class ConsensusManager:
         """
         # For now, assume equal confidence - in practice, extract from message metadata
         return self._weighted_vote_consensus(votes, round_number)
+
+    def _rl_select_consensus_strategy(self, votes: Dict[str, Any], round_number: int) -> ConsensusStrategy:
+        """Select optimal consensus strategy using RL."""
+        try:
+            # Create state representation
+            provider_count = len(votes)
+            # Simple agreement analysis (would be more sophisticated in practice)
+            unique_votes = set(str(v) for v in votes.values())
+            agreement_ratio = 1.0 - (len(unique_votes) - 1) / max(len(votes), 1)
+
+            # Estimate convergence (simplified)
+            convergence_score = agreement_ratio
+
+            state_vector = [provider_count / 10.0, agreement_ratio, convergence_score, round_number / 10.0]
+
+            # Available actions (consensus strategies)
+            available_strategies = [
+                ConsensusStrategy.WEIGHTED_VOTE,
+                ConsensusStrategy.MAJORITY_VOTE,
+                ConsensusStrategy.EXPERT_CONSENSUS,
+                ConsensusStrategy.CONFIDENCE_WEIGHTED,
+            ]
+
+            # Choose action using RL agent
+            # Simplified: just pick the best known strategy
+            best_strategy = ConsensusStrategy.WEIGHTED_VOTE  # Default fallback
+            best_q = float('-inf')
+
+            state_key = f"{provider_count}_{agreement_ratio:.2f}_{convergence_score:.2f}_{round_number}"
+
+            for strategy in available_strategies:
+                action_key = strategy.value
+                q_value = self.consensus_rl_agent.get_q_value(state_key, action_key)
+                if q_value > best_q:
+                    best_q = q_value
+                    best_strategy = strategy
+
+            return best_strategy
+
+        except Exception as e:
+            logger.warning(f"RL consensus strategy selection failed: {e}")
+            return self.strategy  # Fallback to default
+
+    def _rl_learn_from_consensus(self, votes: Dict[str, Any], round_number: int, consensus_result: ConsensusResult):
+        """Learn from consensus outcome for future strategy selection."""
+        try:
+            # Calculate reward based on consensus quality
+            reward = 0.0
+
+            if consensus_result.is_consensus:
+                reward += 5.0  # Bonus for reaching consensus
+                if consensus_result.confidence > 0.8:
+                    reward += 3.0  # Extra bonus for high confidence
+            else:
+                reward -= 2.0  # Penalty for no consensus
+
+            # Efficiency bonus (fewer rounds better)
+            if round_number <= 2:
+                reward += 1.0
+
+            # Create state and action for learning
+            provider_count = len(votes)
+            unique_votes = set(str(v) for v in votes.values())
+            agreement_ratio = 1.0 - (len(unique_votes) - 1) / max(len(votes), 1)
+            convergence_score = consensus_result.convergence_score
+
+            state_key = f"{provider_count}_{agreement_ratio:.2f}_{convergence_score:.2f}_{round_number}"
+            action_key = self.strategy.value
+
+            # Update Q-value (simplified learning)
+            current_q = self.consensus_rl_agent.get_q_value(state_key, action_key)
+            new_q = current_q + self.consensus_rl_agent.learning_rate * (reward - current_q)
+            self.consensus_rl_agent.set_q_value(state_key, action_key, new_q)
+
+        except Exception as e:
+            logger.warning(f"RL consensus learning failed: {e}")
 
     def resolve_conflict(
         self, votes: Dict[str, Any], strategy: ConflictResolution = ConflictResolution.HIGHEST_WEIGHT

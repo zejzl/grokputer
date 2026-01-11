@@ -11,6 +11,7 @@ import time
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Callable, Dict, List, Optional, Type
+import threading
 
 logger = logging.getLogger(__name__)
 
@@ -22,10 +23,193 @@ class ProviderCapability(Enum):
     CODE_ANALYSIS = "code_analysis"
     CRITICAL_THINKING = "critical_thinking"
     CREATIVE_WRITING = "creative_writing"
-    MATHEMATICAL = "mathematical"
+    MATHEMATICAL = "mathemical"
     RESEARCH = "research"
     VALIDATION = "validation"
     SYNTHESIS = "synthesis"
+
+
+class CircuitBreakerState(Enum):
+    """States for circuit breaker pattern."""
+
+    CLOSED = "closed"      # Normal operation
+    OPEN = "open"          # Failing, fast fail all requests
+    HALF_OPEN = "half_open"  # Testing if service recovered
+
+
+@dataclass
+class CircuitBreakerConfig:
+    """Configuration for circuit breaker behavior."""
+
+    failure_threshold: int = 5  # Failures before opening
+    recovery_timeout: float = 60.0  # Seconds to wait before trying again
+    expected_exception: Type[Exception] = Exception  # Exception type to catch
+    success_threshold: int = 3  # Successes needed to close from half-open
+
+
+@dataclass
+class CircuitBreakerStats:
+    """Statistics for circuit breaker monitoring."""
+
+    total_requests: int = 0
+    successful_requests: int = 0
+    failed_requests: int = 0
+    consecutive_failures: int = 0
+    consecutive_successes: int = 0
+    last_failure_time: Optional[float] = None
+    last_success_time: Optional[float] = None
+    state_changes: List[Dict[str, Any]] = field(default_factory=list)
+
+
+class CircuitBreaker:
+    """
+    Circuit breaker implementation to prevent cascading failures.
+
+    States:
+    - CLOSED: Normal operation, requests pass through
+    - OPEN: Failing, all requests fail fast
+    - HALF_OPEN: Testing recovery, limited requests allowed
+    """
+
+    def __init__(self, config: CircuitBreakerConfig = None):
+        self.config = config or CircuitBreakerConfig()
+        self.state = CircuitBreakerState.CLOSED
+        self.stats = CircuitBreakerStats()
+        self._lock = threading.Lock()
+
+    def call(self, func: Callable, *args, **kwargs) -> Any:
+        """
+        Execute function through circuit breaker.
+
+        Args:
+            func: Function to call
+            *args: Positional arguments
+            **kwargs: Keyword arguments
+
+        Returns:
+            Function result
+
+        Raises:
+            Exception: If circuit is open or function fails
+        """
+        with self._lock:
+            self.stats.total_requests += 1
+
+            if self.state == CircuitBreakerState.OPEN:
+                if self._should_attempt_reset():
+                    self._transition_to_half_open()
+                else:
+                    raise CircuitBreakerOpenException("Circuit breaker is OPEN")
+
+            try:
+                result = func(*args, **kwargs)
+                self._on_success()
+                return result
+            except self.config.expected_exception as e:
+                self._on_failure()
+                raise e
+
+    async def call_async(self, func: Callable, *args, **kwargs) -> Any:
+        """
+        Execute async function through circuit breaker.
+
+        Args:
+            func: Async function to call
+            *args: Positional arguments
+            **kwargs: Keyword arguments
+
+        Returns:
+            Function result
+
+        Raises:
+            Exception: If circuit is open or function fails
+        """
+        with self._lock:
+            self.stats.total_requests += 1
+
+            if self.state == CircuitBreakerState.OPEN:
+                if self._should_attempt_reset():
+                    self._transition_to_half_open()
+                else:
+                    raise CircuitBreakerOpenException("Circuit breaker is OPEN")
+
+            try:
+                result = await func(*args, **kwargs)
+                self._on_success()
+                return result
+            except self.config.expected_exception as e:
+                self._on_failure()
+                raise e
+
+    def _should_attempt_reset(self) -> bool:
+        """Check if enough time has passed to attempt recovery."""
+        if self.stats.last_failure_time is None:
+            return False
+        return time.time() - self.stats.last_failure_time >= self.config.recovery_timeout
+
+    def _transition_to_half_open(self):
+        """Transition from OPEN to HALF_OPEN state."""
+        self.state = CircuitBreakerState.HALF_OPEN
+        self.stats.consecutive_successes = 0
+        self._log_state_change("OPEN", "HALF_OPEN", "Attempting recovery")
+
+    def _on_success(self):
+        """Handle successful call."""
+        self.stats.successful_requests += 1
+        self.stats.consecutive_successes += 1
+        self.stats.consecutive_failures = 0
+        self.stats.last_success_time = time.time()
+
+        if self.state == CircuitBreakerState.HALF_OPEN:
+            if self.stats.consecutive_successes >= self.config.success_threshold:
+                self._transition_to_closed()
+
+    def _on_failure(self):
+        """Handle failed call."""
+        self.stats.failed_requests += 1
+        self.stats.consecutive_failures += 1
+        self.stats.consecutive_successes = 0
+        self.stats.last_failure_time = time.time()
+
+        if self.state == CircuitBreakerState.HALF_OPEN:
+            self._transition_to_open()
+        elif (self.state == CircuitBreakerState.CLOSED and
+              self.stats.consecutive_failures >= self.config.failure_threshold):
+            self._transition_to_open()
+
+    def _transition_to_open(self):
+        """Transition to OPEN state."""
+        old_state = self.state.value
+        self.state = CircuitBreakerState.OPEN
+        self._log_state_change(old_state, "OPEN", f"Failure threshold reached ({self.config.failure_threshold})")
+
+    def _transition_to_closed(self):
+        """Transition to CLOSED state."""
+        old_state = self.state.value
+        self.state = CircuitBreakerState.CLOSED
+        self.stats.consecutive_failures = 0
+        self._log_state_change(old_state, "CLOSED", f"Recovery successful ({self.config.success_threshold} successes)")
+
+    def _log_state_change(self, from_state: str, to_state: str, reason: str):
+        """Log state transition."""
+        change = {
+            "timestamp": time.time(),
+            "from_state": from_state,
+            "to_state": to_state,
+            "reason": reason,
+            "stats": {
+                "total_requests": self.stats.total_requests,
+                "consecutive_failures": self.stats.consecutive_failures,
+                "consecutive_successes": self.stats.consecutive_successes,
+            }
+        }
+        self.stats.state_changes.append(change)
+        logger.info(f"Circuit breaker state change: {from_state} -> {to_state} ({reason})")
+
+
+class CircuitBreakerOpenException(Exception):
+    """Exception raised when circuit breaker is open."""
+    pass
 
 
 @dataclass
@@ -54,6 +238,7 @@ class ProviderInstance:
     client: Any  # The actual model client instance
     weight: float = 1.0  # Voting weight in consensus
     is_active: bool = True
+    circuit_breaker: Optional[CircuitBreaker] = None
 
 
 class ProviderRegistry:
@@ -63,11 +248,17 @@ class ProviderRegistry:
     Manages provider registration, discovery, health monitoring, and capability-based selection.
     """
 
-    def __init__(self):
+    def __init__(self, enable_circuit_breakers: bool = True):
         self._providers: Dict[str, ProviderInstance] = {}
         self._capability_index: Dict[ProviderCapability, List[str]] = {}
         self._health_check_interval = 60  # seconds
         self._health_monitor_task: Optional[asyncio.Task] = None
+        self._enable_circuit_breakers = enable_circuit_breakers
+        self._circuit_breaker_config = CircuitBreakerConfig(
+            failure_threshold=3,  # Open after 3 failures
+            recovery_timeout=30.0,  # Wait 30s before trying again
+            success_threshold=2,  # Need 2 successes to close
+        )
 
     async def start_health_monitoring(self):
         """Start background health monitoring for all providers."""
@@ -103,21 +294,74 @@ class ProviderRegistry:
         """Perform health checks on all registered providers."""
         for provider_id, instance in self._providers.items():
             try:
-                # Simple health check - try to get available models
-                if hasattr(instance.client, "get_available_models"):
-                    await instance.client.get_available_models()
-                    instance.metadata.health_status = "healthy"
+                # Use circuit breaker for health checks if available
+                if instance.circuit_breaker:
+                    try:
+                        await instance.circuit_breaker.call_async(self._perform_single_health_check, instance)
+                        instance.metadata.health_status = "healthy"
+                    except CircuitBreakerOpenException:
+                        instance.metadata.health_status = "circuit_open"
+                        logger.warning(f"Provider {provider_id} circuit breaker is OPEN, skipping health check")
+                        continue
+                    except Exception as e:
+                        # Circuit breaker will handle the failure
+                        instance.metadata.health_status = "failed"
+                        logger.warning(f"Provider {provider_id} health check failed (circuit breaker): {e}")
+                        continue
                 else:
-                    # For providers without model listing, assume healthy
+                    # Direct health check without circuit breaker
+                    await self._perform_single_health_check(instance)
                     instance.metadata.health_status = "healthy"
 
                 instance.metadata.last_health_check = time.time()
-                logger.debug(f"Provider {provider_id} health check: {instance.metadata.health_status}")
+                logger.info(
+                    f"Provider {provider_id} health check successful",
+                    extra={
+                        "operation": "health_check",
+                        "provider_id": provider_id,
+                        "status": instance.metadata.health_status,
+                        "last_check": instance.metadata.last_health_check,
+                        "circuit_breaker_state": instance.circuit_breaker.state.value if instance.circuit_breaker else "disabled",
+                    }
+                )
 
+            except CircuitBreakerOpenException:
+                instance.metadata.health_status = "circuit_open"
+                instance.metadata.last_health_check = time.time()
+                logger.warning(
+                    f"Provider {provider_id} health check skipped - circuit breaker open",
+                    extra={
+                        "operation": "health_check_circuit_open",
+                        "provider_id": provider_id,
+                        "circuit_breaker_state": "open",
+                    }
+                )
             except Exception as e:
                 instance.metadata.health_status = "failed"
                 instance.metadata.last_health_check = time.time()
-                logger.warning(f"Provider {provider_id} health check failed: {e}")
+                logger.warning(
+                    f"Provider {provider_id} health check failed",
+                    extra={
+                        "operation": "health_check_failed",
+                        "provider_id": provider_id,
+                        "error_type": type(e).__name__,
+                        "error_message": str(e)[:200],
+                        "circuit_breaker_state": instance.circuit_breaker.state.value if instance.circuit_breaker else "disabled",
+                    },
+                    exc_info=True
+                )
+
+    async def _perform_single_health_check(self, instance: ProviderInstance):
+        """Perform a single health check on a provider instance."""
+        # Simple health check - try to get available models or basic ping
+        if hasattr(instance.client, "get_available_models"):
+            await instance.client.get_available_models()
+        elif hasattr(instance.client, "generate_response"):
+            # For mock providers, try a simple response
+            await instance.client.generate_response("health_check", "validator")
+        else:
+            # For providers without specific health check methods, assume healthy
+            pass
 
     def register_provider(self, provider_id: str, client: Any, metadata: ProviderMetadata, weight: float = 1.0) -> bool:
         """
@@ -136,7 +380,18 @@ class ProviderRegistry:
             logger.warning(f"Provider {provider_id} already registered, skipping")
             return False
 
-        instance = ProviderInstance(metadata=metadata, client=client, weight=weight, is_active=True)
+        # Initialize circuit breaker if enabled
+        circuit_breaker = None
+        if self._enable_circuit_breakers:
+            circuit_breaker = CircuitBreaker(self._circuit_breaker_config)
+
+        instance = ProviderInstance(
+            metadata=metadata,
+            client=client,
+            weight=weight,
+            is_active=True,
+            circuit_breaker=circuit_breaker
+        )
 
         self._providers[provider_id] = instance
 
@@ -146,7 +401,19 @@ class ProviderRegistry:
                 self._capability_index[capability] = []
             self._capability_index[capability].append(provider_id)
 
-        logger.info(f"Registered provider: {provider_id} ({metadata.provider_type}:{metadata.model})")
+        logger.info(
+            f"Registered provider: {provider_id}",
+            extra={
+                "operation": "provider_registration",
+                "provider_id": provider_id,
+                "provider_type": metadata.provider_type,
+                "model": metadata.model,
+                "capabilities_count": len(metadata.capabilities),
+                "weight": weight,
+                "circuit_breaker_enabled": self._enable_circuit_breakers,
+                "reliability_score": metadata.reliability_score,
+            }
+        )
         return True
 
     def unregister_provider(self, provider_id: str) -> bool:
@@ -264,12 +531,29 @@ class ProviderRegistry:
         for capability, providers in self._capability_index.items():
             capability_counts[capability.value] = len(providers)
 
+        # Circuit breaker stats
+        circuit_breaker_stats = {}
+        for provider_id, instance in self._providers.items():
+            if instance.circuit_breaker:
+                stats = instance.circuit_breaker.stats
+                circuit_breaker_stats[provider_id] = {
+                    "state": instance.circuit_breaker.state.value,
+                    "total_requests": stats.total_requests,
+                    "successful_requests": stats.successful_requests,
+                    "failed_requests": stats.failed_requests,
+                    "consecutive_failures": stats.consecutive_failures,
+                    "consecutive_successes": stats.consecutive_successes,
+                    "state_changes": len(stats.state_changes),
+                }
+
         return {
             "total_providers": total_providers,
             "healthy_providers": healthy_providers,
             "active_providers": active_providers,
             "capability_distribution": capability_counts,
             "health_monitoring_active": self._health_monitor_task is not None,
+            "circuit_breakers_enabled": self._enable_circuit_breakers,
+            "circuit_breaker_stats": circuit_breaker_stats,
         }
 
 
