@@ -400,6 +400,234 @@ logs/session_20251106_143052/
 
 ---
 
+## 📋 Comprehensive Command Reference
+
+### 🚀 Core Execution Modes
+
+**Basic Task Execution**:
+```bash
+python main.py --task "your task here"
+python main.py -t "scan vault for images" -m 5
+python main.py --task "describe screen" --debug
+python main.py --task "invoke server prayer" --skip-boot
+```
+
+**Pantheon Mode (9 Agents)**:
+```bash
+python main.py --pantheon --task "complex task"
+python main.py -gp --task "god mode task"
+python main.py --pantheon --agents coordinator,learner --task "design feature"
+python main.py --swarm --agents 5 --roles c,o,a --task "optimize performance"
+```
+
+**MAF Mode (Multi-Agent Framework)**:
+```bash
+python main.py -mb --task "collaborative task"
+python main.py --messagebus --task "analysis" --max-rounds 3
+python main.py --providers grok,claude --task "real analysis"
+python main.py --maf-config src/collaboration/configs/test_optimization_duo.json --task "optimize"
+```
+
+**Daemon Mode (Autonomous)**:
+```bash
+python autonomous.py daemon src --auto-propose
+python autonomous.py daemon src --auto-propose --replicas 3
+python autonomous.py daemon src --auto-propose --replicas 3 --analytics
+```
+
+### 🧪 Testing & Quality Assurance
+
+**Run Tests**:
+```bash
+pytest
+pytest --cov
+pytest --cov=src tests/
+pytest --cov=src/collaboration tests/collaboration/ -v
+pytest tests/core/test_message_bus.py -v
+pytest tests/agents/ -v
+pytest tests/memory/ -v
+python -m pytest
+```
+
+**Safety & Security**:
+```bash
+python test_safety_scoring.py
+python main.py --syntax-check
+```
+
+**Test Specific Components**:
+```bash
+python test_messagebus_live.py
+python tests/poc_duo.py
+python test_collaboration_features.py
+```
+
+### 📊 Monitoring & Observability
+
+**Dashboard & Metrics**:
+```bash
+streamlit run dashboard.py
+python view_sessions.py list
+python view_sessions.py show session_20251106_143052
+python view_sessions.py show session_20251106_143052 --format metrics
+python view_sessions.py search "vault"
+python view_sessions.py compare
+python view_sessions.py tail session_20251106_143052
+python view_sessions.py --swarm viz
+```
+
+**State Management**:
+```bash
+python save_game.py --auto
+python save_game.py --manual "description here"
+```
+
+### 🎓 User Onboarding & Documentation
+
+**Interactive Tools**:
+```bash
+python token_haze.py
+python token_haze.py --interactive
+python main.py --help
+```
+
+**Documentation Access**:
+```bash
+cat README.md
+cat CLAUDE.md
+cat grok.md
+cat DEVELOPMENT_PLAN.md
+cat GG_TASK_PLAN.md
+cat docs/COLLABORATION_SYSTEM.md
+cat docs/PANTHEON_SYSTEM.md
+cat docs/MAF_SYSTEM.md
+```
+
+### 🔧 Automation & Orchestration
+
+**Workflow Engine (GG Framework - Planned)**:
+```bash
+python main.py --workflow examples/notion_asana_sync.py
+python main.py --pantheon --workflow examples/complex_workflow.py
+cat GG_TASK_PLAN.md
+```
+
+**Todo Management**:
+```bash
+python main.py -mb --todo-daemon --task "your task"
+python dynamic_todo_manager.py display
+```
+
+### 🐳 Docker Commands
+
+**Basic Docker Usage**:
+```bash
+docker build -t grokputer:latest .
+docker-compose up grokputer
+TASK="invoke server prayer" docker-compose run --rm grokputer
+TASK="scan vault for files" docker-compose run --rm grokputer
+TASK="your custom task" docker-compose run --rm grokputer
+```
+
+**Advanced Docker Profiles**:
+```bash
+docker-compose --profile pantheon up
+docker-compose --profile debug up grokputer-vnc
+docker-compose up mcp-server
+docker-compose down
+docker-compose build --no-cache
+docker-compose logs -f
+```
+
+**Docker Debugging**:
+```bash
+docker run --rm --env-file .env grokputer:latest sh -c "scrot /tmp/test.png && ls -lh /tmp/test.png"
+docker run --rm --env-file .env -v "$(pwd):/host" grokputer:latest sh -c "scrot /tmp/screenshot.png && cp /tmp/screenshot.png /host/ && ls -lh /host/screenshot.png"
+```
+
+### 🔍 Development & Debugging
+
+**API Testing**:
+```bash
+python -c "from src.grok_client import GrokClient; client = GrokClient(); client.test_connection()"
+cat .env | grep XAI_API_KEY
+cat .env | grep ANTHROPIC_API_KEY
+```
+
+**Screenshot Testing**:
+```bash
+python -c "import pyautogui; print(pyautogui.screenshot())"
+```
+
+**Code Quality**:
+```bash
+black src/ tests/
+flake8 src/ tests/
+```
+
+**Git Operations**:
+```bash
+git status
+git log --oneline -5
+git add .
+git commit -m "your message"
+git push origin main
+git pull origin main
+git checkout -b feature-branch
+git merge branch-name
+```
+
+### 📦 Dependency Management
+
+**Installation**:
+```bash
+pip install -r requirements.txt
+pip install -r requirements-lora.txt
+npm install
+```
+
+**Environment Setup**:
+```bash
+python -m venv venv
+source venv/bin/activate  # Mac/Linux
+venv\Scripts\activate     # Windows
+cp .env.example .env
+```
+
+### 🎮 Interactive & Specialized Modes
+
+**Node.js Web Interface**:
+```bash
+npm start  # Starts on port 3000
+```
+
+**Game/Adventure Mode**:
+```bash
+python save_game.py --auto
+# Creates .toon save files in saves/ directory
+```
+
+### 📚 Help & Documentation
+
+**Built-in Help**:
+```bash
+python main.py --help
+python autonomous.py --help
+python view_sessions.py --help
+python save_game.py --help
+python token_haze.py --help
+```
+
+**Quick References**:
+```bash
+cat help.md
+cat actual_instructions.txt
+cat server_prayer.txt
+cat CHANGELOG.md
+```
+
+---
+
 ## 🏗️ Architecture
 
 ### Observe-Reason-Act Loop
