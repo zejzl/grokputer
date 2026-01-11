@@ -203,6 +203,13 @@ python main.py --pantheon --workflow examples/complex_workflow.py
 - `src/safety/godmode_protocols.py` - Safety boundaries
 - `src/safety/code_scanner.py` - Code security scanning
 
+### User Tools
+- `token_haze.py` - Interactive onboarding tool (NEW - Jan 11, 2026)
+  - Real token counting with tiktoken
+  - Live system status (Redis, MessageBus, dependencies)
+  - Interactive mode: `python token_haze.py --interactive`
+  - Pantheon overview and quick start guide
+
 ## Configuration
 
 ### Environment Variables (.env)
@@ -237,22 +244,97 @@ MAX_SCREENSHOT_SIZE=1920x1080
 
 ## Testing Status
 
-### Coverage: 90% (Target: 95%)
+### MAF Coverage: 37% (121/121 tests passing - 100%)
 - **Core Systems**: message_bus, base_agent, action_executor - ✅ COMPLETE
 - **Agents**: 9/9 agents tested with mocks - ✅ COMPLETE
 - **Memory**: Redis/SQLite backends - 🔄 82% (proposals pending)
-- **MAF**: Provider registry, consensus - ✅ COMPLETE
-- **Integration**: End-to-end Pantheon tests - ✅ COMPLETE
+- **MAF Core**: Provider registry, consensus, orchestrator, RL optimizer - ✅ COMPLETE (100% pass rate)
+- **Integration**: Coordinator end-to-end tests - ✅ COMPLETE (77% coverage)
+
+### MAF Module Coverage (as of Jan 11, 2026)
+**Excellent (>70%)**:
+- message_models.py: **84%** ⭐
+- coordinator.py: **77%** ⭐ (NEW - integration tests)
+- rl_optimizer.py: **72%** ⭐
+
+**Moderate (30-50%)**:
+- provider_registry.py: 39%
+- orchestrator.py: 35%
+- config.py: 35%
+
+**Needs Improvement (<30%)**:
+- consensus_manager.py: 26%
+- provider_pool.py: 21%
+- output_generator.py: 22%
+
+### Test Suite Breakdown
+- **Total Tests**: 121 (100% passing)
+- test_consensus_manager.py: 27 tests
+- test_orchestrator.py: 19 tests
+- test_provider_registry.py: 24 tests
+- test_rl_optimizer.py: 34 tests
+- **test_coordinator_integration.py**: 17 tests ✨ NEW (Jan 11)
 
 ### Test Commands
 ```bash
+# Full MAF test suite
+pytest tests/collaboration/ --cov=src/collaboration -v
+
+# Specific test files
+pytest tests/collaboration/test_coordinator_integration.py -v
+pytest tests/collaboration/test_rl_optimizer.py -v
+
+# Coverage report
 pytest --cov --cov-report=html
-pytest tests/core/test_message_bus.py -v
-pytest tests/agents/ -v
-pytest tests/memory/ -v
 ```
 
-## Recent Updates (Nov 11-14, 2025)
+## Recent Updates
+
+### Jan 11, 2026 - Major Testing & Onboarding Improvements
+**Session Focus**: MAF test coverage improvement + User onboarding enhancement
+
+**Test Suite Achievements**:
+- ✅ **100% test pass rate maintained** (121/121 tests passing)
+- ✅ **Coordinator integration tests created** (17 comprehensive tests)
+  - End-to-end dual-agent collaboration flows
+  - Grok-only mode testing
+  - Error handling and graceful degradation
+  - Message history and correlation ID validation
+  - Final plan synthesis verification
+- ✅ **Coordinator coverage: 0% → 77%** (+77% in one session!)
+- ✅ **Overall MAF coverage: 33% → 37%** (+4%, +77 lines covered)
+- ✅ **API alignment complete** for all MAF modules
+- ✅ **Test patterns established** for future integration tests
+
+**User Onboarding Enhancement**:
+- ✅ **token_haze.py complete rewrite** (82 → 269 lines, +227%)
+  - Removed all emojis (Windows compatibility)
+  - Added real token counting with tiktoken
+  - Live system status checks (Redis, MessageBus, dependencies)
+  - Interactive mode with menu-driven exploration
+  - Full Pantheon agent overview
+  - Quick start guide with 6 essential commands
+- ✅ **Production-ready onboarding tool** (replaces toy demo)
+
+**Documentation**:
+- ✅ Updated `11_1_26_claude.md` with complete session notes
+- ✅ Updated `CLAUDE.md` with latest testing status
+- ✅ 3 commits pushed to GitHub (test suite + onboarding)
+
+**Key Metrics**:
+- Test count: 104 → 121 (+17 tests)
+- Coordinator coverage: 0% → 77%
+- MAF coverage: 33% → 37%
+- token_haze.py: 82 → 269 lines
+
+**Next Priorities**:
+- Integration tests for provider_pool, output_generator
+- GG Framework implementation (Phase 1-2)
+- Pantheon coverage improvement (90% → 95%)
+
+---
+
+### Nov 11-16, 2025 - Foundation & Planning
 
 ### Nov 11
 - ✅ Pantheon 9-agent architecture complete
