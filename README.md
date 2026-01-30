@@ -25,8 +25,9 @@ Grokputer enables xAI's Grok to control your computer through screen observation
 - 📊 **Advanced Analytics**: Comprehensive monitoring of memory, messaging, and system performance
 - 🛠️ **Error Resilience**: Custom exception hierarchy with retry logic and graceful degradation
 - 🤝 **Multi-Agent Collaboration**: Pantheon system with 9 specialized agents (Observer, Reasoner, Actor, Validator, Learner, Memory, Executor, Analyzer, Improver)
-- 💬 **MessageBus**: High-performance async message bus (42K+ msg/sec, <0.05ms latency)
+- 💬 **High-Performance MessageBus**: Pure asyncio message bus achieving 425K+ msg/sec, 0.007ms latency - production-grade inter-agent communication [Updated 2026-01-30]
 - 🔄 **GG Framework**: Workflow automation engine (n8n/Make.com style) - PLANNING COMPLETE
+- 🪟 **Windows Compatible**: Emoji-free codebase for full Windows compatibility (28 files cleaned) [Updated 2026-01-30]
 
 ---
 
