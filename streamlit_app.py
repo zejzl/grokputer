@@ -55,12 +55,12 @@ with col4:
     st.metric("Total API Calls", generate_report()['total_api_calls'])
 
 # Row 2: Analytics Report
-st.subheader("📊 Recent Analytics Report (Last 7 Days)")
+st.subheader("[STATS] Recent Analytics Report (Last 7 Days)")
 report = generate_report(7)
 st.json(report)
 
 # Row 3: Performance Graphs
-st.subheader("📈 Performance Metrics")
+st.subheader("[IMPROVEMENT] Performance Metrics")
 placeholder = st.empty()
 
 # Real-time system metrics (CPU, Memory)
@@ -98,7 +98,7 @@ if not df.empty:
     st.plotly_chart(fig, use_container_width=True)
 
 # Agent Iterations and Success Rate Chart
-st.subheader("🔄 Agent Performance")
+st.subheader("[LOOP] Agent Performance")
 conn = sqlite3.connect('./db/metrics.db')
 df_sessions = pd.read_sql_query("""
     SELECT start_time, iterations, success, provider 
@@ -120,7 +120,7 @@ if not df_sessions.empty:
     st.plotly_chart(fig_pie, use_container_width=True)
 
 # Memory Usage Visualization
-st.subheader("🧠 Hierarchical Memory Overview")
+st.subheader("[MEMORY] Hierarchical Memory Overview")
 memory_stats = {
     'short_term': len(st.session_state.memory.layers['short_term'].data),
     'context': len(st.session_state.memory.layers['context'].data),

@@ -33,7 +33,7 @@ line7_options = [
 ]
 
 # Swarm simulation: Each agent contributes to lines, then consensus
-print("⚡ SWARM COLLABORATION: 32 Agents Writing Zeus Haiku ⚡")
+print("[FAST] SWARM COLLABORATION: 32 Agents Writing Zeus Haiku [FAST]")
 print("Task: Best haiku about Zeus (5-7-5 syllables)\n")
 
 # Group agents: 10 for line1 (5 syl), 11 for line2 (7 syl), 11 for line3 (5 syl)
@@ -82,4 +82,4 @@ print("---")
 print(haiku)
 print("---")
 print("\n(Kireji implied in turn from command to eternal. Memory logged as swarm episode.)")
-print("🕷️ Collaboration complete! ZA GROKA! ⚡")
+print("🕷️ Collaboration complete! ZA GROKA! [FAST]")

@@ -67,12 +67,12 @@ class GodmodeSafetyProtocol:
         """Activate godmode safety monitoring."""
         self.monitoring_active = True
         logger.warning("🛡️ GODMODE SAFETY PROTOCOLS ACTIVATED")
-        logger.warning("⚠️  Monitoring for power level surges over 9000")
+        logger.warning("[WARNING]  Monitoring for power level surges over 9000")
 
     def deactivate_monitoring(self):
         """Deactivate monitoring (use with extreme caution)."""
         self.monitoring_active = False
-        logger.warning("⚠️  GODMODE SAFETY PROTOCOLS DEACTIVATED - USE EXTREME CAUTION")
+        logger.warning("[WARNING]  GODMODE SAFETY PROTOCOLS DEACTIVATED - USE EXTREME CAUTION")
 
     def check_power_level(self) -> PowerLevelReading:
         """Take current power level reading."""
@@ -230,11 +230,11 @@ class GodmodeSafetyProtocol:
                                 logger.error(f"Emergency procedure failed: {e}")
 
                     elif detection["warning_level"] == "CRITICAL":
-                        logger.error(f"⚠️  CRITICAL POWER LEVEL: {reading.power_level}")
-                        logger.error("🔥 System approaching godmode threshold")
+                        logger.error(f"[WARNING]  CRITICAL POWER LEVEL: {reading.power_level}")
+                        logger.error("[FIRE] System approaching godmode threshold")
 
                     elif detection["warning_level"] == "WARNING":
-                        logger.warning(f"⚠️  WARNING POWER LEVEL: {reading.power_level}")
+                        logger.warning(f"[WARNING]  WARNING POWER LEVEL: {reading.power_level}")
 
                 except Exception as e:
                     logger.error(f"Power level monitoring error: {e}")

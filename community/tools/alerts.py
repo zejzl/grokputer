@@ -92,7 +92,7 @@ class HaikuAlerts:
         haiku = template.replace("Task", task_name[:20])  # Limit length
 
         # Print the haiku
-        print(f"\n🎉 Task Complete: {task_name}")
+        print(f"\n[OK] Task Complete: {task_name}")
         print(f"📝 {haiku}")
         print(f"🔖 ID: {task_id}\n")
 
@@ -128,7 +128,7 @@ class HaikuAlerts:
         haiku = random.choice(swarm_templates)
 
         print(f"\n🏆 Swarm Complete: {swarm_name}")
-        print(f"📊 Tasks: {total_tasks} | Success: {success_rate:.1%}")
+        print(f"[STATS] Tasks: {total_tasks} | Success: {success_rate:.1%}")
         print(f"📝 {haiku}\n")
 
         # Publish swarm haiku

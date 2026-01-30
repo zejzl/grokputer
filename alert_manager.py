@@ -31,7 +31,7 @@ class AlertManager(BaseAgent):
             print(f"🔒 SECURITY BREACH: {msg['input']}")
             logger.error(f"Security Breach: {msg['input']}")
         elif alert_type == "perf_alert":
-            print(f"⚡ PERFORMANCE ISSUE: CPU {msg['cpu']}%, MEM {msg['mem']}%")
+            print(f"[FAST] PERFORMANCE ISSUE: CPU {msg['cpu']}%, MEM {msg['mem']}%")
             logger.warning(f"Perf Alert: CPU {msg['cpu']}, MEM {msg['mem']}")
         # Simulate email
         if self.email_sim:
