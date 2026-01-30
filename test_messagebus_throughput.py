@@ -2,8 +2,8 @@ import redis
 import time
 import json
 
-# Connect to Redis
-r = redis.Redis(host="localhost", port=6379, db=0, decode_responses=True)
+# Connect to Redis (grokputer isolated instance on port 6380)
+r = redis.Redis(host="localhost", port=6380, db=0, decode_responses=True)
 
 channel = "grokputer_broadcast"
 

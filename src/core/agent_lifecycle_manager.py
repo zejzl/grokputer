@@ -17,8 +17,8 @@ from typing import Any, Callable, Dict, List, Optional
 
 import psutil
 
-from src.core.base_agent import BaseAgent
-from src.observability.deadlock_detector import DeadlockDetector
+# Lazy import BaseAgent inside methods
+
 from src.observability.session_logger import SessionLogger
 
 logger = logging.getLogger(__name__)

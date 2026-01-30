@@ -37,14 +37,11 @@ from .nodes import (
     SlackNode,
     TransformNode,
 )
-from .pantheon_integration import PantheonAgent, PantheonIntegration, get_pantheon
+from .pantheon_integration import PantheonAgent, PantheonIntegration, get_pantheon_integration
 from .state import (
-    MemoryBackend,
-    RedisBackend,
-    SQLiteBackend,
-    StateBackend,
-    WorkflowState,
-    create_state,
+    StateManager,
+    StateSnapshot,
+    get_state_manager,
 )
 
 __version__ = "0.1.0"
@@ -63,17 +60,14 @@ __all__ = [
     "NotionNode",
     "AsanaNode",
     "SlackNode",
-    # State Management
-    "WorkflowState",
-    "StateBackend",
-    "MemoryBackend",
-    "SQLiteBackend",
-    "RedisBackend",
-    "create_state",
+# State Management
+    "StateManager",
+    "StateSnapshot",
+    "get_state_manager",
     # Pantheon Integration
     "PantheonIntegration",
     "PantheonAgent",
-    "get_pantheon",
+    "get_pantheon_integration",
     # MessageBus
     "MessageBusNode",
     "MessageBusAdapter",
