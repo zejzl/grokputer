@@ -442,7 +442,7 @@ async def _daemon(target: str, interval: int, evolve_chance: float, no_redis: bo
     r = None
     if not no_redis:
         try:
-            r = redis.Redis(host="localhost", port=6379, db=0)
+            r = redis.Redis(host="localhost", port=6380, db=0)
             r.ping()
             console.print("[green]Redis connected.[/green]")
         except Exception as e:

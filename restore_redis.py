@@ -14,7 +14,7 @@ from datetime import datetime
 
 # Config
 REDIS_HOST = 'localhost'
-REDIS_PORT = 6379
+REDIS_PORT = 6380
 REDIS_DB = 0
 BACKUP_FILE = './vault/redis_backup.json'
 
