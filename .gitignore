@@ -66,9 +66,14 @@ bckup*
 backup_*
 backups/
 
+# Archives
+archive/
+
 # Coverage
 .coverage
 htmlcov/
+.pytest_cache/
+.mypy_cache/
 
 # Local IDE settings
 .claude/settings.local.json
