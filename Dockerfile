@@ -22,9 +22,9 @@ ENV DISPLAY=:99
 WORKDIR /app
 
 # Copy requirements first for better caching
-COPY requirements-docker.txt requirements.txt
+COPY requirements-minimal.txt requirements.txt
 
-# Install Python dependencies
+# Install Python dependencies (no strict versions to avoid conflicts)
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code selectively

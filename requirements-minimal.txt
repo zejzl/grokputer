@@ -1,0 +1,46 @@
+# Minimal requirements for Docker - Core dependencies only
+# No strict version pinning to avoid conflicts
+
+# Core AI/ML
+anthropic
+openai
+langchain
+langchain-core
+langchain-community
+transformers
+torch
+datasets
+
+# API clients
+requests
+httpx
+
+# Data processing
+numpy<2
+pandas
+pillow
+
+# Screen automation (for server prayer)
+pyautogui
+python-xlib
+pillow
+pyscreeze
+
+# Database
+sqlalchemy
+redis
+
+# Utilities
+python-dotenv
+pydantic
+click
+tenacity<9
+aiohttp
+psutil
+
+# Configuration
+pyyaml
+toml
+
+# Logging
+colorlog
