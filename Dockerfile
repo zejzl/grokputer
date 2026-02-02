@@ -30,6 +30,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code selectively
 COPY src/ ./src/
 COPY main.py .
+COPY adventure_mode.py .
 COPY entrypoint.sh .
 COPY .env.example .
 COPY config/ ./config/
