@@ -10,11 +10,12 @@ services:
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
       - REDIS_URL=${REDIS_URL:-redis://redis:6379}
       - PROCESS_ID=${PROCESS_ID:-main}
+      - DISPLAY=:99
     volumes:
       - ./vault:/app/vault
       - ./logs:/app/logs
       - ./.env:/app/.env:ro
-    command: sh -c "while true; do python main.py --task 'invoke server prayer' && sleep 300; done"
+    command: /start-with-display.sh
     restart: unless-stopped
     depends_on:
       - redis
