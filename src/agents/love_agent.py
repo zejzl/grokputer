@@ -1,6 +1,10 @@
+from __future__ import annotations
+
 import asyncio
+from typing import Any, Dict, Optional
 
 from src.core.base_agent import BaseAgent
+from src.core.message_bus import Message
 
 
 class LoveAgent(BaseAgent):
