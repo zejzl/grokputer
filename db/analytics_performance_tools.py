@@ -1,6 +1,8 @@
 # Draft code for analytics_query and performance_monitor tools
 # Add these to src/tools.py and update src/config.py TOOLS list
 
+from __future__ import annotations
+
 import sqlite3
 import psutil
 import time
