@@ -7,6 +7,7 @@ allowing workflows to delegate complex tasks to specialized AI agents.
 Author: Grokputer Team
 Date: 2026-01-11
 """
+from __future__ import annotations
 
 import asyncio
 import logging

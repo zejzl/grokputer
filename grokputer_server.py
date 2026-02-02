@@ -4,6 +4,7 @@ Grokputer MCP Server
 Exposes vault scanning, prayer invocation, and vault statistics via MCP.
 Built with FastMCP for <3s startup and lightweight deployment.
 """
+from __future__ import annotations
 
 import asyncio
 from pathlib import Path

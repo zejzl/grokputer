@@ -3,6 +3,7 @@
 Memory Manager: Persistent state for ORAM agents (Redis live + SQLite eternal).
 Phase 2: Enables recall, learning from history.
 """
+from __future__ import annotations
 
 import asyncio
 import json

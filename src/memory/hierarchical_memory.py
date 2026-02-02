@@ -6,6 +6,7 @@ Implements a three-tier memory architecture:
 - Context: Session-level memory with decay mechanisms
 - Long-term: Persistent Redis storage with consolidation
 """
+from __future__ import annotations
 
 import asyncio
 import logging

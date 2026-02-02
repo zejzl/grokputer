@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # Fixed version with proper content parsing
 
 import re

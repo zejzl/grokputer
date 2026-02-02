@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # Grokputer Exception Hierarchy
 # Standardized error handling across the system
 

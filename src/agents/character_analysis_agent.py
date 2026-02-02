@@ -3,6 +3,7 @@
 CharacterAnalysisAgent - Analyzes literary characters and validates archetypes
 Specialized agent for literary analysis, character development, and safety validation
 """
+from __future__ import annotations
 
 import asyncio
 import json

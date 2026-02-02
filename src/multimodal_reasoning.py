@@ -4,6 +4,7 @@ Multi-Modal Reasoning Engine for Grokputer.
 Advanced reasoning system that combines vision, text, audio, and context
 to make intelligent decisions and generate actionable insights.
 """
+from __future__ import annotations
 
 import asyncio
 import json

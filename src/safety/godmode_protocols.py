@@ -3,6 +3,7 @@
 Godmode Safety Protocols - Prevents unlimited power escalation
 Implements safety measures against godmode activation from vault content
 """
+from __future__ import annotations
 
 import logging
 import threading

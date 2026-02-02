@@ -6,6 +6,7 @@ like puzzle solving, maze navigation, and abstract reasoning challenges.
 
 Note: Requires HRM dependencies (PyTorch, CUDA, etc.) - install from HRM repo if needed.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

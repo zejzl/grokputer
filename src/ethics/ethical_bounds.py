@@ -3,6 +3,7 @@
 Ethical Learning Bounds - Defines boundaries for autonomous creative development
 Prevents harmful learning patterns and ensures responsible AI development
 """
+from __future__ import annotations
 
 import logging
 import re

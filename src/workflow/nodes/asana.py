@@ -7,6 +7,7 @@ Supports operations like create task, update task, get task, add to project.
 Author: Grokputer Team
 Date: 2025-11-16
 """
+from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 

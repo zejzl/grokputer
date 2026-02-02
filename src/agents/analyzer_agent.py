@@ -4,6 +4,7 @@ Analyzer Agent: Performance metrics, health monitoring, and bottleneck detection
 Phase 2: Real-time system analysis, performance tracking, and optimization recommendations.
 Integrates with all agents for comprehensive monitoring and bottleneck identification.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

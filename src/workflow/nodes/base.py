@@ -7,6 +7,7 @@ Each node performs a specific operation and can be chained together.
 Author: Grokputer Team
 Date: 2025-11-14
 """
+from __future__ import annotations
 
 import asyncio
 from abc import ABC, abstractmethod

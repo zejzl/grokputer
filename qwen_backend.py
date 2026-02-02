@@ -4,6 +4,7 @@ Local inference using Hugging Face Transformers.
 Supports text generation and vision (Qwen-VL for screenshots).
 Usage: backend = QwenBackend(); response = backend.generate(prompt, tools=None)
 """
+from __future__ import annotations
 
 import os
 import json

@@ -10,6 +10,7 @@ Maximum efficiency. Epic win guaranteed.
 Author: Grokputer Team + Claude + Grok
 Date: 2025-11-14
 """
+from __future__ import annotations
 
 import asyncio
 import time

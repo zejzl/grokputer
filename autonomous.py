@@ -20,6 +20,7 @@ Examples:
     # Full workflow: scan -> propose -> review
     python autonomous.py improve src/grok_client.py
 """
+from __future__ import annotations
 
 import asyncio
 import os

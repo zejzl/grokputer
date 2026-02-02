@@ -4,6 +4,7 @@ Preference Data Collector for DPO Training
 Collects preference pairs by comparing agent performance with different parameter settings.
 Automatically generates training data for DPO optimization.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

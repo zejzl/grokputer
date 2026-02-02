@@ -8,6 +8,7 @@ Provides comprehensive audio understanding capabilities including:
 - Voice activity detection
 - Audio knowledge extraction
 """
+from __future__ import annotations
 
 import asyncio
 import audioop

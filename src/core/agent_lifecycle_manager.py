@@ -4,6 +4,7 @@ Agent Lifecycle Management System
 Provides comprehensive monitoring, health checking, deadlock detection,
 and automated restart capabilities for all agents in the Grokputer system.
 """
+from __future__ import annotations
 
 import asyncio
 import json

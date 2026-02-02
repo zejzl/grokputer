@@ -4,6 +4,7 @@ Natural Language Interface for Human-AI Collaboration
 Provides conversational interface for interacting with Grokputer agents.
 Handles natural language task parsing, dialogue management, and feedback collection.
 """
+from __future__ import annotations
 
 import json
 import logging

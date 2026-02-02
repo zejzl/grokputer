@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from src.core.base_agent import BaseAgent
 from src.core.message_bus import Message, MessagePriority
 from typing import Dict, Any, List

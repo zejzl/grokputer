@@ -2,6 +2,7 @@
 Hybrid Conversation Manager
 Integrates NLI with Redis caching and SQLite persistence for optimal performance.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

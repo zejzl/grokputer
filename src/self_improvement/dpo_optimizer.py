@@ -4,6 +4,7 @@ Direct Preference Optimization (DPO) for Agent Parameter Tuning
 Adapts DPO to optimize agent parameters based on performance preferences.
 Uses preference pairs of parameter settings to directly optimize without reward models.
 """
+from __future__ import annotations
 
 import logging
 from dataclasses import dataclass

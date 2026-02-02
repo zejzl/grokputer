@@ -12,6 +12,7 @@ The 9 Agents (ALL IMPLEMENTED):
 8. Analyzer - Performance metrics and health monitoring [OK]
 9. Improver - Self-optimization and continuous improvement [OK]
 """
+from __future__ import annotations
 
 import asyncio
 import logging

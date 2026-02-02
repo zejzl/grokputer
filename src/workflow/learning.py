@@ -10,6 +10,7 @@ Provides reinforcement learning and optimization for workflows:
 Author: Grokputer Team
 Date: 2026-01-01
 """
+from __future__ import annotations
 
 import asyncio
 import json

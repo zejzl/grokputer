@@ -11,6 +11,7 @@ Tests the new RL-based optimization features:
 Author: Grokputer Team
 Date: 2026-01-11
 """
+from __future__ import annotations
 
 import asyncio
 import logging

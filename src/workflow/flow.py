@@ -6,6 +6,7 @@ Provides a Pythonic way to define workflows.
 Author: Grokputer Team
 Date: 2025-11-14
 """
+from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 

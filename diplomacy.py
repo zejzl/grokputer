@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 """Diplomacy Module for Grokputer Pantheon.
 
 Enables multi-agent negotiation and consensus for task delegation, priority voting, and conflict resolution.

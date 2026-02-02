@@ -3,6 +3,7 @@ Task Client for Agent-TaskMaster Communication
 
 Provides a simple interface for agents to interact with the TaskMaster system.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

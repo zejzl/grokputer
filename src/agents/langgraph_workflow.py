@@ -3,6 +3,7 @@ LangGraph Integration for Grokputer Agent Workflows
 Simple graph: Planner -> Coder -> Tester (with retry loop on failure).
 State shared via dict; integrates with MessageBus for events.
 """
+from __future__ import annotations
 
 import logging
 import operator

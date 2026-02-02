@@ -2,6 +2,7 @@
 Grok API client wrapper for Grokputer.
 Uses xAI's OpenAI-compatible API to communicate with Grok.
 """
+from __future__ import annotations
 
 import logging
 from typing import List, Dict, Any, Optional

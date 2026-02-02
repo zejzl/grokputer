@@ -7,6 +7,7 @@ Provides safe file operations with:
 - Permission checking
 - Dry-run mode for preview
 """
+from __future__ import annotations
 
 import hashlib
 import logging

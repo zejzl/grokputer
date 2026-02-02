@@ -6,6 +6,8 @@ Measures: Concurrency, no deadlocks, <5s total.
 Run: python tests/poc_duo.py
 Assumes: Notepad.exe open and focused.
 """
+from __future__ import annotations
+
 import asyncio
 import time
 import sys

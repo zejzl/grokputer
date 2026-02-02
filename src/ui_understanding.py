@@ -3,6 +3,7 @@ UI Understanding Module for Grokputer.
 
 Provides high-level understanding of user interfaces from screenshots and visual analysis.
 """
+from __future__ import annotations
 
 import asyncio
 import json

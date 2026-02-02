@@ -5,6 +5,7 @@ Voice Synthesis Module
 Text-to-speech functionality for interactive demos and accessibility.
 Supports multiple TTS engines and voice customization.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

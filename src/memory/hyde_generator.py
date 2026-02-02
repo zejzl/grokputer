@@ -4,6 +4,7 @@ HyDE (Hypothetical Document Embeddings) Generator for Grokputer Memory System.
 Generates hypothetical documents from queries to improve semantic retrieval.
 Uses Grok LLM to create relevant hypothetical content that bridges semantic gaps.
 """
+from __future__ import annotations
 
 import logging
 from typing import List

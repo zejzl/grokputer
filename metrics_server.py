@@ -3,6 +3,7 @@
 Performance Metrics Server - Exposes Grokputer metrics to Prometheus
 Run: python metrics_server.py
 """
+from __future__ import annotations
 
 import time
 import threading

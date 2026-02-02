@@ -12,6 +12,7 @@ Usage:
 Author: Pantheon Coordinator (via Grok CLI)
 Version: 1.0 (Pantheon-Integrated)
 """
+from __future__ import annotations
 
 import asyncio
 import json

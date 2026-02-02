@@ -2,6 +2,7 @@
 Persistent Memory Manager for Grokputer.
 Handles storage and retrieval of agent memories using SQLite.
 """
+from __future__ import annotations
 
 import json
 import sqlite3

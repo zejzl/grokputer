@@ -4,6 +4,7 @@ Multi-Modal Processor for Grokputer.
 Unifies vision, audio, and text processing capabilities for comprehensive
 multi-modal understanding and knowledge extraction.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

@@ -4,6 +4,7 @@ Enhanced session logging for Grokputer.
 Tracks execution sessions with structured data, metrics, and searchable logs.
 Useful for both Claude and Grok to review what happened during task execution.
 """
+from __future__ import annotations
 
 import json
 import logging

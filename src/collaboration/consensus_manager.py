@@ -4,6 +4,7 @@ Consensus Manager for Multi-Agent Framework (MAF)
 Implements weighted voting algorithms and conflict resolution strategies for multi-provider AI collaboration.
 Provides consensus detection, agreement analysis, and decision making from multiple AI responses.
 """
+from __future__ import annotations
 
 import logging
 import statistics

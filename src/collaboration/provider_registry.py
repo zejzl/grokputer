@@ -4,6 +4,7 @@ Provider Registry for Multi-Agent Framework (MAF)
 Dynamic provider loading and capability management system for multi-provider AI collaboration.
 Supports registration, discovery, and capability-based provider selection.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

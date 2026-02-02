@@ -4,6 +4,7 @@ Self-Improving Swarm: Analyzes logs, suggests & applies fixes, tests improvement
 YOLO Mode: Applies first high-confidence edit; reverts on test fail.
 Run: python improve_swarm.py [dry-run] [max_issues=1]
 """
+from __future__ import annotations
 
 import json
 import os

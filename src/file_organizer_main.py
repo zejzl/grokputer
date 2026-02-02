@@ -4,6 +4,7 @@ AI-Powered File Organizer CLI for Grokputer.
 
 Command-line interface for organizing image files using vision AI.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

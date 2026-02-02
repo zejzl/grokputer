@@ -422,3 +422,220 @@ client_session: <aiohttp.client.ClientSession object at 0x000001F9DC039940>
 2025-11-14 11:08:46 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
 2025-11-14 11:08:47 [INFO] src.collaboration.consensus_manager (consensus_manager.py:93): ConsensusManager initialized with strategy: weighted_vote
 2025-11-14 11:08:47 [INFO] src.collaboration.orchestrator (orchestrator.py:232): Orchestrator initialized with strategy: concurrent
+2026-02-02 11:08:44 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:09:01 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:09:20 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:09:46 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:10:41 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:12:49 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:15:06 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:17:22 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:19:33 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:19:50 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:20:08 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:20:30 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:21:06 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:22:39 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:24:56 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:27:12 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:29:29 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:30:45 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:31:12 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:31:29 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:31:48 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:32:15 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:33:10 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:35:18 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:37:34 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:39:51 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:42:08 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:44:24 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:46:41 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:48:58 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:51:15 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:53:31 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:55:48 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 11:58:05 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:00:21 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:02:38 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:04:55 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:07:12 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:09:29 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:11:45 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:12:56 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:13:13 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:13:31 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:13:53 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:14:29 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:16:02 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:18:19 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:20:36 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:22:53 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:25:10 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:25:27 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:25:44 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:26:04 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:26:30 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:27:25 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:29:33 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:31:50 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:34:07 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:36:24 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:38:40 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:40:57 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:43:14 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:45:30 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:47:47 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:59:40 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:59:40 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=4, action_dim=4
+2026-02-02 12:59:40 [INFO] src.collaboration.consensus_manager (consensus_manager.py:108): RL-based consensus optimization enabled
+2026-02-02 12:59:40 [INFO] src.collaboration.consensus_manager (consensus_manager.py:112): ConsensusManager initialized with strategy: weighted_vote, RL: True
+2026-02-02 12:59:40 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=8, action_dim=6
+2026-02-02 12:59:40 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:305): MAF Optimizer initialized with RL agent
+2026-02-02 12:59:40 [INFO] src.collaboration.orchestrator (orchestrator.py:602): RL optimizer enabled for self-improvement
+2026-02-02 12:59:40 [INFO] src.collaboration.orchestrator (orchestrator.py:616): Orchestrator initialized with strategy: concurrent, retries: 3, fallbacks: True
+2026-02-02 12:59:40 [WARNING] src.core.message_bus (message_bus.py:35): TOON utils not available - install python-toon for token efficiency
+2026-02-02 12:59:57 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 12:59:57 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=4, action_dim=4
+2026-02-02 12:59:57 [INFO] src.collaboration.consensus_manager (consensus_manager.py:108): RL-based consensus optimization enabled
+2026-02-02 12:59:57 [INFO] src.collaboration.consensus_manager (consensus_manager.py:112): ConsensusManager initialized with strategy: weighted_vote, RL: True
+2026-02-02 12:59:57 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=8, action_dim=6
+2026-02-02 12:59:57 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:305): MAF Optimizer initialized with RL agent
+2026-02-02 12:59:57 [INFO] src.collaboration.orchestrator (orchestrator.py:602): RL optimizer enabled for self-improvement
+2026-02-02 12:59:57 [INFO] src.collaboration.orchestrator (orchestrator.py:616): Orchestrator initialized with strategy: concurrent, retries: 3, fallbacks: True
+2026-02-02 12:59:57 [WARNING] src.core.message_bus (message_bus.py:35): TOON utils not available - install python-toon for token efficiency
+2026-02-02 13:00:16 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 13:00:17 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=4, action_dim=4
+2026-02-02 13:00:17 [INFO] src.collaboration.consensus_manager (consensus_manager.py:108): RL-based consensus optimization enabled
+2026-02-02 13:00:17 [INFO] src.collaboration.consensus_manager (consensus_manager.py:112): ConsensusManager initialized with strategy: weighted_vote, RL: True
+2026-02-02 13:00:17 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=8, action_dim=6
+2026-02-02 13:00:17 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:305): MAF Optimizer initialized with RL agent
+2026-02-02 13:00:17 [INFO] src.collaboration.orchestrator (orchestrator.py:602): RL optimizer enabled for self-improvement
+2026-02-02 13:00:17 [INFO] src.collaboration.orchestrator (orchestrator.py:616): Orchestrator initialized with strategy: concurrent, retries: 3, fallbacks: True
+2026-02-02 13:00:17 [WARNING] src.core.message_bus (message_bus.py:35): TOON utils not available - install python-toon for token efficiency
+2026-02-02 13:12:27 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 13:12:27 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=4, action_dim=4
+2026-02-02 13:12:27 [INFO] src.collaboration.consensus_manager (consensus_manager.py:108): RL-based consensus optimization enabled
+2026-02-02 13:12:27 [INFO] src.collaboration.consensus_manager (consensus_manager.py:112): ConsensusManager initialized with strategy: weighted_vote, RL: True
+2026-02-02 13:12:27 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=8, action_dim=6
+2026-02-02 13:12:27 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:305): MAF Optimizer initialized with RL agent
+2026-02-02 13:12:27 [INFO] src.collaboration.orchestrator (orchestrator.py:602): RL optimizer enabled for self-improvement
+2026-02-02 13:12:27 [INFO] src.collaboration.orchestrator (orchestrator.py:616): Orchestrator initialized with strategy: concurrent, retries: 3, fallbacks: True
+2026-02-02 13:12:28 [WARNING] src.core.message_bus (message_bus.py:37): TOON utils not available - install python-toon for token efficiency
+2026-02-02 13:12:45 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 13:12:45 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=4, action_dim=4
+2026-02-02 13:12:45 [INFO] src.collaboration.consensus_manager (consensus_manager.py:108): RL-based consensus optimization enabled
+2026-02-02 13:12:45 [INFO] src.collaboration.consensus_manager (consensus_manager.py:112): ConsensusManager initialized with strategy: weighted_vote, RL: True
+2026-02-02 13:12:45 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=8, action_dim=6
+2026-02-02 13:12:45 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:305): MAF Optimizer initialized with RL agent
+2026-02-02 13:12:45 [INFO] src.collaboration.orchestrator (orchestrator.py:602): RL optimizer enabled for self-improvement
+2026-02-02 13:12:45 [INFO] src.collaboration.orchestrator (orchestrator.py:616): Orchestrator initialized with strategy: concurrent, retries: 3, fallbacks: True
+2026-02-02 13:12:45 [WARNING] src.core.message_bus (message_bus.py:37): TOON utils not available - install python-toon for token efficiency
+2026-02-02 13:24:54 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 13:24:54 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=4, action_dim=4
+2026-02-02 13:24:54 [INFO] src.collaboration.consensus_manager (consensus_manager.py:108): RL-based consensus optimization enabled
+2026-02-02 13:24:54 [INFO] src.collaboration.consensus_manager (consensus_manager.py:112): ConsensusManager initialized with strategy: weighted_vote, RL: True
+2026-02-02 13:24:54 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=8, action_dim=6
+2026-02-02 13:24:54 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:305): MAF Optimizer initialized with RL agent
+2026-02-02 13:24:54 [INFO] src.collaboration.orchestrator (orchestrator.py:602): RL optimizer enabled for self-improvement
+2026-02-02 13:24:54 [INFO] src.collaboration.orchestrator (orchestrator.py:616): Orchestrator initialized with strategy: concurrent, retries: 3, fallbacks: True
+2026-02-02 13:24:54 [WARNING] src.core.message_bus (message_bus.py:37): TOON utils not available - install python-toon for token efficiency
+2026-02-02 13:25:12 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 13:25:12 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=4, action_dim=4
+2026-02-02 13:25:12 [INFO] src.collaboration.consensus_manager (consensus_manager.py:108): RL-based consensus optimization enabled
+2026-02-02 13:25:12 [INFO] src.collaboration.consensus_manager (consensus_manager.py:112): ConsensusManager initialized with strategy: weighted_vote, RL: True
+2026-02-02 13:25:12 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=8, action_dim=6
+2026-02-02 13:25:12 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:305): MAF Optimizer initialized with RL agent
+2026-02-02 13:25:12 [INFO] src.collaboration.orchestrator (orchestrator.py:602): RL optimizer enabled for self-improvement
+2026-02-02 13:25:12 [INFO] src.collaboration.orchestrator (orchestrator.py:616): Orchestrator initialized with strategy: concurrent, retries: 3, fallbacks: True
+2026-02-02 13:25:12 [WARNING] src.core.message_bus (message_bus.py:37): TOON utils not available - install python-toon for token efficiency
+2026-02-02 13:25:31 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 13:25:31 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=4, action_dim=4
+2026-02-02 13:25:31 [INFO] src.collaboration.consensus_manager (consensus_manager.py:108): RL-based consensus optimization enabled
+2026-02-02 13:25:31 [INFO] src.collaboration.consensus_manager (consensus_manager.py:112): ConsensusManager initialized with strategy: weighted_vote, RL: True
+2026-02-02 13:25:31 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=8, action_dim=6
+2026-02-02 13:25:31 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:305): MAF Optimizer initialized with RL agent
+2026-02-02 13:25:31 [INFO] src.collaboration.orchestrator (orchestrator.py:602): RL optimizer enabled for self-improvement
+2026-02-02 13:25:31 [INFO] src.collaboration.orchestrator (orchestrator.py:616): Orchestrator initialized with strategy: concurrent, retries: 3, fallbacks: True
+2026-02-02 13:25:31 [WARNING] src.core.message_bus (message_bus.py:37): TOON utils not available - install python-toon for token efficiency
+2026-02-02 13:25:58 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 13:25:58 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=4, action_dim=4
+2026-02-02 13:25:58 [INFO] src.collaboration.consensus_manager (consensus_manager.py:108): RL-based consensus optimization enabled
+2026-02-02 13:25:58 [INFO] src.collaboration.consensus_manager (consensus_manager.py:112): ConsensusManager initialized with strategy: weighted_vote, RL: True
+2026-02-02 13:25:58 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=8, action_dim=6
+2026-02-02 13:25:58 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:305): MAF Optimizer initialized with RL agent
+2026-02-02 13:25:58 [INFO] src.collaboration.orchestrator (orchestrator.py:602): RL optimizer enabled for self-improvement
+2026-02-02 13:25:58 [INFO] src.collaboration.orchestrator (orchestrator.py:616): Orchestrator initialized with strategy: concurrent, retries: 3, fallbacks: True
+2026-02-02 13:25:58 [WARNING] src.core.message_bus (message_bus.py:37): TOON utils not available - install python-toon for token efficiency
+2026-02-02 13:26:54 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 13:26:54 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=4, action_dim=4
+2026-02-02 13:26:54 [INFO] src.collaboration.consensus_manager (consensus_manager.py:108): RL-based consensus optimization enabled
+2026-02-02 13:26:54 [INFO] src.collaboration.consensus_manager (consensus_manager.py:112): ConsensusManager initialized with strategy: weighted_vote, RL: True
+2026-02-02 13:26:54 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=8, action_dim=6
+2026-02-02 13:26:54 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:305): MAF Optimizer initialized with RL agent
+2026-02-02 13:26:54 [INFO] src.collaboration.orchestrator (orchestrator.py:602): RL optimizer enabled for self-improvement
+2026-02-02 13:26:54 [INFO] src.collaboration.orchestrator (orchestrator.py:616): Orchestrator initialized with strategy: concurrent, retries: 3, fallbacks: True
+2026-02-02 13:26:54 [WARNING] src.core.message_bus (message_bus.py:37): TOON utils not available - install python-toon for token efficiency
+2026-02-02 13:29:02 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 13:29:02 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=4, action_dim=4
+2026-02-02 13:29:02 [INFO] src.collaboration.consensus_manager (consensus_manager.py:108): RL-based consensus optimization enabled
+2026-02-02 13:29:02 [INFO] src.collaboration.consensus_manager (consensus_manager.py:112): ConsensusManager initialized with strategy: weighted_vote, RL: True
+2026-02-02 13:29:02 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=8, action_dim=6
+2026-02-02 13:29:02 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:305): MAF Optimizer initialized with RL agent
+2026-02-02 13:29:02 [INFO] src.collaboration.orchestrator (orchestrator.py:602): RL optimizer enabled for self-improvement
+2026-02-02 13:29:02 [INFO] src.collaboration.orchestrator (orchestrator.py:616): Orchestrator initialized with strategy: concurrent, retries: 3, fallbacks: True
+2026-02-02 13:29:02 [WARNING] src.core.message_bus (message_bus.py:37): TOON utils not available - install python-toon for token efficiency
+2026-02-02 13:31:19 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 13:31:20 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=4, action_dim=4
+2026-02-02 13:31:20 [INFO] src.collaboration.consensus_manager (consensus_manager.py:108): RL-based consensus optimization enabled
+2026-02-02 13:31:20 [INFO] src.collaboration.consensus_manager (consensus_manager.py:112): ConsensusManager initialized with strategy: weighted_vote, RL: True
+2026-02-02 13:31:20 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=8, action_dim=6
+2026-02-02 13:31:20 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:305): MAF Optimizer initialized with RL agent
+2026-02-02 13:31:20 [INFO] src.collaboration.orchestrator (orchestrator.py:602): RL optimizer enabled for self-improvement
+2026-02-02 13:31:20 [INFO] src.collaboration.orchestrator (orchestrator.py:616): Orchestrator initialized with strategy: concurrent, retries: 3, fallbacks: True
+2026-02-02 13:31:20 [WARNING] src.core.message_bus (message_bus.py:37): TOON utils not available - install python-toon for token efficiency
+2026-02-02 13:33:37 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 13:33:37 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=4, action_dim=4
+2026-02-02 13:33:37 [INFO] src.collaboration.consensus_manager (consensus_manager.py:108): RL-based consensus optimization enabled
+2026-02-02 13:33:37 [INFO] src.collaboration.consensus_manager (consensus_manager.py:112): ConsensusManager initialized with strategy: weighted_vote, RL: True
+2026-02-02 13:33:37 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=8, action_dim=6
+2026-02-02 13:33:37 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:305): MAF Optimizer initialized with RL agent
+2026-02-02 13:33:37 [INFO] src.collaboration.orchestrator (orchestrator.py:602): RL optimizer enabled for self-improvement
+2026-02-02 13:33:37 [INFO] src.collaboration.orchestrator (orchestrator.py:616): Orchestrator initialized with strategy: concurrent, retries: 3, fallbacks: True
+2026-02-02 13:33:37 [WARNING] src.core.message_bus (message_bus.py:37): TOON utils not available - install python-toon for token efficiency
+2026-02-02 13:35:54 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 13:35:54 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=4, action_dim=4
+2026-02-02 13:35:54 [INFO] src.collaboration.consensus_manager (consensus_manager.py:108): RL-based consensus optimization enabled
+2026-02-02 13:35:54 [INFO] src.collaboration.consensus_manager (consensus_manager.py:112): ConsensusManager initialized with strategy: weighted_vote, RL: True
+2026-02-02 13:35:54 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=8, action_dim=6
+2026-02-02 13:35:54 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:305): MAF Optimizer initialized with RL agent
+2026-02-02 13:35:54 [INFO] src.collaboration.orchestrator (orchestrator.py:602): RL optimizer enabled for self-improvement
+2026-02-02 13:35:54 [INFO] src.collaboration.orchestrator (orchestrator.py:616): Orchestrator initialized with strategy: concurrent, retries: 3, fallbacks: True
+2026-02-02 13:35:54 [WARNING] src.core.message_bus (message_bus.py:37): TOON utils not available - install python-toon for token efficiency
+2026-02-02 13:38:12 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 13:38:12 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=4, action_dim=4
+2026-02-02 13:38:12 [INFO] src.collaboration.consensus_manager (consensus_manager.py:108): RL-based consensus optimization enabled
+2026-02-02 13:38:12 [INFO] src.collaboration.consensus_manager (consensus_manager.py:112): ConsensusManager initialized with strategy: weighted_vote, RL: True
+2026-02-02 13:38:12 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=8, action_dim=6
+2026-02-02 13:38:12 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:305): MAF Optimizer initialized with RL agent
+2026-02-02 13:38:12 [INFO] src.collaboration.orchestrator (orchestrator.py:602): RL optimizer enabled for self-improvement
+2026-02-02 13:38:12 [INFO] src.collaboration.orchestrator (orchestrator.py:616): Orchestrator initialized with strategy: concurrent, retries: 3, fallbacks: True
+2026-02-02 13:38:12 [WARNING] src.core.message_bus (message_bus.py:37): TOON utils not available - install python-toon for token efficiency
+2026-02-02 13:40:29 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 13:40:29 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=4, action_dim=4
+2026-02-02 13:40:29 [INFO] src.collaboration.consensus_manager (consensus_manager.py:108): RL-based consensus optimization enabled
+2026-02-02 13:40:29 [INFO] src.collaboration.consensus_manager (consensus_manager.py:112): ConsensusManager initialized with strategy: weighted_vote, RL: True
+2026-02-02 13:40:29 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=8, action_dim=6
+2026-02-02 13:40:29 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:305): MAF Optimizer initialized with RL agent
+2026-02-02 13:40:29 [INFO] src.collaboration.orchestrator (orchestrator.py:602): RL optimizer enabled for self-improvement
+2026-02-02 13:40:29 [INFO] src.collaboration.orchestrator (orchestrator.py:616): Orchestrator initialized with strategy: concurrent, retries: 3, fallbacks: True
+2026-02-02 13:40:29 [WARNING] src.core.message_bus (message_bus.py:37): TOON utils not available - install python-toon for token efficiency
+2026-02-02 13:42:47 [INFO] src.core.logging_config (logging_config.py:148): Logging configured: level=INFO, dir=logs, json=False
+2026-02-02 13:42:47 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=4, action_dim=4
+2026-02-02 13:42:47 [INFO] src.collaboration.consensus_manager (consensus_manager.py:108): RL-based consensus optimization enabled
+2026-02-02 13:42:47 [INFO] src.collaboration.consensus_manager (consensus_manager.py:112): ConsensusManager initialized with strategy: weighted_vote, RL: True
+2026-02-02 13:42:47 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:149): Q-Learning agent initialized: state_dim=8, action_dim=6
+2026-02-02 13:42:47 [INFO] src.collaboration.rl_optimizer (rl_optimizer.py:305): MAF Optimizer initialized with RL agent
+2026-02-02 13:42:47 [INFO] src.collaboration.orchestrator (orchestrator.py:602): RL optimizer enabled for self-improvement
+2026-02-02 13:42:47 [INFO] src.collaboration.orchestrator (orchestrator.py:616): Orchestrator initialized with strategy: concurrent, retries: 3, fallbacks: True
+2026-02-02 13:42:47 [WARNING] src.core.message_bus (message_bus.py:37): TOON utils not available - install python-toon for token efficiency

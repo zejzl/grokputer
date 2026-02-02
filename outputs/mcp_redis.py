@@ -4,6 +4,7 @@ Description: Discovers tools from MCP server, saves discovery results to Redis s
 and tests retrieval. Integrates with db_config.py and MCP endpoint.
 Usage: python outputs/mcp_redis.py [discover|test|full]
 """
+from __future__ import annotations
 
 import asyncio
 import aiohttp

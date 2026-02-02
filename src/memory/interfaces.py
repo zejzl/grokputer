@@ -1,6 +1,7 @@
 """
 Memory system interfaces for Grokputer.
 """
+from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path

@@ -4,6 +4,7 @@ Executor Agent: Orchestrates complex multi-step workflows.
 Phase 2: Handles sequences (e.g., observe-analyze-validate-act loops), stateful execution.
 Integrates Coordinator for delegation, Memory for workflow state.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

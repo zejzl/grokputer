@@ -1,6 +1,7 @@
 """
 Collaboration coordinator for orchestrating dual-agent dialogue via MessageBus.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

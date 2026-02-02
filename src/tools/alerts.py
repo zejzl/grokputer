@@ -4,6 +4,7 @@ Haiku Alerts for Task Completions
 Provides poetic notifications when tasks complete in the swarm.
 Integrates with MessageBus to listen for task completion events.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

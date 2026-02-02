@@ -3,6 +3,7 @@ Session Improver for Interactive Mode
 Analyzes past Grokputer sessions and proposes improvements.
 Simplified wrapper around ImproverAgent for manual use.
 """
+from __future__ import annotations
 
 import json
 import logging

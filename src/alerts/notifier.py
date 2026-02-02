@@ -2,6 +2,7 @@
 Notification system for critical events in Grokputer swarm.
 Supports Email (SMTP) and Slack webhooks.
 """
+from __future__ import annotations
 
 import asyncio
 import json

@@ -2,6 +2,7 @@
 TOON utilities for Grokputer swarm efficiency.
 Provides async encoding/decoding with token savings estimates.
 """
+from __future__ import annotations
 
 import asyncio
 from typing import Any, Dict, Tuple

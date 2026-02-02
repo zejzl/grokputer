@@ -4,6 +4,7 @@ Session logging with swarm metrics support.
 Tracks execution details, agent interactions, performance metrics,
 and swarm-specific data for multi-agent tasks.
 """
+from __future__ import annotations
 
 import json
 import logging

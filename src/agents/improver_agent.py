@@ -4,6 +4,7 @@ Improver Agent: Self-optimization and continuous improvement.
 Phase 2: Applies recommendations, tunes parameters, and learns from execution history.
 Integrates with Redis for persistent learning across sessions.
 """
+from __future__ import annotations
 
 import asyncio
 import json

@@ -5,6 +5,8 @@ Task: "capture screen and click at (100,100)" - decomposed into observe + act.
 Measures: Task decomposition, delegation, aggregation, <10s total.
 Run: python tests/poc_swarm.py
 """
+from __future__ import annotations
+
 import asyncio
 import time
 import sys

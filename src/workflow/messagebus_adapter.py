@@ -7,6 +7,7 @@ enabling communication between workflow instances and other Grokputer components
 Author: Grokputer Team
 Date: 2026-01-11
 """
+from __future__ import annotations
 
 import asyncio
 import json

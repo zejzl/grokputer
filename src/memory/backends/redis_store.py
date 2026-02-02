@@ -2,6 +2,7 @@
 Redis-based Memory Backend for Grokputer.
 Provides Redis-based storage for agent memories with connection handling and graceful failure.
 """
+from __future__ import annotations
 
 import json
 import logging

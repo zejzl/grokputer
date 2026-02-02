@@ -3,6 +3,7 @@ Community Vault Sync for Grokputer
 Share and sync tools, agents, and configurations with the community.
 Supports local file sync and cloud storage backends.
 """
+from __future__ import annotations
 
 import json
 import logging

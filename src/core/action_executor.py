@@ -4,6 +4,7 @@ Action executor for PyAutoGUI operations with thread safety.
 Single-threaded executor ensures PyAutoGUI calls are serialized to avoid
 race conditions in multi-agent environment. Provides async interface for agents.
 """
+from __future__ import annotations
 
 import asyncio
 import base64

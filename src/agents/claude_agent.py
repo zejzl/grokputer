@@ -1,6 +1,7 @@
 """
 Claude API wrapper for collaboration mode.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

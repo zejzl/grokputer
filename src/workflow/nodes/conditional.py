@@ -7,6 +7,7 @@ Supports multiple conditions, operators, and custom evaluators.
 Author: Grokputer Team
 Date: 2025-11-16
 """
+from __future__ import annotations
 
 from enum import Enum
 from typing import Any, Callable, Dict, List, Optional

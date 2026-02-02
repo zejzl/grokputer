@@ -8,6 +8,7 @@ Provides comprehensive visual understanding capabilities including:
 - OCR integration
 - Visual knowledge extraction
 """
+from __future__ import annotations
 
 import asyncio
 import base64

@@ -3,6 +3,7 @@
 Anomaly Detection for Grokputer Performance Monitoring
 Implements statistical anomaly detection using moving averages and standard deviations.
 """
+from __future__ import annotations
 
 import numpy as np
 import time

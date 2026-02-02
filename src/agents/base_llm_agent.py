@@ -1,6 +1,7 @@
 """
 Abstract base class for LLM agents in collaboration mode.
 """
+from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod

@@ -1,6 +1,7 @@
 """
 Pydantic models for collaboration messages and signals.
 """
+from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum

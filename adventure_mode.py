@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # Grokputer Dynamic Adventure Engine v2.0
 # Enhanced version with custom adventures, better parsing, and dynamic generation
 # Integrates with Grokputer infrastructure for seamless experience

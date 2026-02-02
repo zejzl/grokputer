@@ -4,6 +4,7 @@ TOON Format Fallback Implementation
 Simple encode/decode functions for TOON format when the python-toon library is not available.
 Provides basic JSON-based encoding/decoding as a fallback.
 """
+from __future__ import annotations
 
 import json
 from typing import Any, Dict

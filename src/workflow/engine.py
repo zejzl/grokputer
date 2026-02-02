@@ -11,6 +11,7 @@ This module provides async execution of workflow graphs with:
 Author: Grokputer Team
 Date: 2025-11-14
 """
+from __future__ import annotations
 
 import asyncio
 import logging

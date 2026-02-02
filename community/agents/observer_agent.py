@@ -4,6 +4,7 @@ Observer Agent - Visual perception for the Pantheon
 Captures screen observations and processes visual information.
 Part of the core ORA (Observe-Reason-Act) loop.
 """
+from __future__ import annotations
 
 import logging
 from typing import Dict, Any, Optional

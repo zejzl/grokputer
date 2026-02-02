@@ -3,6 +3,7 @@
 StoryGenerationAgent - Creates creative narratives using literary patterns
 Specialized agent for autonomous story generation with safety validation
 """
+from __future__ import annotations
 
 import asyncio
 import json

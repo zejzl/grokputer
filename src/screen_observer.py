@@ -7,6 +7,7 @@ asyncio.to_thread() to safely integrate with async code:
 
     screenshot = await asyncio.to_thread(screen_observer.screenshot_to_base64)
 """
+from __future__ import annotations
 
 import asyncio
 import base64

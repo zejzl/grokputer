@@ -4,6 +4,7 @@ Reinforcement Learning Optimizer for Agent Self-Improvement
 This module implements RL-based optimization for agent parameters and behaviors.
 Uses Q-learning to optimize agent performance metrics.
 """
+from __future__ import annotations
 
 import logging
 import random

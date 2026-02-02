@@ -1,6 +1,7 @@
 """
 Output generator for synthesizing and saving collaboration results.
 """
+from __future__ import annotations
 
 import json
 import logging

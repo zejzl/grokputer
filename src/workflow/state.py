@@ -11,6 +11,7 @@ This module provides persistent state management for workflows with:
 Author: Grokputer Team
 Date: 2026-01-11
 """
+from __future__ import annotations
 
 import asyncio
 import json

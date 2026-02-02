@@ -6,6 +6,7 @@ and aggregate into a central SQLite database for querying and analysis.
 Simulates ELK: File watcher (Logstash-like), SQLite (Elasticsearch-like), 
 and integrates with Streamlit dashboard for Kibana-like visualization.
 """
+from __future__ import annotations
 
 import sqlite3
 import json

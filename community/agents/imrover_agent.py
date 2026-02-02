@@ -4,6 +4,7 @@ Imrover Agent - Self-improvement agent for Grokputer.
 Analyzes session logs, proposes patches (new tools, code fixes), generates/implements via MCP and code gen.
 Integrates with swarm for post-task evolution.
 """
+from __future__ import annotations
 
 import asyncio
 import json
