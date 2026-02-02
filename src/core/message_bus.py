@@ -5,6 +5,8 @@ Provides microsecond-latency message routing between agents in the swarm.
 Designed for 3-5 local agents with <100ms handoff latency target.
 """
 
+from __future__ import annotations
+
 import asyncio
 import logging
 import time
