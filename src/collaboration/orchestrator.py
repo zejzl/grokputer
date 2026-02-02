@@ -5,6 +5,8 @@ Async orchestration with role assignment, timeouts, and concurrent provider exec
 Manages the flow of multi-provider collaboration with proper error handling and coordination.
 """
 
+from __future__ import annotations
+
 import asyncio
 import logging
 import random
