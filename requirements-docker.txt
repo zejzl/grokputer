@@ -171,7 +171,7 @@ toml==0.10.2
 tomlkit==0.13.3
 toon-python==0.1.2
 toon_format @ git+https://github.com/toon-format/toon-python.git@9c4f0c0c24f2a0b0b376315f4b8707f8c9006de6
-torch==2.9.1+cpu
+torch==2.9.1
 torchaudio==2.9.0
 torchvision==0.24.0
 tornado==6.5.2
