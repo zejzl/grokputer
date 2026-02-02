@@ -311,6 +311,48 @@ For real computer control with actual window observation:
 python main.py --task "your task"  # Run natively, not in Docker
 ```
 
+#### Docker Troubleshooting
+
+**Common Issues & Solutions** (Updated 2026-02-02):
+
+1. **`NameError: name 'OrchestrationConfig' is not defined`**
+   - **Cause**: Python 3.10+ changed type annotation evaluation. Forward references fail without future import.
+   - **Fix**: Ensure all Python files have `from __future__ import annotations` at the top if they use type hints.
+   - **Status**: Fixed in v2026.02.02 (192+ files updated)
+
+2. **`ModuleNotFoundError: No module named 'superagent'`**
+   - **Cause**: `.dockerignore` was excluding the `superagent/` directory
+   - **Fix**: Whitelisted `!superagent/` in `.dockerignore` and added `COPY superagent/ ./superagent/` to Dockerfile
+   - **Status**: Fixed in v2026.02.02
+
+3. **`ModuleNotFoundError: No module named 'cryptography'`**
+   - **Cause**: Missing dependency in requirements file
+   - **Fix**: Added `cryptography` to `requirements-minimal.txt`
+   - **Status**: Fixed in v2026.02.02
+
+4. **Container restarts continuously**
+   - Check logs: `docker-compose logs --tail=50 selenium-browser`
+   - Common causes: Missing API keys in `.env`, import errors, missing dependencies
+   - Rebuild with no cache if recent code changes: `docker-compose build --no-cache`
+
+5. **Xvfb display errors**
+   - Verify Xvfb is running: `docker exec <container> ps aux | grep Xvfb`
+   - Check display: `docker exec <container> echo $DISPLAY` (should be `:99`)
+   - Manual start: `docker exec <container> Xvfb :99 -screen 0 1920x1080x24 &`
+
+**Rebuild After Updates**:
+```bash
+# Rebuild image with latest code (uses cache)
+docker-compose build
+
+# Force complete rebuild (no cache, ~10-15 min)
+docker-compose build --no-cache
+
+# Restart containers
+docker-compose down
+docker-compose up -d
+```
+
 ### Node.js Web Interface
 
 **NEW**: Web-based interface using Node.js and Express for easier access to Grokputer functionality!
