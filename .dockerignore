@@ -50,6 +50,7 @@ alerts/
 !src/
 !requirements.txt
 !main.py
+!adventure_mode.py
 !entrypoint.sh
 !Dockerfile
 !.env.example
