@@ -37,6 +37,7 @@ click
 tenacity<9
 aiohttp
 psutil
+cryptography
 
 # Configuration
 pyyaml
