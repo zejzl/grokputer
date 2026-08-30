@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # Lightweight Encryption Utilities
 # Fast encryption for sensitive data without performance impact
 

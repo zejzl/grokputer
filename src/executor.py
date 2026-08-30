@@ -2,6 +2,7 @@
 Tool execution module for Grokputer.
 Executes tool calls from Grok including computer control, bash, and custom tools.
 """
+from __future__ import annotations
 
 import json
 import logging

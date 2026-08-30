@@ -2,6 +2,7 @@
 Redis-based Memory Backend for Grokputer.
 Provides Redis-based storage for agent memories with connection handling and graceful failure.
 """
+from __future__ import annotations
 
 import json
 import logging
@@ -26,7 +27,7 @@ class RedisMemoryBackend(MemoryBackend):
         """Establish Redis connection with error handling."""
         try:
             # Parse Redis URL from config or use defaults
-            redis_url = getattr(self.config, "redis_url", "redis://localhost:6379/0")
+            redis_url = getattr(self.config, "redis_url", "redis://localhost:6380/0")
 
             self.redis_client = redis.from_url(redis_url, decode_responses=True)
 

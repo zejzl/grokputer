@@ -48,8 +48,10 @@ models/
 alerts/
 # Keep only essential files
 !src/
+!superagent/
 !requirements.txt
 !main.py
+!adventure_mode.py
 !entrypoint.sh
 !Dockerfile
 !.env.example

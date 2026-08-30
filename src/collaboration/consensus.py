@@ -1,6 +1,7 @@
 """
 Consensus detector for analyzing agreement and convergence between agents.
 """
+from __future__ import annotations
 
 import logging
 import re

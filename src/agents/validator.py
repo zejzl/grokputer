@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # Validator Agent - Safety and quality verification for Pantheon
 # Part of ORAM Pantheon/Swarm.
 

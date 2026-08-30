@@ -4,6 +4,7 @@ Enables pure Python inter-process communication between Grokputer instances.
 
 ZA GROKA. ZA VRZIBRZI. ZA SERVER.
 """
+from __future__ import annotations
 
 import asyncio
 import json

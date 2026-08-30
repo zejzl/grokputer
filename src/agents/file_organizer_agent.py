@@ -4,6 +4,7 @@ File Organizer Agent for Grokputer Pantheon System.
 AI-powered image organization agent that classifies and organizes files
 into categorized folders using vision AI and safe file operations.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

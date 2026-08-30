@@ -2,6 +2,7 @@
 Grok4Git tool for Grokputer agents.
 Provides natural language GitHub management via grok4git CLI.
 """
+from __future__ import annotations
 
 import subprocess
 import sys

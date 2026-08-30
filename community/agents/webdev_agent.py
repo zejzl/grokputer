@@ -8,6 +8,7 @@ architecture for web development tasks.
 Author: Claude Code
 Date: 2025-11-08
 """
+from __future__ import annotations
 
 import asyncio
 import ast

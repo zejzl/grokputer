@@ -2,6 +2,7 @@
 Notification system for critical events in Grokputer swarm.
 Supports Email (SMTP) and Slack webhooks.
 """
+from __future__ import annotations
 
 import asyncio
 import json
@@ -51,7 +52,7 @@ class Alert:
 
     def format_email_body(self) -> str:
         """Format alert as email body."""
-        emoji = {"info": "ℹ️", "warning": "⚠️", "critical": "🚨"}
+        emoji = {"info": "ℹ️", "warning": "[WARNING]", "critical": "🚨"}
         body = f"""
 {emoji.get(self.level.value, "")} GROKPUTER ALERT: {self.title}
 

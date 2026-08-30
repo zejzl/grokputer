@@ -304,7 +304,7 @@ with tab5:
             st.code(distribution, language="text")
 
     # Performance Recommendations
-    st.subheader("🚀 Performance Optimization Recommendations")
+    st.subheader("[ZEJZL] Performance Optimization Recommendations")
     if st.button("💡 Get Recommendations"):
         recommendations = get_performance_recommendations(perf_data)
 
@@ -312,7 +312,7 @@ with tab5:
             for rec in recommendations:
                 st.info(rec)
         else:
-            st.success("✅ System performance is optimal - no recommendations needed!")
+            st.success("[OK] System performance is optimal - no recommendations needed!")
 
     # Anomaly Detection
     st.subheader("🔍 Anomaly Detection")
@@ -322,12 +322,12 @@ with tab5:
         # Display anomalies
         anomalies = anomaly_result["anomalies"]
         if any(anomalies.values()):
-            st.error("⚠️ Anomalies Detected!")
+            st.error("[WARNING] Anomalies Detected!")
             for metric, is_anomaly in anomalies.items():
                 if is_anomaly:
                     st.warning(f"🚨 {metric.replace('_', ' ').title()} anomaly detected")
         else:
-            st.success("✅ No anomalies detected - system performing normally")
+            st.success("[OK] No anomalies detected - system performing normally")
 
         # Display anomaly recommendations
         anomaly_recs = anomaly_result.get("recommendations", [])

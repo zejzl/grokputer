@@ -4,6 +4,7 @@ Flash Attention Implementation for Grokputer.
 Provides efficient attention mechanisms for enhanced context retention and processing.
 PyTorch-independent implementation using numpy for broader compatibility.
 """
+from __future__ import annotations
 
 import logging
 import math

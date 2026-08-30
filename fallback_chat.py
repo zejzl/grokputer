@@ -4,6 +4,7 @@ Simple non-async chat loop as backup for asyncio issues.
 Uses sync HTTP for Grok API (via requests). No agents/swarm—just direct chat.
 Requires: pip install requests anthropic openai (or similar for providers).
 """
+from __future__ import annotations
 
 import sys
 import os

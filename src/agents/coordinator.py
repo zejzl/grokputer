@@ -4,6 +4,7 @@ Coordinator Agent: Task decomposition, delegation, and aggregation.
 Ultra-pro version: Grok-powered reasoning for decomposition/routing.
 Part of ORAM Pantheon/Swarm.
 """
+from __future__ import annotations
 
 import asyncio
 import heapq

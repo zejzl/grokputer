@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     gnome-screenshot \
     python3-tk \
     python3-dev \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 # Set up virtual display for headless operation
@@ -21,14 +22,16 @@ ENV DISPLAY=:99
 WORKDIR /app
 
 # Copy requirements first for better caching
-COPY requirements.txt .
+COPY requirements-minimal.txt requirements.txt
 
-# Install Python dependencies
+# Install Python dependencies (no strict versions to avoid conflicts)
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code selectively
 COPY src/ ./src/
+COPY superagent/ ./superagent/
 COPY main.py .
+COPY adventure_mode.py .
 COPY entrypoint.sh .
 COPY .env.example .
 COPY config/ ./config/
@@ -39,8 +42,13 @@ RUN mkdir -p /app/vault /app/logs
 
 # Copy and set up entrypoint script
 COPY entrypoint.sh /entrypoint.sh
-RUN apt-get update && apt-get install -y dos2unix && dos2unix /entrypoint.sh && apt-get remove -y dos2unix && rm -rf /var/lib/apt/lists/*
-RUN chmod +x /entrypoint.sh
+COPY start-with-display.sh /start-with-display.sh
+RUN apt-get update && apt-get install -y dos2unix && \
+    dos2unix /entrypoint.sh && \
+    dos2unix /start-with-display.sh && \
+    apt-get remove -y dos2unix && \
+    rm -rf /var/lib/apt/lists/*
+RUN chmod +x /entrypoint.sh /start-with-display.sh
 
 # Set Python path
 ENV PYTHONPATH=/app

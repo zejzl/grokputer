@@ -5,6 +5,7 @@ AI-powered planner using analytics data to prioritize tasks/roadmaps.
 Scores suggestions by impact (success rate, duration, API usage) and effort.
 Integrates with Pantheon Coordinator for dynamic next steps.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

@@ -7,6 +7,7 @@ Supports headers, query params, body, authentication, and retries.
 Author: Grokputer Team
 Date: 2025-11-16
 """
+from __future__ import annotations
 
 import asyncio
 import json

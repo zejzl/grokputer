@@ -10,6 +10,7 @@ Autonomous betting agent for Limbo game:
 
 Extends BaseAgent for lifecycle management.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

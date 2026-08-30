@@ -8,6 +8,7 @@ Implements CrewAI patterns:
 
 This provides Crew-style orchestration while maintaining Pantheon architecture.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

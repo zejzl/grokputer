@@ -10,6 +10,7 @@ Captures and analyzes screen state for the swarm:
 
 Extends BaseAgent for lifecycle management.
 """
+from __future__ import annotations
 
 import asyncio
 import hashlib

@@ -5,6 +5,7 @@ Primary: Grok (xAI). Fallbacks: Claude (Anthropic), Gemini (Google).
 Async client with error handling and rate limiting.
 Integrates with analytics for fallback tracking.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

@@ -2,6 +2,7 @@
 Redis Conversation Cache Manager
 Provides fast access to active conversations with automatic persistence to SQLite.
 """
+from __future__ import annotations
 
 import json
 import logging

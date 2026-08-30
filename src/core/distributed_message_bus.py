@@ -5,6 +5,7 @@ Distributed Message Bus with Redis Clustering and Load Balancing
 Scalable message bus supporting distributed agents across multiple nodes.
 Features Redis clustering for high availability and load balancing for optimal performance.
 """
+from __future__ import annotations
 
 import argparse
 import asyncio

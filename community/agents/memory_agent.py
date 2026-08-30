@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 # MemoryAgent: Handles state recall, storage, and search for distributed swarm.
 # Integrates Redis for fast key-value, Pinecone for vector search (memory across sessions/instances).
 # Broadcasts updates via MessageBus for sync (e.g., 'memory_update' to all agents).

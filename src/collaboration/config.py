@@ -4,6 +4,7 @@ Configuration Schema for Multi-Agent Framework (MAF)
 JSON schema validation and configuration management for multi-provider collaboration setups.
 Provides validation, defaults, and configuration loading for MAF orchestrations.
 """
+from __future__ import annotations
 
 import json
 import logging

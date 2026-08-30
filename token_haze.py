@@ -9,6 +9,7 @@ MessageBus throughput, Pantheon agent status, and live system metrics.
 Author: Grokputer Team
 Last Updated: 2026-01-11
 """
+from __future__ import annotations
 
 import sys
 import time

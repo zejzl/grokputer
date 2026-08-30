@@ -9,6 +9,7 @@ Capabilities:
 - Agent health monitoring
 - Performance report generation
 """
+from __future__ import annotations
 
 import asyncio
 import logging

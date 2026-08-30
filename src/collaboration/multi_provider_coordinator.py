@@ -4,6 +4,7 @@ Multi-Provider Coordinator for MAF (Multi-Agent Framework)
 Orchestrates collaboration between multiple AI providers with dynamic provider selection,
 weighted voting, and consensus-based decision making.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

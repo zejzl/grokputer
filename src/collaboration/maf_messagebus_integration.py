@@ -4,6 +4,7 @@ MAF-MessageBus Integration Layer
 Connects the Multi-Agent Framework (MAF) orchestration system with the core MessageBus
 for unified agent communication and coordination.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

@@ -9,6 +9,7 @@ Supports multiple AI providers:
 
 Enables seamless switching between models for maximum flexibility.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

@@ -4,6 +4,7 @@ Agent Lifecycle Management System
 Provides comprehensive monitoring, health checking, deadlock detection,
 and automated restart capabilities for all agents in the Grokputer system.
 """
+from __future__ import annotations
 
 import asyncio
 import json
@@ -17,8 +18,8 @@ from typing import Any, Callable, Dict, List, Optional
 
 import psutil
 
-from src.core.base_agent import BaseAgent
-from src.observability.deadlock_detector import DeadlockDetector
+# Lazy import BaseAgent inside methods
+
 from src.observability.session_logger import SessionLogger
 
 logger = logging.getLogger(__name__)

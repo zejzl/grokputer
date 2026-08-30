@@ -4,6 +4,7 @@ Simple Analytics Tracker for Grokputer
 Tracks API calls, agent iterations, success rates, and performance metrics.
 Uses SQLite for persistence (integrates with existing db/).
 """
+from __future__ import annotations
 
 import sqlite3
 import json

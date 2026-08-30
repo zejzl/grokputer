@@ -4,6 +4,7 @@ Phase 4: Self-Improvement & RL Integration
 Reinforcement Learning components for MAF optimization.
 Implements Q-learning for orchestration strategy optimization and self-improvement loops.
 """
+from __future__ import annotations
 
 import logging
 import random

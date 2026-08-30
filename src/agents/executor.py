@@ -9,6 +9,7 @@ A specialized variant of Actor with:
 - Fallback strategies
 - Execution telemetry
 """
+from __future__ import annotations
 
 import asyncio
 import logging

@@ -6,6 +6,7 @@ Provides theme classification for images using a hybrid approach:
 - AI-powered classification via Grok/Claude APIs for ambiguous cases
 - Caching to reduce costs and improve performance
 """
+from __future__ import annotations
 
 import asyncio
 import base64

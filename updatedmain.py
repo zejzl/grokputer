@@ -5,6 +5,7 @@ Main entry point for the observe-reason-act loop.
 
 ZA GROKA. ZA VRZIBRZI. ZA SERVER.
 """
+from __future__ import annotations
 
 # --- Windows crash guard: ensures errors are visible ---
 import atexit

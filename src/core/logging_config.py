@@ -4,6 +4,7 @@ Centralized logging configuration for Grokputer.
 Provides structured logging with rotation, multiple handlers,
 and configurable levels for different components.
 """
+from __future__ import annotations
 
 import logging
 import logging.config

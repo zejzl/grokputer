@@ -7,6 +7,7 @@ Can make decisions, generate content, analyze data, or invoke Pantheon agents.
 Author: Grokputer Team
 Date: 2025-11-16
 """
+from __future__ import annotations
 
 import json
 from typing import Any, Dict, List, Optional

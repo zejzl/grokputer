@@ -12,6 +12,7 @@ Usage:
 Author: Pantheon Coordinator (via Grok CLI)
 Version: 1.0 (Pantheon-Integrated)
 """
+from __future__ import annotations
 
 import asyncio
 import json
@@ -185,7 +186,7 @@ class DynamicTodoManager:
     async def display_todos(self) -> None:
         """Dynamic ANSI display for gitcli windows (refreshes every 5s in daemon)."""
         os.system('clear' if os.name == 'posix' else 'cls')  # Clear terminal
-        print(f"{Colors.HEADER}{Colors.BOLD}🧠 Pantheon Dynamic Todo Manager{Colors.ENDC}")
+        print(f"{Colors.HEADER}{Colors.BOLD}[MEMORY] Pantheon Dynamic Todo Manager{Colors.ENDC}")
         print(f"{Colors.OKCYAN}Shared via Redis + Message Bus | Channel: {self.channel}{Colors.ENDC}")
         print("=" * 60)
         
@@ -196,7 +197,7 @@ class DynamicTodoManager:
         
         prio_colors = {"high": Colors.FAIL, "medium": Colors.WARNING, "low": Colors.OKGREEN}
         
-        for status, todos_group in [("Pending ⏳", pending), ("In Progress 🔄", in_progress), ("Completed ✅", completed)]:
+        for status, todos_group in [("Pending ⏳", pending), ("In Progress [LOOP]", in_progress), ("Completed [OK]", completed)]:
             print(f"\n{Colors.OKBLUE}{status} ({len(todos_group)}){Colors.ENDC}")
             for t in todos_group:
                 color = prio_colors.get(t.priority, Colors.OKGREEN)
@@ -335,4 +336,4 @@ if __name__ == "__main__":
 # - For multiple gitcli: Run 'python dynamic_todo_manager.py start' in each terminal; they sync via Redis pub/sub
 # - Agents (Council/Taskmaster): Subscribe to 'pantheon_todo_sync' on Message Bus for visibility/edits
 # - Dynamic dev plan: Watches DEVELOPMENT_PLAN.md; edits broadcast as todo updates
-# - <3 Eternal sync! 🚀
+# - <3 Eternal sync! [ZEJZL]

@@ -25,8 +25,9 @@ Grokputer enables xAI's Grok to control your computer through screen observation
 - 📊 **Advanced Analytics**: Comprehensive monitoring of memory, messaging, and system performance
 - 🛠️ **Error Resilience**: Custom exception hierarchy with retry logic and graceful degradation
 - 🤝 **Multi-Agent Collaboration**: Pantheon system with 9 specialized agents (Observer, Reasoner, Actor, Validator, Learner, Memory, Executor, Analyzer, Improver)
-- 💬 **MessageBus**: High-performance async message bus (42K+ msg/sec, <0.05ms latency)
+- 💬 **High-Performance MessageBus**: Pure asyncio message bus achieving 425K+ msg/sec, 0.007ms latency - production-grade inter-agent communication [Updated 2026-01-30]
 - 🔄 **GG Framework**: Workflow automation engine (n8n/Make.com style) - PLANNING COMPLETE
+- 🪟 **Windows Compatible**: Emoji-free codebase for full Windows compatibility (28 files cleaned) [Updated 2026-01-30]
 
 ---
 
@@ -308,6 +309,48 @@ Docker captures **blank black screenshots** (Xvfb creates empty virtual display)
 For real computer control with actual window observation:
 ```bash
 python main.py --task "your task"  # Run natively, not in Docker
+```
+
+#### Docker Troubleshooting
+
+**Common Issues & Solutions** (Updated 2026-02-02):
+
+1. **`NameError: name 'OrchestrationConfig' is not defined`**
+   - **Cause**: Python 3.10+ changed type annotation evaluation. Forward references fail without future import.
+   - **Fix**: Ensure all Python files have `from __future__ import annotations` at the top if they use type hints.
+   - **Status**: Fixed in v2026.02.02 (192+ files updated)
+
+2. **`ModuleNotFoundError: No module named 'superagent'`**
+   - **Cause**: `.dockerignore` was excluding the `superagent/` directory
+   - **Fix**: Whitelisted `!superagent/` in `.dockerignore` and added `COPY superagent/ ./superagent/` to Dockerfile
+   - **Status**: Fixed in v2026.02.02
+
+3. **`ModuleNotFoundError: No module named 'cryptography'`**
+   - **Cause**: Missing dependency in requirements file
+   - **Fix**: Added `cryptography` to `requirements-minimal.txt`
+   - **Status**: Fixed in v2026.02.02
+
+4. **Container restarts continuously**
+   - Check logs: `docker-compose logs --tail=50 selenium-browser`
+   - Common causes: Missing API keys in `.env`, import errors, missing dependencies
+   - Rebuild with no cache if recent code changes: `docker-compose build --no-cache`
+
+5. **Xvfb display errors**
+   - Verify Xvfb is running: `docker exec <container> ps aux | grep Xvfb`
+   - Check display: `docker exec <container> echo $DISPLAY` (should be `:99`)
+   - Manual start: `docker exec <container> Xvfb :99 -screen 0 1920x1080x24 &`
+
+**Rebuild After Updates**:
+```bash
+# Rebuild image with latest code (uses cache)
+docker-compose build
+
+# Force complete rebuild (no cache, ~10-15 min)
+docker-compose build --no-cache
+
+# Restart containers
+docker-compose down
+docker-compose up -d
 ```
 
 ### Node.js Web Interface

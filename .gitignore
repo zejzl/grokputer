@@ -66,14 +66,24 @@ bckup*
 backup_*
 backups/
 
+# Archives
+archive/
+
 # Coverage
 .coverage
 htmlcov/
 .pytest_cache/
+.mypy_cache/
 
-# Session saves
-saves/*.toon
-saves/auto_backup_*
+# Local IDE settings
+.claude/settings.local.json
 
-# Reports
-reports/
+# Temp/session files
+*.pid
+temp_*.py
+saves/*.db
+T_O_*.txt
+*.md
+!README.md
+savegame_*.txt
+zai.txt

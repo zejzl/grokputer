@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import logging
 import time
@@ -6,7 +8,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from ..observability.session_logger import SessionLogger
+# Lazy import SessionLogger
 from .message_bus import Message, MessageBus, MessagePriority
 
 

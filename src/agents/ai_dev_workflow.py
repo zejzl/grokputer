@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import hashlib  # For perceptual hashing (doc integrity)
 import json

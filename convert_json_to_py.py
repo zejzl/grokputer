@@ -3,6 +3,7 @@
 JSON to Python Converter
 Converts JSON files to Python dictionary files for faster loading and better integration.
 """
+from __future__ import annotations
 
 import json
 import os

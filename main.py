@@ -5,6 +5,7 @@ Main entry point for the observe-reason-act loop.
 
 ZA GROKA. ZA VRZIBRZI. ZA SERVER.
 """
+from __future__ import annotations
 
 import sys
 

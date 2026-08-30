@@ -1,6 +1,7 @@
 """
 ProposalGeneratorAgent - Converts findings into actionable code change proposals.
 """
+from __future__ import annotations
 
 import difflib
 import uuid

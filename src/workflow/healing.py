@@ -10,6 +10,7 @@ Provides automatic error recovery and workflow healing:
 Author: Grokputer Team
 Date: 2026-01-01
 """
+from __future__ import annotations
 
 import asyncio
 import logging
@@ -58,6 +59,7 @@ class WorkflowHealer:
         retry_delay: float = 1.0,
         backoff_multiplier: float = 2.0,
         pantheon_integration=None,
+        enable_magic_healing: bool = True,
     ):
         """
         Initialize workflow healer.
@@ -67,11 +69,13 @@ class WorkflowHealer:
             retry_delay: Initial retry delay in seconds
             backoff_multiplier: Exponential backoff multiplier
             pantheon_integration: PantheonIntegration for Improver access
+            enable_magic_healing: Whether to use fairy magic healing
         """
         self.max_healing_attempts = max_healing_attempts
         self.retry_delay = retry_delay
         self.backoff_multiplier = backoff_multiplier
         self.pantheon = pantheon_integration
+        self.enable_magic_healing = enable_magic_healing
 
         # Healing history
         self.healing_actions: List[HealingAction] = []
@@ -79,9 +83,19 @@ class WorkflowHealer:
         # Fallback nodes registry
         self.fallback_nodes: Dict[str, BaseNode] = {}
 
+        # Initialize magic healer if available
+        self.magic_healer = None
+        if enable_magic_healing:
+            try:
+                from src.magic import FairyMagic
+                self.magic_healer = FairyMagic()
+                logger.info("[Healing] Fairy magic healer activated ✨")
+            except ImportError:
+                logger.warning("[Healing] Fairy magic not available, proceeding without magic healing")
+
         logger.info(
             f"[Healing] Initialized with max_attempts={max_healing_attempts}, "
-            f"retry_delay={retry_delay}s"
+            f"retry_delay={retry_delay}s, magic={'enabled' if self.magic_healer else 'disabled'}"
         )
 
     def register_fallback(self, node_id: str, fallback_node: BaseNode) -> None:
@@ -140,6 +154,8 @@ class WorkflowHealer:
                 result_context = await self._replace_with_fallback(node, context)
             elif strategy == HealingStrategy.INVOKE_IMPROVER:
                 result_context = await self._invoke_improver(node, context, error)
+            elif strategy == HealingStrategy.MAGIC_HEAL:
+                result_context = await self._magic_heal(node, context, error)
             else:
                 raise ValueError(f"Unknown strategy: {strategy}")
 
@@ -173,6 +189,10 @@ class WorkflowHealer:
         # Connection errors -> retry
         if "connection" in error_type.lower() or "ConnectionError" in error_type:
             return HealingStrategy.RETRY
+
+        # If magic healer available -> try magic first
+        if self.magic_healer and self.magic_healer.energy_level >= 20:
+            return HealingStrategy.MAGIC_HEAL
 
         # If fallback available -> replace
         if node.node_id in self.fallback_nodes:
@@ -304,6 +324,51 @@ class WorkflowHealer:
             logger.error(f"[Healing] Improver invocation failed: {e}")
             raise
 
+    async def _magic_heal(self, node: BaseNode, context: NodeContext, error: Exception) -> NodeContext:
+        """Use fairy magic to heal the failing node."""
+        if not self.magic_healer:
+            raise ValueError("Magic healer not available")
+
+        logger.info(f"[Healing] ✨ Casting fairy magic on {node.node_id}")
+
+        # Attempt blue spark healing
+        target = f"workflow_node_{node.node_id}"
+        issue = f"Node execution error: {str(error)}"
+
+        if self.magic_healer.blue_spark_heal(target, issue):
+            logger.info(f"[Healing] ✨ Magic healing successful for {node.node_id}")
+
+            # Recharge magic after successful heal
+            self.magic_healer.recharge_magic()
+
+            # Reset node and retry
+            node.reset()
+            try:
+                result = await node.run(context)
+                context.set_state(f"{node.node_id}_magic_healed", True)
+                return result
+            except Exception as retry_error:
+                logger.warning(f"[Healing] Magic healing worked but retry failed: {retry_error}")
+                raise retry_error
+
+        else:
+            logger.warning(f"[Healing] ✨ Magic healing failed for {node.node_id} - insufficient energy")
+
+            # Try to recharge and retry once
+            if self.magic_healer.energy_level < 50:
+                self.magic_healer.recharge_magic(acorn_boost=True)
+
+                # Retry magic heal
+                if self.magic_healer.blue_spark_heal(target, issue):
+                    logger.info(f"[Healing] ✨ Magic healing successful after recharge")
+                    node.reset()
+                    result = await node.run(context)
+                    context.set_state(f"{node.node_id}_magic_healed", True)
+                    return result
+
+            # Magic healing failed
+            raise Exception(f"Magic healing failed for {node.node_id}: insufficient magic energy")
+
     def get_healing_stats(self) -> Dict[str, Any]:
         """Get healing statistics."""
         total = len(self.healing_actions)
@@ -315,6 +380,10 @@ class WorkflowHealer:
                 strategy_counts.get(action.strategy.value, 0) + 1
             )
 
+        # Magic healing stats
+        magic_energy = self.magic_healer.energy_level if self.magic_healer else 0
+        magic_acorns = self.magic_healer.acorn_reserve if self.magic_healer else 0
+
         return {
             "total_healing_attempts": total,
             "successful_healings": successful,
@@ -325,6 +394,12 @@ class WorkflowHealer:
                 if total > 0
                 else 0.0
             ),
+            "magic_healing": {
+                "enabled": self.magic_healer is not None,
+                "energy_level": magic_energy,
+                "acorn_reserve": magic_acorns,
+                "magic_heals_used": strategy_counts.get("magic_heal", 0),
+            } if self.magic_healer else None,
         }
 
 

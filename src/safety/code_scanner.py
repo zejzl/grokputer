@@ -5,6 +5,7 @@ AST-Based Code Security Scanner
 Uses Python AST to analyze code for security vulnerabilities.
 Detects shell injection, unsafe imports, and other security issues.
 """
+from __future__ import annotations
 
 import ast
 import logging

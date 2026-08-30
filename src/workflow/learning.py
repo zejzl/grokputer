@@ -10,6 +10,7 @@ Provides reinforcement learning and optimization for workflows:
 Author: Grokputer Team
 Date: 2026-01-01
 """
+from __future__ import annotations
 
 import asyncio
 import json
@@ -21,7 +22,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from .engine import WorkflowEngine
 from .nodes.base import NodeContext, NodeStatus
-from .state import WorkflowState
+from .state import StateManager
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +67,7 @@ class WorkflowLearner:
 
     def __init__(
         self,
-        state: Optional[WorkflowState] = None,
+        state: Optional[StateManager] = None,
         history_size: int = 100,
         min_samples: int = 5,
     ):
@@ -74,7 +75,7 @@ class WorkflowLearner:
         Initialize workflow learner.
 
         Args:
-            state: WorkflowState for persistence
+            state: StateManager for persistence
             history_size: Number of executions to track
             min_samples: Minimum samples before making suggestions
         """
@@ -155,7 +156,7 @@ class WorkflowLearner:
 
         # Persist to state if available
         if self.state:
-            await self._persist_metrics(metrics)
+            await self.state.set(f"metrics_{metrics.workflow_id}_{int(metrics.timestamp)}", asdict(metrics))
 
         logger.info(
             f"[Learning] Recorded execution: {workflow.workflow_id} "
@@ -163,11 +164,6 @@ class WorkflowLearner:
         )
 
         return metrics
-
-    async def _persist_metrics(self, metrics: WorkflowMetrics) -> None:
-        """Persist metrics to state storage."""
-        key = f"metrics_{metrics.workflow_id}_{int(metrics.timestamp)}"
-        await self.state.set(key, asdict(metrics), ttl=86400 * 30)  # 30 days
 
     async def get_suggestions(
         self, workflow_id: str, min_confidence: float = 0.6

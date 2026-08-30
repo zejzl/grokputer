@@ -2,6 +2,7 @@
 Screen observation module for Grokputer.
 Captures screenshots and converts them to base64 for Grok analysis.
 """
+from __future__ import annotations
 
 import base64
 import logging

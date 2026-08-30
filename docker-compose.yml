@@ -8,14 +8,15 @@ services:
       - XAI_BASE_URL=${XAI_BASE_URL:-https://api.x.ai/v1}
       - REQUIRE_CONFIRMATION=${REQUIRE_CONFIRMATION:-false}
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
-      - TASK=${TASK:-invoke server prayer}
       - REDIS_URL=${REDIS_URL:-redis://redis:6379}
       - PROCESS_ID=${PROCESS_ID:-main}
+      - DISPLAY=:99
     volumes:
       - ./vault:/app/vault
       - ./logs:/app/logs
       - ./.env:/app/.env:ro
-    command: python main.py --task "invoke server prayer" --distributed --process-id main
+    command: /start-with-display.sh
+    restart: unless-stopped
     depends_on:
       - redis
     profiles:
@@ -47,7 +48,7 @@ services:
     image: redis:7-alpine
     container_name: grokputer-redis
     ports:
-      - "6379:6379"
+      - "6380:6379"
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes

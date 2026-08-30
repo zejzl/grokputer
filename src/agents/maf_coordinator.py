@@ -3,6 +3,7 @@
 MAF Coordinator Agent: Integrates Multi-Agent Framework with Pantheon.
 Uses MAF orchestrator for complex multi-perspective tasks.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

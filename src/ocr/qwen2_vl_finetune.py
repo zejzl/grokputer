@@ -3,6 +3,7 @@ Qwen2-VL Fine-tuning for OCR Enhancement
 
 This script fine-tunes Qwen2-VL model for improved OCR performance on images and code screenshots.
 """
+from __future__ import annotations
 
 import argparse
 import json

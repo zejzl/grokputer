@@ -3,6 +3,7 @@ Message Bus Throughput Test
 
 Tests the throughput (messages per second) of the MessageBus under various loads.
 """
+from __future__ import annotations
 
 import asyncio
 import time

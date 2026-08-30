@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 # ToolAgent: Handles bash commands and file operations with safety scoring.
 # Wraps existing tools (bash, view_file, create_file, str_replace_editor).
 # Broadcasts execution requests/results via MessageBus for distributed swarm.

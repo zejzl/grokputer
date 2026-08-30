@@ -4,6 +4,7 @@ Session viewer utility for Grokputer.
 
 View and analyze past execution sessions.
 """
+from __future__ import annotations
 
 import json
 import sys

@@ -4,6 +4,7 @@ Cognitive Integration for Grokputer Agents.
 Integrates cognitive enhancement capabilities with the agent system
 for improved context retention and processing.
 """
+from __future__ import annotations
 
 import logging
 from typing import Any, Dict, List, Optional

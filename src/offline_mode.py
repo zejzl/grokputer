@@ -2,6 +2,7 @@
 Offline Mode for Grokputer
 Uses cached responses and local knowledge base when API is unavailable.
 """
+from __future__ import annotations
 
 import hashlib
 import json

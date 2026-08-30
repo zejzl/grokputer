@@ -1,215 +1,101 @@
-"""
-Deadlock detection and recovery for agent swarm.
-
-Monitors agent activity to detect and handle deadlock situations where
-agents are waiting on each other indefinitely.
-"""
+from __future__ import annotations
 
 import asyncio
-import logging
 import time
-from dataclasses import dataclass, field
-from typing import Callable, Dict, Optional
-
-logger = logging.getLogger(__name__)
-
-
-class DeadlockError(Exception):
-    """Raised when a deadlock is detected."""
-
-    pass
-
-
-@dataclass
-class AgentActivity:
-    """Track agent activity for deadlock detection."""
-
-    agent_id: str
-    last_activity: float = field(default_factory=time.time)
-    message_count: int = 0
-    state: str = "idle"
+from typing import Dict, Any
+from src.core.message_bus import MessageBus
 
 
 class DeadlockDetector:
-    """
-    Watchdog for detecting deadlocks in agent swarm.
+    """Enhanced watchdog for detecting and recovering from deadlocks with auto-restart."""
 
-    Monitors agent activity and detects when agents are stuck waiting
-    on each other. Provides recovery strategies.
-
-    Usage:
-        detector = DeadlockDetector(timeout_seconds=30.0)
-
-        # In agent code
-        detector.update_activity("observer")
-
-        # Start monitoring
-        await detector.monitor()
-    """
-
-    def __init__(
-        self, timeout_seconds: float = 30.0, check_interval: float = 5.0, on_deadlock: Optional[Callable] = None
-    ):
-        """
-        Initialize deadlock detector.
-
-        Args:
-            timeout_seconds: Max idle time before deadlock suspected
-            check_interval: How often to check for deadlocks (seconds)
-            on_deadlock: Optional callback when deadlock detected
-        """
+    def __init__(self, timeout_seconds: float = 60.0, check_interval: float = 10.0, max_restarts: int = 3):
         self.timeout = timeout_seconds
         self.check_interval = check_interval
-        self.on_deadlock = on_deadlock
-
-        self.agent_states: Dict[str, AgentActivity] = {}
+        self.max_restarts = max_restarts
+        self.agent_states: Dict[str, Dict[str, Any]] = {}  # agent_id -> {'last_activity': time, 'restarts': 0, 'status': 'running'}
         self.running = False
-        self.monitor_task: Optional[asyncio.Task] = None
+        self.message_bus: MessageBus = None
+        self.lifecycle_manager: AgentLifecycleManager = None
+        self.restart_count = 0
 
-        # Stats
-        self.deadlocks_detected = 0
-        self.deadlocks_recovered = 0
+    async def start(self, message_bus: MessageBus, lifecycle_manager: AgentLifecycleManager):
+        """Start monitoring."""
+        self.message_bus = message_bus
+        self.lifecycle_manager = lifecycle_manager
+        self.running = True
+        asyncio.create_task(self._monitor_loop())
 
-    def register_agent(self, agent_id: str):
-        """Register an agent for monitoring."""
-        self.agent_states[agent_id] = AgentActivity(agent_id=agent_id)
-        logger.debug(f"[DeadlockDetector] Registered agent: {agent_id}")
+    async def _monitor_loop(self):
+        """Background monitoring loop."""
+        while self.running:
+            await asyncio.sleep(self.check_interval)
+            await self._check_for_deadlocks()
 
-    def unregister_agent(self, agent_id: str):
-        """Unregister an agent (on shutdown)."""
-        if agent_id in self.agent_states:
-            del self.agent_states[agent_id]
-            logger.debug(f"[DeadlockDetector] Unregistered agent: {agent_id}")
-
-    def update_activity(self, agent_id: str, state: Optional[str] = None):
-        """
-        Agent reports activity.
-
-        Args:
-            agent_id: ID of active agent
-            state: Optional state update (idle, processing, etc.)
-        """
+    async def update_activity(self, agent_id: str, status: str = 'running'):
+        """Update agent activity."""
         if agent_id not in self.agent_states:
-            self.register_agent(agent_id)
-
-        activity = self.agent_states[agent_id]
-        activity.last_activity = time.time()
-        activity.message_count += 1
-
-        if state:
-            activity.state = state
-
-        logger.debug(
-            f"[DeadlockDetector] Activity: {agent_id} " f"(state={activity.state}, messages={activity.message_count})"
-        )
-
-    async def monitor(self):
-        """
-        Background task checking for deadlocks.
-
-        Runs continuously until stopped. Checks agent activity at
-        regular intervals and triggers recovery on deadlock.
-        """
-        # Note: running flag is set by start() method
-        logger.info(
-            f"[DeadlockDetector] Starting monitor " f"(timeout={self.timeout}s, interval={self.check_interval}s)"
-        )
-
-        try:
-            while self.running:
-                await asyncio.sleep(self.check_interval)
-                await self._check_for_deadlocks()
-        except asyncio.CancelledError:
-            logger.info("[DeadlockDetector] Monitor cancelled")
-            raise
-        finally:
-            self.running = False
+            self.agent_states[agent_id] = {'last_activity': time.time(), 'restarts': 0, 'status': status}
+        else:
+            self.agent_states[agent_id]['last_activity'] = time.time()
+            self.agent_states[agent_id]['status'] = status
 
     async def _check_for_deadlocks(self):
-        """Check all agents for deadlock conditions."""
+        """Check and recover from deadlocks."""
         now = time.time()
-        stuck_agents = []
+        for agent_id, state in list(self.agent_states.items()):
+            idle_time = now - state['last_activity']
+            if idle_time > self.timeout and state['status'] == 'running':
+                print(f"[DEADLOCK] Agent {agent_id} idle for {idle_time:.1f}s - attempting restart")
+                await self._restart_agent(agent_id, state)
 
-        for agent_id, activity in self.agent_states.items():
-            idle_time = now - activity.last_activity
+    async def _restart_agent(self, agent_id: str, state: Dict[str, Any]):
+        from src.core.agent_lifecycle_manager import AgentLifecycleManager
 
-            if idle_time > self.timeout:
-                stuck_agents.append((agent_id, idle_time))
+        """Auto-restart stuck agent."""
+        if state['restarts'] >= self.max_restarts:
+            print(f"[DEADLOCK] Max restarts reached for {agent_id} - escalating to full swarm restart")
+            await self._full_restart()
+            return
 
-        if stuck_agents:
-            await self._handle_deadlock(stuck_agents)
+        try:
+            # Stop and restart agent
+            await self.lifecycle_manager.stop_agent(agent_id)
+            await asyncio.sleep(2)  # Cooldown
+            await self.lifecycle_manager.start_agent(agent_id)
+            
+            state['restarts'] += 1
+            state['last_activity'] = time.time()
+            print(f"[RECOVERY] Agent {agent_id} restarted (attempt {state['restarts']}/{self.max_restarts})")
+            
+            # Notify via message bus
+            recovery_msg = {"type": "agent_recovery", "agent": agent_id, "reason": "deadlock", "attempt": state['restarts']}
+            await self.message_bus.broadcast("recovery", recovery_msg)
+            
+        except Exception as e:
+            print(f"[ERROR] Failed to restart {agent_id}: {e}")
+            state['status'] = 'failed'
 
-    async def _handle_deadlock(self, stuck_agents):
-        """
-        Handle detected deadlock.
-
-        Recovery strategies:
-        1. Log warning
-        2. Call callback if provided
-        3. Raise error for coordinator to handle
-
-        Args:
-            stuck_agents: List of (agent_id, idle_time) tuples
-        """
-        self.deadlocks_detected += 1
-
-        # Build error message
-        agents_str = ", ".join(f"{agent_id} (idle {idle_time:.1f}s)" for agent_id, idle_time in stuck_agents)
-
-        error_msg = f"Deadlock detected! Stuck agents: {agents_str}. " f"Total deadlocks: {self.deadlocks_detected}"
-
-        logger.error(f"[DeadlockDetector] {error_msg}")
-
-        # Call custom handler if provided
-        if self.on_deadlock:
-            try:
-                await self.on_deadlock(stuck_agents)
-                self.deadlocks_recovered += 1
-                logger.info("[DeadlockDetector] Recovery handler succeeded")
-            except Exception as e:
-                logger.error(f"[DeadlockDetector] Recovery failed: {e}")
-
-        # Raise error for coordinator
-        raise DeadlockError(error_msg)
-
-    async def start(self):
-        """Start monitoring in background task."""
-        if not self.monitor_task or self.monitor_task.done():
-            self.running = True  # Set flag before creating task
-            self.monitor_task = asyncio.create_task(self.monitor())
-            logger.info("[DeadlockDetector] Started background monitoring")
+    async def _full_restart(self):
+        """Restart entire swarm/Pantheon."""
+        self.restart_count += 1
+        print(f"[EMERGENCY] Full swarm restart (attempt {self.restart_count})")
+        await self.lifecycle_manager.stop_all_agents()
+        await asyncio.sleep(5)
+        await self.lifecycle_manager.start_all_agents()
 
     async def stop(self):
-        """Stop monitoring gracefully."""
+        """Stop monitoring."""
         self.running = False
+        for agent_id in self.agent_states:
+            self.agent_states[agent_id]['status'] = 'stopped'
 
-        if self.monitor_task and not self.monitor_task.done():
-            self.monitor_task.cancel()
-            try:
-                await self.monitor_task
-            except asyncio.CancelledError:
-                pass
-
-        logger.info("[DeadlockDetector] Stopped")
-
-    def get_stats(self) -> Dict:
-        """Get deadlock detection statistics."""
-        return {
-            "deadlocks_detected": self.deadlocks_detected,
-            "deadlocks_recovered": self.deadlocks_recovered,
-            "agents_monitored": len(self.agent_states),
-            "running": self.running,
-        }
-
-    def get_agent_status(self) -> Dict[str, Dict]:
-        """Get status of all monitored agents."""
+    def get_stats(self) -> Dict[str, Any]:
+        """Get recovery stats."""
         now = time.time()
-        return {
-            agent_id: {
-                "idle_time": now - activity.last_activity,
-                "message_count": activity.message_count,
-                "state": activity.state,
-                "healthy": (now - activity.last_activity) < self.timeout,
-            }
-            for agent_id, activity in self.agent_states.items()
+        stats = {
+            'active_agents': len([s for s in self.agent_states.values() if s['status'] == 'running']),
+            'total_restarts': sum(s['restarts'] for s in self.agent_states.values()),
+            'current_idle_times': {aid: now - s['last_activity'] for aid, s in self.agent_states.items() if s['status'] == 'running'}
         }
+        return stats

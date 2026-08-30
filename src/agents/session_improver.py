@@ -3,6 +3,7 @@ Session Improver for Interactive Mode
 Analyzes past Grokputer sessions and proposes improvements.
 Simplified wrapper around ImproverAgent for manual use.
 """
+from __future__ import annotations
 
 import json
 import logging
@@ -154,17 +155,17 @@ class SessionImprover:
         print(f"Timestamp: {analysis['timestamp']}")
 
         if analysis.get("metrics"):
-            print("\n📊 METRICS:")
+            print("\n[STATS] METRICS:")
             for key, value in analysis["metrics"].items():
                 print(f"  • {key}: {value}")
 
         if analysis.get("strengths"):
-            print("\n✅ STRENGTHS:")
+            print("\n[OK] STRENGTHS:")
             for strength in analysis["strengths"]:
                 print(f"  • {strength}")
 
         if analysis.get("issues"):
-            print("\n⚠️  ISSUES FOUND:")
+            print("\n[WARNING]  ISSUES FOUND:")
             for issue in analysis["issues"]:
                 print(f"  • {issue}")
 

@@ -3,6 +3,7 @@ Predefined Crew Configurations and Flow Templates for Grokputer.
 
 Provides ready-to-use CrewAI-inspired setups for common agent orchestration patterns.
 """
+from __future__ import annotations
 
 from typing import Any, Dict, List
 

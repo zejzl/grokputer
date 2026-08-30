@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # Enhancement to analytics tools based on grokputer_swarm_examples.md
 # Adds swarm performance analytics: execution times, success rates, message counts, agent efficiency
 

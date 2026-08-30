@@ -4,6 +4,7 @@ Knowledge Graph System for Grokputer.
 Provides semantic understanding and relationship mapping capabilities
 for advanced reasoning and multi-modal understanding.
 """
+from __future__ import annotations
 
 import asyncio
 import hashlib

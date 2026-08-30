@@ -1,6 +1,7 @@
 """
 CodeScannerAgent - Analyzes code for issues, smells, and improvement opportunities.
 """
+from __future__ import annotations
 
 import ast
 import re

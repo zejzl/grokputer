@@ -1,6 +1,8 @@
 # Draft code for analytics_query and performance_monitor tools
 # Add these to src/tools.py and update src/config.py TOOLS list
 
+from __future__ import annotations
+
 import sqlite3
 import psutil
 import time
@@ -246,7 +248,7 @@ def get_performance_recommendations(perf_data: Dict[str, Any]) -> List[str]:
     system = perf_data["system"]
     if system["cpu_percent"] > 80:
         recommendations.append(
-            "⚡ High CPU usage detected - consider optimizing compute-intensive operations or scaling resources"
+            "[FAST] High CPU usage detected - consider optimizing compute-intensive operations or scaling resources"
         )
     elif system["cpu_percent"] < 10:
         recommendations.append(
@@ -255,10 +257,10 @@ def get_performance_recommendations(perf_data: Dict[str, Any]) -> List[str]:
 
     if system["memory_percent"] > 85:
         recommendations.append(
-            "🧠 High memory usage - check for memory leaks, optimize caching, or increase memory allocation"
+            "[MEMORY] High memory usage - check for memory leaks, optimize caching, or increase memory allocation"
         )
     elif system["memory_percent"] < 20:
-        recommendations.append("🧠 Memory utilization is low - consider reducing memory allocation to optimize costs")
+        recommendations.append("[MEMORY] Memory utilization is low - consider reducing memory allocation to optimize costs")
 
     if system["disk_percent"] > 90:
         recommendations.append("💾 Disk space running low - clean up old logs, backups, and temporary files")
@@ -270,15 +272,15 @@ def get_performance_recommendations(perf_data: Dict[str, Any]) -> List[str]:
             "🐌 Slow API response times - investigate network latency, optimize database queries, or implement caching"
         )
     elif api["avg_response_time"] < 0.1:
-        recommendations.append("🚀 API responses are very fast - excellent performance!")
+        recommendations.append("[ZEJZL] API responses are very fast - excellent performance!")
 
     if api["total_calls"] > 1000 and api["avg_response_time"] > 2.0:
-        recommendations.append("📈 High API load with slow responses - consider load balancing or horizontal scaling")
+        recommendations.append("[IMPROVEMENT] High API load with slow responses - consider load balancing or horizontal scaling")
 
     # MAF recommendations
     maf = perf_data["maf"]
     if maf["maf_success_rate"] < 0.8 and maf["total_maf_orchestrations"] > 10:
-        recommendations.append("🎯 Low MAF success rate - review orchestration logic and error handling")
+        recommendations.append("[GG] Low MAF success rate - review orchestration logic and error handling")
 
     if maf["average_maf_execution_time"] > 60:
         recommendations.append("⏱️ Slow MAF execution - optimize provider selection and parallel processing")
@@ -286,10 +288,10 @@ def get_performance_recommendations(perf_data: Dict[str, Any]) -> List[str]:
     # Throughput recommendations
     throughput = perf_data["throughput"]
     if throughput["overall_api_throughput"] > 100:
-        recommendations.append("📊 High API throughput - ensure adequate rate limiting and resource allocation")
+        recommendations.append("[STATS] High API throughput - ensure adequate rate limiting and resource allocation")
 
     if throughput["maf_throughput"] > 10:
-        recommendations.append("🔄 High MAF orchestration rate - monitor for resource contention")
+        recommendations.append("[LOOP] High MAF orchestration rate - monitor for resource contention")
 
     # Agent-specific recommendations
     agent_calls = api["calls_per_agent"]

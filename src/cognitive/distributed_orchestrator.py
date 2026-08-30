@@ -4,6 +4,7 @@ Distributed Cognitive Processing for Grokputer.
 Enables scaling of cognitive workloads across multiple agents through
 intelligent orchestration, load balancing, and collaborative reasoning.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

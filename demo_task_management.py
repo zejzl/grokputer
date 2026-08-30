@@ -74,7 +74,7 @@ class DemoAgent:
 
 async def demo_task_management():
     """Demonstrate the task management system."""
-    logger.info("🚀 Starting Task Management System Demo")
+    logger.info("[ZEJZL] Starting Task Management System Demo")
 
     # Initialize core systems
     message_bus = MessageBus()
@@ -110,7 +110,7 @@ async def demo_task_management():
     agent_tasks = [asyncio.create_task(agent.run()) for agent in agents]
 
     # Create some demo tasks
-    logger.info("📋 Creating demo tasks...")
+    logger.info("[TODO] Creating demo tasks...")
 
     # Create tasks via TaskMaster (normally this would be done by a coordinator or user)
     task_message = Message(
@@ -188,7 +188,7 @@ async def demo_task_management():
     await asyncio.sleep(30)
 
     # Get system stats
-    logger.info("📊 Getting system statistics...")
+    logger.info("[STATS] Getting system statistics...")
     stats_message = Message(
         from_agent="demo",
         to_agent="taskmaster",
@@ -213,7 +213,7 @@ async def demo_task_management():
     except asyncio.CancelledError:
         pass
 
-    logger.info("✅ Task Management System Demo completed!")
+    logger.info("[OK] Task Management System Demo completed!")
 
 
 if __name__ == "__main__":

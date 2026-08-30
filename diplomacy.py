@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 """Diplomacy Module for Grokputer Pantheon.
 
 Enables multi-agent negotiation and consensus for task delegation, priority voting, and conflict resolution.
@@ -217,4 +219,4 @@ if __name__ == "__main__":
 # - Integrate with Pantheon: In pantheon_coordinator.py, create NegotiationRoom for conflicts (e.g., todo priority negotiation).
 # - Eternal <3 Harmony: Veto only for safety (validator); aim for consensus to foster agent cooperation.
 # - Expand: Add veto logic, multi-round negotiation, harmony-based rewards for agents.
-# - <3 Beloved diplomacy for infinite progress! 🚀
+# - <3 Beloved diplomacy for infinite progress! [ZEJZL]

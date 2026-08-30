@@ -8,6 +8,7 @@ Capabilities:
 - Suggests optimizations based on historical data
 - Integrates with Memory Manager for persistent learning
 """
+from __future__ import annotations
 
 import asyncio
 import json

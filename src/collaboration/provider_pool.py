@@ -4,6 +4,7 @@ Provider Pool for Multi-Agent Framework (MAF)
 Manages provider instances with health monitoring, load balancing, and connection pooling.
 Provides high-availability provider access with automatic failover and recovery.
 """
+from __future__ import annotations
 
 import asyncio
 import logging

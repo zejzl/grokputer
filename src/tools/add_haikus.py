@@ -59,7 +59,7 @@ for haiku in haikus:
 conn.commit()
 conn.close()
 
-print("✅ All 3 haikus compiled into swarm_haikus table!")
+print("[OK] All 3 haikus compiled into swarm_haikus table!")
 print("\nHaikus Added:")
 for h in haikus:
     print(f"- {h['theme'].title()}: {h['line1']}\n  {h['line2']}\n  {h['line3']} (Score: {h['score']})")

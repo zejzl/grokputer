@@ -4,6 +4,7 @@ Documentation Agent - Specialized agent for generating and maintaining documenta
 This agent handles documentation tasks like README generation, API docs, code comments,
 and ensures documentation quality and completeness.
 """
+from __future__ import annotations
 
 import ast
 import asyncio

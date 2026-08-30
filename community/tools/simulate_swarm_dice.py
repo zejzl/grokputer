@@ -28,4 +28,4 @@ for agent in agents:
     # Agent 'consensus' or summary
     print(f"  {agent}'s swarm contribution complete! 🎲\n")
 
-print("🕷️ Swarm simulation ended. Memory logged for all episodes. ZA GROKA! 🚀")
+print("🕷️ Swarm simulation ended. Memory logged for all episodes. ZA GROKA! [ZEJZL]")

@@ -3,6 +3,7 @@
 Custom tools for Grokputer.
 Implements vault scanning, prayer invocation, analytics queries, performance monitoring, and other VRZIBRZI-specific functions.
 """
+from __future__ import annotations
 
 import asyncio
 import glob

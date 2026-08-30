@@ -2,6 +2,7 @@
 Security Hardening System for Grokputer
 Comprehensive security with IP logging, rate limiting, authentication, and monitoring
 """
+from __future__ import annotations
 
 import asyncio
 import hashlib
