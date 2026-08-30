@@ -48,10 +48,10 @@ except Exception:
     pass
 
 from src.core.message_bus import MessageBus, Message, MessagePriority
-from src.agents.observer import ObserverAgent
+from src.agents.observer_agent import ObserverAgent
 from src.agents.actor_agent import ActorAgent
 from src.agents.coordinator import Coordinator
-from src.agents.validator_agent import ValidatorAgent
+from src.agents.validator import ValidatorAgent
 from src.core.action_executor import ActionExecutor
 from src.observability.deadlock_detector import DeadlockDetector
 from src.observability.session_logger import SessionLogger

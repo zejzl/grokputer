@@ -204,7 +204,7 @@ class ProviderPool:
         # Find available connection
         available_conn = None
         for conn in connections:
-            if conn.is_healthy and conn.active_requests < self.config.max_connections_per_provider:
+            if conn.is_healthy and conn.active_requests == 0:
                 available_conn = conn
                 break
 
@@ -450,6 +450,7 @@ class ProviderPool:
                 if conn.is_healthy:
                     healthy_count += 1
 
+        self._stats.total_connections = total_count
         self._stats.healthy_connections = healthy_count
         logger.debug(f"Connection health check: {healthy_count}/{total_count} healthy")
 

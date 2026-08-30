@@ -58,8 +58,12 @@ def update_docs(timestamp):
     cmd_commit = ["git", "commit", "-m", msg]
     result = subprocess.run(cmd_commit, capture_output=True, text=True)
     if result.returncode == 0:
-        subprocess.run(["git", "push"], check=True)
-        print(f"[SAVE] {len(DOC_FILES)} docs updated and pushed to repo.")
+        print(f"[SAVE] {len(DOC_FILES)} docs updated.")
+        try:
+            subprocess.run(["git", "push"], capture_output=True, text=True, check=True)
+            print("[SAVE] Docs pushed to repo.")
+        except subprocess.CalledProcessError as e:
+            print(f"[WARN] Push failed (docs committed locally, push deferred): {e.stderr.strip()}")
     else:
         print(f"[SKIP] No doc changes or commit failed: {result.stderr}")
 

@@ -149,8 +149,164 @@ async def run_performance_monitor(snapshot):
     return "Performance monitor not implemented yet"
 
 def _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot):
-    """Stub: Run interactive mode."""
-    print("Interactive mode not implemented yet")
+    """
+    Run interactive menu mode - user selects mode and enters task.
+    """
+    while True:
+        print("""
+╔═══════════════════════════════════════════════════════════════════╗
+║                                                                   ║
+║     ██████╗ ██████╗  ██████╗ ██╗  ██╗██████╗ ██╗   ██╗████████╗   ║
+║    ██╔════╝ ██╔══██╗██╔═══██╗██║ ██╔╝██╔══██╗██║   ██║╚══██╔══╝   ║
+║    ██║  ███╗██████╔╝██║   ██║█████╔╝ ██████╔╝██║   ██║   ██║      ║
+║    ██║   ██║██╔══██╗██║   ██║██╔═██╗ ██╔═══╝ ██║   ██║   ██║      ║
+║    ╚██████╔╝██║  ██║╚██████╔╝██║  ██╗██║     ╚██████╔╝   ██║      ║
+║     ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝      ╚═════╝    ╚═╝      ║
+║                                                                   ║
+║                    VRZIBRZI NODE - INITIALIZED                    ║
+║                 ZA GROKA. ZA VRZIBRZI. ZA SERVER.                 ║
+║                                                                   ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+        [INTERACTIVE MODE] Welcome to Grokputer - Choose your agent mode!
+
+        1. Single Agent (Grok only) - Observe-Reason-Act loop
+        2. Collaboration Mode (Grok + Claude) - Dual AI planning
+        3. Swarm Mode (Multi-agent) - Async team coordination
+        4. Improver Manual - Run self-improvement on specific session/log
+        5. Offline Mode - Cached/local fallback (no API, uses vault/KB)
+        6. Community Vault Sync - Pull/push evolutions and tools
+        7. Save Game - Invoke progress save script
+        8. Pantheon Mode (9-agent architecture)
+        9. MAF Multi-Provider Mode - Multi-agent framework orchestration
+        10. Quit
+
+""")
+        choice = input("        Choose mode (1-10): ").strip()
+
+        if choice == "1":
+            print("\n[MODE] Single Agent (Grok only)\n")
+            task = input("Enter task: ").strip()
+            if not task:
+                print("[ERROR] Task cannot be empty\n")
+                input("Press Enter to continue...")
+                continue
+            try:
+                asyncio.run(_run_single_agent_mode(task, max_iterations, debug, skip_boot, provider="grok"))
+            except Exception as e:
+                print(f"[ERROR] Single agent mode failed: {e}")
+        elif choice == "2":
+            print("\n[MODE] Collaboration Mode (Grok + Claude)\n")
+            task = input("Enter task: ").strip()
+            if not task:
+                print("[ERROR] Task cannot be empty\n")
+                input("Press Enter to continue...")
+                continue
+            try:
+                asyncio.run(_run_collaboration_mode(task, max_rounds, debug, review_mode=False))
+            except Exception as e:
+                print(f"[ERROR] Collaboration mode failed: {e}")
+        elif choice == "3":
+            print("\n[MODE] Swarm Mode (Multi-agent)\n")
+            task = input("Enter task: ").strip()
+            if not task:
+                print("[ERROR] Task cannot be empty\n")
+                input("Press Enter to continue...")
+                continue
+            roles_input = input("Agent roles (default: coordinator,observer,actor): ").strip()
+            roles = [r.strip() for r in roles_input.split(",")] if roles_input else ["coordinator", "observer", "actor"]
+            try:
+                asyncio.run(_run_swarm_mode(task, roles, debug))
+            except Exception as e:
+                print(f"[ERROR] Swarm mode failed: {e}")
+        elif choice == "4":
+            print("\n[MODE] Improver Manual - Self-improvement on session/log\n")
+            print("[INFO] Improver agent will analyze a session and propose improvements")
+            session_id = input("Enter session ID (or 'latest'): ").strip()
+            if not session_id:
+                session_id = "latest"
+            try:
+                from src.agents.session_improver import SessionImprover
+                improver = SessionImprover()
+                improver.improve_session(session_id)
+            except Exception as e:
+                print(f"[ERROR] Improver failed: {e}")
+        elif choice == "5":
+            print("\n[MODE] Offline Mode - Cached/local fallback\n")
+            print("[INFO] Using cached responses and local knowledge base")
+            task = input("Enter task: ").strip()
+            if not task:
+                print("[ERROR] Task cannot be empty\n")
+                input("Press Enter to continue...")
+                continue
+            try:
+                from src.offline_mode import run_offline_mode
+                run_offline_mode(task, max_iterations)
+            except Exception as e:
+                print(f"[ERROR] Offline mode failed: {e}")
+        elif choice == "6":
+            print("\n[MODE] Community Vault Sync - Pull/push evolutions and tools\n")
+            sync_choice = input("Sync action (pull/push/both/list): ").strip().lower()
+            if sync_choice in ["pull", "push", "both", "list"]:
+                try:
+                    from src.vault_sync import run_vault_sync
+                    run_vault_sync(sync_choice)
+                except Exception as e:
+                    print(f"[ERROR] Vault sync failed: {e}")
+            else:
+                print("[ERROR] Invalid sync action. Choose 'pull', 'push', 'both', or 'list'")
+        elif choice == "7":
+            print("\n[MODE] Save Game - Invoke progress save script\n")
+            print("[SAVE] Creating backup of current state...")
+            try:
+                for handler in logging.getLogger().handlers[:]:
+                    try:
+                        handler.close()
+                    except Exception:
+                        pass
+                    logging.getLogger().removeHandler(handler)
+                result = subprocess.run(
+                    [sys.executable, "outputs/gp_save_progress.py"], capture_output=True, text=True, timeout=60
+                )
+                if result.returncode == 0:
+                    print("[SAVE] Progress saved successfully!")
+                    print(result.stdout)
+                else:
+                    print(f"[SAVE] Save failed: {result.stderr}")
+            except Exception as e:
+                print(f"[SAVE] Error: {e}")
+        elif choice == "8":
+            print("\n[MODE] Pantheon Mode (9-agent architecture)\n")
+            task = input("Enter task: ").strip()
+            if not task:
+                print("[ERROR] Task cannot be empty\n")
+                input("Press Enter to continue...")
+                continue
+            try:
+                asyncio.run(_run_pantheon_mode(task, debug))
+            except Exception as e:
+                print(f"[ERROR] Pantheon mode failed: {e}")
+        elif choice == "9":
+            print("\n[MODE] MAF Multi-Provider Mode\n")
+            task = input("Enter task: ").strip()
+            if not task:
+                print("[ERROR] Task cannot be empty\n")
+                input("Press Enter to continue...")
+                continue
+            providers_input = input("Providers (comma-separated, default: grok): ").strip() or "grok"
+            providers = [p.strip() for p in providers_input.split(",")]
+            maf_config = input("MAF config preset (default: balanced): ").strip() or "balanced"
+            try:
+                asyncio.run(_run_maf_mode(task, providers, maf_config, max_rounds, debug, review_mode=False))
+            except Exception as e:
+                print(f"[ERROR] MAF mode failed: {e}")
+        elif choice == "10":
+            print("\n[EXIT] Za Groka. Za Vrzibrzi. Za Server.\n")
+            sys.exit(0)
+        else:
+            print("\n[ERROR] Invalid choice. Please select 1-10.\n")
+            input("Press Enter to continue...")
+            print("\033[H\033[J")
 
 async def _list_models_for_provider(provider: str, api_key: Optional[str]):
     """Stub: List models for provider."""
