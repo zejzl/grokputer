@@ -16,6 +16,27 @@ from src.screen_observer import ScreenObserver
 logger = logging.getLogger(__name__)
 
 
+
+def _field(message: Any, name: str, default: Any = None) -> Any:
+    """Read a field from either a Message object or a plain dict."""
+    if isinstance(message, dict):
+        return message.get(name, default)
+    return getattr(message, name, default)
+
+
+def _sender(message: Any) -> str:
+    """Agent to reply to: the message's sender, else the coordinator."""
+    if isinstance(message, dict):
+        return message.get("from", "coordinator")
+    return getattr(message, "from_agent", None) or "coordinator"
+
+
+def _content(message: Any) -> Dict[str, Any]:
+    """Message payload; a plain dict message is its own payload."""
+    if isinstance(message, dict):
+        return message.get("content", message)
+    return getattr(message, "content", None) or {}
+
 class ObserverAgent(BaseAgent):
     """
     Observer Agent - The eyes of the swarm.
@@ -52,9 +73,9 @@ class ObserverAgent(BaseAgent):
     #        )
     # await self.message_bus.send(msg)
 
-    async def process_message(self, message: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    async def process_message(self, message: Any) -> Optional[Dict[str, Any]]:
         """
-        Process observation requests.
+        Process observation requests (a Message object or a plain dict).
 
         Args:
             message: Message dict with 'type' and optional parameters
@@ -62,7 +83,9 @@ class ObserverAgent(BaseAgent):
         Returns:
             Response dict with observation data, or None
         """
-        msg_type = message.get("type")
+        msg_type = _field(message, "message_type") or _field(message, "type")
+        if msg_type == "capture":  # PantheonCoordinator's name for a screenshot request
+            msg_type = "observe_screen"
 
         if msg_type == "observe_screen":
             return await self._observe_screen(message)
@@ -88,7 +111,7 @@ class ObserverAgent(BaseAgent):
             Dict with screenshot data
         """
         try:
-            content = message.content
+            content = _content(message)
             region = content.get("region", None)
             format = content.get("format", "PNG")
 
@@ -103,21 +126,21 @@ class ObserverAgent(BaseAgent):
             logger.info(f"[{self.agent_id}] Screenshot captured: {len(screenshot_base64)} bytes")
 
             return {
-                "to": message.get("from", "coordinator"),
+                "to": _sender(message),
                 "type": "observation",
                 "subtype": "screenshot",
                 "data": screenshot_base64,
                 "screen_size": {"width": width, "height": height},
                 "format": format,
                 "region": region,
-                "timestamp": message.get("timestamp"),
+                "timestamp": _field(message, "timestamp"),
                 "status": "success",
             }
 
         except Exception as e:
             logger.error(f"[{self.agent_id}] Screenshot failed: {e}")
             return {
-                "to": message.get("from", "coordinator"),
+                "to": _sender(message),
                 "type": "observation",
                 "subtype": "screenshot",
                 "status": "error",
@@ -137,7 +160,7 @@ class ObserverAgent(BaseAgent):
             logger.debug(f"[{self.agent_id}] Mouse position: ({x}, {y})")
 
             return {
-                "to": message.get("from", "coordinator"),
+                "to": _sender(message),
                 "type": "observation",
                 "subtype": "mouse_position",
                 "position": {"x": x, "y": y},
@@ -147,7 +170,7 @@ class ObserverAgent(BaseAgent):
         except Exception as e:
             logger.error(f"[{self.agent_id}] Get mouse position failed: {e}")
             return {
-                "to": message.get("from", "coordinator"),
+                "to": _sender(message),
                 "type": "observation",
                 "subtype": "mouse_position",
                 "status": "error",
@@ -167,7 +190,7 @@ class ObserverAgent(BaseAgent):
             logger.debug(f"[{self.agent_id}] Screen size: {width}x{height}")
 
             return {
-                "to": message.get("from", "coordinator"),
+                "to": _sender(message),
                 "type": "observation",
                 "subtype": "screen_size",
                 "size": {"width": width, "height": height},
@@ -177,7 +200,7 @@ class ObserverAgent(BaseAgent):
         except Exception as e:
             logger.error(f"[{self.agent_id}] Get screen size failed: {e}")
             return {
-                "to": message.get("from", "coordinator"),
+                "to": _sender(message),
                 "type": "observation",
                 "subtype": "screen_size",
                 "status": "error",

@@ -20,6 +20,7 @@ import psutil
 
 # Lazy import BaseAgent inside methods
 
+from src.observability.deadlock_detector import DeadlockDetector
 from src.observability.session_logger import SessionLogger
 
 logger = logging.getLogger(__name__)

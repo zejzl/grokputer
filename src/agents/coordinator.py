@@ -9,6 +9,7 @@ from __future__ import annotations
 import asyncio
 import heapq
 import json
+import re
 import logging
 import time
 from collections import defaultdict
@@ -32,6 +33,29 @@ from src.observability.session_logger import SessionLogger
 from src.self_improvement.dpo_optimizer import AgentDPO
 from src.self_improvement.preference_collector import PreferenceCollector
 
+
+
+def _parse_llm_json(text: str) -> Any:
+    """Parse JSON from an LLM reply, tolerating ```json fences and prose around the JSON."""
+    text = (text or "").strip()
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        pass
+    fenced = re.search(r"```(?:json)?\s*(.*?)```", text, re.DOTALL)
+    if fenced:
+        try:
+            return json.loads(fenced.group(1).strip())
+        except json.JSONDecodeError:
+            pass
+    for open_ch, close_ch in (("[", "]"), ("{", "}")):
+        start, end = text.find(open_ch), text.rfind(close_ch)
+        if start != -1 and end > start:
+            try:
+                return json.loads(text[start : end + 1])
+            except json.JSONDecodeError:
+                continue
+    raise json.JSONDecodeError("No JSON found in reply", text, 0)
 
 class TaskStatus(Enum):
     """Task status enumeration."""
@@ -572,7 +596,9 @@ Example format:
 
         # Grok-powered decomposition with cognitive enhancement
         final_prompt = prompt + prompt_modifier
-        decomposition_response = await self.grok_client.create_message(task=final_prompt, conversation_history=None)
+        decomposition_response = await self.grok_client.create_message(
+            task=final_prompt, conversation_history=None, agent="coordinator"
+        )
 
         if not decomposition_response or decomposition_response["status"] != "success":
             self.logger.error(f"[COORDINATOR] Decomposition failed: {decomposition_response}")
@@ -582,7 +608,7 @@ Example format:
         try:
             subtasks_json = decomposition_response.get("content", "[]")
             try:
-                subtasks: List[Dict] = json.loads(subtasks_json)
+                subtasks: List[Dict] = _parse_llm_json(subtasks_json)
             except json.JSONDecodeError as e:
                 self.logger.error(f"[COORDINATOR] Failed to parse subtasks JSON: {e}")
                 subtasks = self._fallback_decompose(task_desc)
@@ -652,7 +678,9 @@ Example format:
                     # Get refined subtask from Grok with timeout
                     try:
                         refinement_response = await asyncio.wait_for(
-                            self.grok_client.create_message(task=refinement_prompt, conversation_history=None),
+                            self.grok_client.create_message(
+                                task=refinement_prompt, conversation_history=None, agent="coordinator"
+                            ),
                             timeout=20.0,  # 20 second timeout for refinement
                         )
                     except asyncio.TimeoutError:
@@ -664,7 +692,7 @@ Example format:
                     if refinement_response["status"] == "success":
                         try:
                             try:
-                                refined_json = json.loads(refinement_response["content"])
+                                refined_json = _parse_llm_json(refinement_response["content"])
                             except json.JSONDecodeError as e:
                                 self.logger.error(f"[COORDINATOR] Failed to parse refinement JSON: {e}")
                                 refined_json = {

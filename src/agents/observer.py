@@ -271,8 +271,8 @@ class Observer(BaseAgent):
         Returns:
             Base64-encoded screenshot
         """
-        # Run in thread pool (PyAutoGUI is blocking)
-        screenshot_b64 = await asyncio.to_thread(self.screen_observer.screenshot_to_base64, region=region, format="PNG")
+        # screenshot_to_base64 is a coroutine function, so await it (to_thread would return an un-awaited coroutine)
+        screenshot_b64 = await self.screen_observer.screenshot_to_base64(region=region, format="PNG")
 
         logger.info(f"[Observer] Screenshot captured: {len(screenshot_b64)} bytes (base64)")
         return screenshot_b64
@@ -300,8 +300,8 @@ class Observer(BaseAgent):
         )
 
         # Call Grok vision API
-        response = await asyncio.to_thread(
-            self.grok_client.create_message, task=prompt, screenshot_base64=screenshot_b64
+        response = await self.grok_client.create_message(
+            task=prompt, screenshot_base64=screenshot_b64, agent="observer"
         )
 
         if response.get("status") == "success":
@@ -385,7 +385,7 @@ class Observer(BaseAgent):
 
         # Test Grok connection
         try:
-            connected = await asyncio.to_thread(self.grok_client.test_connection)
+            connected = await self.grok_client.test_connection()
             if connected:
                 logger.info("[Observer] Grok API connection successful")
             else:
@@ -397,5 +397,6 @@ class Observer(BaseAgent):
         """Observer-specific shutdown."""
         logger.info("[Observer] Shutting down...")
         logger.info(f"[Observer] Final stats: {self.get_stats()}")
+        self.grok_client.log_usage_summary()
         self.cache.clear()
         logger.info("[Observer] Shutdown complete")

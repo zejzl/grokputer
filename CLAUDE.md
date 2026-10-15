@@ -2,7 +2,7 @@
 
 **Last Updated**: 2026-10-15
 **Project**: Grokputer - AI-Powered Computer Control & Multi-Agent System
-**Status**: Active development. Full test suite green (414 passed, 11 skipped). Known runtime bugs remain (see Known Issues). Session notes and TODO: `nightowl_2026-10-15.md`.
+**Status**: Active development. Full test suite green (431 passed, 11 skipped). Known runtime bugs remain (see Known Issues). Session notes and TODO: `nightowl_2026-10-15.md`.
 
 Claims below marked "(unverified)" come from older notes and have not been re-measured.
 
@@ -53,7 +53,7 @@ Copy `.env.example` to `.env` (gitignored). Main variables: `XAI_API_KEY`, `ANTH
 
 ## Testing
 
-**Current run (2026-10-15, Python 3.14.7, `pytest tests -q --continue-on-collection-errors`)**: 414 passed, 11 skipped, 0 failed, 0 errors. (Before today's fixes: 299 passed, 13 failed, 12 collection errors.)
+**Current run (2026-10-15, Python 3.14.7, `pytest tests -q --continue-on-collection-errors`)**: 431 passed, 11 skipped, 0 failed, 0 errors. (Before today's fixes: 299 passed, 13 failed, 12 collection errors.)
 
 How the suite is set up:
 - `tests/conftest.py` sets a placeholder `XAI_API_KEY` (a real one in the environment is left alone), because `src/config.py` raises at import time without a key. Tests mock all network calls.
@@ -76,8 +76,9 @@ pytest tests -q --continue-on-collection-errors
 ## Known Issues and Pending Work
 
 1. Old xAI and Google/Gemini keys were committed in `grokputerfirstversionbackup/xaikey.txt` and remain in git history. They are already deactivated and deleted (confirmed by the user), so no rotation is needed. The files are now untracked and ignored (also `ULTIMATE_KEY.md`); scrubbing history is optional.
-2. **Observer model call is broken** (`src/agents/observer.py`): `create_message` is async but called via `asyncio.to_thread`, the `screenshot_base64` argument is ignored by `GrokClient.create_message(**kwargs)`, and `test_connection` does not exist.
-3. `src/grok_client.py`: no token `usage` is returned or logged; Claude response parsed in OpenAI format; Gemini payload is malformed.
+2. `src/grok_client.py`: Claude/Gemini API paths are unit-tested but not exercised live; `chat()` never falls back to the next provider because `_call_provider` returns None on failure instead of raising. Test provider `claude-cli` (`PRIORITY_PROVIDER=claude-cli`, optional `CLAUDE_CLI_MODEL`) runs `claude -p` on the subscription login (text only; strips `ANTHROPIC_API_KEY` from the subprocess env).
+3. Token usage is recorded per agent tag; `--pantheon` prints a TOKEN USAGE table at the end (only the Coordinator's calls so far: ~870 in / 850-1560 out per decomposition).
+3b. `--pantheon` now runs end to end but every task reports failed: `PantheonCoordinator` sends message types the Executor (`execute_with_retry`), Analyzer (`assess_execution`, `record_task`) and Improver (`analyze_for_improvements`) do not implement. It also passes the raw task text to the validator/executor as a bash command.
 4. `improve_swarm.py` still uses `shell=True` (the two in `src/executor.py` and `grokputer_server.py` are fixed).
 5. `main.py` interactive menu crashes on EOF.
 6. Resolve duplicate agent modules in `src/agents/` (`executor.py` and `imrover_agent.py` have no importers).

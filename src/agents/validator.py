@@ -32,16 +32,26 @@ class ValidatorAgent(BaseAgent):
         self.action_executor = action_executor
         logger.info(f"[{self.agent_id}] Validator agent initialized")
 
-    async def process_message(self, message: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    async def process_message(self, message: Any) -> Optional[Dict[str, Any]]:
         """
         Process validation requests.
 
         Args:
-            message: Message dict with 'type' and validation parameters
+            message: Message object, or dict with 'type' and validation parameters
 
         Returns:
             Validation result dict or None
         """
+        if not isinstance(message, dict):
+            # Message object (e.g. from PantheonCoordinator): flatten its payload into the dict form the handlers use
+            payload = message.content if isinstance(message.content, dict) else {"content": message.content}
+            message = {
+                **payload,
+                "type": message.message_type,
+                "from": message.from_agent,
+                "correlation_id": message.correlation_id,
+            }
+
         msg_type = message.get("type")
 
         if msg_type == "validate_output":

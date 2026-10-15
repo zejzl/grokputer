@@ -91,7 +91,7 @@ class ScreenObserver:
             Base64-encoded image string
         """
         try:
-            screenshot = self.capture_screenshot(region)
+            screenshot = await self.capture_screenshot(region)
 
             # Convert to base64
             buffered = BytesIO()
@@ -122,7 +122,7 @@ class ScreenObserver:
             True if successful, False otherwise
         """
         try:
-            screenshot = self.capture_screenshot(region)
+            screenshot = await self.capture_screenshot(region)
             screenshot.save(filepath)
             logger.info(f"Screenshot saved to: {filepath}")
             return True
@@ -203,20 +203,14 @@ class ScreenObserver:
     # Async wrapper methods for use with asyncio
     async def capture_screenshot_async(self, region: Optional[Tuple[int, int, int, int]] = None) -> Image.Image:
         """
-        Async wrapper for capture_screenshot().
-        Uses asyncio.to_thread() for thread-safe execution.
+        Alias for capture_screenshot(), which is already a coroutine function.
         """
-        import asyncio
-
-        return await asyncio.to_thread(self.capture_screenshot, region)
+        return await self.capture_screenshot(region)
 
     async def screenshot_to_base64_async(
         self, region: Optional[Tuple[int, int, int, int]] = None, format: str = "PNG"
     ) -> str:
         """
-        Async wrapper for screenshot_to_base64().
-        Uses asyncio.to_thread() for thread-safe execution.
+        Alias for screenshot_to_base64(), which is already a coroutine function.
         """
-        import asyncio
-
-        return await asyncio.to_thread(self.screenshot_to_base64, region, format)
+        return await self.screenshot_to_base64(region, format)

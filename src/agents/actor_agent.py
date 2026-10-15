@@ -39,15 +39,16 @@ class ActorAgent:
         self.running = False
         self.action_queue = asyncio.Queue()
 
-    def is_healthy(self) -> bool:
-        # Register with message bus if not already registered
-        if self.message_bus and self.agent_id not in self.message_bus.queues:
+        # Register with message bus (register_agent is a no-op warning if already registered)
+        if self.message_bus:
             self.message_bus.register_agent(self.agent_id)
 
         if self.deadlock_detector:
             self.deadlock_detector.register_agent(self.agent_id)
 
         self.logger.info(f"[ACTOR] {self.agent_id} initialized")
+
+    def is_healthy(self) -> bool:
         return True
 
     async def run(self):

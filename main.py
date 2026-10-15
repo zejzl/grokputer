@@ -423,7 +423,10 @@ def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, sw
         else:
             # Single-agent mode
             asyncio.run(_run_single_agent_mode(task, max_iterations, debug, skip_boot, provider, model))
-            return
+
+        # Every mode above has run to completion; without this return, the legacy code below ran after
+        # pantheon/swarm/messagebus/MAF runs and crashed.
+        return
 
         # Rest of the existing main function logic...
         # (Keeping the original code below for completeness)
@@ -803,6 +806,16 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False, di
 
     session_logger.log_session_end()
     logger.info("[PANTHEON] Session complete")
+
+    # Token usage across all LLM clients, per agent tag
+    from src.grok_client import GrokClient as UsageGrokClient
+
+    usage = UsageGrokClient.global_usage_summary()
+    if usage["total"]["calls"]:
+        print("TOKEN USAGE (this run)")
+        for agent, t in usage.items():
+            print(f"  {agent:<14} {t['calls']:>3} calls  {t['prompt_tokens']:>7} in  {t['completion_tokens']:>7} out")
+        print()
 
     # Print final analytics report if enabled
     if analytics and analytics_task:

@@ -35,7 +35,7 @@ def mock_screen_observer():
     """Mock ScreenObserver to avoid actual screenshots."""
     with patch("src.agents.observer.ScreenObserver") as mock:
         instance = mock.return_value
-        instance.screenshot_to_base64 = Mock(return_value="base64_screenshot_data")
+        instance.screenshot_to_base64 = AsyncMock(return_value="base64_screenshot_data")
         instance.get_screen_size = Mock(return_value=(1920, 1080))
         yield instance
 
@@ -45,7 +45,7 @@ def mock_grok_client():
     """Mock GrokClient to avoid actual API calls."""
     with patch("src.agents.observer.GrokClient") as mock:
         instance = mock.return_value
-        instance.create_message = Mock(
+        instance.create_message = AsyncMock(
             return_value={
                 "status": "success",
                 "content": "This is a test screen showing desktop.",
@@ -53,7 +53,8 @@ def mock_grok_client():
                 "finish_reason": "stop",
             }
         )
-        instance.test_connection = Mock(return_value=True)
+        instance.test_connection = AsyncMock(return_value=True)
+        instance.log_usage_summary = Mock()
         yield instance
 
 
