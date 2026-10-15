@@ -5,22 +5,22 @@
   "providers": [
     {
       "provider_id": "grok",
-      "role": "primary_agent",
+      "role": "analyzer",
       "weight": 1.0,
       "capabilities": [
         "research",
-        "text_generation",
-        "critical_thinking"
+        "critical_thinking",
+        "text_generation"
       ]
     },
     {
       "provider_id": "claude",
-      "role": "secondary_agent",
+      "role": "critic",
       "weight": 1.0,
       "capabilities": [
-        "validation",
         "creative_writing",
-        "text_generation"
+        "text_generation",
+        "validation"
       ]
     }
   ],

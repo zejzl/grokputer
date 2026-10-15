@@ -54,6 +54,7 @@ try:
         ProviderRegistry,
         initialize_default_providers,
         initialize_mock_providers,
+        initialize_real_providers,
         provider_registry,
     )
 
@@ -112,6 +113,7 @@ if MAF_AVAILABLE:
             "provider_registry",
             "initialize_default_providers",
             "initialize_mock_providers",
+            "initialize_real_providers",
             # MAF Provider Pool
             "PoolStrategy",
             "PoolConfig",

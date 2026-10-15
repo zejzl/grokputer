@@ -725,3 +725,108 @@ async def initialize_mock_providers():
             logger.warning(f"Failed to register mock provider: {config['id']}")
 
     logger.info(f"Mock provider initialization complete. Registered {len(mock_configs)} providers.")
+
+
+class RealProviderClient:
+    """
+    MAF provider client backed by GrokClient: calls the real model for one provider
+    (grok, claude, claude-cli, gemini or openai). Same interface as MockProviderClient.
+    Token usage is recorded under the tag "maf_<provider>_<role>".
+    """
+
+    def __init__(self, provider_type: str, model: Optional[str] = None):
+        from src.grok_client import GrokClient
+
+        self.provider_type = provider_type
+        self._client = GrokClient(provider=provider_type)  # raises ValueError if credentials are missing
+        if model:
+            self._client.providers[0].model = model
+        self.model = self._client.providers[0].model
+
+    async def get_available_models(self) -> List[str]:
+        """Used by the registry's health check; deliberately makes no API call (and spends no tokens)."""
+        return [self.model]
+
+    async def generate_response(self, prompt: str, role: str = "general") -> str:
+        """Ask the real model, answering as `role`. Raises RuntimeError on failure so retries and fallbacks engage."""
+        messages = [
+            {
+                "role": "system",
+                "content": f"You are the {role} in a multi-model collaboration. Be concise and concrete.",
+            },
+            {"role": "user", "content": prompt},
+        ]
+        meta: Dict[str, Any] = {}
+        content = await self._client.chat(messages, agent=f"maf_{self.provider_type}_{role}", meta=meta)
+        if content is None:
+            raise RuntimeError(meta.get("error", f"{self.provider_type} returned no content"))
+        return content
+
+    async def close(self) -> None:
+        await self._client.close()
+
+
+# Capabilities advertised for each real provider (used for role assignment)
+_REAL_PROVIDER_PROFILES: Dict[str, Dict[str, Any]] = {
+    "grok": {
+        "capabilities": [ProviderCapability.TEXT_GENERATION, ProviderCapability.CRITICAL_THINKING, ProviderCapability.RESEARCH],
+        "strengths": ["Creative problem solving", "Real-time knowledge"],
+    },
+    "claude": {
+        "capabilities": [ProviderCapability.TEXT_GENERATION, ProviderCapability.VALIDATION, ProviderCapability.CREATIVE_WRITING],
+        "strengths": ["Structured reasoning", "Long context"],
+    },
+    "claude-cli": {
+        "capabilities": [ProviderCapability.TEXT_GENERATION, ProviderCapability.VALIDATION, ProviderCapability.CREATIVE_WRITING],
+        "strengths": ["Structured reasoning", "Runs on the Claude subscription (no API credits)"],
+    },
+    "gemini": {
+        "capabilities": [ProviderCapability.TEXT_GENERATION, ProviderCapability.RESEARCH, ProviderCapability.MATHEMATICAL],
+        "strengths": ["Fast responses", "Math and science"],
+    },
+    "openai": {
+        "capabilities": [ProviderCapability.TEXT_GENERATION, ProviderCapability.CODE_ANALYSIS, ProviderCapability.MATHEMATICAL],
+        "strengths": ["Versatile", "Instruction following"],
+    },
+}
+
+
+async def initialize_real_providers(provider_names: List[str]) -> List[str]:
+    """
+    Register real (API or CLI backed) providers in the global registry.
+
+    Args:
+        provider_names: Provider specs: grok, claude, claude-cli, gemini or openai, optionally with a model as
+            "name:model" (e.g. "claude-cli:sonnet"). The whole spec is the provider id, so the same provider can
+            be registered twice with different models.
+
+    Returns:
+        The provider ids that are now registered
+
+    Raises:
+        ValueError: If a name is unknown or its API key is not set (nothing is registered in that case)
+    """
+    clients = {}
+    for spec in provider_names:
+        base, _, model = spec.partition(":")
+        if base not in _REAL_PROVIDER_PROFILES:
+            raise ValueError(f"Unknown provider '{spec}'. Valid: {', '.join(_REAL_PROVIDER_PROFILES)}")
+        clients[spec] = RealProviderClient(base, model or None)  # ValueError here if credentials are missing
+
+    registered = []
+    for name, client in clients.items():
+        profile = _REAL_PROVIDER_PROFILES[name.partition(":")[0]]
+        metadata = ProviderMetadata(
+            name=name,
+            provider_type=name.partition(":")[0],
+            model=client.model,
+            capabilities=profile["capabilities"],
+            strengths=profile["strengths"],
+            max_tokens=1024,
+            health_status="healthy",
+        )
+        if name in provider_registry._providers:
+            provider_registry.unregister_provider(name)  # replace a mock registered earlier
+        if provider_registry.register_provider(provider_id=name, client=client, metadata=metadata, weight=1.0):
+            registered.append(name)
+    return registered

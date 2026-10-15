@@ -39,6 +39,21 @@ class MAFMessageBusAdapter:
         self.orchestrator = orchestrator
         self._task_mappings: Dict[str, str] = {}  # MAF task ID -> MessageBus task ID
 
+    async def _publish(self, message_type: str, content: Dict[str, Any], priority: MessagePriority) -> None:
+        """Post an informational event on the MessageBus (best effort; never breaks the orchestration)."""
+        try:
+            await self.message_bus.send(
+                Message(
+                    from_agent="maf_orchestrator",
+                    to_agent="maf_orchestrator",
+                    message_type=message_type,
+                    content=content,
+                    priority=priority,
+                )
+            )
+        except Exception as e:
+            logger.debug(f"MAF event '{message_type}' not published: {e}")
+
     async def orchestrate_with_messagebus(
         self, task_prompt: str, collaboration_config: CollaborationConfig, task_type: str = "general"
     ) -> OrchestrationResult:
@@ -61,20 +76,16 @@ class MAFMessageBusAdapter:
         self._task_mappings[task_prompt] = messagebus_task_id
 
         # Send initial task message to MessageBus
-        initial_message = Message(
-            message_type="task_request",
-            content={
+        await self._publish(
+            "task_request",
+            {
+                "task_id": messagebus_task_id,
                 "task": task_prompt,
                 "task_type": task_type,
                 "providers": [p.provider_id for p in collaboration_config.providers],
-                "maf_config": collaboration_config.__dict__,
             },
-            priority=MessagePriority.HIGH,
-            task_id=messagebus_task_id,
-            source_agent="maf_orchestrator",
+            MessagePriority.HIGH,
         )
-
-        await self.message_bus.send_message(initial_message)
 
         # Run MAF orchestration with MessageBus monitoring
         try:
@@ -83,9 +94,9 @@ class MAFMessageBusAdapter:
             )
 
             # Send completion message to MessageBus
-            completion_message = Message(
-                message_type="task_complete",
-                content={
+            await self._publish(
+                "task_complete",
+                {
                     "task_id": messagebus_task_id,
                     "success": result.success,
                     "execution_time": result.execution_time,
@@ -93,26 +104,18 @@ class MAFMessageBusAdapter:
                     "consensus": result.consensus_result.__dict__ if result.consensus_result else None,
                     "error": result.error_message,
                 },
-                priority=MessagePriority.NORMAL,
-                task_id=messagebus_task_id,
-                source_agent="maf_orchestrator",
+                MessagePriority.NORMAL,
             )
-
-            await self.message_bus.send_message(completion_message)
 
             return result
 
         except Exception as e:
             # Send error message to MessageBus
-            error_message = Message(
-                message_type="task_error",
-                content={"task_id": messagebus_task_id, "error": str(e), "task": task_prompt},
-                priority=MessagePriority.URGENT,
-                task_id=messagebus_task_id,
-                source_agent="maf_orchestrator",
+            await self._publish(
+                "task_error",
+                {"task_id": messagebus_task_id, "error": str(e), "task": task_prompt},
+                MessagePriority.HIGH,
             )
-
-            await self.message_bus.send_message(error_message)
             raise
 
     async def handle_messagebus_messages(self):
@@ -121,31 +124,35 @@ class MAFMessageBusAdapter:
         """
         while True:
             try:
-                message = await self.message_bus.receive_message("maf_orchestrator")
+                message = await self.message_bus.receive("maf_orchestrator", timeout=5.0)
 
                 if message.message_type == "maf_status_request":
                     # Respond with current MAF status
-                    status_message = Message(
-                        message_type="maf_status_response",
-                        content={"active_tasks": len(self._task_mappings), "orchestrator_status": "active"},
-                        priority=MessagePriority.NORMAL,
-                        task_id=message.task_id,
-                        source_agent="maf_orchestrator",
+                    await self.message_bus.send(
+                        Message(
+                            from_agent="maf_orchestrator",
+                            to_agent=message.from_agent,
+                            message_type="maf_status_response",
+                            content={"active_tasks": len(self._task_mappings), "orchestrator_status": "active"},
+                            priority=MessagePriority.NORMAL,
+                        )
                     )
-                    await self.message_bus.send_message(status_message)
 
                 elif message.message_type == "maf_task_cancel":
                     # Cancel a running MAF task
                     task_id = message.content.get("task_id")
-                    if task_id in self._task_mappings:
+                    if task_id in self._task_mappings.values():
                         # Note: Current orchestrator doesn't support cancellation
                         # This would need to be implemented in the orchestrator
                         logger.warning(f"MAF task cancellation requested for {task_id} but not implemented")
 
+            except asyncio.TimeoutError:
+                continue  # nothing to handle; keep listening
             except asyncio.CancelledError:
                 break
             except Exception as e:
                 logger.error(f"Error handling MessageBus message in MAF adapter: {e}")
+                await asyncio.sleep(1.0)  # avoid a hot error loop
 
 
 class MAFMessageBusCoordinator:
@@ -164,9 +171,12 @@ class MAFMessageBusCoordinator:
     async def initialize(self):
         """Initialize MAF components and MessageBus integration."""
         try:
-            from src.collaboration import orchestrator as maf_orchestrator
+            from src.collaboration import orchestrator as maf_orchestrator_instance
 
-            self.orchestrator = maf_orchestrator.orchestrator
+            self.orchestrator = maf_orchestrator_instance  # the shared Orchestrator instance
+
+            if "maf_orchestrator" not in self.message_bus.queues:
+                self.message_bus.register_agent("maf_orchestrator")
 
             # Create adapter for MessageBus integration
             self.adapter = MAFMessageBusAdapter(self.message_bus, self.orchestrator)
@@ -181,7 +191,7 @@ class MAFMessageBusCoordinator:
             raise
 
     async def execute_maf_task(
-        self, task: str, providers: List[str], config_name: str = "grok_claude_dual"
+        self, task: str, providers: List[str], config_name: str = "grok_claude_dual", max_rounds: Optional[int] = None
     ) -> Dict[str, Any]:
         """
         Execute a MAF task through the MessageBus-integrated system.
@@ -190,6 +200,7 @@ class MAFMessageBusCoordinator:
             task: Task description
             providers: List of provider names
             config_name: MAF configuration preset
+            max_rounds: Overrides the preset's round limit when given
 
         Returns:
             Task execution results
@@ -220,6 +231,11 @@ class MAFMessageBusCoordinator:
                         ProviderCapability.VALIDATION,
                         ProviderCapability.CREATIVE_WRITING,
                     },
+                    "claude-cli": {
+                        ProviderCapability.TEXT_GENERATION,
+                        ProviderCapability.VALIDATION,
+                        ProviderCapability.CREATIVE_WRITING,
+                    },
                     "openai": {
                         ProviderCapability.TEXT_GENERATION,
                         ProviderCapability.CODE_ANALYSIS,
@@ -232,17 +248,21 @@ class MAFMessageBusCoordinator:
                     },
                 }
 
-                role = "primary_agent" if len(provider_roles) == 0 else f"agent_{len(provider_roles) + 1}"
+                # Roles must be ones the config schema allows
+                valid_roles = ["analyzer", "critic", "synthesizer", "validator", "researcher", "implementer"]
+                role = valid_roles[len(provider_roles) % len(valid_roles)]
 
                 provider_role = ProviderRole(
                     provider_id=provider_name,
                     role=role,
                     weight=1.0,
-                    capabilities=base_capabilities.get(provider_name, {ProviderCapability.TEXT_GENERATION}),
+                    capabilities=base_capabilities.get(provider_name.partition(":")[0], {ProviderCapability.TEXT_GENERATION}),
                 )
                 provider_roles.append(provider_role)
 
             collaboration_config.providers = provider_roles
+            if max_rounds:
+                collaboration_config.max_rounds = max_rounds
 
             # Execute through MessageBus-integrated orchestrator
             result = await self.adapter.orchestrate_with_messagebus(

@@ -2,7 +2,7 @@
 
 **Last Updated**: 2026-10-15
 **Project**: Grokputer - AI-Powered Computer Control & Multi-Agent System
-**Status**: Active development. Full test suite green (443 passed, 11 skipped). Known runtime bugs remain (see Known Issues). Session notes and TODO: `nightowl_2026-10-15.md`.
+**Status**: Active development. Full test suite green (454 passed, 11 skipped). Known runtime bugs remain (see Known Issues). Session notes and TODO: `nightowl_2026-10-15.md`.
 
 Claims below marked "(unverified)" come from older notes and have not been re-measured.
 
@@ -53,7 +53,7 @@ Copy `.env.example` to `.env` (gitignored). Main variables: `XAI_API_KEY`, `ANTH
 
 ## Testing
 
-**Current run (2026-10-15, Python 3.14.7, `pytest tests -q --continue-on-collection-errors`)**: 443 passed, 11 skipped, 0 failed, 0 errors. (Before today's fixes: 299 passed, 13 failed, 12 collection errors.)
+**Current run (2026-10-15, Python 3.14.7, `pytest tests -q --continue-on-collection-errors`)**: 454 passed, 11 skipped, 0 failed, 0 errors. (Before today's fixes: 299 passed, 13 failed, 12 collection errors.)
 
 How the suite is set up:
 - `tests/conftest.py` sets a placeholder `XAI_API_KEY` (a real one in the environment is left alone), because `src/config.py` raises at import time without a key. Tests mock all network calls.
@@ -79,6 +79,7 @@ pytest tests -q --continue-on-collection-errors
 2. `src/grok_client.py`: Claude/Gemini API paths are unit-tested but not exercised live; `chat()` never falls back to the next provider because `_call_provider` returns None on failure instead of raising. Test provider `claude-cli` (`PRIORITY_PROVIDER=claude-cli`, optional `CLAUDE_CLI_MODEL`) runs `claude -p` on the subscription login (text only; strips `ANTHROPIC_API_KEY` from the subprocess env).
 3. Token usage is recorded per agent tag; `--pantheon` prints a TOKEN USAGE table at the end (only the Coordinator's calls so far: ~870 in / 850-1560 out per decomposition).
 3b. `--pantheon` is plan-only by default: decompose -> safety review of each subtask -> report (prints PLAN and TOKEN USAGE). `--pantheon --execute` also runs `actor` subtasks one at a time: the LLM proposes ONE command, the validator checks it, you confirm at the prompt, then `ActionExecutor.execute_bash` runs it (no shell; metacharacters rejected). Non-actor subtasks are reported as skipped. Executor/Analyzer/Improver are not used by this flow. Known limits: validator safety patterns are crude substrings (the word "format" flags a subtask), only the first 300 chars of command output are shown, and `ExecutorAgent` still calls a nonexistent `action_executor.execute`.
+3c. MAF mode (menu option 9, `--providers`) now calls real models. Providers: `grok`, `claude`, `claude-cli`, `gemini`, `openai`, optionally with a model (`claude-cli:haiku,claude-cli:sonnet` lets two Claude models collaborate when only the subscription is available). `MAF_USE_MOCK=1` restores canned mock responses. The orchestrator needs at least 2 providers; the default preset is `grok_claude_dual` (roles analyzer/critic; the old `primary_agent`/`secondary_agent` roles failed the schema). Each round costs one call per provider. Limits: same-family providers share one sender label (`AgentRole`), `success` means consensus was reached, RL provider selection logs an unhashable-key warning and falls back to the default, and `openai`/`gemini` are untested live.
 4. `improve_swarm.py` still uses `shell=True` (the two in `src/executor.py` and `grokputer_server.py` are fixed).
 5. `main.py` interactive menu crashes on EOF.
 6. Resolve duplicate agent modules in `src/agents/` (`executor.py` and `imrover_agent.py` have no importers).

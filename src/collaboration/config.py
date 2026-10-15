@@ -301,13 +301,13 @@ DEFAULT_CONFIGS = {
         "providers": [
             {
                 "provider_id": "grok",
-                "role": "primary_agent",
+                "role": "analyzer",
                 "weight": 1.0,
                 "capabilities": ["text_generation", "critical_thinking", "research"],
             },
             {
                 "provider_id": "claude",
-                "role": "secondary_agent",
+                "role": "critic",
                 "weight": 1.0,
                 "capabilities": ["text_generation", "validation", "creative_writing"],
             },

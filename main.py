@@ -296,7 +296,7 @@ def _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot):
                 continue
             providers_input = input("Providers (comma-separated, default: grok): ").strip() or "grok"
             providers = [p.strip() for p in providers_input.split(",")]
-            maf_config = input("MAF config preset (default: balanced): ").strip() or "balanced"
+            maf_config = input("MAF config preset (default: grok_claude_dual): ").strip() or "grok_claude_dual"
             try:
                 asyncio.run(_run_maf_mode(task, providers, maf_config, max_rounds, debug, review_mode=False))
             except Exception as e:
@@ -330,7 +330,7 @@ async def _list_models_for_provider(provider: str, api_key: Optional[str]):
 @click.option("--messagebus", is_flag=True, help="Run in collaboration mode")
 @click.option("--pantheon", is_flag=True, help="Run in Pantheon 9-agent mode")
 @click.option("--providers", help="Comma-separated list of providers for MAF mode")
-@click.option("--maf-config", default="balanced", help="MAF configuration preset")
+@click.option("--maf-config", default="grok_claude_dual", help="MAF configuration preset")
 @click.option("--review-mode", is_flag=True, help="Enable review mode for collaboration")
 @click.option("--analytics", is_flag=True, help="Enable analytics monitoring")
 @click.option("--agent-name", help="Agent name for analytics queries")
@@ -1207,25 +1207,27 @@ async def _run_maf_mode(task: str, providers: list, maf_config: str, max_rounds:
     logger = logging.getLogger(__name__)
 
     # Validate providers
-    valid_providers = {"grok", "claude", "openai", "gemini"}
-    invalid_providers = [p for p in providers if p not in valid_providers]
+    valid_providers = {"grok", "claude", "claude-cli", "openai", "gemini"}
+    # A provider may carry a model, e.g. "claude-cli:sonnet"; only the part before ":" must be valid
+    bases = [p.partition(":")[0] for p in providers]
+    invalid_providers = [p for p in providers if p.partition(":")[0] not in valid_providers]
     if invalid_providers:
         print(f"\n[ERROR] Invalid providers: {invalid_providers}")
         print(f"Valid providers: {', '.join(valid_providers)}")
         return
 
-    # Check API keys (skip for mock providers)
+    # Real providers by default; set MAF_USE_MOCK=1 for canned responses (no API calls, no keys needed)
     missing_keys = []
-    use_mock_providers = True  # For now, always use mock providers in MAF mode
+    use_mock_providers = os.getenv("MAF_USE_MOCK", "").strip().lower() in ("1", "true", "yes")
 
     if not use_mock_providers:
-        if "grok" in providers and not os.getenv("XAI_API_KEY"):
+        if "grok" in bases and not os.getenv("XAI_API_KEY"):
             missing_keys.append("XAI_API_KEY (for Grok)")
-        if "claude" in providers and not os.getenv("ANTHROPIC_API_KEY"):
+        if "claude" in bases and not os.getenv("ANTHROPIC_API_KEY"):
             missing_keys.append("ANTHROPIC_API_KEY (for Claude)")
-        if "openai" in providers and not os.getenv("OPENAI_API_KEY"):
+        if "openai" in bases and not os.getenv("OPENAI_API_KEY"):
             missing_keys.append("OPENAI_API_KEY (for OpenAI)")
-        if "gemini" in providers and not os.getenv("GEMINI_API_KEY"):
+        if "gemini" in bases and not os.getenv("GEMINI_API_KEY"):
             missing_keys.append("GEMINI_API_KEY (for Gemini)")
 
     if missing_keys:
@@ -1258,10 +1260,20 @@ async def _run_maf_mode(task: str, providers: list, maf_config: str, max_rounds:
 
         maf_coordinator = await initialize_maf_messagebus_integration(message_bus)
 
-        # Initialize mock providers for testing
-        from src.collaboration import initialize_mock_providers
+        if use_mock_providers:
+            from src.collaboration import initialize_mock_providers
 
-        await initialize_mock_providers()
+            await initialize_mock_providers()
+            print("[MAF] Using MOCK providers (MAF_USE_MOCK is set): no model is called\n")
+        else:
+            from src.collaboration import initialize_real_providers
+
+            try:
+                await initialize_real_providers(providers)
+            except ValueError as e:
+                print(f"\n[ERROR] {e}")
+                return
+            print(f"[MAF] Using REAL providers: {', '.join(providers)} (each round makes one model call per provider)\n")
 
         # Ensure default configs exist
         from src.collaboration import create_default_configs
@@ -1269,7 +1281,9 @@ async def _run_maf_mode(task: str, providers: list, maf_config: str, max_rounds:
         create_default_configs(maf_config_loader)
 
         # Execute MAF task through MessageBus-integrated coordinator
-        result = await maf_coordinator.execute_maf_task(task=task, providers=providers, config_name=maf_config)
+        result = await maf_coordinator.execute_maf_task(
+            task=task, providers=providers, config_name=maf_config, max_rounds=max_rounds
+        )
 
         # Print results
         print("\n" + "=" * 70)

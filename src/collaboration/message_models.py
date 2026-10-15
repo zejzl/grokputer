@@ -47,15 +47,14 @@ class AgentRole(str, Enum):
             "claude": cls.CLAUDE,
             "openai": cls.GROK,  # Map to GROK for now
             "gemini": cls.CLAUDE,  # Map to CLAUDE for now
+            "claude-cli": cls.CLAUDE,
         }
 
-        if provider_id in provider_map:
-            return provider_map[provider_id]
-
-        # Try case-insensitive match
-        for key, value in provider_map.items():
-            if key.lower() == provider_id.lower():
-                return value
+        # A provider id may carry a model ("claude-cli:sonnet"); only the part before ":" identifies the family.
+        # Note: providers of the same family share one sender label.
+        family = provider_id.partition(":")[0].lower()
+        if family in provider_map:
+            return provider_map[family]
 
         raise ValueError(f"Unknown provider_id: {provider_id}")
 

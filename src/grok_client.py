@@ -69,17 +69,55 @@ class GrokClient:
         merged["total"] = grand
         return merged
 
-    def __init__(self):
+    def __init__(self, provider: Optional[str] = None):
+        """
+        Args:
+            provider: Use only this provider (grok, claude, claude-cli, gemini or openai), ignoring
+                PRIORITY_PROVIDER / FALLBACK_PROVIDERS. Raises ValueError if its credentials are missing.
+        """
         GrokClient._instances.add(self)
-        self.providers = self._load_providers()
+        self.providers = self._load_providers(only=provider)
         self.session = None
         self.current_provider_index = 0
         self.rate_limiter = asyncio.Semaphore(1)  # Simple rate limit
         # Token usage per agent tag: {agent: {calls, prompt_tokens, completion_tokens, total_tokens}}
         self.usage_by_agent: Dict[str, Dict[str, int]] = {}
 
-    def _load_providers(self) -> list[ProviderConfig]:
-        """Load providers from .env (priority: grok > fallbacks)."""
+    @staticmethod
+    def _provider_config(name: str) -> Optional[ProviderConfig]:
+        """Build the config for one named provider from the environment; None if its credentials are missing."""
+        if name == "grok":
+            key = os.getenv("XAI_API_KEY")
+            return key and ProviderConfig(
+                "grok", key, os.getenv("XAI_BASE_URL", "https://api.x.ai/v1"), os.getenv("GROK_MODEL", "grok-beta")
+            )
+        if name == "claude":
+            key = os.getenv("ANTHROPIC_API_KEY")
+            return key and ProviderConfig(
+                "claude", key, "https://api.anthropic.com/v1", os.getenv("CLAUDE_MODEL", "claude-haiku-5-5")
+            )
+        if name == "claude-cli":
+            return GrokClient._claude_cli_config()
+        if name == "gemini":
+            key = os.getenv("GEMINI_API_KEY")
+            return key and ProviderConfig(
+                "gemini", key, "https://generativelanguage.googleapis.com/v1beta", os.getenv("GEMINI_MODEL", "gemini-pro")
+            )
+        if name == "openai":
+            key = os.getenv("OPENAI_API_KEY")
+            return key and ProviderConfig(
+                "openai", key, os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1"), os.getenv("OPENAI_MODEL", "gpt-4o")
+            )
+        return None
+
+    def _load_providers(self, only: Optional[str] = None) -> list[ProviderConfig]:
+        """Load providers from .env (priority: grok > fallbacks), or just `only` if given."""
+        if only:
+            config = self._provider_config(only)
+            if not config:
+                raise ValueError(f"Provider '{only}' is unknown or its API key is not set")
+            return [config]
+
         priority_provider = os.getenv("PRIORITY_PROVIDER", "grok")
         fallback_str = os.getenv("FALLBACK_PROVIDERS", "claude,gemini")
         fallbacks = [p.strip() for p in fallback_str.split(",") if p.strip()]
@@ -213,6 +251,12 @@ class GrokClient:
         return str(err)[:300]
 
     @staticmethod
+    def _split_system(messages: list[Dict[str, str]]) -> tuple[str, list[Dict[str, str]]]:
+        """Separate system messages (which Claude and Gemini take as a top-level field) from the conversation."""
+        system = "\n\n".join(m["content"] for m in messages if m.get("role") == "system")
+        return system, [m for m in messages if m.get("role") != "system"]
+
+    @staticmethod
     def _build_payload(
         provider: ProviderConfig, messages: list[Dict[str, str]], image_b64: Optional[str] = None
     ) -> tuple[Dict[str, Any], str]:
@@ -221,6 +265,8 @@ class GrokClient:
         last_user = max((i for i, m in enumerate(messages) if m.get("role") == "user"), default=None)
 
         if provider.name == "claude":
+            system, messages = GrokClient._split_system(messages)
+            last_user = max((i for i, m in enumerate(messages) if m.get("role") == "user"), default=None)
             out = []
             for i, m in enumerate(messages):
                 if image_b64 and i == last_user:
@@ -231,18 +277,26 @@ class GrokClient:
                 else:
                     content = m["content"]
                 out.append({"role": m["role"], "content": content})
-            return {"model": model, "max_tokens": 1024, "messages": out}, model
+            body = {"model": model, "max_tokens": 1024, "messages": out}
+            if system:
+                body["system"] = system
+            return body, model
 
         if provider.name == "gemini":
+            system, messages = GrokClient._split_system(messages)
+            last_user = max((i for i, m in enumerate(messages) if m.get("role") == "user"), default=None)
             contents = []
             for i, m in enumerate(messages):
                 parts = [{"text": m["content"]}]
                 if image_b64 and i == last_user:
                     parts.append({"inline_data": {"mime_type": "image/png", "data": image_b64}})
                 contents.append({"role": "model" if m["role"] == "assistant" else "user", "parts": parts})
-            return {"contents": contents}, model
+            body = {"contents": contents}
+            if system:
+                body["systemInstruction"] = {"parts": [{"text": system}]}
+            return body, model
 
-        # OpenAI-compatible (grok)
+        # OpenAI-compatible (grok, openai)
         out = []
         for i, m in enumerate(messages):
             if image_b64 and i == last_user:
@@ -385,7 +439,7 @@ class GrokClient:
                 return await self._call_claude_cli(provider, messages, agent, image_b64, meta)
 
             headers = {"Content-Type": "application/json"}
-            if provider.name == "grok":
+            if provider.name in ("grok", "openai"):
                 headers["Authorization"] = f"Bearer {provider.api_key}"
                 url = f"{provider.base_url}/chat/completions"
             elif provider.name == "claude":
