@@ -25,7 +25,9 @@ Grokputer enables xAI's Grok to control your computer through screen observation
 - 📊 **Advanced Analytics**: Comprehensive monitoring of memory, messaging, and system performance
 - 🛠️ **Error Resilience**: Custom exception hierarchy with retry logic and graceful degradation
 - 🤝 **Multi-Agent Collaboration**: Pantheon system with 9 specialized agents (Observer, Reasoner, Actor, Validator, Learner, Memory, Executor, Analyzer, Improver)
-- 💬 **High-Performance MessageBus**: Pure asyncio message bus achieving 425K+ msg/sec, 0.007ms latency - production-grade inter-agent communication [Updated 2026-01-30]
+- 💬 **High-Performance MessageBus**: Pure asyncio message bus - measured 51K-105K msg/sec end-to-end in one process (0% loss), 0.007 ms unloaded send+receive latency [Measured 2026-10-15]
+- 🔢 **Token Usage Tracking**: Per-agent token counts for every LLM call; `--pantheon` prints a usage table at the end of a run
+- 🔌 **Multiple Providers**: Grok, Claude (API), Claude via your subscription (`claude-cli`), Gemini, OpenAI
 - 🔄 **GG Framework**: Workflow automation engine (n8n/Make.com style) - PLANNING COMPLETE
 - 🪟 **Windows Compatible**: Emoji-free codebase for full Windows compatibility (28 files cleaned) [Updated 2026-01-30]
 
@@ -59,6 +61,22 @@ cp .env.example .env
 # Edit .env and add your XAI_API_KEY
 ```
 
+### Using Claude Without API Credits (`claude-cli`)
+
+A Claude Pro/Max subscription does not include API access, but the `claude` CLI (Claude Code) runs on it.
+Grokputer can use that CLI as a provider, which is handy for testing:
+
+```bash
+# .env
+PRIORITY_PROVIDER=claude-cli
+CLAUDE_CLI_MODEL=haiku          # haiku, sonnet, opus
+XAI_API_KEY=placeholder         # still required: src/config.py refuses to import without one
+```
+
+Requirements: `claude` on your PATH and logged in. Text only (no screenshots). `ANTHROPIC_API_KEY` is removed
+from the CLI's environment so it bills the subscription, not the API. Each call starts a process, so it is slower
+than the API and subject to subscription rate limits.
+
 ### First Run
 
 ```bash
@@ -84,15 +102,27 @@ python main.py --task "label 5 memes from vault"
 ```bash
 python main.py --task "your task here" [OPTIONS]
 
-Options:
-  -t, --task TEXT              Task description (required)
-  -m, --max-iterations INTEGER Maximum loop iterations - single-agent (default: 10)
-  -d, --debug                  Enable debug logging
+Common options:
+  --task TEXT                  Task description (omit it to open the interactive menu)
+  --max-iterations INTEGER     Maximum loop iterations, single-agent mode (default: 10)
+  --max-rounds INTEGER         Maximum rounds for collaboration / MAF modes (default: 5)
+  --debug                      Enable debug logging
   --skip-boot                  Skip boot sequence
-  -mb, --messagebus            Enable collaboration mode (Claude + Grok)
-  --max-rounds INTEGER         Maximum collaboration rounds (default: 5)
-  --help                       Show help message
+  --provider TEXT              Provider for single-agent mode (default: grok)
+  --model TEXT                 Specific model to use
+
+Modes:
+  --messagebus                 Claude + Grok collaboration (needs both API keys)
+  --pantheon                   Pantheon multi-agent planning (add --execute to run commands)
+  --swarm                      Agent swarm (--agent-roles coordinator,observer,actor)
+  --providers LIST             MAF multi-provider collaboration, e.g. grok,claude
+  --maf-config NAME            MAF preset (default: grok_claude_dual)
+  --execute                    Pantheon only: run actor subtasks, confirming every command
+
+Run `python main.py --help` for the full list (analytics, distributed, MCP, ...).
 ```
+
+Running `python main.py` with no arguments opens an interactive menu (10 options).
 
 ### Single-Agent Mode (Default)
 
@@ -117,13 +147,13 @@ python main.py --task "search google for grok ai"
 
 ```bash
 # Design and planning tasks
-python main.py -mb --task "Design a REST API for a todo app with best practices"
+python main.py --messagebus --task "Design a REST API for a todo app with best practices"
 
 # Code review and analysis
-python main.py -mb --task "Review the messagebus system and suggest improvements"
+python main.py --messagebus --task "Review the messagebus system and suggest improvements"
 
 # Implementation planning
-python main.py -mb --task "Create implementation plan for MCP dice roller server"
+python main.py --messagebus --task "Create implementation plan for MCP dice roller server"
 
 # With custom rounds
 python main.py --messagebus --task "Analyze async vs sync programming" --max-rounds 3
@@ -149,79 +179,68 @@ python main.py --messagebus --task "Analyze async vs sync programming" --max-rou
 
 See `docs/COLLABORATION_SYSTEM.md` for detailed documentation.
 
-### Pantheon Mode (Multi-Agent Swarm)
+### Pantheon Mode (Multi-Agent Planning)
 
-**NEW**: Advanced multi-agent orchestration with Pantheon coordinator for complex tasks!
+The Pantheon decomposes a task into subtasks with the Reasoner (Coordinator), safety-reviews every subtask with the
+Validator, and reports the plan. **By default nothing is executed.**
 
 ```bash
-# Basic Pantheon task
-python main.py --pantheon --task "analyze codebase and suggest improvements"
+# Plan only (default): decompose + safety review + report + token usage
+python main.py --pantheon --task "check how much free disk space I have on C:"
 
-# With specific agents
-python main.py --pantheon --agents coordinator,learner,validator --task "design new feature"
+# Also run actor subtasks, one at a time, asking before every command
+python main.py --pantheon --execute --task "check how much free disk space I have on C:"
 
-# Memory operations with Redis
-python main.py --pantheon --task "store analysis results in memory"
-python main.py --pantheon --task "retrieve stored data"
-
-# Full swarm mode
-python main.py --swarm --agents 5 --roles c,o,a --task "optimize performance"
+# Agent swarm (separate mode)
+python main.py --swarm --agent-roles coordinator,observer,actor --task "optimize performance"
 ```
 
 **How it works**:
-1. Pantheon coordinator orchestrates multiple specialized agents
-2. Agents communicate via MessageBus with Redis persistence
-3. Tasks are decomposed and distributed across agent roles
-4. Results are synthesized and stored in hierarchical memory
+1. The Learner is asked for learned optimizations for this kind of task
+2. The Coordinator asks the LLM for 2-5 subtasks (description, suggested agent, priority, dependencies)
+3. The Validator safety-checks each subtask description; flagged subtasks are marked in the plan
+4. With `--execute` only: for each `actor` subtask the LLM proposes ONE command, the Validator checks it,
+   you confirm it at the prompt (`[y/N]`), and only then does the ActionExecutor run it (no shell;
+   `; & | < > $` and similar characters are rejected). Dependents of a failed or declined subtask are blocked.
+   Subtasks for other agents (observer, validator, analyzer...) are listed as skipped.
+5. The Learner records the run and the plan plus a token usage table are printed
 
 **Requirements**:
-- Redis server running (localhost:6379)
-- `XAI_API_KEY` in `.env`
-- Optional: `ANTHROPIC_API_KEY` for mixed swarms
+- A working provider (see Configuration; `claude-cli` works without API credits)
+- Redis is optional: memory features fall back to no-op mode with a warning if it is not running
 
-**Features**:
-- ✅ Hierarchical memory system with Redis
-- ✅ Agent specialization (Coordinator, Observer, Actor, etc.)
-- ✅ Real-time task decomposition
-- ✅ Memory persistence across sessions
-- ✅ Swarm analytics and metrics
+**Known limits**:
+- The Validator's safety patterns are crude substrings (the word "format" flags a subtask)
+- Only the first 300 characters of command output are shown
+- Executor, Analyzer and Improver agents are not part of this flow yet
 
-See `docs/PANTHEON_SYSTEM.md` for detailed documentation.
+See `docs/PANTHEON_SYSTEM.md` for background.
 
 ### MAF Mode (Multi-Agent Framework)
 
-**NEW**: Flexible multi-agent collaboration framework for custom configurations!
+Several providers answer the same task over multiple rounds until a consensus detector says they agree.
+**Menu option 9 and `--providers` call real models** (set `MAF_USE_MOCK=1` for canned mock responses).
 
 ```bash
-# Basic MAF collaboration
-python main.py -mb --task "collaborate on project planning"
+# Two real providers
+python main.py --providers grok,claude --task "compare two caching strategies"
 
-# Custom MAF config
-python main.py --maf-config src/collaboration/configs/test_optimization_duo.json --task "optimize code"
+# Only have the Claude subscription? Pair two models of claude-cli (name:model)
+python main.py --providers claude-cli:haiku,claude-cli:sonnet --max-rounds 2 --task "name two benefits of message queues"
 
-# Backward compatibility test
-python main.py -mb --task "test collaboration features"
-
-# External integrations
-python main.py --providers grok,claude --task "real analysis with APIs"
+# Another preset (see src/collaboration/configs/)
+python main.py --providers grok,claude,gemini --maf-config code_review_trio --task "review this design"
 ```
 
-**How it works**:
-1. Load custom agent configurations from JSON
-2. Initialize agents with specific roles and capabilities
-3. Execute collaborative workflows with message passing
-4. Generate unified outputs and documentation
+**Providers**: `grok`, `claude`, `claude-cli`, `gemini`, `openai`, each optionally as `name:model`.
+At least 2 are required. Presets: `grok_claude_dual` (default), `code_review_trio`, `creative_quartet`, `test_optimization_duo`.
 
-**Requirements**:
-- API keys in `.env` (XAI, Anthropic, etc.)
-- Custom config files in `src/collaboration/configs/`
+**Cost**: every round makes one model call per provider (2 providers x 5 rounds = 10 calls). Use `--max-rounds` to limit it.
 
-**Features**:
-- ✅ Configurable agent compositions
-- ✅ Multiple provider support
-- ✅ Custom workflow definitions
-- ✅ Integration with external APIs
-- ✅ Error handling and fallbacks
+**Known limits**:
+- "Success" means consensus was reached; two differently worded answers often score below the 0.6 threshold
+- Providers of the same family (e.g. two Claude models) share one sender label in the transcript
+- `openai` and `gemini` have not been tested against live APIs
 
 See `docs/MAF_SYSTEM.md` for detailed documentation.
 
@@ -458,17 +477,16 @@ python main.py --task "invoke server prayer" --skip-boot
 **Pantheon Mode (9 Agents)**:
 ```bash
 python main.py --pantheon --task "complex task"
-python main.py -gp --task "god mode task"
-python main.py --pantheon --agents coordinator,learner --task "design feature"
-python main.py --swarm --agents 5 --roles c,o,a --task "optimize performance"
+python main.py --pantheon --task "design feature"
+python main.py --swarm --agent-roles coordinator,observer,actor --task "optimize performance"
 ```
 
 **MAF Mode (Multi-Agent Framework)**:
 ```bash
-python main.py -mb --task "collaborative task"
+python main.py --messagebus --task "collaborative task"
 python main.py --messagebus --task "analysis" --max-rounds 3
 python main.py --providers grok,claude --task "real analysis"
-python main.py --maf-config src/collaboration/configs/test_optimization_duo.json --task "optimize"
+python main.py --providers grok,claude --maf-config test_optimization_duo --task "optimize"
 ```
 
 **Daemon Mode (Autonomous)**:
@@ -557,7 +575,7 @@ cat GG_TASK_PLAN.md
 
 **Todo Management**:
 ```bash
-python main.py -mb --todo-daemon --task "your task"
+python main.py --messagebus --todo-daemon --task "your task"
 python dynamic_todo_manager.py display
 ```
 
@@ -750,9 +768,9 @@ pip install -r requirements.txt
  # Run with coverage
  pytest --cov=src tests/
 
-  # Current Status: 183 passed, 0 failed, 10 skipped (100% pass rate)
+  # Current Status: 454 passed, 0 failed, 11 skipped (2026-10-15, Python 3.14)
   # Coverage: 25% (improving with ongoing fixes)
-  # Performance: 42k+ msg/sec throughput, <0.05ms latency (MessageBus tested 2025-11-14)
+  # MessageBus: 51k-105k msg/sec end-to-end, 0.007ms unloaded latency (measured 2026-10-15)
 ```
 
 ### Code Formatting
@@ -892,9 +910,10 @@ python test_messagebus_live.py
 - Broadcast support with exclude patterns
 - 10/10 unit tests passing
 
-**Performance**:
-- Throughput: 18,384 messages/second
-- Latency: <0.05ms average (sub-millisecond routing)
+**Performance** (measured 2026-10-15, single process, 20k messages):
+- Throughput: 51k-105k messages/second end-to-end (higher with fewer consumers), 0% loss
+- Latency: 0.007ms p50 / 0.010ms p99 unloaded; about 95ms queue wait when 20k messages are enqueued at once
+- `tests/core/test_message_bus_throughput.py` is a script, not a pytest test; only its producer rate and loss rate are meaningful
 - Zero deadlocks, zero threading issues
 
 **Files**: `src/core/message_bus.py`, `tests/core/test_message_bus.py`, `test_messagebus_live.py`
@@ -1040,7 +1059,7 @@ Whats new in last version:
 ### Updated Usage with Todo Daemon
 ```bash
 # Start with todo daemon for real-time tracking
-python main.py -mb --todo-daemon --task "Your task here"
+python main.py --messagebus --todo-daemon --task "Your task here"
 
 # The daemon will start in background, sync todos across windows, and broadcast to Pantheon agents
 ```
@@ -1129,7 +1148,7 @@ Collaboration coordinator: collab_20251114_020003 (Dual-agent, review_mode=False
 **Note**: System requires API keys for full LLM functionality (Grok/Claude). Core architecture operational without keys.
 
 ### 🎯 Architecture Status
-- **MessageBus**: 42k+ msg/sec, <0.05ms latency ✅
+- **MessageBus**: 51k-105k msg/sec end-to-end, 0.007ms unloaded latency ✅
 - **Agent Framework**: BaseAgent, HRM Reasoner, lifecycle management ✅
 - **Collaboration**: MAF orchestrator, consensus detection ✅
 - **Security**: Shell injection protection, encryption ✅

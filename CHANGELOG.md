@@ -1,5 +1,41 @@
 # Changelog
 
+## [v2026.10.15] - 2026-10-15 - Runtime Fixes, claude-cli Provider, Token Usage, Plan-Only Pantheon, Real MAF Providers
+
+### Added
+- **`claude-cli` provider**: runs `claude -p` on a Claude subscription login (no API credits). Select with `PRIORITY_PROVIDER=claude-cli`; text only
+- **Token usage tracking**: `GrokClient` records prompt/completion tokens per agent tag (Grok, Claude, Gemini, claude-cli); `--pantheon` prints a TOKEN USAGE table
+- **API error messages**: failures now return the provider's message (e.g. "credit balance is too low") instead of "Provider returned no content"
+- **Pantheon plan/execute workflow**: default is plan-only (decompose, safety-review each subtask, report). `--execute` runs `actor` subtasks one at a time: LLM proposes one command, Validator checks it, the user confirms, `ActionExecutor` runs it without a shell
+- **MAF real providers**: `grok`, `claude`, `claude-cli`, `gemini`, `openai`, optionally `name:model`; `MAF_USE_MOCK=1` keeps the mock path; `--max-rounds` now overrides the preset
+- **Vision payloads** for Grok, Claude and Gemini; OpenAI provider; system messages for Claude and Gemini
+- Tests: 454 passing, 11 skipped (was 299 passing, 13 failing, 12 collection errors)
+
+### Fixed
+- **Security**: removed `shell=True` from `src/executor.py` and `grokputer_server.py`; untracked leaked key files and redacted the key in `SECURITY_AUDIT_REPORT.md` (the keys were already revoked)
+- **Dependencies**: removed `asyncio==4.0.0` (it shadows the standard library module)
+- **Observer**: `create_message` is now awaited, screenshots are passed to the model, `test_connection` exists, `screenshot_to_base64` is awaited instead of run through `to_thread`
+- **Actor** never registered on the MessageBus (stray `def is_healthy` header over the end of `__init__`)
+- **`ObserverAgent` / Validator** rejected `Message` objects (error went only to the session log, so runs waited the full 5 minutes)
+- **Pantheon / swarm / messagebus / MAF modes** crashed after finishing by falling through into legacy single-agent code in `main.py`
+- Missing `DeadlockDetector` import in the lifecycle manager; the detector's original API is restored
+- Coordinator could not parse JSON wrapped in code fences
+- `ScreenObserver.capture_screenshot` was awaited nowhere
+- **MAF**: startup crash (`'Orchestrator' object has no attribute 'orchestrator'`), stale MessageBus adapter calls, nonexistent default preset `balanced`, `grok_claude_dual` roles that failed the schema
+- **Workflow engine**: `execute()` with timeout, `Workflow.validate()`, edge validation, `{{vars}}` inside HTTP node bodies, jq-style paths in `TransformNode`
+
+### Changed
+- **MessageBus figures re-measured** (single process, Python 3.14, Windows): 51K-105K msg/s end-to-end with 0% loss; 0.007ms p50 / 0.010ms p99 unloaded latency. Earlier figures (42K, 18,384, 425K msg/s) were not reproducible as end-to-end rates
+- Default `CLAUDE_MODEL` is now `claude-haiku-5-5`
+- Pantheon no longer runs the raw task text as a bash command; Executor/Analyzer/Improver are not part of the Pantheon flow
+
+### Known Issues
+- `GrokClient.chat()` never falls back to the next provider (`_call_provider` returns None instead of raising)
+- Validator safety patterns are crude substrings
+- MAF: same-family providers share one sender label; `success` means consensus reached; RL provider selection logs an unhashable-key warning
+- `improve_swarm.py` still uses `shell=True`; 14 bare `except:` blocks; duplicate agent modules in `src/agents/`
+- Interactive menu crashes on EOF
+
 ## [v2026.02.02] - 2026-02-02 - Docker Deployment & Python 3.11 Compatibility
 
 ### Fixed
