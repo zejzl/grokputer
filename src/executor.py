@@ -31,23 +31,34 @@ def execute_command(command: str) -> str:
         Command output or error message
     """
     # Basic safety checks
-    dangerous_chars = [";", "&", "|", "`", "$", "(", ")"]
+    dangerous_chars = [";", "&", "|", "`", "$", "(", ")", "<", ">", "\n", "\r"]
     if any(char in command for char in dangerous_chars):
         return "Invalid command characters detected"
 
     # Whitelist of allowed commands
     allowed_commands = ["ls", "dir", "pwd", "echo", "cat", "head", "tail"]
-    cmd_base = command.split()[0] if command.split() else ""
+    try:
+        argv = shlex.split(command)
+    except ValueError as e:
+        return f"Malformed command: {e}"
+
+    cmd_base = argv[0] if argv else ""
 
     if cmd_base not in allowed_commands:
         return f"Command '{cmd_base}' not allowed"
 
+    # dir and echo are cmd.exe builtins on Windows, not executables
+    if os.name == "nt" and cmd_base in ("dir", "echo"):
+        argv = ["cmd", "/c", *argv]
+
     try:
-        # Execute the command
-        result = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=10)
+        # Execute without a shell so the command string is never interpreted by one
+        result = subprocess.run(argv, shell=False, capture_output=True, text=True, timeout=10)
         return result.stdout + result.stderr
     except subprocess.TimeoutExpired:
         return "Command timed out"
+    except FileNotFoundError:
+        return f"Command '{cmd_base}' not found on this system"
     except Exception as e:
         return f"Error executing command: {e}"
 

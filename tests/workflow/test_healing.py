@@ -1,361 +1,245 @@
 """
-Tests for Self-Healing System (Task 15)
+Tests for the workflow self-healing system (WorkflowHealer).
 
-Ultra high priority testing for automatic workflow recovery.
+Magic healing is disabled in every healer here so strategy selection is deterministic.
 """
 
-import asyncio
 import pytest
-from datetime import datetime
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
-from src.workflow.healing import (
-    HealingStrategy,
-    SelfHealingSystem,
-    FailurePattern,
-    CircuitBreakerState
-)
-from src.workflow.nodes.base import (
-    BaseNode,
-    NodeContext,
-    NodeResult,
-    NodeStatus
-)
+from src.workflow.engine import WorkflowEngine
+from src.workflow.healing import HealingAction, HealingStrategy, WorkflowHealer, with_healing
+from src.workflow.nodes.base import BaseNode, NodeContext, NodeStatus
 
 
-class MockFailingNode(BaseNode):
-    """Mock node that fails predictably for testing"""
+class FlakyNode(BaseNode):
+    """Fails the first `fail_count` runs, then succeeds."""
 
-    def __init__(self, node_id: str, fail_count: int = 1, error_type: Exception = RuntimeError):
-        super().__init__(node_id=node_id, config={"type": "mock_failing"})
+    def __init__(self, node_id: str, fail_count: int = 1, error_type=RuntimeError, config=None):
+        super().__init__(node_id=node_id, config=config)
         self.fail_count = fail_count
         self.error_type = error_type
-        self.attempt_count = 0
+        self.attempts = 0
 
     async def execute(self, context: NodeContext) -> NodeContext:
-        self.attempt_count += 1
-        if self.attempt_count <= self.fail_count:
-            raise self.error_type(f"Mock failure {self.attempt_count}")
-
-        result_context = NodeContext(
-            data={"healed": True, "attempts": self.attempt_count},
-            metadata=context.metadata,
-            state=context.state
-        )
-        return result_context
+        self.attempts += 1
+        if self.attempts <= self.fail_count:
+            raise self.error_type(f"flaky failure {self.attempts}")
+        context.set("healed_by", self.node_id)
+        return context
 
 
-class MockSuccessNode(BaseNode):
-    """Mock node that always succeeds"""
-
-    def __init__(self, node_id: str):
-        super().__init__(node_id=node_id, config={"type": "mock_success"})
-
+class OkNode(BaseNode):
     async def execute(self, context: NodeContext) -> NodeContext:
-        result_context = NodeContext(
-            data={"success": True},
-            metadata=context.metadata,
-            state=context.state
-        )
-        return result_context
+        context.set("fallback_ran", True)
+        return context
 
 
 @pytest.fixture
-def healing_system():
-    """Create healing system for testing"""
-    config = {
-        "max_retries": 3,
-        "retry_delay": 0.01,  # Fast for testing
-        "circuit_breaker_threshold": 3,
-        "circuit_breaker_timeout": 1,
-        "pattern_detection_threshold": 2
-    }
-    return SelfHealingSystem(config=config)
+def healer():
+    return WorkflowHealer(max_healing_attempts=3, retry_delay=0.001, enable_magic_healing=False)
 
 
 @pytest.fixture
-def node_context():
-    """Create node context for testing"""
-    return NodeContext(
-        data={"test": "data"},
-        metadata={"workflow_id": "test_workflow", "execution_id": "test_execution"}
-    )
+def context():
+    return NodeContext(data={"x": 1})
 
 
-@pytest.mark.asyncio
-async def test_healing_retry_success(healing_system, node_context):
-    """Test successful healing through retry"""
-    node = MockFailingNode("test_node", fail_count=1)
+class TestRetry:
+    @pytest.mark.asyncio
+    async def test_retry_succeeds_after_transient_failures(self, healer, context):
+        node = FlakyNode("n1", fail_count=2)
+        error = RuntimeError("boom")
 
-    result = await healing_system.heal_node_failure(
-        node, node_context, RuntimeError("Test error")
-    )
+        result = await healer.heal_node(node, context, error, HealingStrategy.RETRY)
 
-    assert result is not None
-    assert result.success
-    assert result.metadata["healing"] == "retry"
-    assert healing_system.total_heals == 1
+        assert result.get("healed_by") == "n1"
+        assert node.attempts == 3
+        assert node.status == NodeStatus.SUCCESS
+        assert healer.healing_actions[-1].success is True
 
+    @pytest.mark.asyncio
+    async def test_retry_exhausted_raises_and_records_failure(self, healer, context):
+        node = FlakyNode("n1", fail_count=99)
 
-@pytest.mark.asyncio
-async def test_healing_retry_exhaustion(healing_system, node_context):
-    """Test healing with SKIP when retries exhausted"""
-    node = MockFailingNode("test_node", fail_count=10)  # Will fail more than max_retries
+        with pytest.raises(RuntimeError, match="flaky failure"):
+            await healer.heal_node(node, context, RuntimeError("boom"), HealingStrategy.RETRY)
 
-    result = await healing_system.heal_node_failure(
-        node, node_context, RuntimeError("Test error")
-    )
+        assert node.attempts == healer.max_healing_attempts
+        action = healer.healing_actions[-1]
+        assert action.success is False
+        assert "flaky failure" in action.error
 
-    # Should fall back to SKIP strategy after retries fail
-    assert result is not None
-    assert result.status == NodeStatus.SKIPPED
-    assert healing_system.total_failures == 1
-    assert healing_system.total_heals == 1  # SKIP counts as healing
+    @pytest.mark.asyncio
+    async def test_backoff_delay_grows(self, context, monkeypatch):
+        sleeps = []
 
+        async def fake_sleep(delay):
+            sleeps.append(delay)
 
-@pytest.mark.asyncio
-async def test_healing_fallback(healing_system, node_context):
-    """Test fallback strategy"""
-    failing_node = MockFailingNode("failing", fail_count=10)
-    fallback_node = MockSuccessNode("fallback")
-
-    healing_system.register_fallback("failing", fallback_node)
-
-    # Manually set strategy to use fallback first
-    healing_system.set_recovery_strategies(
-        "failing",
-        [HealingStrategy.FALLBACK, HealingStrategy.RETRY]
-    )
-
-    result = await healing_system.heal_node_failure(
-        failing_node, node_context, RuntimeError("Test error")
-    )
-
-    assert result is not None
-    assert result.success
-    assert result.metadata["healing"] == "fallback"
-
-
-@pytest.mark.asyncio
-async def test_healing_skip_strategy(healing_system, node_context):
-    """Test skip strategy"""
-    node = MockFailingNode("test_node", fail_count=10)
-
-    # Set strategy to skip immediately
-    healing_system.set_recovery_strategies("test_node", [HealingStrategy.SKIP])
-
-    result = await healing_system.heal_node_failure(
-        node, node_context, RuntimeError("Test error")
-    )
-
-    assert result is not None
-    assert result.status == NodeStatus.SKIPPED
-    assert result.metadata["healing"] == "skip"
-
-
-@pytest.mark.asyncio
-async def test_circuit_breaker(healing_system, node_context):
-    """Test circuit breaker functionality"""
-    node = MockFailingNode("test_node", fail_count=10)
-
-    # Only allow RETRY strategy (not SKIP) so circuit breaker can trip
-    healing_system.set_recovery_strategies("test_node", [HealingStrategy.RETRY])
-
-    # Cause multiple failures to trip circuit breaker
-    for _ in range(3):
-        await healing_system.heal_node_failure(
-            node, node_context, RuntimeError("Test error")
+        monkeypatch.setattr("src.workflow.healing.asyncio.sleep", fake_sleep)
+        healer = WorkflowHealer(
+            max_healing_attempts=4, retry_delay=1.0, backoff_multiplier=2.0, enable_magic_healing=False
         )
 
-    # Check circuit breaker is open
-    breaker = healing_system.circuit_breakers["test_node"]
-    assert breaker.state == "OPEN"
-    assert breaker.failure_count >= 3
+        with pytest.raises(RuntimeError):
+            await healer.heal_node(FlakyNode("n1", fail_count=99), context, RuntimeError(), HealingStrategy.RETRY)
 
-    # Try to heal - should be blocked by circuit breaker
-    result = await healing_system.heal_node_failure(
-        node, node_context, RuntimeError("Test error")
-    )
-    assert result is None
+        assert sleeps == [1.0, 2.0, 4.0]
 
 
-@pytest.mark.asyncio
-async def test_circuit_breaker_reset(healing_system, node_context):
-    """Test circuit breaker reset after success"""
-    node = MockFailingNode("test_node", fail_count=1)
+class TestSkipAndReplace:
+    @pytest.mark.asyncio
+    async def test_skip_marks_node_and_state(self, healer, context):
+        node = FlakyNode("n1", fail_count=99)
+        node.error = "original failure"
 
-    # Record failure
-    healing_system._trip_circuit_breaker("test_node")
+        result = await healer.heal_node(node, context, RuntimeError("boom"), HealingStrategy.SKIP)
 
-    # Successful heal should reset breaker
-    await healing_system.heal_node_failure(
-        node, node_context, RuntimeError("Test error")
-    )
+        assert node.status == NodeStatus.SKIPPED
+        assert result.get_state("n1_skipped") is True
+        assert result.get_state("n1_skip_reason") == "original failure"
 
-    breaker = healing_system.circuit_breakers["test_node"]
-    assert breaker.state == "CLOSED"
-    assert breaker.failure_count == 0
+    @pytest.mark.asyncio
+    async def test_replace_runs_registered_fallback(self, healer, context):
+        node = FlakyNode("n1", fail_count=99)
+        healer.register_fallback("n1", OkNode("fallback"))
 
+        result = await healer.heal_node(node, context, RuntimeError("boom"), HealingStrategy.REPLACE)
 
-def test_failure_pattern_recording(healing_system, node_context):
-    """Test failure pattern detection"""
-    # Record same error multiple times
-    for _ in range(3):
-        healing_system._record_failure_pattern(
-            "test_node",
-            ValueError("Same error"),
-            node_context
-        )
+        assert result.get("fallback_ran") is True
+        assert result.get_state("n1_used_fallback") is True
 
-    patterns = healing_system.get_recurring_patterns()
-    assert len(patterns) > 0
-
-    pattern = patterns[0]
-    assert pattern.node_id == "test_node"
-    assert pattern.error_type == "ValueError"
-    assert pattern.occurrence_count == 3
+    @pytest.mark.asyncio
+    async def test_replace_without_fallback_raises(self, healer, context):
+        with pytest.raises(ValueError, match="No fallback registered"):
+            await healer.heal_node(FlakyNode("n1"), context, RuntimeError("boom"), HealingStrategy.REPLACE)
+        assert healer.healing_actions[-1].success is False
 
 
-@pytest.mark.asyncio
-async def test_healing_with_improver_agent(node_context):
-    """Test healing with ImproverAgent integration"""
-    mock_improver = MagicMock()
-    mock_messagebus = MagicMock()
-    mock_messagebus.publish = AsyncMock()
+class TestStrategySelection:
+    @pytest.mark.parametrize("error", [TimeoutError("slow"), ConnectionError("down")])
+    def test_transient_errors_retry(self, healer, error):
+        assert healer._select_strategy(FlakyNode("n1"), error) == HealingStrategy.RETRY
 
-    healing_system = SelfHealingSystem(
-        improver_agent=mock_improver,
-        message_bus=mock_messagebus,
-        config={"enable_agent_delegation": True}
-    )
+    def test_fallback_used_when_registered(self, healer):
+        healer.register_fallback("n1", OkNode("fallback"))
+        assert healer._select_strategy(FlakyNode("n1"), ValueError("bad")) == HealingStrategy.REPLACE
 
-    node = MockFailingNode("test_node", fail_count=10)
+    def test_improver_used_when_pantheon_available(self):
+        healer = WorkflowHealer(pantheon_integration=MagicMock(), enable_magic_healing=False)
+        assert healer._select_strategy(FlakyNode("n1"), ValueError("bad")) == HealingStrategy.INVOKE_IMPROVER
 
-    # Set strategy to delegate to agent
-    healing_system.set_recovery_strategies(
-        "test_node",
-        [HealingStrategy.DELEGATE_TO_AGENT]
-    )
+    def test_default_is_retry(self, healer):
+        assert healer._select_strategy(FlakyNode("n1"), ValueError("bad")) == HealingStrategy.RETRY
 
-    await healing_system.heal_node_failure(
-        node, node_context, RuntimeError("Test error")
-    )
+    def test_transient_error_beats_registered_fallback(self, healer):
+        healer.register_fallback("n1", OkNode("fallback"))
+        assert healer._select_strategy(FlakyNode("n1"), TimeoutError()) == HealingStrategy.RETRY
 
-    # Verify message was sent to ImproverAgent
-    assert mock_messagebus.publish.called
+    @pytest.mark.asyncio
+    async def test_strategy_auto_selected_when_none_given(self, healer, context):
+        node = FlakyNode("n1", fail_count=1)
 
+        await healer.heal_node(node, context, ConnectionError("down"))
 
-def test_healing_statistics(healing_system, node_context):
-    """Test healing statistics tracking"""
-    stats = healing_system.get_stats()
-
-    assert "total_failures" in stats
-    assert "total_heals" in stats
-    assert "success_rate" in stats
-    assert "circuit_breakers" in stats
+        assert healer.healing_actions[-1].strategy == HealingStrategy.RETRY
 
 
-@pytest.mark.asyncio
-async def test_timeout_reconfiguration(node_context):
-    """Test automatic timeout reconfiguration"""
-    class TimeoutNode(BaseNode):
-        def __init__(self):
-            super().__init__(node_id="timeout_node", config={"timeout": 1.0})
+class TestImprover:
+    @pytest.mark.asyncio
+    async def test_fixed_config_is_applied_then_node_retried(self, context):
+        pantheon = MagicMock()
+        pantheon.invoke_agent = AsyncMock(return_value={"fixed_config": {"max_retries": 5}})
+        healer = WorkflowHealer(pantheon_integration=pantheon, enable_magic_healing=False)
+        node = FlakyNode("n1", fail_count=1)
+        node.attempts = 1  # the node already failed once before healing was requested
 
-        async def execute(self, context):
-            raise TimeoutError("Request timeout")
+        result = await healer.heal_node(node, context, RuntimeError("boom"), HealingStrategy.INVOKE_IMPROVER)
 
-    node = TimeoutNode()
-    healing_system = SelfHealingSystem()
+        assert node.get_config("max_retries") == 5
+        assert result.get_state("n1_improver_fixed") is True
+        pantheon.invoke_agent.assert_awaited_once()
+        assert pantheon.invoke_agent.await_args.args[0] == "improver"
 
-    # First timeout should trigger reconfiguration
-    original_timeout = node.config["timeout"]
+    @pytest.mark.asyncio
+    async def test_alternative_approach_skips_node(self, context):
+        pantheon = MagicMock()
+        pantheon.invoke_agent = AsyncMock(return_value={"alternative_approach": "use cache"})
+        healer = WorkflowHealer(pantheon_integration=pantheon, enable_magic_healing=False)
+        node = FlakyNode("n1", fail_count=99)
 
-    result = await healing_system._strategy_reconfigure(
-        node, node_context, TimeoutError("Request timeout")
-    )
+        await healer.heal_node(node, context, RuntimeError("boom"), HealingStrategy.INVOKE_IMPROVER)
 
-    # Timeout should be increased
-    assert node.config["timeout"] == original_timeout * 2
+        assert node.status == NodeStatus.SKIPPED
 
+    @pytest.mark.asyncio
+    async def test_unactionable_response_raises(self, context):
+        pantheon = MagicMock()
+        pantheon.invoke_agent = AsyncMock(return_value={})
+        healer = WorkflowHealer(pantheon_integration=pantheon, enable_magic_healing=False)
 
-@pytest.mark.asyncio
-async def test_replace_data_strategy(healing_system, node_context):
-    """Test data replacement healing strategy"""
-    node = MockFailingNode("test_node")
-    node.config["error_value"] = "safe_default"
+        with pytest.raises(Exception, match="actionable"):
+            await healer.heal_node(
+                FlakyNode("n1"), context, RuntimeError("boom"), HealingStrategy.INVOKE_IMPROVER
+            )
 
-    result = await healing_system._strategy_replace_data(
-        node, node_context, ValueError("Bad data")
-    )
+    @pytest.mark.asyncio
+    async def test_improver_without_pantheon_raises(self, healer, context):
+        with pytest.raises(ValueError, match="Pantheon integration not available"):
+            await healer.heal_node(
+                FlakyNode("n1"), context, RuntimeError("boom"), HealingStrategy.INVOKE_IMPROVER
+            )
 
-    assert result is not None
-    assert result.success
-    assert result.metadata["healing"] == "replace_data"
-
-
-@pytest.mark.asyncio
-async def test_exponential_backoff(node_context):
-    """Test exponential backoff in retry strategy"""
-    healing_system = SelfHealingSystem(config={
-        "max_retries": 3,
-        "retry_delay": 0.1,
-        "exponential_backoff": True
-    })
-
-    node = MockFailingNode("test_node", fail_count=2)
-
-    start_time = datetime.now()
-
-    await healing_system._strategy_retry(node, node_context)
-
-    elapsed = (datetime.now() - start_time).total_seconds()
-
-    # Should have delays: 0.1, 0.2 (exponential)
-    # Total >= 0.3 seconds
-    assert elapsed >= 0.3
+    @pytest.mark.asyncio
+    async def test_magic_heal_unavailable_raises(self, healer, context):
+        with pytest.raises(ValueError, match="Magic healer not available"):
+            await healer.heal_node(FlakyNode("n1"), context, RuntimeError("boom"), HealingStrategy.MAGIC_HEAL)
 
 
-@pytest.mark.asyncio
-async def test_healing_action_recording(healing_system, node_context):
-    """Test that healing actions are recorded"""
-    node = MockFailingNode("test_node", fail_count=1)
+class TestStats:
+    def test_empty_stats(self, healer):
+        stats = healer.get_healing_stats()
+        assert stats["total_healing_attempts"] == 0
+        assert stats["success_rate"] == 0.0
+        assert stats["magic_healing"] is None
 
-    await healing_system.heal_node_failure(
-        node, node_context, RuntimeError("Test")
-    )
+    @pytest.mark.asyncio
+    async def test_stats_count_successes_and_failures(self, healer, context):
+        await healer.heal_node(FlakyNode("a", fail_count=0), context, RuntimeError(), HealingStrategy.RETRY)
+        await healer.heal_node(FlakyNode("b"), context, RuntimeError(), HealingStrategy.SKIP)
+        with pytest.raises(ValueError):
+            await healer.heal_node(FlakyNode("c"), context, RuntimeError(), HealingStrategy.REPLACE)
 
-    assert len(healing_system.healing_actions) > 0
-    action = healing_system.healing_actions[0]
-    assert action.node_id == "test_node"
-    assert action.strategy in HealingStrategy
+        stats = healer.get_healing_stats()
 
+        assert stats["total_healing_attempts"] == 3
+        assert stats["successful_healings"] == 2
+        assert stats["success_rate"] == pytest.approx(2 / 3)
+        assert stats["strategy_usage"] == {"retry": 1, "skip": 1, "replace": 1}
 
-@pytest.mark.asyncio
-async def test_analyze_and_improve(node_context):
-    """Test pattern analysis and improvement delegation"""
-    mock_improver = MagicMock()
-    mock_messagebus = MagicMock()
-    mock_messagebus.publish = AsyncMock()
-
-    healing_system = SelfHealingSystem(
-        improver_agent=mock_improver,
-        message_bus=mock_messagebus
-    )
-
-    # Create recurring pattern
-    for _ in range(3):
-        healing_system._record_failure_pattern(
-            "test_node",
-            RuntimeError("Recurring error"),
-            node_context
-        )
-
-    await healing_system.analyze_and_improve()
-
-    # Should have published analysis request
-    assert mock_messagebus.publish.called
+    def test_healing_action_defaults(self):
+        action = HealingAction(node_id="n", strategy=HealingStrategy.RETRY, attempts=0, success=False)
+        assert action.error is None
+        assert action.recovery_time == 0.0
 
 
-if __name__ == "__main__":
-    pytest.main([__file__, "-v", "--asyncio-mode=auto"])
+class TestWithHealing:
+    @pytest.mark.asyncio
+    async def test_workflow_recovers_from_transient_node_failure(self, healer):
+        engine = WorkflowEngine("heal_test")
+        node = FlakyNode("flaky", fail_count=1)
+        engine.add_node(node)
+
+        result = await with_healing(engine, healer, {"x": 1})
+
+        assert result["healed_by"] == "flaky"
+        assert healer.healing_actions and healer.healing_actions[0].node_id == "flaky"
+
+    @pytest.mark.asyncio
+    async def test_unhealable_workflow_still_raises(self, healer):
+        engine = WorkflowEngine("heal_fail_test")
+        engine.add_node(FlakyNode("broken", fail_count=99))
+
+        with pytest.raises(RuntimeError, match="flaky failure"):
+            await with_healing(engine, healer)

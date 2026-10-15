@@ -8,9 +8,14 @@ Date: 2025-11-14
 """
 from __future__ import annotations
 
+import re
 from typing import Any, Callable, Dict, Optional
 
 from .base import BaseNode, NodeContext
+
+# Supported subset of jq path syntax: ".", ".key", ".a.b", ".items[0].id"
+_JQ_PATH = re.compile(r"^(?:\.[A-Za-z_][\w-]*|\[\d+\])+$")
+_JQ_TOKEN = re.compile(r"\.([A-Za-z_][\w-]*)|\[(\d+)\]")
 
 
 class TransformNode(BaseNode):
@@ -18,6 +23,10 @@ class TransformNode(BaseNode):
     Node that transforms data using a custom function.
 
     The function receives the context data and returns transformed data.
+
+    With config {"operation": "jq", "expression": ".user.name"} it instead extracts a value
+    by path (jq-style subset: keys and list indexes only) and stores it under the "result"
+    key, leaving the rest of the data unchanged. A missing path yields None.
     """
 
     def __init__(
@@ -49,6 +58,9 @@ class TransformNode(BaseNode):
         Returns:
             Context with transformed data
         """
+        if self.get_config("operation") == "jq":
+            return self._extract_path(context)
+
         # Apply transformation
         if callable(self.transform_func):
             transformed_data = self.transform_func(context.data)
@@ -64,6 +76,27 @@ class TransformNode(BaseNode):
         )
 
         return new_context
+
+    def _extract_path(self, context: NodeContext) -> NodeContext:
+        """Extract context.data[path] for a jq-style path expression into the "result" key."""
+        expression = (self.get_config("expression") or "").strip()
+        if expression != "." and not _JQ_PATH.match(expression):
+            raise ValueError(
+                f"Unsupported jq expression {expression!r}: only paths like '.a.b' or '.items[0].id' are supported"
+            )
+
+        value: Any = context.data
+        for key, index in _JQ_TOKEN.findall("" if expression == "." else expression):
+            if key:
+                value = value.get(key) if isinstance(value, dict) else None
+            else:
+                i = int(index)
+                value = value[i] if isinstance(value, list) and i < len(value) else None
+            if value is None:
+                break
+
+        context.set("result", value)
+        return context
 
 
 class MapNode(TransformNode):

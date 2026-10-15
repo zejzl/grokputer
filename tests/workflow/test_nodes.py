@@ -6,12 +6,34 @@ Date: 2025-11-16
 """
 
 import pytest
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 from src.workflow.nodes.base import BaseNode, NodeContext, NodeStatus
 from src.workflow.nodes.conditional import ConditionalNode
 from src.workflow.nodes.http import HTTPNode
 from src.workflow.nodes.transform import TransformNode
+
+
+def _wire_aiohttp_mock(mock_client_session, response):
+    """
+    Make a patched aiohttp.ClientSession behave like the real one.
+
+    `async with ClientSession() as session` yields `session`, and `session.request(...)` is a plain
+    call that returns an async context manager yielding `response` (not a coroutine).
+    Returns the session mock so tests can inspect the request arguments.
+    """
+    request_cm = MagicMock()
+    request_cm.__aenter__ = AsyncMock(return_value=response)
+    request_cm.__aexit__ = AsyncMock(return_value=False)
+
+    session = MagicMock()
+    session.request = MagicMock(return_value=request_cm)
+
+    session_cm = MagicMock()
+    session_cm.__aenter__ = AsyncMock(return_value=session)
+    session_cm.__aexit__ = AsyncMock(return_value=False)
+    mock_client_session.return_value = session_cm
+    return session
 
 
 class TestNodeContext:
@@ -225,9 +247,7 @@ class TestHTTPNode:
             mock_response.headers = {"Content-Type": "application/json"}
             mock_response.json = AsyncMock(return_value={"result": "success"})
 
-            mock_session.return_value.__aenter__.return_value.request.return_value.__aenter__.return_value = (
-                mock_response
-            )
+            _wire_aiohttp_mock(mock_session, mock_response)
 
             ctx = NodeContext()
             result = await node.run(ctx)
@@ -253,14 +273,15 @@ class TestHTTPNode:
             mock_response.headers = {"Content-Type": "application/json"}
             mock_response.json = AsyncMock(return_value={"id": "123"})
 
-            mock_session.return_value.__aenter__.return_value.request.return_value.__aenter__.return_value = (
-                mock_response
-            )
+            session = _wire_aiohttp_mock(mock_session, mock_response)
 
             ctx = NodeContext(data={"item_name": "TestItem"})
             result = await node.run(ctx)
 
             assert result.get("status_code") == 201
+            sent = session.request.call_args.kwargs
+            assert sent["method"] == "POST"
+            assert sent["json"] == {"name": "TestItem", "value": 42}
 
     @pytest.mark.asyncio
     async def test_http_authentication(self):
@@ -280,14 +301,14 @@ class TestHTTPNode:
             mock_response.headers = {"Content-Type": "application/json"}
             mock_response.json = AsyncMock(return_value={"data": "secured"})
 
-            mock_session.return_value.__aenter__.return_value.request.return_value.__aenter__.return_value = (
-                mock_response
-            )
+            session = _wire_aiohttp_mock(mock_session, mock_response)
 
             ctx = NodeContext(data={"api_token": "secret123"})
             result = await node.run(ctx)
 
             assert result.get("status_code") == 200
+            sent_headers = session.request.call_args.kwargs["headers"]
+            assert sent_headers["Authorization"] == "Bearer secret123"
 
 
 class TestTransformNode:

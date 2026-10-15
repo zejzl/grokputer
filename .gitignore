@@ -87,3 +87,9 @@ T_O_*.txt
 !README.md
 savegame_*.txt
 zai.txt
+
+# Secrets (never commit)
+xaikey.txt
+ULTIMATE_KEY.md
+*.key
+*.pem

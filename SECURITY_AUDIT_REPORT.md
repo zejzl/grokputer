@@ -23,7 +23,7 @@ A comprehensive security scan of the Grokputer repository has revealed **critica
 
 ### 1. Exposed API Key
 
-**Key Identified**: `xai-JgBsxcWxsauXW9bDhm67h3qF1pDyRqTjc52T4THXOoealzcarVRCIGDQTDnuAFXZr7emdpD1UJ31EZvB`
+**Key Identified**: `xai-<REDACTED>`
 
 **Files Affected**:
 1. `.claude/settings.local.json` (Line 35, 39)
@@ -107,7 +107,7 @@ These files are now ignored and won't be committed in future changes.
 
 1. Go to https://console.x.ai/
 2. Navigate to API Keys section
-3. Find and REVOKE the key: `xai-JgBsxcWxsauXW9bDhm67h3qF1pDyRqTjc52T4THXOoealzcarVRCIGDQTDnuAFXZr7emdpD1UJ31EZvB`
+3. Find and REVOKE the key: `xai-<REDACTED>`
 4. Generate a NEW API key
 5. Update your local `.env` file with the new key (NOT tracked by git)
 
@@ -127,7 +127,7 @@ cp -r grokputer grokputer-backup
 
 # 3. Create a passwords file
 cd grokputer
-echo "xai-JgBsxcWxsauXW9bDhm67h3qF1pDyRqTjc52T4THXOoealzcarVRCIGDQTDnuAFXZr7emdpD1UJ31EZvB" > passwords.txt
+echo "xai-<REDACTED>" > passwords.txt
 
 # 4. Run BFG to remove the key
 java -jar bfg.jar --replace-text passwords.txt
@@ -137,7 +137,7 @@ git reflog expire --expire=now --all
 git gc --prune=now --aggressive
 
 # 6. Verify the key is gone
-git log --all --full-history -S"xai-JgBsxcWxsauXW9bDhm67h3qF1pDyRqTjc52T4THXOoealzcarVRCIGDQTDnuAFXZr7emdpD1UJ31EZvB"
+git log --all --full-history -S"xai-<REDACTED>"
 # Should return nothing
 
 # 7. Delete the passwords file
@@ -164,7 +164,7 @@ git filter-repo --invert-paths --path .claude/settings.local.json \
   --path "superagent/superagent stuff.txt"
 
 # 4. Verify the key is gone
-git log --all --full-history -S"xai-JgBsxcWxsauXW9bDhm67h3qF1pDyRqTjc52T4THXOoealzcarVRCIGDQTDnuAFXZr7emdpD1UJ31EZvB"
+git log --all --full-history -S"xai-<REDACTED>"
 # Should return nothing
 ```
 
@@ -258,7 +258,7 @@ api_key = os.getenv("XAI_API_KEY")
 **Anti-Pattern** (What to avoid):
 ```python
 # BAD - Never do this
-api_key = "xai-JgBsxcWxsauXW9bDhm67h3qF1pDyRqTjc52T4THXOoealzcarVRCIGDQTDnuAFXZr7emdpD1UJ31EZvB"
+api_key = "xai-<REDACTED>"
 ```
 
 ### 3. Configuration File Security
@@ -276,11 +276,11 @@ After completing remediation:
 
 ```bash
 # 1. Verify no API keys in current files
-grep -r "xai-JgBsxcWxsauXW9bDhm67h3qF1pDyRqTjc52T4THXOoealzcarVRCIGDQTDnuAFXZr7emdpD1UJ31EZvB" .
+grep -r "xai-<REDACTED>" .
 # Should return: Binary file .git/... (git history only)
 
 # 2. Verify git history is clean (after BFG/filter-repo)
-git log --all --full-history -S"xai-JgBsxcWxsauXW9bDhm67h3qF1pDyRqTjc52T4THXOoealzcarVRCIGDQTDnuAFXZr7emdpD1UJ31EZvB"
+git log --all --full-history -S"xai-<REDACTED>"
 # Should return: nothing
 
 # 3. Verify .gitignore is working

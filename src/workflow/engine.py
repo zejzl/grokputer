@@ -35,16 +35,18 @@ class WorkflowEngine:
     - Progress tracking
     """
 
-    def __init__(self, workflow_id: str, config: Optional[Dict] = None):
+    def __init__(self, workflow_id: str = "workflow", config: Optional[Dict] = None, timeout: Optional[float] = None):
         """
         Initialize the engine.
 
         Args:
             workflow_id: Unique identifier for this workflow
             config: Engine configuration
+            timeout: Optional overall time limit in seconds, applied by execute()
         """
         self.workflow_id = workflow_id
         self.config = config or {}
+        self.timeout = timeout
         self.nodes: Dict[str, BaseNode] = {}
         self.start_nodes: List[BaseNode] = []
         self.end_nodes: List[BaseNode] = []
@@ -315,6 +317,63 @@ class WorkflowEngine:
 
         finally:
             self.is_running = False
+
+    async def execute(
+        self,
+        workflow: Any,
+        initial_data: Optional[Dict] = None,
+        parallel: bool = True,
+    ) -> Dict[str, Any]:
+        """
+        Execute a Workflow (or another WorkflowEngine) and return a result summary.
+
+        Unlike run(), this applies the engine's timeout, accepts an empty workflow,
+        and returns data, state, and a node count instead of only the data.
+
+        Args:
+            workflow: A Workflow (anything with an `engine` attribute) or a WorkflowEngine
+            initial_data: Initial data to pass to workflow
+            parallel: Whether to execute independent nodes in parallel
+
+        Returns:
+            Dict with status, workflow_id, data, state, nodes_executed, and duration
+
+        Raises:
+            TimeoutError: If the engine timeout elapses
+            Exception: Whatever a failing node raised
+        """
+        target = getattr(workflow, "engine", workflow)
+
+        if not target.nodes:
+            return {
+                "status": "success",
+                "workflow_id": target.workflow_id,
+                "data": dict(initial_data or {}),
+                "state": {},
+                "nodes_executed": 0,
+                "duration": 0.0,
+            }
+
+        try:
+            if self.timeout is not None:
+                await asyncio.wait_for(target.run(initial_data, parallel), timeout=self.timeout)
+            else:
+                await target.run(initial_data, parallel)
+        except asyncio.TimeoutError:
+            # asyncio.TimeoutError is only an alias of TimeoutError from Python 3.11
+            raise TimeoutError(
+                f"Workflow '{target.workflow_id}' exceeded timeout of {self.timeout}s"
+            ) from None
+
+        duration = (target.end_time - target.start_time).total_seconds()
+        return {
+            "status": "success",
+            "workflow_id": target.workflow_id,
+            "data": target.context.data,
+            "state": target.context.state,
+            "nodes_executed": sum(1 for n in target.nodes.values() if n.status == NodeStatus.SUCCESS),
+            "duration": duration,
+        }
 
     def get_status(self) -> Dict[str, Any]:
         """Get current workflow status."""

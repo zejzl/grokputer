@@ -192,7 +192,11 @@ class HTTPNode(BaseNode):
                 }
 
     def _interpolate(self, value: Any, context: NodeContext) -> Any:
-        """Replace {{variable}} placeholders with values from context."""
+        """Replace {{variable}} placeholders with values from context (recursing into dicts and lists)."""
+        if isinstance(value, dict):
+            return {key: self._interpolate(val, context) for key, val in value.items()}
+        if isinstance(value, list):
+            return [self._interpolate(item, context) for item in value]
         if not isinstance(value, str):
             return value
 

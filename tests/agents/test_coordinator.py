@@ -145,12 +145,16 @@ class TestCoordinator:
         assert confirmed is True
         coordinator.session_logger.log_confirmation.assert_called_once()
 
-    def test_requires_confirmation(self, coordinator):
-        """Test safety check for confirmations."""
-        # Risky action
+    def test_requires_confirmation(self, coordinator, monkeypatch):
+        """Test safety check for confirmations (independent of the REQUIRE_CONFIRMATION env var)."""
+        # Score-based mode: risky commands confirm, safe ones do not
+        monkeypatch.setattr("src.config.REQUIRE_CONFIRMATION", False)
         assert requires_confirmation("rm -rf")
-        # Safe action
         assert not requires_confirmation("ls")
+
+        # Always-confirm mode: even safe commands confirm
+        monkeypatch.setattr("src.config.REQUIRE_CONFIRMATION", True)
+        assert requires_confirmation("ls")
 
     @pytest.mark.skip(reason="Test written for different Coordinator API")
     @pytest.mark.asyncio

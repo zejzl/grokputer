@@ -1,7 +1,12 @@
+import os
 import pytest
 import sys
 import warnings
 from unittest.mock import Mock, patch
+
+# src.config raises at import time without an xAI key. Tests mock all network calls,
+# so a placeholder is enough (a real key in the environment is left untouched).
+os.environ.setdefault("XAI_API_KEY", "test-key-not-real")
 
 # Suppress llama_cpp warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="llama_cpp")

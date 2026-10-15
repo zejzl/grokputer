@@ -67,7 +67,14 @@ class Workflow:
 
         Returns:
             Self for chaining
+
+        Raises:
+            ValueError: If either node has not been added to this workflow
         """
+        missing = [n.node_id for n in (from_node, to_node) if self.engine.nodes.get(n.node_id) is not n]
+        if missing:
+            raise ValueError(f"Cannot add edge: node(s) not in workflow '{self.name}': {', '.join(missing)}")
+
         from_node.connect_to(to_node)
 
         # Store condition if provided (for conditional nodes)
@@ -77,6 +84,15 @@ class Workflow:
             from_node.conditions[condition] = to_node
 
         return self
+
+    def validate(self) -> None:
+        """
+        Check that the workflow can be executed.
+
+        Raises:
+            ValueError: If the workflow contains a cycle
+        """
+        self.engine.get_execution_order()
 
     def remove_node(self, node_id: str) -> "Workflow":
         """Remove a node."""

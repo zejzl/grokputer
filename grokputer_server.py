@@ -12,6 +12,7 @@ from typing import Dict, List, Any, Optional
 import glob
 import os
 import json
+import shlex
 import subprocess
 import base64
 from io import BytesIO
@@ -188,8 +189,15 @@ async def execute_bash_safe(command: str, require_confirm: bool = False) -> Dict
                 "message": "High-risk command detected. Execute manually if needed.",
             }
 
-        # Execute command
-        result = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=30)
+        # Execute without a shell: shell operators (; & | $ ` etc.) are never interpreted
+        try:
+            argv = shlex.split(command)
+        except ValueError as e:
+            return {"success": False, "error": f"Malformed command: {e}", "command": command}
+        if not argv:
+            return {"success": False, "error": "No command provided", "command": command}
+
+        result = subprocess.run(argv, shell=False, capture_output=True, text=True, timeout=30)
 
         return {
             "success": result.returncode == 0,
@@ -203,6 +211,8 @@ async def execute_bash_safe(command: str, require_confirm: bool = False) -> Dict
 
     except subprocess.TimeoutExpired:
         return {"success": False, "error": "Command timeout (30s)", "command": command}
+    except FileNotFoundError:
+        return {"success": False, "error": "Command not found", "command": command}
     except Exception as e:
         return {"success": False, "error": str(e), "command": command}
 

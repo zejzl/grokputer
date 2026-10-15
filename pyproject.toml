@@ -21,7 +21,6 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-    "asyncio",
     "click",
     "rich",
     "redis",
@@ -86,6 +85,9 @@ norecursedirs = [
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks tests as integration tests",
+    "stress: marks high-load stress tests",
+    "windows: marks tests covering Windows-specific behavior",
+    "phase1: marks Phase 1 MessageBus tests",
 ]
 filterwarnings = [
     "ignore::DeprecationWarning:llama_cpp.*",
