@@ -2,7 +2,7 @@
 
 **Last Updated**: 2026-10-15
 **Project**: Grokputer - AI-Powered Computer Control & Multi-Agent System
-**Status**: Active development. Full test suite green (431 passed, 11 skipped). Known runtime bugs remain (see Known Issues). Session notes and TODO: `nightowl_2026-10-15.md`.
+**Status**: Active development. Full test suite green (443 passed, 11 skipped). Known runtime bugs remain (see Known Issues). Session notes and TODO: `nightowl_2026-10-15.md`.
 
 Claims below marked "(unverified)" come from older notes and have not been re-measured.
 
@@ -12,7 +12,7 @@ Grokputer is a Python multi-agent system that combines screen capture/vision, LL
 
 ## Architecture Status
 
-- **MessageBus** (`src/core/message_bus.py`): async priority queue with pub/sub. Throughput figures (18,384 msg/sec, <0.05ms) are unverified; `tests/core/test_message_bus_throughput.py` exists to check them.
+- **MessageBus** (`src/core/message_bus.py`): async priority queue with pub/sub. Measured 2026-10-15 (Python 3.14, Windows, single process, 20k msgs): 51k-105k msg/s end-to-end, 0% loss; unloaded send+receive p50 0.007 ms, p99 0.010 ms. The old 18,384 msg/sec figure is conservative. `tests/core/test_message_bus_throughput.py` is a script (`python tests/core/test_message_bus_throughput.py`), not a pytest test, and its per-consumer rate divides by a fixed 10 s window, so only its producer rate (~370k msg/s, enqueue only) and loss rate are meaningful.
 - **Pantheon** (9 agents): Observer, Reasoner/Coordinator, Actor, Validator, Learner, Memory, Executor, Analyzer, Improver. Implemented in `src/agents/`.
 - **MAF** (`src/collaboration/`): multi-provider collaboration with weighted-voting consensus, provider registry/pool, RL optimizer. Providers: xAI Grok, Anthropic Claude, OpenAI, Google Gemini, Ollama.
 - **Multi-modal**: `src/vision_processor.py`, `src/audio_processor.py`, `src/multimodal_processor.py`, `src/knowledge_graph.py`. Audio tests are skipped on Python 3.13+ because the `audioop` module was removed.
@@ -53,7 +53,7 @@ Copy `.env.example` to `.env` (gitignored). Main variables: `XAI_API_KEY`, `ANTH
 
 ## Testing
 
-**Current run (2026-10-15, Python 3.14.7, `pytest tests -q --continue-on-collection-errors`)**: 431 passed, 11 skipped, 0 failed, 0 errors. (Before today's fixes: 299 passed, 13 failed, 12 collection errors.)
+**Current run (2026-10-15, Python 3.14.7, `pytest tests -q --continue-on-collection-errors`)**: 443 passed, 11 skipped, 0 failed, 0 errors. (Before today's fixes: 299 passed, 13 failed, 12 collection errors.)
 
 How the suite is set up:
 - `tests/conftest.py` sets a placeholder `XAI_API_KEY` (a real one in the environment is left alone), because `src/config.py` raises at import time without a key. Tests mock all network calls.
@@ -78,7 +78,7 @@ pytest tests -q --continue-on-collection-errors
 1. Old xAI and Google/Gemini keys were committed in `grokputerfirstversionbackup/xaikey.txt` and remain in git history. They are already deactivated and deleted (confirmed by the user), so no rotation is needed. The files are now untracked and ignored (also `ULTIMATE_KEY.md`); scrubbing history is optional.
 2. `src/grok_client.py`: Claude/Gemini API paths are unit-tested but not exercised live; `chat()` never falls back to the next provider because `_call_provider` returns None on failure instead of raising. Test provider `claude-cli` (`PRIORITY_PROVIDER=claude-cli`, optional `CLAUDE_CLI_MODEL`) runs `claude -p` on the subscription login (text only; strips `ANTHROPIC_API_KEY` from the subprocess env).
 3. Token usage is recorded per agent tag; `--pantheon` prints a TOKEN USAGE table at the end (only the Coordinator's calls so far: ~870 in / 850-1560 out per decomposition).
-3b. `--pantheon` now runs end to end but every task reports failed: `PantheonCoordinator` sends message types the Executor (`execute_with_retry`), Analyzer (`assess_execution`, `record_task`) and Improver (`analyze_for_improvements`) do not implement. It also passes the raw task text to the validator/executor as a bash command.
+3b. `--pantheon` is plan-only by default: decompose -> safety review of each subtask -> report (prints PLAN and TOKEN USAGE). `--pantheon --execute` also runs `actor` subtasks one at a time: the LLM proposes ONE command, the validator checks it, you confirm at the prompt, then `ActionExecutor.execute_bash` runs it (no shell; metacharacters rejected). Non-actor subtasks are reported as skipped. Executor/Analyzer/Improver are not used by this flow. Known limits: validator safety patterns are crude substrings (the word "format" flags a subtask), only the first 300 chars of command output are shown, and `ExecutorAgent` still calls a nonexistent `action_executor.execute`.
 4. `improve_swarm.py` still uses `shell=True` (the two in `src/executor.py` and `grokputer_server.py` are fixed).
 5. `main.py` interactive menu crashes on EOF.
 6. Resolve duplicate agent modules in `src/agents/` (`executor.py` and `imrover_agent.py` have no importers).

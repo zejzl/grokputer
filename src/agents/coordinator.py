@@ -210,7 +210,7 @@ Task: {task}
 
 Return a JSON list of subtasks, where each subtask has:
 - "description": Brief description of the subtask
-- "agent": Suggested agent type (observer/actor/validator/analyzer/improver/memory)
+- "agent": Which agent handles it: actor (runs a command, queries the system, or performs a UI action), observer (looks at the screen via screenshot only), validator (checks results or safety), analyzer (summarizes or measures), improver, or memory
 - "priority": high/medium/low
 - "dependencies": List of subtask indices this depends on (empty if none)
 
@@ -517,7 +517,7 @@ Task: {task}
 
 Return a JSON list of subtasks, where each subtask has:
 - "description": Brief description of the subtask
-- "agent": Suggested agent type (observer/actor/validator/analyzer/improver/memory)
+- "agent": Which agent handles it: actor (runs a command, queries the system, or performs a UI action), observer (looks at the screen via screenshot only), validator (checks results or safety), analyzer (summarizes or measures), improver, or memory
 - "priority": high/medium/low
 - "dependencies": List of subtask indices this depends on (empty if none)
 

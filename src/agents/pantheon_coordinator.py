@@ -1,6 +1,9 @@
 """
 Pantheon Coordinator - Orchestrates all 9 agents in the Pantheon architecture
 
+Default behavior is planning only (decompose + safety review). Execution is opt-in (--execute) and
+requires per-command confirmation; see _handle_pantheon_task.
+
 The 9 Agents (ALL IMPLEMENTED):
 1. Observer - Screen capture and vision [OK]
 2. Reasoner (Coordinator) - Task decomposition [OK]
@@ -15,9 +18,12 @@ The 9 Agents (ALL IMPLEMENTED):
 from __future__ import annotations
 
 import asyncio
+import inspect
 import logging
+import platform
+import re
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from src.agents.actor import Actor
 from src.agents.analyzer import AnalyzerAgent
@@ -69,6 +75,11 @@ class PantheonCoordinator(BaseAgent):
 
         # Completion signaling
         self.task_completion_event = asyncio.Event()
+
+        # Plan/execute workflow: planning only unless execute mode is on AND a confirm_callback approves each command
+        self.execute_mode: bool = bool((config or {}).get("pantheon_execute", False))
+        self.confirm_callback: Optional[Callable[[Dict[str, Any], str], Any]] = None  # (subtask, command) -> bool
+        self.last_report: Optional[Dict[str, Any]] = None
 
     async def initialize_pantheon(
         self,
@@ -165,269 +176,271 @@ class PantheonCoordinator(BaseAgent):
         finally:
             self._update_state("idle")
 
+    # ------------------------------------------------------------------
+    # Plan / execute workflow
+    #
+    # Default (plan mode): learn -> decompose -> safety-review each subtask -> report. Nothing is run.
+    # Execute mode (config "pantheon_execute", CLI --execute): additionally, for each "actor" subtask,
+    # propose ONE command, validate it, ask the confirm_callback, and only then run it.
+    # With no confirm_callback nothing is ever executed.
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _normalize_subtasks(raw: Any) -> List[Dict[str, Any]]:
+        """Coerce decomposition output into [{index, id, description, agent, priority, dependencies}]."""
+        if isinstance(raw, dict):
+            raw = raw.get("subtasks", [])
+        subtasks = []
+        for i, item in enumerate(raw or []):
+            if isinstance(item, str):
+                item = {"description": item}
+            if not isinstance(item, dict):
+                continue
+            subtasks.append(
+                {
+                    "index": i,
+                    "id": item.get("id", f"sub{i + 1}"),
+                    "description": str(item.get("description") or item.get("content") or "").strip(),
+                    "agent": item.get("agent") or item.get("target_agent") or "unknown",
+                    "priority": item.get("priority", "medium"),
+                    "dependencies": list(item.get("dependencies") or []),
+                }
+            )
+        return subtasks
+
     async def _handle_pantheon_task(self, message: Message) -> Dict:
-        """Handle a task using the full Pantheon workflow with all 9 agents."""
+        """Plan a task with the Pantheon (and, in execute mode, run confirmed actor subtasks)."""
         task = message.content.get("task", "")
         task_id = message.content.get("task_id", f"task_{datetime.now().timestamp()}")
         start_time = datetime.now().timestamp()
+        mode = "execute" if self.execute_mode else "plan"
 
-        self.session_logger.log_agent_activity(self.agent_id, f"Pantheon handling task: {task}")
+        self.session_logger.log_agent_activity(self.agent_id, f"Pantheon handling task ({mode} mode): {task}")
 
-        # Phase 0: Check for learned optimizations
-        optimization = None
-        if "learner" in self.agents:
-            learner_msg = Message(
-                message_type="suggest_optimization",
-                from_agent="pantheon_coordinator",
-                to_agent="learner",
-                priority=MessagePriority.NORMAL,
-                content={"task_type": task},
-            )
-            optimization = await self.agents["learner"].process_message(learner_msg)
-
-        # Phase 1: Reasoning - Decompose task
-        if "coordinator" in self.agents:
-            reasoner_msg = Message(
-                message_type="decompose_task",
-                from_agent="pantheon_coordinator",
-                to_agent="coordinator",
-                priority=MessagePriority.NORMAL,
-                content={"task": task, "task_id": task_id},
-            )
-            decomposed = await self.agents["coordinator"].process_message(reasoner_msg)
-        else:
-            # Fallback: Simple decomposition
-            decomposed = {"subtasks": [{"type": "execute", "content": task}]}
-
-        # Phase 2: Observation - Capture initial state
-        initial_state = None
-        if "observer" in self.agents:
-            obs_msg = Message(
-                message_type="capture",
-                from_agent="pantheon_coordinator",
-                to_agent="observer",
-                priority=MessagePriority.NORMAL,
-                content={},
-            )
-            initial_state = await self.agents["observer"].process_message(obs_msg)
-
-        # Phase 3: Validation - Check safety
-        validation_passed = True
-        if "validator" in self.agents:
-            val_msg = Message(
-                message_type="validate_bash",
-                from_agent="pantheon_coordinator",
-                to_agent="validator",
-                priority=MessagePriority.HIGH,
-                content={"command": task},
-            )
-            validation = await self.agents["validator"].process_message(val_msg)
-            validation_passed = validation.get("valid", False) if validation else True
-            self.pantheon_stats["validations_performed"] += 1
-
-        if not validation_passed:
-            self.pantheon_stats["tasks_failed"] += 1
-            return {"status": "rejected", "reason": "Failed safety validation", "task_id": task_id}
-
-        # Phase 4: Execution - Perform action (use Executor if available, else Actor)
-        result = None
-        execution_time = 0.0
-
-        if "executor" in self.agents and validation_passed:
-            # Use advanced Executor with retry and circuit breakers
-            executor_msg = Message(
-                message_type="execute_with_retry",
-                from_agent="pantheon_coordinator",
-                to_agent="executor",
-                priority=MessagePriority.NORMAL,
-                content={"action": {"type": "bash", "params": {"command": task}, "id": task_id}, "max_retries": 3},
-            )
-            result = await self.agents["executor"].process_message(executor_msg)
-        elif "actor" in self.agents and validation_passed:
-            # Fallback to basic Actor
-            actor_msg = Message(
-                message_type="execute",
-                from_agent="pantheon_coordinator",
-                to_agent="actor",
-                priority=MessagePriority.NORMAL,
-                content={"task": task, "task_id": task_id},
-            )
-            result = await self.agents["actor"].process_message(actor_msg)
-
-        execution_time = datetime.now().timestamp() - start_time
-
-        # Phase 5: Post-execution validation
-        final_state = None
-        if "observer" in self.agents:
-            obs_msg = Message(
-                message_type="capture",
-                from_agent="pantheon_coordinator",
-                to_agent="observer",
-                priority=MessagePriority.NORMAL,
-                content={},
-            )
-            final_state = await self.agents["observer"].process_message(obs_msg)
-
-        # Track completion
-        success = result and result.get("status") not in ["error", "failed", "rejected"]
-
-        # Phase 5.5: Conflict Resolution (if execution failed but validation passed)
-        conflict_resolved = False
-        if not success and validation_passed:
-            conflict_resolution = await self._resolve_pantheon_conflict(task, task_id, result)
-            if conflict_resolution["resolved"]:
-                success = True
-                result = conflict_resolution["result"]
-                conflict_resolved = True
-                self.pantheon_stats["conflicts_resolved"] = self.pantheon_stats.get("conflicts_resolved", 0) + 1
-
-        # Phase 6: Learning - Record execution for pattern learning
-        if "learner" in self.agents:
-            learner_msg = Message(
-                message_type="record_execution",
-                from_agent="pantheon_coordinator",
-                to_agent="learner",
-                priority=MessagePriority.LOW,
-                content={
-                    "task_id": task_id,
-                    "task_type": task,
-                    "actions": [task],
-                    "success": success,
-                    "execution_time": execution_time,
-                    "metadata": {"validation_passed": validation_passed, "conflict_resolved": conflict_resolved},
-                },
-            )
-            await self.agents["learner"].process_message(learner_msg)
-            if success:
-                self.pantheon_stats["patterns_learned"] += 1
-
-        # Phase 7: Analytics - Record metrics
-        if "analyzer" in self.agents:
-            analyzer_msg = Message(
-                message_type="record_task",
-                from_agent="pantheon_coordinator",
-                to_agent="analyzer",
-                priority=MessagePriority.LOW,
-                content={
-                    "task_type": task,
-                    "execution_time": execution_time,
-                    "success": success,
-                    "agent_id": "executor" if "executor" in self.agents else "actor",
-                },
-            )
-            await self.agents["analyzer"].process_message(analyzer_msg)
-
-        # Phase 8: Improvement - Analyze for optimizations
-        if "improver" in self.agents and self.pantheon_stats["tasks_completed"] % 10 == 0:
-            # Every 10 tasks, analyze for improvements
-            improver_msg = Message(
-                message_type="analyze_for_improvements",
-                from_agent="pantheon_coordinator",
-                to_agent="improver",
-                priority=MessagePriority.LOW,
-                content={},
-            )
-            improvements = await self.agents["improver"].process_message(improver_msg)
-            if improvements and improvements.get("improvements_found", 0) > 0:
-                self.pantheon_stats["improvements_applied"] += improvements.get("auto_applied", 0)
-
-        # Update stats
-        if success:
-            self.pantheon_stats["tasks_completed"] += 1
-        else:
+        try:
+            report = await self._plan_and_maybe_execute(task, task_id, mode, start_time)
+        except Exception as e:
+            logger.error(f"[PANTHEON] Task failed: {e}", exc_info=True)
+            report = {"status": "failed", "task_id": task_id, "mode": mode, "error": str(e), "subtasks": []}
             self.pantheon_stats["tasks_failed"] += 1
 
+        report["execution_time"] = datetime.now().timestamp() - start_time
+        self.last_report = report
         self.session_logger.log_agent_activity(
-            self.agent_id, f"Pantheon task completed: {task_id} (success={success}, time={execution_time:.2f}s)"
+            self.agent_id, f"Pantheon task finished: {task_id} (status={report['status']}, mode={mode})"
         )
 
-        # Signal task completion
+        # Always signal, so the caller never waits out its timeout after an error
         self.task_completion_event.set()
+        return report
 
-        return {
-            "status": "completed" if success else "failed",
-            "task_id": task_id,
-            "result": result,
-            "validation_passed": validation_passed,
-            "initial_state": initial_state,
-            "final_state": final_state,
-            "execution_time": execution_time,
-            "optimization_used": optimization is not None,
-            "conflict_resolved": conflict_resolved,
-            "pantheon_workflow": "full_9_agent",
-        }
-
-    async def _resolve_pantheon_conflict(self, task: str, task_id: str, failed_result: Dict) -> Dict[str, Any]:
-        """
-        Resolve conflicts in Pantheon execution using consensus voting.
-
-        Args:
-            task: Original task
-            task_id: Task ID
-            failed_result: Failed execution result
-
-        Returns:
-            Resolution result
-        """
-        self.session_logger.log_agent_activity(self.agent_id, f"Resolving conflict for task: {task}")
-
-        # Method 1: Retry with different agent (Actor vs Executor)
-        if "executor" in self.agents and failed_result.get("agent") != "executor":
-            # Try with Executor
-            executor_msg = Message(
-                message_type="execute_with_retry",
-                from_agent="pantheon_coordinator",
-                to_agent="executor",
-                priority=MessagePriority.HIGH,
-                content={"action": {"type": "bash", "params": {"command": task}, "id": task_id}, "max_retries": 2},
+    async def _plan_and_maybe_execute(self, task: str, task_id: str, mode: str, start_time: float) -> Dict[str, Any]:
+        # Phase 0: learned optimizations
+        optimization = None
+        if self.agents.get("learner"):
+            optimization = await self.agents["learner"].process_message(
+                Message(
+                    message_type="suggest_optimization",
+                    from_agent=self.agent_id,
+                    to_agent="learner",
+                    priority=MessagePriority.NORMAL,
+                    content={"task_type": task},
+                )
             )
-            retry_result = await self.agents["executor"].process_message(executor_msg)
-            if retry_result and retry_result.get("status") == "success":
-                return {"resolved": True, "result": retry_result, "method": "agent_switch"}
 
-        # Method 2: Consensus voting with multiple agents
-        votes = []
-        if "validator" in self.agents:
-            # Validator vote
-            val_msg = Message(
-                message_type="validate_bash",
-                from_agent="pantheon_coordinator",
-                to_agent="validator",
-                priority=MessagePriority.HIGH,
-                content={"command": task, "expected_success": True},
-            )
-            val_vote = await self.agents["validator"].process_message(val_msg)
-            votes.append(val_vote.get("valid", False) if val_vote else False)
-
-        if "analyzer" in self.agents:
-            # Analyzer assessment
-            analyzer_msg = Message(
-                message_type="assess_execution",
-                from_agent="pantheon_coordinator",
-                to_agent="analyzer",
-                priority=MessagePriority.NORMAL,
-                content={"task": task, "result": failed_result},
-            )
-            analyzer_vote = await self.agents["analyzer"].process_message(analyzer_msg)
-            votes.append(analyzer_vote.get("should_retry", False) if analyzer_vote else False)
-
-        # Majority vote
-        positive_votes = sum(votes)
-        if positive_votes > len(votes) / 2:
-            # Retry one more time with fallback agent
-            if "actor" in self.agents:
-                actor_msg = Message(
-                    message_type="execute",
-                    from_agent="pantheon_coordinator",
-                    to_agent="actor",
-                    priority=MessagePriority.HIGH,
+        # Phase 1: decompose
+        if self.agents.get("coordinator"):
+            decomposed = await self.agents["coordinator"].process_message(
+                Message(
+                    message_type="decompose_task",
+                    from_agent=self.agent_id,
+                    to_agent="coordinator",
+                    priority=MessagePriority.NORMAL,
                     content={"task": task, "task_id": task_id},
                 )
-                final_result = await self.agents["actor"].process_message(actor_msg)
-                if final_result and final_result.get("status") == "success":
-                    return {"resolved": True, "result": final_result, "method": "consensus_retry"}
+            )
+        else:
+            decomposed = {"subtasks": [{"description": task, "agent": "actor"}]}
+        subtasks = self._normalize_subtasks(decomposed)
 
-        return {"resolved": False, "result": failed_result, "method": "unresolvable"}
+        if not subtasks:
+            self.pantheon_stats["tasks_failed"] += 1
+            return {"status": "failed", "task_id": task_id, "mode": mode, "error": "No subtasks produced", "subtasks": []}
+
+        # Phase 2: safety review of every subtask description
+        flagged = await self._review_plan(subtasks)
+
+        # Phase 3 (execute mode only): confirmed, validated, one command at a time
+        execution: List[Dict[str, Any]] = []
+        if mode == "execute":
+            execution = await self._execute_plan(subtasks, flagged)
+
+        executed = [e for e in execution if e["status"] == "executed"]
+        failed = [e for e in execution if e["status"] == "failed"]
+        if mode == "plan":
+            status = "planned"
+        elif failed:
+            status = "partially_executed" if executed else "failed"
+        else:
+            status = "executed" if executed else "no_actions_run"
+
+        success = status in ("planned", "executed", "no_actions_run")
+        self.pantheon_stats["tasks_completed" if success else "tasks_failed"] += 1
+
+        # Phase 4: learning (best effort; never aborts the report)
+        if self.agents.get("learner"):
+            try:
+                await self.agents["learner"].process_message(
+                    Message(
+                        message_type="record_execution",
+                        from_agent=self.agent_id,
+                        to_agent="learner",
+                        priority=MessagePriority.LOW,
+                        content={
+                            "task_id": task_id,
+                            "task_type": task,
+                            "actions": [s["description"] for s in subtasks],
+                            "success": success,
+                            "execution_time": datetime.now().timestamp() - start_time,
+                            "metadata": {"mode": mode, "flagged": sorted(flagged)},
+                        },
+                    )
+                )
+                if success:
+                    self.pantheon_stats["patterns_learned"] += 1
+            except Exception as e:
+                logger.warning(f"[PANTHEON] Learner could not record this run: {e}")
+
+        return {
+            "status": status,
+            "task_id": task_id,
+            "mode": mode,
+            "subtasks": subtasks,
+            "safety_flags": {i: flagged[i] for i in sorted(flagged)},
+            "execution": execution,
+            "optimization_used": optimization is not None,
+        }
+
+    async def _review_plan(self, subtasks: List[Dict[str, Any]]) -> Dict[int, List[str]]:
+        """Run the validator's safety check on every subtask; returns {index: issues} for flagged ones."""
+        flagged: Dict[int, List[str]] = {}
+        validator = self.agents.get("validator")
+        if not validator:
+            return flagged
+        for st in subtasks:
+            reply = await validator.process_message(
+                Message(
+                    message_type="check_safety",
+                    from_agent=self.agent_id,
+                    to_agent="validator",
+                    priority=MessagePriority.HIGH,
+                    content={"content": st["description"]},
+                )
+            )
+            self.pantheon_stats["validations_performed"] += 1
+            verdict = (reply or {}).get("content", {})
+            if not verdict.get("safe", True):
+                flagged[st["index"]] = list(verdict.get("issues", []))
+        return flagged
+
+    async def _propose_command(self, description: str) -> Optional[str]:
+        """Ask the LLM for a single simple command for a subtask (None if it cannot)."""
+        client = getattr(self.agents.get("coordinator"), "grok_client", None)
+        if client is None:
+            return None
+        prompt = (
+            "Give exactly ONE command that accomplishes this step on "
+            f"{platform.system()}:\n\n{description}\n\n"
+            "The command is run directly WITHOUT a shell, so it must be a real executable (not a shell builtin or a "
+            "PowerShell cmdlet; to use PowerShell write: powershell -NoProfile -Command \"...\"). It must not contain "
+            "any of these characters: ; & | < > $ ` \\ % ( ). Use forward slashes in paths.\n"
+            "Reply with only the command on a single line. If it cannot be done with one simple, safe command, "
+            "reply with the single word NONE."
+        )
+        reply = await client.create_message(task=prompt, agent="pantheon_exec")
+        if reply.get("status") != "success":
+            return None
+        text = (reply.get("content") or "").strip()
+        fenced = re.search(r"```(?:\w+)?\s*(.*?)```", text, re.DOTALL)
+        if fenced:
+            text = fenced.group(1).strip()
+        line = text.splitlines()[0].strip() if text else ""
+        return None if not line or line.upper() == "NONE" else line
+
+    async def _confirm(self, subtask: Dict[str, Any], command: str) -> bool:
+        """Ask the user; no callback or any error means no."""
+        if self.confirm_callback is None:
+            return False
+        try:
+            answer = self.confirm_callback(subtask, command)
+            if inspect.isawaitable(answer):
+                answer = await answer
+            return bool(answer)
+        except Exception as e:
+            logger.warning(f"[PANTHEON] Confirmation failed, treating as declined: {e}")
+            return False
+
+    async def _execute_plan(self, subtasks: List[Dict[str, Any]], flagged: Dict[int, List[str]]) -> List[Dict[str, Any]]:
+        """Run actor subtasks one at a time: propose command -> validate -> confirm -> execute."""
+        results: List[Dict[str, Any]] = []
+        blocked: set = set()  # indices and ids of subtasks that failed, were declined, or were blocked
+        executor = getattr(self.agents.get("actor"), "action_executor", None)
+        validator = self.agents.get("validator")
+
+        for st in subtasks:
+            entry = {"index": st["index"], "description": st["description"], "agent": st["agent"], "status": "skipped"}
+            results.append(entry)
+
+            def finish(status: str, reason: str = "", _entry=entry, _st=st) -> None:
+                _entry["status"] = status
+                if reason:
+                    _entry["reason"] = reason
+                if status in ("failed", "declined", "blocked"):
+                    blocked.update({_st["index"], _st["id"]})
+
+            if any(dep in blocked for dep in st["dependencies"]):
+                finish("blocked", "a dependency did not complete")
+            elif st["index"] in flagged:
+                finish("blocked", f"flagged by safety review: {', '.join(flagged[st['index']])}")
+            elif st["agent"] != "actor":
+                finish("skipped", f"only 'actor' subtasks can be executed (agent: {st['agent']})")
+            elif executor is None:
+                finish("skipped", "no action executor available")
+            else:
+                command = await self._propose_command(st["description"])
+                if command is None:
+                    finish("skipped", "no single simple command could be derived")
+                    continue
+                entry["command"] = command
+
+                if validator:
+                    verdict = await validator.process_message(
+                        Message(
+                            message_type="validate_bash",
+                            from_agent=self.agent_id,
+                            to_agent="validator",
+                            priority=MessagePriority.HIGH,
+                            content={"command": command},
+                        )
+                    )
+                    self.pantheon_stats["validations_performed"] += 1
+                    if not (verdict or {}).get("valid", False):
+                        finish("blocked", f"validator rejected the command: {(verdict or {}).get('issues')}")
+                        continue
+
+                if not await self._confirm(st, command):
+                    finish("declined", "not confirmed by the user")
+                    continue
+
+                outcome = await executor.execute_bash(command)
+                entry["output"] = (outcome.get("stdout") or outcome.get("error") or "")[:500]
+                entry["returncode"] = outcome.get("returncode")
+                if outcome.get("status") == "success" and outcome.get("returncode", 0) == 0:
+                    finish("executed")
+                else:
+                    finish("failed", str(outcome.get("error") or outcome.get("stderr") or "non-zero exit")[:200])
+
+        return results
 
     async def _handle_character_analysis(self, message: Message) -> Dict:
         """Handle character analysis requests using the CharacterAnalysisAgent."""

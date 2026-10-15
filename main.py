@@ -345,7 +345,8 @@ async def _list_models_for_provider(provider: str, api_key: Optional[str]):
 @click.option("--process-id", default="main", help="Process ID for distributed communication")
 @click.option("--connect-to", help="Comma-separated list of process IDs to connect to")
 @click.option("--grok4git", is_flag=True, help="Run grok4git CLI mode")
-def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, swarm, agent_roles, messagebus, pantheon, providers, maf_config, review_mode, analytics, agent_name, limit, performance, list_models, syntax_check, quick_check, mcp, todo_daemon: bool = False, distributed: bool = False, process_id: str = "main", connect_to: Optional[str] = None, grok4git: bool = False):
+@click.option("--execute", is_flag=True, help="Pantheon: run actor subtasks (asks to confirm every command; default is plan only)")
+def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, swarm, agent_roles, messagebus, pantheon, providers, maf_config, review_mode, analytics, agent_name, limit, performance, list_models, syntax_check, quick_check, mcp, todo_daemon: bool = False, distributed: bool = False, process_id: str = "main", connect_to: Optional[str] = None, grok4git: bool = False, execute: bool = False):
     """
     Grokputer - VRZIBRZI Node
     Main entry point for the observe-reason-act loop.
@@ -404,7 +405,7 @@ def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, sw
 
         if pantheon:
             # Pantheon mode (9-agent architecture)
-            asyncio.run(_run_pantheon_mode(task, debug, analytics))
+            asyncio.run(_run_pantheon_mode(task, debug, analytics, execute=execute))
         elif providers:
             # MAF Multi-Provider mode
             if not MAF_AVAILABLE:
@@ -507,7 +508,45 @@ def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, sw
         sys.exit(1)
 
 
-async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False, distributed: bool = False, process_id: str = "main", connect_to: str = None):
+async def _confirm_command_cli(subtask: dict, command: str) -> bool:
+    """Ask on the terminal before a Pantheon subtask runs a command. EOF or anything but y/yes means no."""
+    print(f"\n[CONFIRM] Subtask {subtask['index'] + 1}: {subtask['description']}")
+    print(f"          Command: {command}")
+    try:
+        answer = await asyncio.to_thread(input, "          Run this command? [y/N] ")
+    except EOFError:
+        return False
+    return answer.strip().lower() in ("y", "yes")
+
+
+def _print_pantheon_report(report: Optional[dict]) -> None:
+    """Print the plan (and any execution results) produced by the Pantheon."""
+    if not report:
+        return
+    print(f"PLAN ({report.get('mode', 'plan')} mode) - status: {report['status']}")
+    if report.get("error"):
+        print(f"  Error: {report['error']}")
+    flags = report.get("safety_flags", {})
+    results = {e["index"]: e for e in report.get("execution", [])}
+    for st in report.get("subtasks", []):
+        flag = f"  [SAFETY: {', '.join(flags[st['index']])}]" if st["index"] in flags else ""
+        print(f"  {st['index'] + 1}. [{st['agent']}] {st['description']}{flag}")
+        if st["dependencies"]:
+            print(f"       depends on: {st['dependencies']}")
+        res = results.get(st["index"])
+        if res:
+            line = f"       -> {res['status']}"
+            if res.get("command"):
+                line += f": {res['command']}"
+            if res.get("reason"):
+                line += f" ({res['reason']})"
+            print(line)
+            if res.get("output"):
+                print("          " + res["output"].strip().replace("\n", "\n          ")[:300])
+    print()
+
+
+async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False, distributed: bool = False, process_id: str = "main", connect_to: str = None, execute: bool = False):
     """
     Run Pantheon mode with 9-agent architecture.
 
@@ -721,6 +760,9 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False, di
     from src.agents.pantheon_coordinator import PantheonCoordinator
 
     pantheon = PantheonCoordinator(message_bus=message_bus, session_logger=session_logger, config=agent_config)
+    pantheon.execute_mode = execute
+    pantheon.confirm_callback = _confirm_command_cli
+    print(f"Mode: {'EXECUTE (each command needs your confirmation)' if execute else 'PLAN ONLY (nothing is executed)'}")
 
     # Initialize with core agents, literary agents, visionary, and love
     await pantheon.initialize_pantheon(
@@ -803,6 +845,8 @@ async def _run_pantheon_mode(task: str, debug: bool, analytics: bool = False, di
     print(f"Validations performed: {stats['validations_performed']}")
     print(f"Active agents: {len(stats['active_agents'])}")
     print("=" * 70 + "\n")
+
+    _print_pantheon_report(pantheon.last_report)
 
     session_logger.log_session_end()
     logger.info("[PANTHEON] Session complete")
