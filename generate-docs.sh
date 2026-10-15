@@ -30,22 +30,34 @@ generate_api_docs() {
         echo "Generated on: $(date)" >> docs/api.md
         echo "" >> docs/api.md
 
-        # Extract tool definitions
-        grep -A 5 "@mcp.tool()" grokputer_server.py | while read -r line; do
-            if [[ $line == @mcp.tool()* ]]; then
-                # Found a tool definition
-                read -r func_line
-                if [[ $func_line == async\ def* ]]; then
-                    func_name=$(echo "$func_line" | sed 's/async def \([^(]*\).*/\1/')
-                    echo "## $func_name" >> docs/api.md
-                    echo "" >> docs/api.md
+        # Extract tool definitions: name, signature and docstring of every @mcp.tool() function
+        python - >> docs/api.md <<'PYEOF'
+import ast
 
-                    # Extract docstring
-                    grep -A 10 -B 2 "$func_name" grokputer_server.py | grep '"""' | head -2 | sed 's/"""//g' | sed 's/^\s*//g' >> docs/api.md
-                    echo "" >> docs/api.md
-                fi
-            fi
-        done
+with open("grokputer_server.py", encoding="utf-8") as f:
+    tree = ast.parse(f.read())
+
+
+def is_tool(node):
+    """True if the function is decorated with @<something>.tool() or @<something>.tool."""
+    for dec in node.decorator_list:
+        target = dec.func if isinstance(dec, ast.Call) else dec
+        if isinstance(target, ast.Attribute) and target.attr == "tool":
+            return True
+    return False
+
+
+for node in ast.walk(tree):
+    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and is_tool(node):
+        prefix = "async def" if isinstance(node, ast.AsyncFunctionDef) else "def"
+        returns = f" -> {ast.unparse(node.returns)}" if node.returns else ""
+        print(f"## {node.name}")
+        print()
+        print(f"`{prefix} {node.name}({ast.unparse(node.args)}){returns}`")
+        print()
+        print(ast.get_docstring(node) or "_No description._")
+        print()
+PYEOF
 
         echo -e "${GREEN}✓ API documentation generated${NC}"
     fi
