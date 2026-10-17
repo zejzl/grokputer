@@ -769,7 +769,7 @@ pip install -r requirements.txt
  # Run with coverage
  pytest --cov=src tests/
 
-  # Current Status: 629 passed, 0 failed, 11 skipped (2026-10-17, Python 3.14)
+  # Current Status: 651 passed, 0 failed, 11 skipped (2026-10-17, Python 3.14)
   # Coverage: 25% (improving with ongoing fixes)
   # MessageBus: 51k-105k msg/sec end-to-end, 0.007ms unloaded latency (measured 2026-10-15)
 ```

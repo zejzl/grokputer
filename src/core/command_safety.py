@@ -8,8 +8,8 @@ Layer 1, shell metacharacters (`find_shell_metacharacter`): used by ActionExecut
 bash() and the Actor. Rejecting them means a command cannot chain, pipe, redirect or expand.
 
 Layer 2, blocked programs (`find_blocked_program`): destructive or network programs that contain
-no metacharacters at all (`format c:`, `shutdown now`, `curl http://...`). Used by the Actor.
-ActionExecutor only applies layer 1 on purpose, so its behaviour is unchanged.
+no metacharacters at all (`format c:`, `shutdown now`, `curl http://...`). Used by ActionExecutor
+and the Actor.
 
 `check_command` returns a human-readable reason when a command must be refused, or None when it is
 acceptable. It is a guard rail, not a sandbox: an allowed program can still do harm.

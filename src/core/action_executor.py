@@ -22,7 +22,7 @@ from typing import Any, Dict, List, Optional
 import pyautogui
 from PIL import Image
 
-from src.core.command_safety import find_shell_metacharacter
+from src.core.command_safety import find_blocked_program, find_shell_metacharacter
 
 logger = logging.getLogger(__name__)
 
@@ -242,6 +242,16 @@ class ActionExecutor:
             return {
                 "status": "error",
                 "error": "Command contains dangerous shell metacharacters (;, &, |, <, >, $, `, \\). Use explicit arguments instead.",
+                "risk_level": "CRITICAL",
+            }
+
+        # SECURITY: refuse destructive/network programs and interpreters that metacharacter checks cannot see
+        blocked = find_blocked_program(command)
+        if blocked:
+            logger.error(f"Command blocked ({blocked}): {command}")
+            return {
+                "status": "error",
+                "error": f"Command blocked: {blocked}",
                 "risk_level": "CRITICAL",
             }
 
