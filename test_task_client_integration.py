@@ -4,6 +4,7 @@ Test script for TaskClient integration with existing agents.
 """
 import asyncio
 import logging
+from pathlib import Path
 from src.core.message_bus import MessageBus
 from src.observability.session_logger import SessionLogger
 from src.agents.task_master import TaskMaster, TaskPriority
@@ -24,7 +25,9 @@ async def test_task_client_integration():
 
     # Initialize components
     message_bus = MessageBus()
-    session_logger = SessionLogger()
+    session_logger = SessionLogger(
+        session_id="task_client_integration", task="TaskClient integration test", log_dir=Path("./logs"), swarm_mode=True
+    )
 
     # Start TaskMaster
     taskmaster = TaskMaster(message_bus, session_logger, {})
@@ -33,19 +36,20 @@ async def test_task_client_integration():
     # Give TaskMaster time to start
     await asyncio.sleep(1)
 
-    # Create agents with TaskClient enabled
+    # Create agents with TaskClient enabled; ask for work every 3 seconds instead of the default 30
+    agent_config = {**config.__dict__, "task_check_interval": 3.0}
     agents = []
 
     # Story Generation Agent
-    story_agent = StoryGenerationAgent("story_agent", message_bus, session_logger, config.__dict__)
+    story_agent = StoryGenerationAgent("story_agent", message_bus, session_logger, agent_config)
     agents.append(story_agent)
 
     # Character Analysis Agent
-    char_agent = CharacterAnalysisAgent("char_agent", message_bus, session_logger, config.__dict__)
+    char_agent = CharacterAnalysisAgent("char_agent", message_bus, session_logger, agent_config)
     agents.append(char_agent)
 
     # Coordinator Agent
-    coord_agent = Coordinator(message_bus=message_bus, session_logger=session_logger, config=config.__dict__)
+    coord_agent = Coordinator(message_bus=message_bus, session_logger=session_logger, config=agent_config)
     agents.append(coord_agent)
 
     # Start agents

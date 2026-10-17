@@ -31,6 +31,33 @@ class TaskClient:
         self.message_bus = message_bus
         self.current_tasks: Dict[str, Dict[str, Any]] = {}  # task_id -> task_data
         self.capabilities: List[str] = []
+        self._seen_task_ids: set = set()  # every task id ever received, so a push cannot re-add a finished task
+        # Inbox for task_assigned pushes (auto-delegation). Agents that already are BaseAgents have
+        # their own inbox and task client, and should not also use this class.
+        self.message_bus.register_agent(self.agent_id)
+
+    async def poll_assignments(self) -> int:
+        """Pick up task_assigned pushes waiting in this client's inbox. Returns how many were added.
+
+        Anything else in the inbox is dropped, so only use this client for agents that read no
+        other messages.
+        """
+        added = 0
+        while True:
+            try:
+                message = await self.message_bus.receive(self.agent_id, timeout=0.01)
+            except asyncio.TimeoutError:
+                return added
+            if message.message_type == "task_assigned" and isinstance(message.content.get("task"), dict):
+                task = message.content["task"]
+                if task["task_id"] in self._seen_task_ids:
+                    continue
+                self._seen_task_ids.add(task["task_id"])
+                self.current_tasks[task["task_id"]] = task
+                added += 1
+                logger.info(f"[TaskClient:{self.agent_id}] Pushed task: {task['task_id']} - {task['title']}")
+            else:
+                logger.debug(f"[TaskClient:{self.agent_id}] Ignored {message.message_type} message")
 
     async def register_capabilities(self, capabilities: List[str]):
         """Register agent capabilities with TaskMaster."""
@@ -57,6 +84,7 @@ class TaskClient:
         if response and response.get("status") == "assigned":
             task_data = response.get("task")
             if task_data:
+                self._seen_task_ids.add(task_data["task_id"])
                 self.current_tasks[task_data["task_id"]] = task_data
                 logger.info(
                     f"[TaskClient:{self.agent_id}] Assigned task: {task_data['task_id']} - {task_data['title']}"
@@ -129,7 +157,7 @@ class TaskClient:
     async def _send_message(
         self, message_type: str, content: Dict[str, Any], timeout: float = 10.0
     ) -> Optional[Dict[str, Any]]:
-        """Send a message to TaskMaster and wait for response."""
+        """Send a message to TaskMaster and return its reply (None if it is absent or times out)."""
         try:
             # Send message
             message = Message(
@@ -140,11 +168,7 @@ class TaskClient:
                 priority=MessagePriority.NORMAL,
             )
 
-            await self.message_bus.send(message)
-
-            # Wait for response (simplified - in real implementation would need correlation ID)
-            # For now, we'll just return success
-            return {"status": "sent", "type": message_type}
+            return await self.message_bus.send_and_wait("taskmaster", message, timeout=timeout)
 
         except Exception as e:
             logger.error(f"[TaskClient:{self.agent_id}] Error sending message: {e}")
@@ -164,6 +188,8 @@ class TaskClient:
         """Start loop that requests tasks when agent is idle."""
         while True:
             try:
+                await self.poll_assignments()
+
                 # Check if we have capacity for more tasks
                 current_count = len(
                     [t for t in self.current_tasks.values() if t.get("status") in ["assigned", "in_progress"]]

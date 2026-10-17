@@ -109,98 +109,29 @@ async def demo_task_management():
     # Start agents
     agent_tasks = [asyncio.create_task(agent.run()) for agent in agents]
 
-    # Create some demo tasks
+    # Create tasks through a TaskClient (normally a coordinator or a user does this)
+    admin = TaskClient("demo", message_bus)
+    demo_tasks = [
+        ("Fix critical security vulnerability", "Address CVE-2024-12345 in authentication module", "critical", ["security", "urgent"]),
+        ("Implement user dashboard", "Create responsive dashboard with real-time metrics", "high", ["frontend", "ui"]),
+        ("Write API documentation", "Document all REST endpoints with examples", "medium", ["documentation", "api"]),
+        ("Optimize database queries", "Improve slow queries in user analytics", "medium", ["database", "performance"]),
+        ("Update dependencies", "Upgrade to latest secure versions", "low", ["maintenance", "security"]),
+    ]
     logger.info("[TODO] Creating demo tasks...")
-
-    # Create tasks via TaskMaster (normally this would be done by a coordinator or user)
-    task_message = Message(
-        from_agent="demo",
-        to_agent="taskmaster",
-        message_type="create_task",
-        content={
-            "title": "Fix critical security vulnerability",
-            "description": "Address CVE-2024-12345 in authentication module",
-            "priority": "critical",
-            "tags": ["security", "urgent"],
-        },
-        priority=MessagePriority.HIGH,
-    )
-    await message_bus.send(task_message)
-
-    task2 = Message(
-        from_agent="demo",
-        to_agent="taskmaster",
-        message_type="create_task",
-        content={
-            "title": "Implement user dashboard",
-            "description": "Create responsive dashboard with real-time metrics",
-            "priority": "high",
-            "tags": ["frontend", "ui"],
-        },
-        priority=MessagePriority.NORMAL,
-    )
-    await message_bus.send(task2)
-
-    task3 = Message(
-        from_agent="demo",
-        to_agent="taskmaster",
-        message_type="create_task",
-        content={
-            "title": "Write API documentation",
-            "description": "Document all REST endpoints with examples",
-            "priority": "medium",
-            "tags": ["documentation", "api"],
-        },
-        priority=MessagePriority.NORMAL,
-    )
-    await message_bus.send(task3)
-
-    task4 = Message(
-        from_agent="demo",
-        to_agent="taskmaster",
-        message_type="create_task",
-        content={
-            "title": "Optimize database queries",
-            "description": "Improve slow queries in user analytics",
-            "priority": "medium",
-            "tags": ["database", "performance"],
-        },
-        priority=MessagePriority.NORMAL,
-    )
-    await message_bus.send(task4)
-
-    task5 = Message(
-        from_agent="demo",
-        to_agent="taskmaster",
-        message_type="create_task",
-        content={
-            "title": "Update dependencies",
-            "description": "Upgrade to latest secure versions",
-            "priority": "low",
-            "tags": ["maintenance", "security"],
-        },
-        priority=MessagePriority.NORMAL,
-    )
-    await message_bus.send(task5)
+    for title, description, priority, tags in demo_tasks:
+        response = await admin.create_task(title, description, priority=priority, tags=tags)
+        logger.info(f"[TODO] {response['task']['task_id']}: {title} ({priority})")
 
     # Let the system run for a while to demonstrate task delegation
-    logger.info("⏳ Running task delegation demo for 30 seconds...")
+    logger.info("Running task delegation demo for 30 seconds...")
     await asyncio.sleep(30)
 
-    # Get system stats
-    logger.info("[STATS] Getting system statistics...")
-    stats_message = Message(
-        from_agent="demo",
-        to_agent="taskmaster",
-        message_type="get_system_stats",
-        content={},
-        priority=MessagePriority.NORMAL,
-    )
-    await message_bus.send(stats_message)
-    # Note: In a real implementation, we'd wait for a response, but for demo we just send
+    stats = await admin.get_system_stats()
+    logger.info(f"[STATS] {stats['status_counts']}")
 
     # Shutdown
-    logger.info("🛑 Shutting down demo...")
+    logger.info("Shutting down demo...")
 
     # Cancel all tasks
     taskmaster_task.cancel()

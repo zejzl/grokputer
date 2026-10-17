@@ -312,26 +312,10 @@ class CharacterAnalysisAgent(BaseAgent):
             )
             return response
 
+        if message.message_type == "task_execution":
+            return {
+                "status": "error",
+                "error": "CharacterAnalysisAgent cannot execute generic tasks yet; send it a character_analysis_request",
+            }
+
         return None
-
-    async def run(self):
-        """Main agent loop."""
-        await self.register_with_bus()
-
-        while not self.shutdown_event.is_set():
-            try:
-                # Process messages
-                message = await self.message_bus.receive(self.agent_id, timeout=1.0)
-                if message:
-                    response = await self.process_message(message)
-                    if response:
-                        await self.message_bus.send(response.receiver, response)
-
-                # Periodic health check
-                await self.send_heartbeat()
-
-                await asyncio.sleep(0.1)
-
-            except Exception as e:
-                self.logger.error(f"CharacterAnalysisAgent error: {e}")
-                await asyncio.sleep(1.0)

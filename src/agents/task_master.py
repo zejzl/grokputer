@@ -21,6 +21,7 @@ from datetime import datetime
 
 from src.core.base_agent import BaseAgent
 from src.core.message_bus import MessageBus, Message, MessagePriority
+from src.exceptions import MessageBusError
 from src.observability.session_logger import SessionLogger
 
 logger = logging.getLogger(__name__)
@@ -292,6 +293,14 @@ class TaskMaster(BaseAgent):
 
         return {"status": "unknown_message_type", "type": msg_type}
 
+    async def _notify(self, message: Message) -> None:
+        """Push a task_assigned notice. The assignment is already recorded and returned in the reply,
+        so an agent that is not registered on the bus (no inbox) is not an error."""
+        try:
+            await self.message_bus.send(message)
+        except MessageBusError:
+            logger.debug(f"[TaskMaster] {message.to_agent} has no inbox; assignment not pushed")
+
     async def _handle_task_request(self, message: Message) -> Dict[str, Any]:
         """Handle agent requesting a task."""
         agent_id = message.from_agent
@@ -320,16 +329,8 @@ class TaskMaster(BaseAgent):
             # Update task status
             self.task_registry.update_task_status(task.task_id, TaskStatus.ASSIGNED, agent_id)
 
-            # Notify agent
-            assign_message = Message(
-                from_agent=self.agent_id,
-                to_agent=agent_id,
-                message_type="task_assigned",
-                content={"task": task.to_dict(), "assigned_by": "taskmaster"},
-                priority=MessagePriority.HIGH,
-            )
-            await self.message_bus.send(assign_message)
-
+            # The requester gets the task in this reply, so it is not also pushed (that delivered every
+            # pulled task twice). Pushes are for assignments the agent did not ask for (auto-delegation).
             return {"status": "assigned", "task_id": task.task_id, "task_title": task.title, "task": task.to_dict()}
         else:
             return {"status": "assignment_failed", "task_id": task.task_id}
@@ -440,7 +441,7 @@ class TaskMaster(BaseAgent):
                         content={"task": task.to_dict(), "assigned_by": "taskmaster", "reason": "auto_delegation"},
                         priority=MessagePriority.NORMAL,
                     )
-                    await self.message_bus.send(assign_message)
+                    await self._notify(assign_message)
 
     async def _try_auto_delegate_task(self, task: Task):
         """Try to auto-delegate a newly created task."""
@@ -476,7 +477,7 @@ class TaskMaster(BaseAgent):
                     content={"task": task.to_dict(), "assigned_by": "taskmaster", "reason": "auto_delegation"},
                     priority=MessagePriority.NORMAL,
                 )
-                await self.message_bus.send(assign_message)
+                await self._notify(assign_message)
 
     async def _check_stale_agents(self):
         """Check for stale agents and reassign their tasks."""

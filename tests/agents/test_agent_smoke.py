@@ -14,6 +14,7 @@ from src.agents.learner import LearnerAgent
 from src.agents.memory_agent import MemoryAgent
 from src.agents.taskmaster import Taskmaster
 from src.agents.validator import ValidatorAgent
+from src.core.base_agent import BaseAgent
 from src.core.message_bus import Message, MessageBus
 
 
@@ -340,3 +341,43 @@ class TestTaskmaster:
     async def test_reply_through_run_loop_keeps_correlation_id(self):
         reply = await _roundtrip(self._taskmaster("[]"), "suggest", {})
         assert reply.message_type == "suggestions" and reply.correlation_id == "corr-1"
+
+
+class TestMessageReturningAgents:
+    """StoryGenerationAgent / CharacterAnalysisAgent return Message objects and used to crash in a stale run()."""
+
+    @pytest.mark.parametrize(
+        "module, cls",
+        [
+            ("src.agents.story_generation_agent", "StoryGenerationAgent"),
+            ("src.agents.character_analysis_agent", "CharacterAnalysisAgent"),
+        ],
+    )
+    @pytest.mark.asyncio
+    async def test_runs_on_base_agent_loop_and_reports_unsupported_tasks(self, module, cls):
+        import importlib
+
+        agent_cls = getattr(importlib.import_module(module), cls)
+        agent = agent_cls("a1", MessageBus(), MagicMock(), {})
+        assert "run" not in vars(agent_cls)  # inherits BaseAgent.run (no stale override)
+
+        reply = await _roundtrip(agent, "task_execution", {"task_id": "t1", "instruction": "do something"})
+        assert reply.content["status"] == "error" and "generic tasks" in reply.content["error"]
+        assert reply.correlation_id == "corr-1"
+
+    @pytest.mark.asyncio
+    async def test_base_agent_delivers_a_reply_message_object_with_correlation_id(self):
+        from src.core.message_bus import MessagePriority
+
+        class MessageAgent(BaseAgent):
+            async def process_message(self, message):
+                return Message(
+                    from_agent=self.agent_id,
+                    to_agent=message.from_agent,
+                    message_type="answer",
+                    content={"ok": True},
+                    priority=MessagePriority.NORMAL,
+                )
+
+        reply = await _roundtrip(MessageAgent("smoke", MessageBus(), MagicMock(), {}), "ask", {})
+        assert reply.message_type == "answer" and reply.content == {"ok": True} and reply.correlation_id == "corr-1"

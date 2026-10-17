@@ -72,8 +72,9 @@ class TestHandlers:
 
         assigned = await master.process_message(msg("task_request"))
         assert assigned["status"] == "assigned" and assigned["task"]["task_id"] == created["task"]["task_id"]
-        notice = await bus.receive("w1", timeout=1)
-        assert notice.message_type == "task_assigned"
+        # the reply carries the task, so it is not pushed a second time
+        with pytest.raises(asyncio.TimeoutError):
+            await bus.receive("w1", timeout=0.05)
 
         done = await master.process_message(
             msg("task_status_update", {"task_id": assigned["task_id"], "status": "completed", "notes": "ok"})
@@ -225,3 +226,123 @@ async def test_auto_delegation_waits_for_dependencies():
     # `blocker` was auto-delegated to w1; the dependent task must stay pending until it completes
     dependent = (await master.process_message(msg("create_task", {"title": "dependent", "dependencies": [blocker]})))["task"]
     assert master.task_registry.get_task(dependent["task_id"]).status == TaskStatus.PENDING
+
+
+class TestStandaloneTaskClient:
+    """src/core/task_client.TaskClient: used by agents that are not BaseAgents (see demo_task_management.py)."""
+
+    @pytest.mark.asyncio
+    async def test_pull_flow_request_update_stats(self):
+        from src.core.task_client import TaskClient
+
+        bus = MessageBus()
+        master = make_master(bus)
+        master_task = await run_in_background(master)
+        try:
+            client = TaskClient("alpha", bus)
+            assert (await client.register_capabilities(["coding"]))["status"] == "capabilities_updated"
+            created = await client.create_task("Fix bug", "details", priority="high")
+            assert created["status"] == "created"
+
+            task = await client.request_task()
+            assert task["task_id"] == created["task"]["task_id"] and client.get_current_tasks() == [task]
+
+            assert (await client.update_task_status(task["task_id"], "completed"))["status"] == "updated"
+            assert client.get_current_tasks() == []
+            assert (await client.get_system_stats())["status_counts"]["completed"] == 1
+            assert await client.get_available_tasks() == []
+        finally:
+            await stop(master, master_task)
+
+    @pytest.mark.asyncio
+    async def test_auto_delegated_tasks_are_pushed_to_the_clients_inbox(self):
+        from src.core.task_client import TaskClient
+
+        bus = MessageBus()
+        master = make_master(bus, auto_delegate=True)
+        master_task = await run_in_background(master)
+        try:
+            client = TaskClient("alpha", bus)
+            await client.register_capabilities(["coding"])
+            await client.send_heartbeat()  # auto-delegation only considers agents with a recent heartbeat
+
+            await client.create_task("Pushed", "d")
+            assert await client.poll_assignments() == 1
+            (task,) = client.get_current_tasks()
+            assert task["title"] == "Pushed" and task["assigned_agent"] == "alpha"
+        finally:
+            await stop(master, master_task)
+
+    @pytest.mark.asyncio
+    async def test_returns_none_style_results_when_taskmaster_is_absent(self):
+        from src.core.task_client import TaskClient
+
+        client = TaskClient("alpha", MessageBus())
+        assert await client.request_task() is None
+        assert await client.get_available_tasks() == []
+        assert await client.get_system_stats() is None
+
+
+@pytest.mark.asyncio
+async def test_assignment_to_an_agent_without_an_inbox_is_not_an_error():
+    bus = MessageBus()  # "ghost" is never registered
+    master = make_master(bus, auto_delegate=True)
+    await master.process_message(msg("agent_capabilities", {"capabilities": ["x"]}, from_agent="ghost"))
+    await master.process_message(msg("agent_heartbeat", from_agent="ghost"))
+
+    created = await master.process_message(msg("create_task", {"title": "T"}, from_agent="demo"))
+    assert created["status"] == "created"
+    assert master.task_registry.get_task(created["task"]["task_id"]).assigned_agent == "ghost"
+
+
+@pytest.mark.asyncio
+async def test_a_task_is_delivered_to_the_client_exactly_once():
+    from src.core.task_client import TaskClient
+
+    bus = MessageBus()
+    master = make_master(bus, auto_delegate=True)
+    master_task = await run_in_background(master)
+    try:
+        client = TaskClient("alpha", bus)
+        await client.register_capabilities(["x"])
+        await client.send_heartbeat()
+        await client.create_task("Only once", "d")  # auto-delegated: pushed
+        assert await client.poll_assignments() == 1
+        (task,) = client.get_current_tasks()
+
+        await client.update_task_status(task["task_id"], "completed")
+        # a stale duplicate push for the finished task must not bring it back
+        await bus.send(
+            Message(
+                from_agent="taskmaster", to_agent="alpha", message_type="task_assigned", content={"task": task}
+            )
+        )
+        assert await client.poll_assignments() == 0 and client.get_current_tasks() == []
+    finally:
+        await stop(master, master_task)
+
+
+class TestBaseAgentTaskLoop:
+    def test_check_interval_is_configurable(self):
+        assert Worker("w1", MessageBus(), MagicMock(), {}).task_check_interval == 30.0
+        assert Worker("w2", MessageBus(), MagicMock(), {"task_check_interval": 2}).task_check_interval == 2.0
+
+    @pytest.mark.asyncio
+    async def test_reply_message_counts_as_a_completed_task(self):
+        bus = MessageBus()
+        master = make_master(bus)
+        worker = Worker("w1", bus, MagicMock(), {})
+        worker.enable_task_client(["x"])
+
+        async def answer(message):
+            return Message(from_agent="w1", to_agent="taskmaster", message_type="answer", content={})
+
+        worker.process_message = answer
+        master_task = await run_in_background(master)
+        try:
+            task_id = await worker.create_task("t", "d")
+            task = await worker.request_task()
+            await worker._process_assigned_task(task)
+            assert master.task_registry.get_task(task_id).status == TaskStatus.COMPLETED
+        finally:
+            await stop(master, master_task)

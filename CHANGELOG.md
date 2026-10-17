@@ -7,6 +7,12 @@
 
 - **Workflow engine now routes on conditional branches.** Edges added with `condition="true"/"false"` (or any label a node reports via the state key `<node_id>_branch`) only fire when the source took that branch; the other side is marked `SKIPPED`, skips propagate, and a node runs when any incoming edge is active. Until now the condition was stored but ignored, so both sides always ran. `run()` also resets node statuses and branch labels at the start, and `execute()` reports `nodes_skipped`. Example: `workflows/branch.yaml`; tests: `tests/workflow/test_branching.py`
 
+### Fixed (demo scripts)
+- **`demo_task_management.py`** ran but nothing happened: no agent ever processed a task. `TaskClient` returned `{"status": "sent"}` without waiting for a reply and had no inbox for pushed assignments. It now uses `send_and_wait`, registers an inbox and picks up `task_assigned` pushes (`poll_assignments`, with duplicate protection); the demo creates its tasks through a `TaskClient` and prints the final stats. Result: 5 tasks created, processed and completed, no errors
+- TaskMaster no longer pushes a `task_assigned` notice to an agent that just received the task in a reply (every pulled task arrived twice), and a notice to an agent without an inbox is not an error
+- `BaseAgent.run`: a reply addressed to an unregistered agent is dropped with a warning instead of putting the agent into the error state; replies may be `Message` objects as well as dicts; poll interval configurable via `task_check_interval`
+- **`test_task_client_integration.py`** crashed on its first line (`SessionLogger()` without arguments). `StoryGenerationAgent` and `CharacterAnalysisAgent` crashed on start through a stale `run()` override (`register_with_bus` and other methods that no longer exist); the overrides are gone and the agents now answer `task_execution` with an explicit error. Not fixed: TaskMaster does not match task tags to agent capabilities
+
 ### Added
 - `src/core/command_safety.py`: shared command checks (ActionExecutor's shell-metacharacter rule, plus a blocked-program list: `format`, `shutdown`, `curl`, interpreters, recursive deletes). The plain `Actor` now uses it instead of a substring blocklist that missed `format`; the toolkit's `bash()` shares the metacharacter list
 - `src/agents/task_master.py`: the `TaskMaster` task board, restored from commit 37db194 (it had been overwritten by the unrelated planner), with `SessionLogger.log_task_update`; `BaseAgent`'s task client now waits for TaskMaster's reply (`send_and_wait`) instead of returning `{"status": "sent"}`, so `create_task`, `request_task` and `get_available_tasks` actually return data
@@ -15,7 +21,7 @@
 - `tests/test_shell_hardening.py`: AST guards that fail on any `shell=True` call or bare `except:` in `main.py`, `autonomous.py`, `improve_swarm.py` and `src/`
 - `tests/test_tools_package.py`, `tests/test_main_menu.py`
 - `scripts/legacy_fixes/` for the old one-off `fix_*` scripts
-- Tests: 670 passing, 11 skipped
+- Tests: 681 passing, 11 skipped
 
 ### Fixed
 - **TaskMaster** never enforced task `dependencies`; a task could be assigned or auto-delegated before the tasks it depends on were completed

@@ -96,3 +96,22 @@ async def test_reply_from_a_different_agent_does_not_resolve_the_request():
     asyncio.create_task(impostor())
     with pytest.raises(asyncio.TimeoutError):
         await bus.send_and_wait("echo", _request(), timeout=0.3)
+
+
+@pytest.mark.asyncio
+async def test_reply_to_an_unregistered_sender_does_not_put_the_agent_in_error():
+    """A fire-and-forget message from an agent with no inbox used to end in MessageBusError -> error state."""
+    bus = MessageBus()
+    agent = EchoAgent("echo", bus, MagicMock(), {})
+    task = await _started(agent)
+    try:
+        # default reply address is "coordinator", which is not registered here
+        await bus.send(Message(from_agent="ghost", to_agent="echo", message_type="ask", content={"n": 1}))
+        await asyncio.sleep(0.2)
+        assert agent.state.status != "error" and agent.state.error is None
+
+        # still serving requests afterwards
+        bus.register_agent("caller")
+        assert await bus.send_and_wait("echo", _request(5), timeout=3) == {"echo": 5}
+    finally:
+        await _stopped(agent, task)

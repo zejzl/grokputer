@@ -9,6 +9,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 # Lazy import SessionLogger
+from ..exceptions import MessageBusError
 from .message_bus import Message, MessageBus, MessagePriority
 
 
@@ -52,6 +53,7 @@ class BaseAgent(ABC):
         self.capabilities: List[str] = []
         self.task_client_enabled = False
         self.task_request_timeout = float(config.get("task_request_timeout", 5.0)) if isinstance(config, dict) else 5.0
+        self.task_check_interval = float(config.get("task_check_interval", 30.0)) if isinstance(config, dict) else 30.0
 
         # Deadlock detector integration (stub - will be injected in Phase 1)
         self.deadlock_detector = None  # To be set externally if available
@@ -126,7 +128,7 @@ class BaseAgent(ABC):
 
         # Start task client loop if enabled
         if self.task_client_enabled:
-            self.idle_task = asyncio.create_task(self.start_idle_task_loop())
+            self.idle_task = asyncio.create_task(self.start_idle_task_loop(self.task_check_interval))
             await self.register_capabilities()
 
         try:
@@ -143,22 +145,35 @@ class BaseAgent(ABC):
 
                     # Send response if any
                     if response:
-                        # Create Message object from response dict
-                        to_agent = response.get("to", "coordinator")
-                        msg_type = response.get("type", "response")
-                        content = response.get("content", response)
-                        priority = response.get("priority", MessagePriority.NORMAL)
-                        correlation_id = response.get("correlation_id") or message.correlation_id
+                        if isinstance(response, Message):
+                            # Agents may build the reply Message themselves
+                            msg = response
+                            msg.correlation_id = msg.correlation_id or message.correlation_id
+                            to_agent, msg_type = msg.to_agent, msg.message_type
+                        else:
+                            # Create Message object from response dict
+                            to_agent = response.get("to", "coordinator")
+                            msg_type = response.get("type", "response")
+                            content = response.get("content", response)
+                            priority = response.get("priority", MessagePriority.NORMAL)
+                            correlation_id = response.get("correlation_id") or message.correlation_id
 
-                        msg = Message(
-                            from_agent=self.agent_id,
-                            to_agent=to_agent,
-                            message_type=msg_type,
-                            content=content,
-                            priority=priority,
-                            correlation_id=correlation_id,
-                        )
-                        await self.message_bus.send(msg)
+                            msg = Message(
+                                from_agent=self.agent_id,
+                                to_agent=to_agent,
+                                message_type=msg_type,
+                                content=content,
+                                priority=priority,
+                                correlation_id=correlation_id,
+                            )
+                        try:
+                            await self.message_bus.send(msg)
+                        except MessageBusError:
+                            # Nobody is registered to read this reply (e.g. a one-off sender). That is
+                            # not a failure of this agent, so do not put it into the error state.
+                            logging.getLogger(__name__).warning(
+                                f"[{self.agent_id}] Dropped reply to unregistered agent '{to_agent}' ({msg_type})"
+                            )
                     self._update_state("idle")
 
                 except asyncio.TimeoutError:
@@ -348,8 +363,8 @@ class BaseAgent(ABC):
             # Process the task using existing message processing
             result = await self.process_message(task_message)
 
-            # Update task status
-            if result and result.get("status") == "success":
+            # Update task status (a reply Message counts as an answer; a dict needs status == "success")
+            if isinstance(result, Message) or (result and result.get("status") == "success"):
                 await self.update_task_status(task_id, "completed", "Task completed successfully")
             else:
                 await self.update_task_status(
