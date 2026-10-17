@@ -69,15 +69,22 @@ class MemoryAgent(BaseAgent):
 
         logger.info(f"[{self.agent_id}] Memory agent initialized")
 
-    async def process_message(self, message: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    async def process_message(self, message: Any) -> Optional[Dict[str, Any]]:
         """
         Process memory-related messages.
+
+        Accepts a plain dict ({"type": ..., ...}) or a MessageBus Message, whose
+        payload is flattened into the dict form the handlers use.
 
         Message types:
         - store_state: Store data in memory
         - recall_state: Retrieve data from memory
         - search_memory: Vector search in memory
         """
+        if not isinstance(message, dict):
+            payload = message.content if isinstance(message.content, dict) else {"content": message.content}
+            message = {**payload, "type": message.message_type, "from": message.from_agent}
+
         msg_type = message.get("type")
 
         if msg_type == "store_state":
@@ -207,7 +214,7 @@ class MemoryAgent(BaseAgent):
         update_msg = {"type": "memory_update", "key": key, "data": data, "from": self.agent_id, "priority": priority}
         # Note: MessageBus doesn't have broadcast, simplified for now
         logger.info(f"[{self.agent_id}] Memory update broadcast for {key}")
-        self.logger.info(f"Stored and broadcasted memory update for key: {key}")
+        logger.info(f"Stored and broadcasted memory update for key: {key}")
 
     async def search_memory(self, query: str, top_k: int = 5, priority: str = "NORMAL") -> List[Dict[str, Any]]:
         """Search memory (vector in Pinecone, fallback to Redis keys)."""

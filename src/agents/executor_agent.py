@@ -219,7 +219,7 @@ class ExecutorAgent(BaseAgent):
             # Direct execution
             action = step_params.get("action", {})
             if self.action_executor:
-                result = await self.action_executor.execute(action)
+                result = await self.action_executor.execute_async(self.agent_id, action)
                 # Record for rollback
                 self._record_rollback_action(workflow_id, action)
                 return result
@@ -245,14 +245,20 @@ class ExecutorAgent(BaseAgent):
         """Send message to agent and wait for response."""
         # Send message via MessageBus
         correlation_id = f"{self.agent_id}_{datetime.now().timestamp()}"
-        message_with_id = {**message, "correlation_id": correlation_id}
+        content = {k: v for k, v in message.items() if k != "type"}
+        await self.message_bus.send(
+            Message(
+                from_agent=self.agent_id,
+                to_agent=target_agent,
+                message_type=message.get("type", "task"),
+                content=content,
+                correlation_id=correlation_id,
+            )
+        )
 
-        await self.message_bus.send(target_agent, message_with_id)
-
-        # Wait for response (simplified - in full implementation would use correlation IDs)
+        # Fire-and-forget: waiting here would compete with run() for this agent's queue.
         logger.info(f"[{self.agent_id}] Delegating to {target_agent}: {message}")
-        # Placeholder response - in real implementation, would wait for response message
-        return {"status": "completed", "response": f"Delegated to {target_agent}"}
+        return {"status": "completed", "response": f"Delegated to {target_agent}", "correlation_id": correlation_id}
 
     def _group_parallel_steps(self, steps: List[Dict]) -> List[List[Dict]]:
         """Group steps that can be executed in parallel based on dependencies."""
@@ -350,7 +356,9 @@ class ExecutorAgent(BaseAgent):
             if reverse_cmd:
                 # Execute reverse command
                 if self.action_executor:
-                    result = await self.action_executor.execute({"type": "bash", "params": {"command": reverse_cmd}})
+                    result = await self.action_executor.execute_async(
+                        self.agent_id, {"type": "bash", "command": reverse_cmd}
+                    )
                     return {"status": "success", "command": reverse_cmd, "result": result}
                 else:
                     return {"status": "error", "reason": "No action executor available"}
@@ -418,7 +426,7 @@ class ExecutorAgent(BaseAgent):
             rollback_def = {
                 "type": action_type,
                 "params": {
-                    "original_command": action.get("params", {}).get("command", ""),
+                    "original_command": action.get("command") or action.get("params", {}).get("command", ""),
                     "timestamp": datetime.now().isoformat(),
                 },
             }

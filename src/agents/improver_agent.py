@@ -42,6 +42,9 @@ class ImproverAgent(BaseAgent):
             "learning_persistence": True,
             "improvement_threshold": 0.1,  # Minimum improvement to apply
             "max_learning_states": 1000,  # Maximum stored learning states
+            "auto_apply": False,
+            "max_improvements": 5,  # Recommendations applied per cycle
+            "learning_ttl": 7 * 24 * 3600,  # Redis TTL for stored learning states (seconds)
         }
         self.config = {**default_config, **(config or {})}
 
