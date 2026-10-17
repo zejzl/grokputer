@@ -147,7 +147,7 @@ class BaseAgent(ABC):
                         msg_type = response.get("type", "response")
                         content = response.get("content", response)
                         priority = response.get("priority", MessagePriority.NORMAL)
-                        correlation_id = response.get("correlation_id")
+                        correlation_id = response.get("correlation_id") or message.correlation_id
 
                         msg = Message(
                             from_agent=self.agent_id,
@@ -296,7 +296,7 @@ class BaseAgent(ABC):
                 priority=MessagePriority.NORMAL,
             )
 
-            await self.message_bus.send("taskmaster", message)
+            await self.message_bus.send(message)
 
             # Wait for response (simplified - in practice would need correlation ID)
             # For now, return success

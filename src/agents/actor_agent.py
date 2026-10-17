@@ -104,7 +104,7 @@ class ActorAgent:
                     content={"action": action_data, "result": result, "timestamp": asyncio.get_event_loop().time()},
                     priority=MessagePriority.NORMAL,
                 )
-                await self.message_bus.send("coordinator", result_msg)
+                await self.message_bus.send(result_msg)
 
                 self.session_logger.log_agent_activity(
                     self.agent_id, "executed_action", {"action": action_data, "result": result}
@@ -132,7 +132,7 @@ class ActorAgent:
                         content={"action": action_data, "error": str(e)},
                         priority=MessagePriority.HIGH,
                     )
-                    await self.message_bus.send("validator", error_msg)
+                    await self.message_bus.send(error_msg)
 
             finally:
                 if self.deadlock_detector:
@@ -162,18 +162,17 @@ class ActorAgent:
         # Execute based on type
         if action_type == "bash":
             result = await self.action_executor.execute_bash(params.get("command", ""))
-        elif action_type == "file_create":
-            result = await self.action_executor.create_file(
-                path=params.get("path", ""), content=params.get("content", "")
-            )
-        elif action_type == "file_edit":
-            result = await self.action_executor.str_replace_editor(
-                path=params.get("path", ""), old_str=params.get("old_str", ""), new_str=params.get("new_str", "")
-            )
         elif action_type == "pyautogui_type":
-            result = await self.action_executor.type_text(params.get("text", ""))
+            result = await self.action_executor.execute_async(
+                self.agent_id, {"type": "type", "text": params.get("text", "")}
+            )
         elif action_type == "pyautogui_click":
-            result = await self.action_executor.click_at(params.get("x", 0), params.get("y", 0))
+            result = await self.action_executor.execute_async(
+                self.agent_id, {"type": "click", "x": params.get("x", 0), "y": params.get("y", 0)}
+            )
+        elif action_type in ("file_create", "file_edit"):
+            # ActionExecutor has no file operations yet
+            raise ValueError(f"[ACTOR] Action type not supported by ActionExecutor: {action_type}")
         else:
             raise ValueError(f"[ACTOR] Unknown action type: {action_type}")
 

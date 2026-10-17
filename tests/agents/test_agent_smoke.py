@@ -168,3 +168,110 @@ class TestExecutor:
         res = await agent.rollback_workflow("wf")
         assert res["status"] == "completed"
         action_executor.execute_async.assert_awaited_once_with("smoke", {"type": "bash", "command": "rmdir build"})
+
+
+async def _roundtrip(agent, message_type, content):
+    """Run the agent's real run() loop on its bus and return the reply sent to 'coordinator'."""
+    bus = agent.message_bus
+    bus.register_agent("coordinator")
+    task = asyncio.create_task(agent.run())
+    try:
+        await asyncio.sleep(0.05)
+        await bus.send(
+            Message(
+                from_agent="coordinator",
+                to_agent=agent.agent_id,
+                message_type=message_type,
+                content=content,
+                correlation_id="corr-1",
+            )
+        )
+        return await asyncio.wait_for(bus.receive("coordinator", timeout=5), 6)
+    finally:
+        agent.running = False
+        task.cancel()
+        try:
+            await task
+        except BaseException:
+            pass
+
+
+class TestRunLoop:
+    """process_message through BaseAgent.run(): reply is delivered and keeps the request's correlation_id."""
+
+    @pytest.mark.parametrize(
+        "cls, message_type, content",
+        [
+            (ValidatorAgent, "validate_bash", {"command": "ls"}),
+            (LearnerAgent, "get_stats", {}),
+            (MemoryAgent, "recall_state", {}),
+            (AnalyzerAgent, "get_system_metrics", {}),
+            (ImproverAgent, "get_improvement_stats", {}),
+            (ExecutorAgent, "execute_workflow", {"steps": []}),
+        ],
+    )
+    @pytest.mark.asyncio
+    async def test_reply_keeps_correlation_id(self, cls, message_type, content):
+        reply = await _roundtrip(make_agent(cls), message_type, content)
+        assert reply.from_agent == "smoke"
+        assert reply.correlation_id == "corr-1"
+
+
+class TestActorAgent:
+    def _actor(self, executor):
+        from src.agents.actor_agent import ActorAgent
+
+        return ActorAgent(
+            agent_id="actor", message_bus=MessageBus(), action_executor=executor, session_logger=MagicMock()
+        )
+
+    @pytest.mark.asyncio
+    async def test_result_reaches_coordinator(self):
+        executor = MagicMock()
+        executor.execute_bash = AsyncMock(return_value={"status": "success", "output": "hi"})
+        actor = self._actor(executor)
+
+        reply = await _roundtrip(actor, "act", {"type": "bash", "params": {"command": "echo hi"}})
+        assert reply.message_type == "action_result"
+        assert reply.content["result"] == {"status": "success", "output": "hi", "error": None}
+        executor.execute_bash.assert_awaited_once_with("echo hi")
+
+    @pytest.mark.asyncio
+    async def test_click_and_type_use_execute_async(self):
+        executor = MagicMock()
+        executor.execute_async = AsyncMock(return_value={"status": "success"})
+        actor = self._actor(executor)
+
+        await actor._execute_action({"type": "pyautogui_click", "params": {"x": 3, "y": 4}})
+        executor.execute_async.assert_awaited_with("actor", {"type": "click", "x": 3, "y": 4})
+        await actor._execute_action({"type": "pyautogui_type", "params": {"text": "abc"}})
+        executor.execute_async.assert_awaited_with("actor", {"type": "type", "text": "abc"})
+
+    @pytest.mark.asyncio
+    async def test_failed_action_escalates_to_validator(self):
+        executor = MagicMock()
+        executor.execute_bash = AsyncMock(side_effect=RuntimeError("boom"))
+        actor = self._actor(executor)
+        actor.config = {**actor.config, "max_retries": 0}
+        actor.message_bus.register_agent("validator")
+
+        task = asyncio.create_task(actor.run())
+        try:
+            await asyncio.sleep(0.05)
+            await actor.message_bus.send(
+                Message(
+                    from_agent="coordinator",
+                    to_agent="actor",
+                    message_type="act",
+                    content={"type": "bash", "params": {"command": "x"}},
+                )
+            )
+            escalated = await actor.message_bus.receive("validator", timeout=5)
+        finally:
+            actor.running = False
+            task.cancel()
+            try:
+                await task
+            except BaseException:
+                pass
+        assert escalated.message_type == "action_failed" and "boom" in escalated.content["error"]
