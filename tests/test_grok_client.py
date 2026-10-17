@@ -111,6 +111,71 @@ class TestUsageAndPayloads:
         assert await client.test_connection() is False
 
 
+class TestProviderFallback:
+    def _client(self, names):
+        client = GrokClient()
+        client.providers = [ProviderConfig(n, "k", "http://x", "m") for n in names]
+        client.current_provider_index = 0
+        return client
+
+    @pytest.mark.asyncio
+    async def test_falls_back_when_provider_returns_none(self):
+        client = self._client(["grok", "claude"])
+        calls = []
+
+        async def fake_call(provider, messages, session_id=None, agent="unknown", image_b64=None, meta=None):
+            calls.append(provider.name)
+            if provider.name == "grok":
+                meta["error"] = "grok API error 500"
+                return None
+            meta["provider"] = "claude"
+            return "from claude"
+
+        meta = {}
+        with patch.object(client, "_call_provider", side_effect=fake_call):
+            res = await client.chat([{"role": "user", "content": "x"}], meta=meta)
+        assert res == "from claude"
+        assert calls == ["grok", "claude"]
+        assert meta["provider"] == "claude"
+
+    @pytest.mark.asyncio
+    async def test_falls_back_when_provider_raises(self):
+        client = self._client(["grok", "claude"])
+
+        async def fake_call(provider, *args, **kwargs):
+            if provider.name == "grok":
+                raise RuntimeError("boom")
+            return "ok"
+
+        with patch.object(client, "_call_provider", side_effect=fake_call):
+            assert await client.chat([{"role": "user", "content": "x"}]) == "ok"
+
+    @pytest.mark.asyncio
+    async def test_all_providers_return_none_keeps_last_error(self):
+        client = self._client(["grok", "claude"])
+        calls = []
+
+        async def fake_call(provider, messages, session_id=None, agent="unknown", image_b64=None, meta=None):
+            calls.append(provider.name)
+            meta["error"] = f"{provider.name} down"
+            return None
+
+        meta = {}
+        with patch.object(client, "_call_provider", side_effect=fake_call):
+            assert await client.chat([{"role": "user", "content": "x"}], meta=meta) is None
+        assert calls == ["grok", "claude"]
+        assert meta["error"] == "claude down"
+
+    @pytest.mark.asyncio
+    async def test_all_providers_raise_gives_api_error(self):
+        from src.exceptions import APIError
+
+        client = self._client(["grok", "claude"])
+        with patch.object(client, "_call_provider", side_effect=RuntimeError("boom")):
+            with pytest.raises(APIError):
+                await client.chat([{"role": "user", "content": "x"}])
+
+
 class TestErrorMessages:
     def test_error_message_extraction(self):
         body = '{"type":"error","error":{"type":"invalid_request_error","message":"credit balance too low"}}'

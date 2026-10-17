@@ -519,25 +519,48 @@ class GrokClient:
         image_b64: Optional[str] = None,
         meta: Optional[Dict[str, Any]] = None,
     ) -> str:
-        """Chat with the AI using current provider."""
+        """
+        Chat with the AI, starting at the current provider and falling back to the
+        next ones when a provider raises or returns no content.
+
+        Each provider is tried at most once. Returns None if every provider returned
+        no content (`meta["error"]` holds the last error); raises APIError if the
+        last failure was an exception.
+        """
         if not self.session:
             self.session = self._get_session()
 
-        provider = self.providers[self.current_provider_index]
-        try:
-            response = await self._call_provider(provider, messages, session_id, agent, image_b64, meta)
-            if ANALYTICS_ENABLED:
-                log_api_call(provider.name, "success", len(messages))
-            return response
-        except Exception as e:
-            logger.error(f"Provider {provider.name} failed: {e}")
+        count = len(self.providers)
+        last_exc: Optional[Exception] = None
+        for offset in range(count):
+            provider = self.providers[(self.current_provider_index + offset) % count]
+            attempt_meta: Dict[str, Any] = {}
+            try:
+                response = await self._call_provider(provider, messages, session_id, agent, image_b64, attempt_meta)
+                last_exc = None
+            except Exception as e:
+                logger.error(f"Provider {provider.name} failed: {e}")
+                last_exc = e
+                response = None
+                attempt_meta.setdefault("error", f"{provider.name} request failed: {e}")
+
+            if response is not None:
+                if ANALYTICS_ENABLED:
+                    log_api_call(provider.name, "success", len(messages))
+                if meta is not None:
+                    meta.update(attempt_meta)
+                return response
+
             if ANALYTICS_ENABLED:
                 log_api_call(provider.name, "error", len(messages))
-            # Try next provider
-            self.current_provider_index = (self.current_provider_index + 1) % len(self.providers)
-            if self.current_provider_index != 0:  # Don't retry the same provider
-                return await self.chat(messages, session_id, agent, image_b64, meta)
-            raise APIError(f"All providers failed: {e}")
+            if meta is not None:
+                meta.update(attempt_meta)
+            if offset + 1 < count:
+                logger.warning(f"Provider {provider.name} gave no response, falling back to next provider")
+
+        if last_exc is not None:
+            raise APIError(f"All providers failed: {last_exc}")
+        return None
 
     async def test_connection(self) -> bool:
         """Cheap readiness check (no network call, no tokens): API key set, or `claude` CLI on PATH for claude-cli."""
