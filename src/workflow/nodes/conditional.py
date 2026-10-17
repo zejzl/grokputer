@@ -106,8 +106,11 @@ class ConditionalNode(BaseNode):
             metadata=context.metadata,
             state=context.state,
         )
-        output_context.set("branch", "true" if result else "false")
+        branch = "true" if result else "false"
+        output_context.set("branch", branch)
         output_context.set_state(f"{self.node_id}_result", result)
+        # The engine routes on this per-node key, so a later conditional cannot overwrite it
+        output_context.set_state(f"{self.node_id}_branch", branch)
 
         return output_context
 

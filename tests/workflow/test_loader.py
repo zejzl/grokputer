@@ -117,3 +117,19 @@ class TestCli:
         )
         res = self._invoke("--workflow", str(wf))
         assert res.exit_code == 1 and "Failed" in res.output
+
+
+class TestBranchExample:
+    @staticmethod
+    def _invoke(*args):
+        return CliRunner().invoke(main.main, ["--skip-boot", *args])
+
+    def test_high_score_takes_the_true_branch(self):
+        res = self._invoke("--workflow", "workflows/branch.yaml")
+        assert res.exit_code == 0, res.output
+        assert "3 nodes, 1 skipped (failed)" in res.output and '"branch": "true"' in res.output
+
+    def test_low_score_takes_the_false_branch(self):
+        res = self._invoke("--workflow", "workflows/branch.yaml", "--workflow-input", '{"score": 20}')
+        assert res.exit_code == 0, res.output
+        assert "3 nodes, 1 skipped (passed)" in res.output and '"branch": "false"' in res.output

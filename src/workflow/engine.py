@@ -51,6 +51,9 @@ class WorkflowEngine:
         self.start_nodes: List[BaseNode] = []
         self.end_nodes: List[BaseNode] = []
 
+        # Branch label each node reported in its last run (state key "<node_id>_branch")
+        self.branches: Dict[str, str] = {}
+
         # Execution state
         self.context: Optional[NodeContext] = None
         self.execution_order: List[BaseNode] = []
@@ -189,6 +192,8 @@ class WorkflowEngine:
                     else:
                         raise
 
+            self._record_branch(node, result_context)
+
             # Call post-hook
             if self.on_node_complete:
                 await self.on_node_complete(node, result_context)
@@ -203,6 +208,50 @@ class WorkflowEngine:
                 await self.on_error(node, e, context)
 
             raise
+
+    def _record_branch(self, node: BaseNode, context: NodeContext) -> None:
+        """Remember the branch label a node reported, so edge conditions can be checked later."""
+        branch = context.state.get(f"{node.node_id}_branch")
+        if branch is not None:
+            self.branches[node.node_id] = str(branch)
+
+    def _edge_active(self, source: BaseNode, node: BaseNode) -> bool:
+        """True when `source` lets `node` run: it was not skipped and, if the edge has a condition, took that branch."""
+        if source.status == NodeStatus.SKIPPED:
+            return False
+        condition = node.input_conditions.get(source.node_id)
+        if condition is None:
+            return True
+        branch = self.branches.get(source.node_id)
+        if branch is None:
+            logger.warning(
+                f"[{self.workflow_id}] Edge {source.node_id} -> {node.node_id} needs branch '{condition}' "
+                f"but {source.node_id} reported none; treating the edge as inactive"
+            )
+            return False
+        return branch.lower() == str(condition).lower()
+
+    def _should_run(self, node: BaseNode) -> bool:
+        """A node runs if it has no inputs or at least one active incoming edge (OR-join)."""
+        if not node.inputs:
+            return True
+        return any(self._edge_active(inp, node) for inp in node.inputs)
+
+    def _skip(self, node: BaseNode) -> None:
+        node.status = NodeStatus.SKIPPED
+        logger.info(f"[{self.workflow_id}] Skipping node: {node.node_id} (no active incoming edge)")
+
+    async def _run_batch(self, batch: List[BaseNode], context: NodeContext) -> NodeContext:
+        """Skip the nodes whose incoming edges are all inactive, then execute the rest."""
+        runnable = []
+        for node in batch:
+            if self._should_run(node):
+                runnable.append(node)
+            else:
+                self._skip(node)
+        if not runnable:
+            return context
+        return await self.execute_batch(runnable, context)
 
     async def execute_batch(self, batch: List[BaseNode], context: NodeContext) -> NodeContext:
         """
@@ -267,6 +316,11 @@ class WorkflowEngine:
         self.is_running = True
         self.start_time = datetime.now()
 
+        # Fresh run: statuses and branch labels from an earlier run must not influence routing
+        for node in self.nodes.values():
+            node.reset()
+        self.branches = {}
+
         try:
             # Initialize context
             self.context = NodeContext(
@@ -292,12 +346,12 @@ class WorkflowEngine:
 
                 for i, batch in enumerate(batches):
                     logger.info(f"[{self.workflow_id}] Batch {i + 1}/{len(batches)}")
-                    self.context = await self.execute_batch(batch, self.context)
+                    self.context = await self._run_batch(batch, self.context)
             else:
                 # Sequential execution
                 execution_order = self.get_execution_order()
                 for node in execution_order:
-                    self.context = await self.execute_node(node, self.context)
+                    self.context = await self._run_batch([node], self.context)
 
             self.end_time = datetime.now()
             duration = (self.end_time - self.start_time).total_seconds()
@@ -351,6 +405,7 @@ class WorkflowEngine:
                 "data": dict(initial_data or {}),
                 "state": {},
                 "nodes_executed": 0,
+                "nodes_skipped": 0,
                 "duration": 0.0,
             }
 
@@ -372,6 +427,7 @@ class WorkflowEngine:
             "data": target.context.data,
             "state": target.context.state,
             "nodes_executed": sum(1 for n in target.nodes.values() if n.status == NodeStatus.SUCCESS),
+            "nodes_skipped": sum(1 for n in target.nodes.values() if n.status == NodeStatus.SKIPPED),
             "duration": duration,
         }
 
@@ -390,6 +446,7 @@ class WorkflowEngine:
         """Reset workflow for re-execution."""
         for node in self.nodes.values():
             node.reset()
+        self.branches = {}
         self.context = None
         self.is_running = False
         self.start_time = None

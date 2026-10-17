@@ -98,6 +98,9 @@ class BaseNode(ABC):
         # Connections
         self.inputs: List["BaseNode"] = []
         self.outputs: List["BaseNode"] = []
+        # Branch label each incoming edge requires, keyed by the source node id. An edge without an
+        # entry is unconditional. Matched by the engine against `<source id>_branch` in the state.
+        self.input_conditions: Dict[str, str] = {}
 
     @abstractmethod
     async def execute(self, context: NodeContext) -> NodeContext:
@@ -171,6 +174,7 @@ class BaseNode(ABC):
             self.outputs.remove(node)
         if self in node.inputs:
             node.inputs.remove(self)
+        node.input_conditions.pop(self.node_id, None)
 
     def get_config(self, key: str, default: Any = None) -> Any:
         """Get configuration value."""

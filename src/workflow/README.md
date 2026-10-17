@@ -81,7 +81,7 @@ python main.py --workflow workflows/hello.yaml --workflow-input '{"user": {"name
 
 - String values in node configs can use `${ENV_VAR}` (a missing variable is an error), so tokens need not live in the file. `{{variables}}` are left for the engine.
 - Callables (`transform_func`, `custom_evaluator`) cannot be written in a file; transform nodes use `operation: jq`.
-- An edge `condition` is stored on the source node, but the engine does not yet skip nodes based on a conditional's `branch`.
+- An edge `condition` routes: the target runs only if the source took that branch (see Conditional Branching below). Try `workflows/branch.yaml`.
 - Exit codes: 0 success, 1 a node failed or timed out, 2 invalid definition or input. Loader: `src/workflow/loader.py`; example: `workflows/hello.yaml`.
 
 ## Available Nodes
@@ -217,6 +217,14 @@ workflow.add_node(check_status)
 workflow.add_edge(check_status, success_node, condition="true")
 workflow.add_edge(check_status, failure_node, condition="false")
 ```
+
+How routing works:
+
+- A `ConditionalNode` reports the branch it took (`"true"` or `"false"`). An edge with a `condition` is *active* only when its source took that branch; an edge without one is active whenever the source ran.
+- A node runs if it has no inputs or at least one active incoming edge (an OR-join). Otherwise it is marked `SKIPPED`, and that propagates: everything downstream of a skipped node that has no other active input is skipped too. A diamond (`check -> A | B -> join`) therefore runs `join` after whichever side was taken.
+- Any node can route, not only conditionals: set the state key `"<node_id>_branch"` to a label (`context.set_state(f"{self.node_id}_branch", "gold")`) and use that label as the edge `condition`. This allows multi-way switches.
+- Labels are compared as lowercase strings, so `condition=True` equals `"true"`. An edge condition on a node that reports no branch is never taken (a warning is logged).
+- Each `run()` starts from clean statuses and branch labels, so the same workflow can take a different branch on its next run. `execute()` returns `nodes_skipped` next to `nodes_executed`.
 
 ## Pantheon Integration
 

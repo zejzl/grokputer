@@ -20,9 +20,12 @@ Node types: http, conditional, transform, ai, notion, asana, slack, noop.
 String values in node configs may reference environment variables as ${VAR}, so tokens
 need not be stored in the file. The engine's own {{variable}} templates are left untouched.
 
+Branching: an edge `condition` ("true"/"false" from a conditional node, or any label a custom node
+reports) makes the engine run the target only when the source took that branch; the other side is
+marked skipped, and skips propagate. A node runs when at least one incoming edge is active.
+
 Limits: callables (transform_func, custom_evaluator) cannot be written in a file, so
-transform nodes must use `operation: jq`. An edge `condition` is stored on the source node
-as in Workflow.add_edge, but the engine does not skip nodes based on a conditional's branch.
+transform nodes must use `operation: jq`.
 """
 from __future__ import annotations
 

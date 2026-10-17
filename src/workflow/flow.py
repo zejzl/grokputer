@@ -63,7 +63,9 @@ class Workflow:
         Args:
             from_node: Source node
             to_node: Target node
-            condition: Optional condition (for conditional nodes)
+            condition: Optional branch label. With a ConditionalNode as `from_node` use "true" or
+                "false": `to_node` is skipped unless the conditional took that branch. Any node can
+                route by setting the state key "<its node_id>_branch" to a label.
 
         Returns:
             Self for chaining
@@ -79,6 +81,9 @@ class Workflow:
 
         # Store condition if provided (for conditional nodes)
         if condition:
+            # The engine runs `to_node` only when `from_node` took the branch named by `condition`
+            to_node.input_conditions[from_node.node_id] = str(condition)
+            # Legacy lookup: condition -> target (holds only the last target per condition)
             if not hasattr(from_node, "conditions"):
                 from_node.conditions = {}
             from_node.conditions[condition] = to_node

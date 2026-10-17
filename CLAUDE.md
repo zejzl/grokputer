@@ -2,7 +2,7 @@
 
 **Last Updated**: 2026-10-17
 **Project**: Grokputer - AI-Powered Computer Control & Multi-Agent System
-**Status**: Active development. Full test suite green (651 passed, 11 skipped). Known runtime bugs remain (see Known Issues). Session notes and TODO: `nightowl_2026-10-15.md`.
+**Status**: Active development. Full test suite green (670 passed, 11 skipped). Known runtime bugs remain (see Known Issues). Session notes and TODO: `nightowl_2026-10-15.md`.
 
 Claims below marked "(unverified)" come from older notes and have not been re-measured.
 
@@ -16,7 +16,7 @@ Grokputer is a Python multi-agent system that combines screen capture/vision, LL
 - **Pantheon** (9 agents): Observer, Reasoner/Coordinator, Actor, Validator, Learner, Memory, Executor, Analyzer, Improver. Implemented in `src/agents/`.
 - **MAF** (`src/collaboration/`): multi-provider collaboration with weighted-voting consensus, provider registry/pool, RL optimizer. Providers: xAI Grok, Anthropic Claude, OpenAI, Google Gemini, Ollama.
 - **Multi-modal**: `src/vision_processor.py`, `src/audio_processor.py`, `src/multimodal_processor.py`, `src/knowledge_graph.py`. Audio tests are skipped on Python 3.13+ because the `audioop` module was removed.
-- **GG Framework** (`src/workflow/`): implemented, not just planned. Engine, state, flow DSL, healing, learning, Pantheon/MessageBus adapters, and nodes (ai, asana, conditional, http, notion, slack, transform). `WorkflowEngine.execute(workflow)` returns status/data/state/nodes_executed and honors `timeout`; `Workflow.validate()` detects cycles; `TransformNode` supports jq-style paths (`.a.b`, `.items[0].id`). `main.py --workflow FILE` runs a YAML/JSON definition (`src/workflow/loader.py`, example `workflows/hello.yaml`); the engine does not yet gate nodes on a conditional's `branch`.
+- **GG Framework** (`src/workflow/`): implemented, not just planned. Engine, state, flow DSL, healing, learning, Pantheon/MessageBus adapters, and nodes (ai, asana, conditional, http, notion, slack, transform). `WorkflowEngine.execute(workflow)` returns status/data/state/nodes_executed and honors `timeout`; `Workflow.validate()` detects cycles; `TransformNode` supports jq-style paths (`.a.b`, `.items[0].id`). `main.py --workflow FILE` runs a YAML/JSON definition (`src/workflow/loader.py`, example `workflows/hello.yaml`); edges with a `condition` route on a conditional's branch (the other side is `SKIPPED`; `workflows/branch.yaml`).
 - **Phase 4** (self-improvement/RL): started; `src/self_improvement/`, `src/agents/learner.py`, `src/collaboration/rl_optimizer.py`.
 - **Distributed swarm**: Docker Swarm + Redis pub/sub, Prometheus (9101), Grafana (3000), Streamlit (8501). Speedup and effectiveness figures in older notes are unverified.
 
@@ -54,7 +54,7 @@ Copy `.env.example` to `.env` (gitignored). Main variables: `XAI_API_KEY`, `ANTH
 
 ## Testing
 
-**Current run (2026-10-15, Python 3.14.7, `pytest tests -q --continue-on-collection-errors`)**: 651 passed, 11 skipped, 0 failed, 0 errors as of 2026-10-17 (2 PyAutoGUI action_executor tests fail if the real mouse sits in a screen corner: fail-safe). (Before the 2026-10-15 fixes: 299 passed, 13 failed, 12 collection errors.)
+**Current run (2026-10-15, Python 3.14.7, `pytest tests -q --continue-on-collection-errors`)**: 670 passed, 11 skipped, 0 failed, 0 errors as of 2026-10-17 (2 PyAutoGUI action_executor tests fail if the real mouse sits in a screen corner: fail-safe). (Before the 2026-10-15 fixes: 299 passed, 13 failed, 12 collection errors.)
 
 How the suite is set up:
 - `tests/conftest.py` sets a placeholder `XAI_API_KEY` (a real one in the environment is left alone), because `src/config.py` raises at import time without a key. Tests mock all network calls.

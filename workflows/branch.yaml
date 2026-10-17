@@ -1,0 +1,23 @@
+# GG workflow with an if/else branch: only the branch the conditional takes runs, the other is skipped.
+# Run: python main.py --workflow workflows/branch.yaml
+#      python main.py --workflow workflows/branch.yaml --workflow-input '{"score": 20}'
+name: branch
+input:
+  score: 82
+nodes:
+  - id: check
+    type: conditional
+    config:
+      conditions:
+        - {field: score, operator: ">=", value: 50}
+  - id: passed
+    type: noop
+  - id: failed
+    type: noop
+  - id: done
+    type: noop
+edges:
+  - {from: check, to: passed, condition: "true"}
+  - {from: check, to: failed, condition: "false"}
+  - [passed, done]
+  - [failed, done]

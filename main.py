@@ -554,7 +554,11 @@ async def _run_workflow_mode(path: str, input_text: Optional[str] = None) -> int
             print(f"[WORKFLOW]   {node_id}: {status}")
         return 1
 
-    print(f"[WORKFLOW] {result['status']}: {result['nodes_executed']} nodes in {result['duration']:.2f}s")
+    skipped = [node_id for node_id, status in workflow.get_status()["nodes"].items() if status == "skipped"]
+    summary = f"[WORKFLOW] {result['status']}: {result['nodes_executed']} nodes"
+    if skipped:
+        summary += f", {len(skipped)} skipped ({', '.join(skipped)})"
+    print(f"{summary} in {result['duration']:.2f}s")
     print(_json.dumps(result["data"], indent=2, default=str))
     return 0
 
