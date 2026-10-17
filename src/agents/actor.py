@@ -29,6 +29,7 @@ from tenacity import (
 from src import config
 from src.core.action_executor import ActionExecutor, ActionPriority
 from src.core.base_agent import BaseAgent
+from src.core.command_safety import check_command
 from src.core.message_bus import Message, MessageBus, MessagePriority
 from src.observability.session_logger import SessionLogger
 
@@ -230,9 +231,10 @@ class Actor(BaseAgent):
         command = params.get("command", "")
 
         # Security validation (integrate with config.py safety scoring)
-        if not self._is_safe_bash_command(command):
-            logger.warning(f"[Actor] Unsafe bash command blocked: {command}")
-            self.session_logger.log_agent_error(self.agent_id, f"Unsafe command: {command}")
+        reason = check_command(command)
+        if reason:
+            logger.warning(f"[Actor] Unsafe bash command blocked ({reason}): {command}")
+            self.session_logger.log_agent_error(self.agent_id, f"Unsafe command ({reason}): {command}")
 
             return {
                 "to": "coordinator",
@@ -241,6 +243,7 @@ class Actor(BaseAgent):
                     "task_id": task_id,
                     "status": "error",
                     "error": "Command rejected: security validation failed",
+                    "reason": reason,
                 },
                 "priority": MessagePriority.HIGH,
             }
@@ -280,34 +283,13 @@ class Actor(BaseAgent):
 
     def _is_safe_bash_command(self, command: str) -> bool:
         """
-        Validate bash command safety.
-
-        Phase 1: Simple blocklist.
-        Phase 2: Integrate with config.calculate_safety_score()
+        Validate bash command safety with the shared checks in src/core/command_safety.py:
+        no shell metacharacters (same rule as ActionExecutor) and no blocked programs.
         """
-        dangerous_patterns = [
-            "rm -rf",
-            "dd if=",
-            "mkfs",
-            ":(){ :|:& };:",  # Destructive
-            ">",
-            ">>",
-            "|",
-            "&",
-            ";",
-            "$(",  # Shell injection vectors
-            "curl",
-            "wget",
-            "nc ",
-            "netcat",  # Network access
-        ]
-
-        command_lower = command.lower()
-        for pattern in dangerous_patterns:
-            if pattern in command_lower:
-                logger.warning(f"[Actor] Dangerous pattern detected: {pattern}")
-                return False
-
+        reason = check_command(command)
+        if reason:
+            logger.warning(f"[Actor] Command refused: {reason}")
+            return False
         return True
 
     def _run_bash_command(self, command: str) -> Dict:

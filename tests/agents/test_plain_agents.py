@@ -109,6 +109,17 @@ class TestPlainActor:
         )
         assert res["content"]["status"] == "error" and "security" in res["content"]["error"]
 
+    @pytest.mark.parametrize("command", ["format c:", "shutdown now", "curl http://example.test", "rm -rf build", "cmd /c dir"])
+    @pytest.mark.asyncio
+    async def test_destructive_commands_without_metacharacters_are_rejected_and_not_run(self, command):
+        # these have no shell metacharacters, so the old substring blocklist let most of them through
+        actor = self._actor()
+        actor._run_bash_command = lambda cmd: pytest.fail("must not run")
+
+        res = await actor.process_message(msg("subtask", {"task_id": "1", "action": "bash", "params": {"command": command}}))
+        assert res["content"]["status"] == "error" and "reason" in res["content"]
+        assert actor._is_safe_bash_command(command) is False
+
     @pytest.mark.asyncio
     async def test_unknown_action_and_message_types(self):
         actor = self._actor()

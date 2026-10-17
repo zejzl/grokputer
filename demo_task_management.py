@@ -11,7 +11,7 @@ import logging
 from pathlib import Path
 from src.core.message_bus import MessageBus, Message, MessagePriority
 from src.observability.session_logger import SessionLogger
-from src.agents.taskmaster import TaskMaster
+from src.agents.task_master import TaskMaster
 from src.core.task_client import TaskClient
 
 logging.basicConfig(level=logging.INFO)

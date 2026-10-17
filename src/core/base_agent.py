@@ -51,6 +51,7 @@ class BaseAgent(ABC):
         self.current_tasks: Dict[str, Dict[str, Any]] = {}  # task_id -> task_data
         self.capabilities: List[str] = []
         self.task_client_enabled = False
+        self.task_request_timeout = float(config.get("task_request_timeout", 5.0)) if isinstance(config, dict) else 5.0
 
         # Deadlock detector integration (stub - will be injected in Phase 1)
         self.deadlock_detector = None  # To be set externally if available
@@ -242,7 +243,7 @@ class BaseAgent(ABC):
 
         if response and response.get("task"):
             task = response["task"]
-            self.current_tasks[task["id"]] = task
+            self.current_tasks[task["task_id"]] = task
             return task
         return None
 
@@ -280,14 +281,13 @@ class BaseAgent(ABC):
             "create_task", {"title": title, "description": description, "priority": priority, "tags": tags or []}
         )
 
-        return response.get("task_id") if response else None
+        if not response:
+            return None
+        return (response.get("task") or {}).get("task_id") or response.get("task_id")
 
     async def _send_task_message(self, message_type: str, content: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """Send a message to TaskMaster and wait for response."""
+        """Send a message to TaskMaster and return its reply (None if it is absent or times out)."""
         try:
-            # Send message to taskmaster
-            # Message and MessagePriority already imported at top
-
             message = Message(
                 message_type=message_type,
                 content=content,
@@ -296,11 +296,7 @@ class BaseAgent(ABC):
                 priority=MessagePriority.NORMAL,
             )
 
-            await self.message_bus.send(message)
-
-            # Wait for response (simplified - in practice would need correlation ID)
-            # For now, return success
-            return {"status": "sent"}
+            return await self.message_bus.send_and_wait("taskmaster", message, timeout=self.task_request_timeout)
 
         except Exception as e:
             logger = logging.getLogger(__name__)
@@ -335,7 +331,7 @@ class BaseAgent(ABC):
 
     async def _process_assigned_task(self, task: Dict[str, Any]):
         """Process a task assigned by TaskMaster."""
-        task_id = task["id"]
+        task_id = task["task_id"]
 
         try:
             self._update_state("processing")

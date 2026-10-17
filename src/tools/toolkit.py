@@ -23,6 +23,7 @@ from typing import Any, Dict, List
 import psutil
 
 from src import config
+from src.core.command_safety import find_shell_metacharacter
 
 logger = logging.getLogger(__name__)
 
@@ -526,8 +527,7 @@ def bash(command: str) -> Dict[str, Any]:
     Returns:
         Dict with status, output, and any errors.
     """
-    dangerous_chars = [";", "&", "|", "<", ">", "$", "`", "\\", "\n", "\r", "%", "(", ")"]
-    if any(char in command for char in dangerous_chars):
+    if find_shell_metacharacter(command) is not None:
         return {
             "status": "error",
             "message": "Command contains shell metacharacters (; & | < > $ ` \\ % parentheses). "

@@ -6,7 +6,7 @@ import asyncio
 import logging
 from src.core.message_bus import MessageBus
 from src.observability.session_logger import SessionLogger
-from src.agents.taskmaster import TaskMaster
+from src.agents.task_master import TaskMaster, TaskPriority
 from src.agents.story_generation_agent import StoryGenerationAgent
 from src.agents.character_analysis_agent import CharacterAnalysisAgent
 from src.agents.coordinator import Coordinator
@@ -27,7 +27,7 @@ async def test_task_client_integration():
     session_logger = SessionLogger()
 
     # Start TaskMaster
-    taskmaster = TaskMaster("taskmaster", message_bus, session_logger, {})
+    taskmaster = TaskMaster(message_bus, session_logger, {})
     taskmaster_task = asyncio.create_task(taskmaster.run())
 
     # Give TaskMaster time to start
@@ -84,8 +84,13 @@ async def test_task_client_integration():
 
     # Add tasks to TaskMaster
     for task_data in test_tasks:
-        task_id = await taskmaster.create_task(**task_data)
-        print(f"Created task: {task_id} - {task_data['title']}")
+        created = taskmaster.task_registry.create_task(
+            title=task_data["title"],
+            description=task_data["description"],
+            priority=TaskPriority(task_data["priority"]),
+            tags=task_data["tags"],
+        )
+        print(f"Created task: {created.task_id} - {task_data['title']}")
 
     # Let the system run for a bit to process tasks
     print("\nRunning task processing for 30 seconds...")
@@ -93,10 +98,10 @@ async def test_task_client_integration():
 
     # Check task status
     print("\nChecking task status...")
-    tasks = taskmaster.get_all_tasks()
+    tasks = [t.to_dict() for t in taskmaster.task_registry.get_all_tasks()]
     for task in tasks:
         status = task.get("status", "unknown")
-        assigned_to = task.get("assigned_to", "unassigned")
+        assigned_to = task.get("assigned_agent") or "unassigned"
         print(f"Task '{task['title'][:50]}...': {status} (assigned to: {assigned_to})")
 
     # Shutdown

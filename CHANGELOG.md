@@ -3,14 +3,18 @@
 ## [v2026.10.17] - 2026-10-17 - Agent Fixes, Provider Fallback, Shell Hardening, Tools Repair
 
 ### Added
+- `src/core/command_safety.py`: shared command checks (ActionExecutor's shell-metacharacter rule, plus a blocked-program list: `format`, `shutdown`, `curl`, interpreters, recursive deletes). The plain `Actor` now uses it instead of a substring blocklist that missed `format`; ActionExecutor and the toolkit's `bash()` share the metacharacter list (behaviour unchanged)
+- `src/agents/task_master.py`: the `TaskMaster` task board, restored from commit 37db194 (it had been overwritten by the unrelated planner), with `SessionLogger.log_task_update`; `BaseAgent`'s task client now waits for TaskMaster's reply (`send_and_wait`) instead of returning `{"status": "sent"}`, so `create_task`, `request_task` and `get_available_tasks` actually return data
 - **`main.py --workflow FILE`** (+ `--workflow-input JSON`): run a GG workflow defined in YAML/JSON via the new `src/workflow/loader.py` (node-type whitelist, `${ENV}` expansion, cycle/edge validation, exit codes 0/1/2); example `workflows/hello.yaml`; tests in `tests/workflow/test_loader.py`
 - Agent smoke tests (`tests/agents/test_agent_smoke.py`): every `BaseAgent` agent answers a `Message` directly and through its real `run()` loop, including Taskmaster and the Actor
 - `tests/test_shell_hardening.py`: AST guards that fail on any `shell=True` call or bare `except:` in `main.py`, `autonomous.py`, `improve_swarm.py` and `src/`
 - `tests/test_tools_package.py`, `tests/test_main_menu.py`
 - `scripts/legacy_fixes/` for the old one-off `fix_*` scripts
-- Tests: 559 passing, 11 skipped
+- Tests: 627 passing, 11 skipped
 
 ### Fixed
+- **TaskMaster** never enforced task `dependencies`; a task could be assigned or auto-delegated before the tasks it depends on were completed
+- The planner `Taskmaster` now uses bus id `task_planner` so it no longer collides with the task board's `taskmaster`
 - **Plain `AnalyzerAgent`** could not be constructed (explicit cooperative-mixin call dropped `BaseAgent`'s arguments)
 - **`MessageBus.send_and_wait`** added: request/response by `correlation_id`, intercepted in `send()` so it never competes with an agent's receive loop; the plain `ImproverAgent` called it but it did not exist, and now degrades gracefully when the analyzer or learner is absent
 - **Provider fallback**: `GrokClient.chat()` now tries the next configured provider when one returns no content or raises (each once); it returns `None` if all fail
@@ -32,7 +36,6 @@
 - `node_modules/`, `saves/`, `backups/` and `logs/` are untracked and ignored (files stay on disk); `main.py.backup` and the unused `src/agents/executor.py` and `imrover_agent.py` are removed
 
 ### Known Issues
-- `TaskMaster` task-board class expected by `BaseAgent`'s task client, `demo_task_management.py` and `test_task_client_integration.py` does not exist
 - `observer`/`observer_agent`, `actor`/`actor_agent`, `analyzer`/`analyzer_agent`, `improver`/`improver_agent` are still pairs of different implementations
 - `db/integrated_tools.py` duplicates much of `src/tools/toolkit.py`
 - Two `ActionExecutor` PyAutoGUI tests fail if the real mouse sits in a screen corner (fail-safe)

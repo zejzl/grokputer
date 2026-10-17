@@ -22,6 +22,8 @@ from typing import Any, Dict, List, Optional
 import pyautogui
 from PIL import Image
 
+from src.core.command_safety import find_shell_metacharacter
+
 logger = logging.getLogger(__name__)
 
 
@@ -235,8 +237,7 @@ class ActionExecutor:
             return {"status": "error", "error": "No command provided"}
 
         # SECURITY: Sanitize input to prevent shell injection
-        dangerous_chars = [";", "&", "|", "<", ">", "$", "`", "\\", "\n", "\r", "%", "(", ")"]
-        if any(char in command for char in dangerous_chars):
+        if find_shell_metacharacter(command) is not None:
             logger.error(f"Command contains dangerous shell metacharacters: {command}")
             return {
                 "status": "error",

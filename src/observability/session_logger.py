@@ -161,6 +161,13 @@ class SessionLogger:
         if self.swarm_metrics:
             self.swarm_metrics.agent_states[agent_id] = state
 
+    def log_task_update(self, agent_id: str, task_id: str, status: str, notes: str = ""):
+        """Log a task status change reported by an agent (used by TaskMaster)."""
+        msg = f"[TASK] {agent_id} -> {task_id}: {status}"
+        if notes:
+            msg += f" ({notes})"
+        self._log(msg)
+
     def log_agent_wait(self, agent_id: str):
         """Log agent waiting."""
         msg = f"[AGENT WAIT] {agent_id}"

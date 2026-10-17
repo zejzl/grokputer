@@ -35,12 +35,14 @@ class Taskmaster(BaseAgent):
     """
     Taskmaster: Analyzes analytics, suggests prioritized tasks.
 
+    Not the task board: that is TaskMaster in src/agents/task_master.py (bus id "taskmaster").
+
     Message types handled:
     - 'suggest': content {"state": str} -> reply type 'suggestions' with a list of task dicts
     - 'next_step': content {"task": str} -> reply type 'next_step' with an implementation plan
     """
 
-    def __init__(self, agent_id="taskmaster", message_bus=None, session_logger=None, config=None, client=None):
+    def __init__(self, agent_id="task_planner", message_bus=None, session_logger=None, config=None, client=None):
         super().__init__(agent_id, message_bus, session_logger, config or {})
         self.client = client or FallbackGrokClient()
 

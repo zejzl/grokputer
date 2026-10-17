@@ -163,7 +163,7 @@ class MessageBus:
         # Pending requests for request-response pattern
         self.pending_requests: Dict[str, asyncio.Future] = {}
 
-        # send_and_wait: correlation_id -> (agent expected to reply, future resolved by send())
+        # send_and_wait: correlation_id -> (agent expected to reply, future resolved by send(), the request)
         self._awaiting_reply: Dict[str, Any] = {}
 
         logger.info(
@@ -240,7 +240,7 @@ class MessageBus:
         """
         # A reply to a send_and_wait() request goes straight to the waiting caller
         waiter = self._awaiting_reply.get(message.correlation_id) if message.correlation_id else None
-        if waiter and message.from_agent == waiter[0] and not waiter[1].done():
+        if waiter and message.from_agent == waiter[0] and message is not waiter[2] and not waiter[1].done():
             waiter[1].set_result(message)
             self.message_count += 1
             return
@@ -405,7 +405,7 @@ class MessageBus:
         message.to_agent = to_agent
 
         future = asyncio.get_running_loop().create_future()
-        self._awaiting_reply[correlation_id] = (to_agent, future)
+        self._awaiting_reply[correlation_id] = (to_agent, future, message)
         try:
             await self.send(message)
             reply = await asyncio.wait_for(future, timeout=timeout)
