@@ -720,7 +720,7 @@ cat CHANGELOG.md
 - **`src/grok_client.py`**: xAI API wrapper (OpenAI-compatible)
 - **`src/screen_observer.py`**: Screenshot capture system
 - **`src/executor.py`**: Tool execution with safety confirmations
-- **`src/tools.py`**: Custom tools (vault scanner, server prayer)
+- **`src/tools/toolkit.py`**: Custom tools (vault scanner, server prayer, bash, search, code generation); import them via `src.tools`
 - **`src/config.py`**: Configuration management
 - **`src/session_logger.py`**: Enhanced session tracking and metrics
 - **`view_sessions.py`**: CLI for viewing/analyzing execution logs
@@ -768,7 +768,7 @@ pip install -r requirements.txt
  # Run with coverage
  pytest --cov=src tests/
 
-  # Current Status: 454 passed, 0 failed, 11 skipped (2026-10-15, Python 3.14)
+  # Current Status: 526 passed, 0 failed, 11 skipped (2026-10-17, Python 3.14)
   # Coverage: 25% (improving with ongoing fixes)
   # MessageBus: 51k-105k msg/sec end-to-end, 0.007ms unloaded latency (measured 2026-10-15)
 ```

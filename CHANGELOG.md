@@ -1,5 +1,38 @@
 # Changelog
 
+## [v2026.10.17] - 2026-10-17 - Agent Fixes, Provider Fallback, Shell Hardening, Tools Repair
+
+### Added
+- Agent smoke tests (`tests/agents/test_agent_smoke.py`): every `BaseAgent` agent answers a `Message` directly and through its real `run()` loop, including Taskmaster and the Actor
+- `tests/test_shell_hardening.py`: AST guards that fail on any `shell=True` call or bare `except:` in `main.py`, `autonomous.py`, `improve_swarm.py` and `src/`
+- `tests/test_tools_package.py`, `tests/test_main_menu.py`
+- `scripts/legacy_fixes/` for the old one-off `fix_*` scripts
+- Tests: 526 passing, 11 skipped
+
+### Fixed
+- **Provider fallback**: `GrokClient.chat()` now tries the next configured provider when one returns no content or raises (each once); it returns `None` if all fail
+- **Replies lost their `correlation_id`**: `BaseAgent.run` now copies the request's id onto the reply
+- **Wrong `message_bus.send(target, msg)` calls** in `ActorAgent` (results never reached the coordinator) and `BaseAgent` (task client never sent); `send()` takes one `Message`
+- **ExecutorAgent** called a nonexistent `action_executor.execute`; it now uses `execute_async`, with the right rollback action shape and a valid delegate `Message`
+- **MemoryAgent** crashed on bus `Message` objects and used a nonexistent `self.logger`
+- **ImproverAgent** raised `KeyError` without `auto_apply`, `max_improvements`, `learning_ttl` in its config; defaults added
+- **Taskmaster** is now a working `BaseAgent` (`suggest` and `next_step` messages); its constructor, run loop, missing `json` import and fallback typo are fixed
+- **Interactive menu** exits cleanly on EOF or Ctrl+C instead of crashing
+- **`improve_swarm.py`**: no `shell=True` (literal Python edit, argv test run), could not be imported (`LOG_DIR` is `LOGS_DIR`), and now restores the backup when the follow-up test fails
+- **`src/tools.py`** was shadowed by the `src/tools/` package and could not load (spliced function bodies, a stub overriding `analytics_query`, missing imports). It is now `src/tools/toolkit.py`, re-exported lazily from `src.tools`; `generate_code` rejects filenames that escape the sandbox directory
+- **Security**: `shell=True` removed from `src/tools.py` `bash()` (shlex, no shell, metacharacters rejected)
+- All 14 bare `except:` blocks now name their exception types; `connect_to_process` no longer hits an unbound socket
+
+### Changed
+- `ActorAgent` `file_create` / `file_edit` actions raise a clear "not supported" error (`ActionExecutor` has no file operations); click and type go through `execute_async`
+- `node_modules/`, `saves/`, `backups/` and `logs/` are untracked and ignored (files stay on disk); `main.py.backup` and the unused `src/agents/executor.py` and `imrover_agent.py` are removed
+
+### Known Issues
+- `TaskMaster` task-board class expected by `BaseAgent`'s task client, `demo_task_management.py` and `test_task_client_integration.py` does not exist
+- `observer`/`observer_agent`, `actor`/`actor_agent`, `analyzer`/`analyzer_agent`, `improver`/`improver_agent` are still pairs of different implementations
+- `db/integrated_tools.py` duplicates much of `src/tools/toolkit.py`
+- Two `ActionExecutor` PyAutoGUI tests fail if the real mouse sits in a screen corner (fail-safe)
+
 ## [v2026.10.15] - 2026-10-15 - Runtime Fixes, claude-cli Provider, Token Usage, Plan-Only Pantheon, Real MAF Providers
 
 ### Added

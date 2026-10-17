@@ -1433,7 +1433,7 @@ grokputer/
 │   ├── grok_client.py            # Async Grok API wrapper
 │   ├── screen_observer.py        # Async screenshot capture
 │   ├── executor.py               # Legacy tool execution (deprecated)
-│   ├── tools.py                  # Custom tools (vault, prayer)
+│   ├── tools/toolkit.py          # Custom tools (vault, prayer, bash, search); re-exported by src.tools
 │   ├── session_logger.py         # Enhanced with SwarmMetrics
 │   │
 │   ├── core/                     # NEW: Core async infrastructure
