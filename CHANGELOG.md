@@ -8,7 +8,7 @@
 - `tests/test_shell_hardening.py`: AST guards that fail on any `shell=True` call or bare `except:` in `main.py`, `autonomous.py`, `improve_swarm.py` and `src/`
 - `tests/test_tools_package.py`, `tests/test_main_menu.py`
 - `scripts/legacy_fixes/` for the old one-off `fix_*` scripts
-- Tests: 526 passing, 11 skipped
+- Tests: 559 passing, 11 skipped
 
 ### Fixed
 - **Plain `AnalyzerAgent`** could not be constructed (explicit cooperative-mixin call dropped `BaseAgent`'s arguments)
