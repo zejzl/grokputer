@@ -93,3 +93,8 @@ xaikey.txt
 ULTIMATE_KEY.md
 *.key
 *.pem
+
+# Dependencies and runtime state
+node_modules/
+saves/
+*.backup
