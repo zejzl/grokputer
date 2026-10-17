@@ -85,10 +85,10 @@ class AnalyzerAgent(CognitiveAnalyzerMixin, BaseAgent):
         heartbeat_interval: float = 10.0,
         cognitive_enabled: bool = True,
     ):
-        # Initialize cognitive capabilities first
-        CognitiveAnalyzerMixin.__init__(self, cognitive_enabled=cognitive_enabled)
-        # Then initialize base agent
-        BaseAgent.__init__(self, agent_id, message_bus, session_logger, config, heartbeat_interval)
+        # One cooperative call: the cognitive mixin forwards the BaseAgent arguments, then sets up cognition
+        super().__init__(
+            agent_id, message_bus, session_logger, config, heartbeat_interval, cognitive_enabled=cognitive_enabled
+        )
 
         # Metrics storage (time-series data)
         self.metrics: Dict[str, deque] = defaultdict(lambda: deque(maxlen=1000))

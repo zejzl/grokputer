@@ -163,6 +163,9 @@ class MessageBus:
         # Pending requests for request-response pattern
         self.pending_requests: Dict[str, asyncio.Future] = {}
 
+        # send_and_wait: correlation_id -> (agent expected to reply, future resolved by send())
+        self._awaiting_reply: Dict[str, Any] = {}
+
         logger.info(
             f"MessageBus initialized with default timeout: {default_timeout}s, history: {history_size}, max_concurrent: {max_concurrent}"
         )
@@ -235,6 +238,13 @@ class MessageBus:
         Raises:
             ValueError: If target agent is not registered
         """
+        # A reply to a send_and_wait() request goes straight to the waiting caller
+        waiter = self._awaiting_reply.get(message.correlation_id) if message.correlation_id else None
+        if waiter and message.from_agent == waiter[0] and not waiter[1].done():
+            waiter[1].set_result(message)
+            self.message_count += 1
+            return
+
         if message.to_agent not in self.queues:
             error_msg = f"Unknown agent: {message.to_agent}"
             handle_error(ValueError(error_msg), "MessageBus.send", "error")
@@ -365,6 +375,44 @@ class MessageBus:
                             logger.error(f"Callback error for {agent_id}: {e}")
         except Exception as e:
             logger.error(f"Callback runner error for {agent_id}: {e}")
+
+    async def send_and_wait(
+        self, to_agent: str, message: Message, timeout: Optional[float] = None
+    ) -> Dict[str, Any]:
+        """
+        Send `message` to `to_agent` and wait for that agent's reply.
+
+        The reply is the first message sent *from* `to_agent` that carries the request's
+        correlation_id (BaseAgent.run copies it onto replies). It is intercepted in send(),
+        so it does not matter which agent the reply is addressed to, and the caller's own
+        receive loop is not involved.
+
+        Args:
+            to_agent: Agent to ask (must be registered)
+            message: Request; its correlation_id is set if missing and to_agent is overwritten
+            timeout: Seconds to wait (None = bus default)
+
+        Returns:
+            The reply's content dict
+
+        Raises:
+            MessageBusError: If `to_agent` is not registered
+            asyncio.TimeoutError: If no reply arrives in time
+        """
+        timeout = timeout if timeout is not None else self.default_timeout
+        correlation_id = message.correlation_id or str(uuid.uuid4())
+        message.correlation_id = correlation_id
+        message.to_agent = to_agent
+
+        future = asyncio.get_running_loop().create_future()
+        self._awaiting_reply[correlation_id] = (to_agent, future)
+        try:
+            await self.send(message)
+            reply = await asyncio.wait_for(future, timeout=timeout)
+        finally:
+            self._awaiting_reply.pop(correlation_id, None)
+
+        return reply.content if isinstance(reply.content, dict) else {"content": reply.content}
 
     async def send_request(
         self,

@@ -20,6 +20,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from src.core.base_agent import BaseAgent
 from src.core.message_bus import Message, MessageBus, MessagePriority
+from src.exceptions import MessageBusError
 
 logger = logging.getLogger(__name__)
 
@@ -165,8 +166,8 @@ class ImproverAgent(BaseAgent):
                     improvement = await self._bottleneck_to_improvement(bottleneck)
                     if improvement:
                         improvements_found.append(improvement)
-        except asyncio.TimeoutError:
-            logger.warning("Analyzer timeout - proceeding without bottleneck data")
+        except (asyncio.TimeoutError, MessageBusError):
+            logger.warning("Analyzer unavailable - proceeding without bottleneck data")
 
         # 2. Request learner insights
         learner_request = Message(
@@ -186,8 +187,8 @@ class ImproverAgent(BaseAgent):
                     improvement = await self._insight_to_improvement(insight)
                     if improvement:
                         improvements_found.append(improvement)
-        except asyncio.TimeoutError:
-            logger.warning("Learner timeout - proceeding without insight data")
+        except (asyncio.TimeoutError, MessageBusError):
+            logger.warning("Learner unavailable - proceeding without insight data")
 
         # 3. Apply generic optimization rules
         generic_improvements = await self._generate_generic_improvements()

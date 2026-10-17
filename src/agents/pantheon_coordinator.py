@@ -11,7 +11,7 @@ The 9 Agents (ALL IMPLEMENTED):
 4. Validator - Safety and quality checks [OK]
 5. Learner - Pattern recognition [OK]
 6. Memory Manager - Persistent state [OK]
-7. Executor - Specialized execution with circuit breakers [OK]
+7. Executor - Multi-step workflow execution [OK]
 8. Analyzer - Performance metrics and health monitoring [OK]
 9. Improver - Self-optimization and continuous improvement [OK]
 """
@@ -25,14 +25,10 @@ import re
 from datetime import datetime
 from typing import Any, Callable, Dict, List, Optional
 
-from src.agents.actor import Actor
-from src.agents.analyzer import AnalyzerAgent
 from src.agents.character_analysis_agent import CharacterAnalysisAgent
 from src.agents.coordinator import Coordinator
 from src.agents.executor_agent import ExecutorAgent
-from src.agents.improver import ImproverAgent
 from src.agents.learner import LearnerAgent
-from src.agents.observer import Observer
 from src.agents.story_generation_agent import StoryGenerationAgent
 from src.agents.validator import ValidatorAgent
 from src.core.base_agent import BaseAgent
@@ -83,15 +79,15 @@ class PantheonCoordinator(BaseAgent):
 
     async def initialize_pantheon(
         self,
-        observer: Observer,
+        observer: Any,  # ObserverAgent (observer_agent.py) in main.py; Observer (observer.py) also fits
         reasoner: Coordinator,
-        actor: Actor,
+        actor: Any,  # ActorAgent (actor_agent.py) in main.py; Actor (actor.py) also fits
         validator: ValidatorAgent,
         learner: Optional[LearnerAgent] = None,
         memory_config: Optional[MemoryConfig] = None,
         executor: Optional[ExecutorAgent] = None,
-        analyzer: Optional[AnalyzerAgent] = None,
-        improver: Optional[ImproverAgent] = None,
+        analyzer: Optional[Any] = None,  # analyzer_agent.AnalyzerAgent or analyzer.AnalyzerAgent
+        improver: Optional[Any] = None,  # improver_agent.ImproverAgent or improver.ImproverAgent
         character_analyzer: Optional[CharacterAnalysisAgent] = None,
         story_generator: Optional[StoryGenerationAgent] = None,
         visionary: Optional["VisionaryAgent"] = None,

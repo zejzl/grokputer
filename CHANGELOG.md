@@ -11,6 +11,8 @@
 - Tests: 526 passing, 11 skipped
 
 ### Fixed
+- **Plain `AnalyzerAgent`** could not be constructed (explicit cooperative-mixin call dropped `BaseAgent`'s arguments)
+- **`MessageBus.send_and_wait`** added: request/response by `correlation_id`, intercepted in `send()` so it never competes with an agent's receive loop; the plain `ImproverAgent` called it but it did not exist, and now degrades gracefully when the analyzer or learner is absent
 - **Provider fallback**: `GrokClient.chat()` now tries the next configured provider when one returns no content or raises (each once); it returns `None` if all fail
 - **Replies lost their `correlation_id`**: `BaseAgent.run` now copies the request's id onto the reply
 - **Wrong `message_bus.send(target, msg)` calls** in `ActorAgent` (results never reached the coordinator) and `BaseAgent` (task client never sent); `send()` takes one `Message`
@@ -25,6 +27,7 @@
 - All 14 bare `except:` blocks now name their exception types; `connect_to_process` no longer hits an unbound socket
 
 ### Changed
+- Reviewed the four duplicate agent pairs (`observer`, `actor`, `analyzer`, `improver` vs their `*_agent` versions): they are different implementations with different message protocols, so they were documented (`src/agents/__init__.py`) and tested instead of merged. `PantheonCoordinator` no longer imports the plain classes just for annotations; stale `epic_win.py` moved to `scripts/legacy/`
 - `ActorAgent` `file_create` / `file_edit` actions raise a clear "not supported" error (`ActionExecutor` has no file operations); click and type go through `execute_async`
 - `node_modules/`, `saves/`, `backups/` and `logs/` are untracked and ignored (files stay on disk); `main.py.backup` and the unused `src/agents/executor.py` and `imrover_agent.py` are removed
 
