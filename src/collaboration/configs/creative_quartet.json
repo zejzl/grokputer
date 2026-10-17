@@ -8,8 +8,8 @@
       "role": "analyzer",
       "weight": 1.0,
       "capabilities": [
-        "research",
-        "critical_thinking"
+        "critical_thinking",
+        "research"
       ]
     },
     {
@@ -35,8 +35,8 @@
       "role": "critic",
       "weight": 1.1,
       "capabilities": [
-        "validation",
-        "creative_writing"
+        "creative_writing",
+        "validation"
       ]
     }
   ],

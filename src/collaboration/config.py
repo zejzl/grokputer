@@ -276,7 +276,7 @@ class MAFConfigLoader:
                     "provider_id": p.provider_id,
                     "role": p.role,
                     "weight": p.weight,
-                    "capabilities": [cap.value for cap in p.capabilities],
+                    "capabilities": sorted(cap.value for cap in p.capabilities),  # a set: sort for stable files
                 }
                 for p in config.providers
             ],

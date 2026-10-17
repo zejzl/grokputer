@@ -8,8 +8,8 @@
       "role": "analyzer",
       "weight": 1.0,
       "capabilities": [
-        "research",
         "critical_thinking",
+        "research",
         "text_generation"
       ]
     },

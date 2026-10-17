@@ -8,8 +8,8 @@
       "role": "analyzer",
       "weight": 1.2,
       "capabilities": [
-        "critical_thinking",
-        "code_analysis"
+        "code_analysis",
+        "critical_thinking"
       ]
     },
     {
@@ -17,8 +17,8 @@
       "role": "validator",
       "weight": 1.0,
       "capabilities": [
-        "validation",
-        "code_analysis"
+        "code_analysis",
+        "validation"
       ]
     },
     {
