@@ -17,57 +17,34 @@ from .base import BaseNode, NodeContext
 
 class AINode(BaseNode):
     """
-    Node for AI-powered operations.
+    Node for AI-powered operations, backed by the real `src.grok_client.GrokClient`.
 
-    This node can:
-    - Make decisions based on context data
-    - Generate content (text, code, etc.)
-    - Analyze and extract insights
-    - Invoke specific Pantheon agents
-    - Use multi-provider consensus (MAF)
+    This node can make decisions based on context data, generate content (text, code, ...) and
+    analyze or extract insights. Each call goes to one provider and records its token usage under
+    the agent tag "workflow:<node_id>".
 
     Configuration:
-        provider: AI provider ("grok", "claude", "openai", "maf")
-        model: Model to use (e.g., "grok-4-fast-reasoning")
+        provider: "grok" (default), "claude", "claude-cli", "gemini" or "openai". The provider's API
+            key must be in the environment (claude-cli needs the `claude` CLI logged in).
+        model: Optional model name. Omitted means the provider's default (GROK_MODEL, CLAUDE_MODEL, ...).
         prompt: Prompt template (can use {{variables}})
         system_prompt: Optional system prompt
-        temperature: Sampling temperature (0.0 - 1.0)
-        max_tokens: Maximum tokens to generate
+        temperature: Sampling temperature (default 0.7; ignored by claude-cli)
+        max_tokens: Maximum tokens to generate (default 2000; ignored by claude-cli)
         output_format: Expected output format ("text", "json", "decision")
-        pantheon_agent: Optional agent name to delegate to
-        maf_config: Configuration for multi-provider mode
+
+    Not supported here (rejected when the node is created):
+        provider "maf": MAF returns consensus metadata rather than a reply; use `main.py --providers`.
+        pantheon_agent: use PantheonNode (src/workflow/pantheon_integration.py) to delegate to an agent.
 
     Example:
-        # Simple decision node
         node = AINode(
             "classify_urgency",
             config={
-                "provider": "grok",
-                "model": "grok-4-fast-reasoning",
+                "provider": "claude",
+                "model": "claude-haiku-5-5",
                 "prompt": "Classify urgency of: {{message}}. Reply with: low, medium, or high",
                 "output_format": "text"
-            }
-        )
-
-        # Pantheon agent delegation
-        node = AINode(
-            "analyze_screen",
-            config={
-                "pantheon_agent": "observer",
-                "prompt": "Analyze current screen and extract key information"
-            }
-        )
-
-        # Multi-provider consensus
-        node = AINode(
-            "critical_decision",
-            config={
-                "provider": "maf",
-                "maf_config": {
-                    "providers": ["grok", "claude", "openai"],
-                    "consensus_threshold": 0.6
-                },
-                "prompt": "Should we proceed with: {{action}}?"
             }
         )
     """
@@ -76,12 +53,20 @@ class AINode(BaseNode):
         super().__init__(node_id, name, config)
 
         # Validate config
-        if not self.config.get("prompt") and not self.config.get("pantheon_agent"):
-            raise ValueError(f"AINode {node_id} requires 'prompt' or 'pantheon_agent' in config")
+        if "pantheon_agent" in self.config:
+            raise ValueError(f"AINode {node_id}: 'pantheon_agent' is not supported by AINode; use PantheonNode")
+        if self.config.get("provider") == "maf":
+            raise ValueError(
+                f"AINode {node_id}: provider 'maf' is not supported by AINode (MAF returns consensus metadata, "
+                "not a reply); run MAF with `main.py --providers` or pick a single provider"
+            )
+        if not self.config.get("prompt"):
+            raise ValueError(f"AINode {node_id} requires 'prompt' in config")
 
-        # Set defaults
+        self._used_model: Optional[str] = None  # model that answered the last call
+
+        # Set defaults (no default model: None means the provider's own default)
         self.config.setdefault("provider", "grok")
-        self.config.setdefault("model", "grok-4-fast-reasoning")
         self.config.setdefault("temperature", 0.7)
         self.config.setdefault("max_tokens", 2000)
         self.config.setdefault("output_format", "text")
@@ -96,13 +81,7 @@ class AINode(BaseNode):
         Returns:
             Output context with AI response
         """
-        # Check if using Pantheon agent
-        if "pantheon_agent" in self.config:
-            result = await self._invoke_pantheon_agent(context)
-        elif self.config["provider"] == "maf":
-            result = await self._invoke_maf(context)
-        else:
-            result = await self._invoke_provider(context)
+        result = await self._invoke_provider(context)
 
         # Parse output based on format
         output_format = self.config["output_format"]
@@ -114,7 +93,7 @@ class AINode(BaseNode):
                 "ai_response": parsed_result,
                 "raw_response": result,
                 "provider": self.config["provider"],
-                "model": self.config.get("model"),
+                "model": self._used_model or self.config.get("model"),
             },
             metadata=context.metadata,
             state=context.state,
@@ -126,87 +105,35 @@ class AINode(BaseNode):
         return output_context
 
     async def _invoke_provider(self, context: NodeContext) -> str:
-        """Invoke a single AI provider."""
-        from src.model_client import ModelClient
+        """Send the prompt to the configured provider through GrokClient and return the reply text."""
+        from src.grok_client import GrokClient
 
-        # Prepare prompt
         prompt = self._interpolate(self.config["prompt"], context)
         system_prompt = self._interpolate(self.config.get("system_prompt", ""), context)
 
-        # Initialize client
-        client = ModelClient(
-            provider=self.config["provider"],
-            model=self.config["model"],
-        )
-
-        # Make API call
-        response = await client.create_message_async(
-            prompt=prompt,
-            system=system_prompt if system_prompt else None,
-            temperature=self.config["temperature"],
-            max_tokens=self.config["max_tokens"],
-        )
-
-        return response
-
-    async def _invoke_maf(self, context: NodeContext) -> str:
-        """Invoke Multi-Agent Framework for consensus."""
-        from src.collaboration.orchestrator import MultiProviderOrchestrator
-
-        maf_config = self.config["maf_config"]
-        prompt = self._interpolate(self.config["prompt"], context)
-
-        # Initialize orchestrator
-        orchestrator = MultiProviderOrchestrator(
-            providers=maf_config["providers"],
-            consensus_threshold=maf_config.get("consensus_threshold", 0.6),
-        )
-
-        # Get consensus
-        result = await orchestrator.get_consensus(
-            task=prompt,
-            temperature=self.config["temperature"],
-        )
-
-        return result["consensus_response"]
-
-    async def _invoke_pantheon_agent(self, context: NodeContext) -> str:
-        """Delegate to a specific Pantheon agent."""
-        from src.core.message_bus import MessageBus, Message, MessagePriority
-
-        agent_name = self.config["pantheon_agent"]
-        prompt = self._interpolate(self.config["prompt"], context)
-
-        # Get MessageBus instance
-        message_bus = MessageBus()
-
-        # Create message for agent
-        message = Message(
-            id=f"{self.node_id}_request",
-            sender="ai_node",
-            recipient=agent_name,
-            content={
-                "task": prompt,
-                "context": context.data,
-            },
-            priority=MessagePriority.MEDIUM,
-        )
-
-        # Send and wait for response
-        await message_bus.publish(message)
-
-        # Wait for response (with timeout)
-        import asyncio
-
-        timeout = self.config.get("agent_timeout", 30)
-
+        # Raises ValueError for an unknown provider or a missing API key
+        client = GrokClient(provider=self.config["provider"])
         try:
-            response_message = await asyncio.wait_for(
-                message_bus.subscribe(f"{agent_name}_response"), timeout=timeout
+            provider = client.providers[0]
+            if self.config.get("model"):
+                provider.model = self.config["model"]
+            provider.temperature = self.config["temperature"]
+            provider.max_tokens = self.config["max_tokens"]
+
+            history = [{"role": "system", "content": system_prompt}] if system_prompt else None
+            response = await client.create_message(
+                prompt, conversation_history=history, agent=f"workflow:{self.node_id}"
             )
-            return response_message.content.get("result", "")
-        except asyncio.TimeoutError:
-            raise Exception(f"Pantheon agent '{agent_name}' timeout after {timeout}s")
+        finally:
+            await client.close()
+
+        if response.get("status") != "success":
+            raise RuntimeError(
+                f"AINode {self.node_id}: {self.config['provider']} call failed: "
+                f"{response.get('error') or 'no content returned'}"
+            )
+        self._used_model = response.get("model")
+        return response["content"]
 
     def _parse_output(self, result: str, output_format: str) -> Any:
         """Parse AI output based on expected format."""

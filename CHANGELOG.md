@@ -9,6 +9,11 @@
 
 - **TaskMaster matches tasks to agent capabilities.** Agents registered capabilities but nothing used them, so any agent could get any task (the integration script sent the story task to the character agent). Tasks now take an explicit `required_capabilities` list (hard filter, all must be covered, case-insensitive; `create_task` in `BaseAgent` and `TaskClient` accept it): it applies to pulled tasks (`task_request`, `get_available_tasks`) and to auto-delegation. A task nobody can take stays pending and is reported as `unassignable` in the system stats and `get_system_status()`. Task `tags` are only a soft hint: overlap with an agent's capabilities breaks ties after priority and picks the better agent in auto-delegation, so untagged and differently tagged tasks still work. Tests: `TestCapabilityMatching` in `tests/agents/test_task_master.py`
 
+### Fixed (workflow AINode)
+- **`AINode` never worked.** Its provider path instantiated the abstract `ModelClient` with arguments it does not take and called `create_message_async`, which does not exist; its MAF path used a nonexistent `MultiProviderOrchestrator.get_consensus`, and its Pantheon path built `Message(id=, sender=, recipient=)` and used `MessagePriority.MEDIUM`, none of which exist. Found through the graphify graph (four classes named `GrokClient`, one of them the wrong one). The provider path now uses the real `src.grok_client.GrokClient`: `provider` picks the provider, `system_prompt` is sent as a system message, `model`/`temperature`/`max_tokens` are honored, the replying model is reported in the output, token usage is recorded under `workflow:<node_id>`, a failing call fails the node with the provider's message, and the client is always closed. The default model is no longer forced to `grok-4-fast-reasoning` (omitted = the provider's own default, so `provider: claude` works)
+- `provider: "maf"` and `pantheon_agent` are now rejected when the node is created, with a pointer to `main.py --providers` and `PantheonNode` (MAF returns consensus metadata rather than a reply)
+- `GrokClient`: `ProviderConfig` gained optional `max_tokens` and `temperature` overrides, applied to the grok/openai, claude and gemini request bodies (defaults unchanged: 1024 tokens, grok/openai temperature 0.7). Tests: `tests/workflow/test_ai_node.py`, `TestGenerationOverrides` in `tests/test_grok_client.py`
+
 ### Fixed (demo scripts)
 - **`demo_task_management.py`** ran but nothing happened: no agent ever processed a task. `TaskClient` returned `{"status": "sent"}` without waiting for a reply and had no inbox for pushed assignments. It now uses `send_and_wait`, registers an inbox and picks up `task_assigned` pushes (`poll_assignments`, with duplicate protection); the demo creates its tasks through a `TaskClient` and prints the final stats. Result: 5 tasks created, processed and completed, no errors
 - TaskMaster no longer pushes a `task_assigned` notice to an agent that just received the task in a reply (every pulled task arrived twice), and a notice to an agent without an inbox is not an error
@@ -23,7 +28,7 @@
 - `tests/test_shell_hardening.py`: AST guards that fail on any `shell=True` call or bare `except:` in `main.py`, `autonomous.py`, `improve_swarm.py` and `src/`
 - `tests/test_tools_package.py`, `tests/test_main_menu.py`
 - `scripts/legacy_fixes/` for the old one-off `fix_*` scripts
-- Tests: 690 passing, 11 skipped
+- Tests: 710 passing, 11 skipped
 
 ### Fixed
 - **TaskMaster** never enforced task `dependencies`; a task could be assigned or auto-delegated before the tasks it depends on were completed

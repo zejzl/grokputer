@@ -274,3 +274,36 @@ class TestClaudeCliProvider:
         res = await client.create_message("x", screenshot_base64="AAAA")
         assert res["status"] == "error" and "screenshots" in res["error"]
         assert await client.test_connection() is False
+
+
+class TestGenerationOverrides:
+    """ProviderConfig.max_tokens / temperature (used by workflow AINode) reach each provider's request body."""
+
+    MSGS = [{"role": "system", "content": "be brief"}, {"role": "user", "content": "hi"}]
+
+    def test_defaults_are_unchanged(self):
+        body, _ = GrokClient._build_payload(ProviderConfig("grok", "k", "http://x", "m"), self.MSGS)
+        assert body["max_tokens"] == 1024 and body["temperature"] == 0.7
+        body, _ = GrokClient._build_payload(ProviderConfig("claude", "k", "http://x", "m"), self.MSGS)
+        assert body["max_tokens"] == 1024 and "temperature" not in body
+        body, _ = GrokClient._build_payload(ProviderConfig("gemini", "k", "http://x", "m"), self.MSGS)
+        assert "generationConfig" not in body
+
+    @pytest.mark.parametrize("name", ["grok", "openai"])
+    def test_openai_compatible_body(self, name):
+        body, _ = GrokClient._build_payload(
+            ProviderConfig(name, "k", "http://x", "m", max_tokens=333, temperature=0.0), self.MSGS
+        )
+        assert body["max_tokens"] == 333 and body["temperature"] == 0.0  # 0.0 must not fall back to 0.7
+
+    def test_claude_body(self):
+        body, _ = GrokClient._build_payload(
+            ProviderConfig("claude", "k", "http://x", "m", max_tokens=333, temperature=0.2), self.MSGS
+        )
+        assert body["max_tokens"] == 333 and body["temperature"] == 0.2 and body["system"] == "be brief"
+
+    def test_gemini_body(self):
+        body, _ = GrokClient._build_payload(
+            ProviderConfig("gemini", "k", "http://x", "m", max_tokens=333, temperature=0.2), self.MSGS
+        )
+        assert body["generationConfig"] == {"temperature": 0.2, "maxOutputTokens": 333}

@@ -123,32 +123,22 @@ TransformNode("extract", config={
 ```
 
 #### AINode
-Invoke AI models or Pantheon agents.
+Ask one AI provider a question. It runs on the same `GrokClient` as the rest of Grokputer, so the provider's API key must be in the environment (`XAI_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`), or `claude` CLI logged in for `claude-cli`.
 
 ```python
-# Single provider
 AINode("classify", config={
-    "provider": "grok",
-    "model": "grok-4-fast-reasoning",
-    "prompt": "Classify: {{text}}"
-})
-
-# Multi-provider consensus (MAF)
-AINode("decide", config={
-    "provider": "maf",
-    "maf_config": {
-        "providers": ["grok", "claude", "openai"],
-        "consensus_threshold": 0.6
-    },
-    "prompt": "Should we proceed with: {{action}}?"
-})
-
-# Pantheon agent delegation
-AINode("observe", config={
-    "pantheon_agent": "observer",
-    "prompt": "Analyze current screen"
+    "provider": "claude",            # grok (default), claude, claude-cli, gemini, openai
+    "model": "claude-haiku-5-5",     # optional; omitted = the provider's default (GROK_MODEL, CLAUDE_MODEL, ...)
+    "system_prompt": "Reply with one word.",
+    "prompt": "Classify urgency of: {{text}}",
+    "temperature": 0.2,              # default 0.7; ignored by claude-cli
+    "max_tokens": 50,                # default 2000; ignored by claude-cli
 })
 ```
+
+The node outputs `ai_response`, `raw_response`, `provider` and the `model` that answered, and records token usage under the tag `workflow:<node_id>`. A failing call (bad key, billing error, ...) fails the node with the provider's message; use `max_retries` in the node config to retry.
+
+Not supported by `AINode`, and rejected when the node is created: `provider: "maf"` (MAF returns consensus metadata, not a reply; use `main.py --providers`) and `pantheon_agent` (use `PantheonNode`).
 
 ### Integration Nodes
 
@@ -228,19 +218,14 @@ How routing works:
 
 ## Pantheon Integration
 
-Invoke specific Pantheon agents for complex operations:
+Delegating to a Pantheon agent is done with `PantheonNode` (`src/workflow/pantheon_integration.py`), configured with `agent` and `task`. `AINode` does not accept `pantheon_agent`. `PantheonNode` has no tests yet and has not been run against live agents, so treat it as unverified.
 
 ```python
-# Delegate to Observer agent for screen analysis
-AINode("analyze_screen", config={
-    "pantheon_agent": "observer",
-    "prompt": "Find all text elements on screen"
-})
+from src.workflow.pantheon_integration import PantheonNode
 
-# Delegate to Executor for multi-step tasks
-AINode("execute_workflow", config={
-    "pantheon_agent": "executor",
-    "prompt": "Complete checkout process"
+PantheonNode("analyze_screen", config={
+    "agent": "observer",
+    "task": "Find all text elements on screen",
 })
 ```
 

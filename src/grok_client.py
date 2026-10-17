@@ -46,6 +46,10 @@ class ProviderConfig:
     model: str
     max_retries: int = 3
     rate_limit: float = 1.0  # Seconds between calls
+    # Per-call generation overrides; None keeps the built-in defaults (1024 tokens, grok/openai temperature 0.7,
+    # claude/gemini provider default). Ignored by claude-cli, which has no such options.
+    max_tokens: Optional[int] = None
+    temperature: Optional[float] = None
 
 
 class GrokClient:
@@ -277,7 +281,9 @@ class GrokClient:
                 else:
                     content = m["content"]
                 out.append({"role": m["role"], "content": content})
-            body = {"model": model, "max_tokens": 1024, "messages": out}
+            body = {"model": model, "max_tokens": provider.max_tokens or 1024, "messages": out}
+            if provider.temperature is not None:
+                body["temperature"] = provider.temperature
             if system:
                 body["system"] = system
             return body, model
@@ -292,6 +298,13 @@ class GrokClient:
                     parts.append({"inline_data": {"mime_type": "image/png", "data": image_b64}})
                 contents.append({"role": "model" if m["role"] == "assistant" else "user", "parts": parts})
             body = {"contents": contents}
+            generation = {}
+            if provider.temperature is not None:
+                generation["temperature"] = provider.temperature
+            if provider.max_tokens:
+                generation["maxOutputTokens"] = provider.max_tokens
+            if generation:
+                body["generationConfig"] = generation
             if system:
                 body["systemInstruction"] = {"parts": [{"text": system}]}
             return body, model
@@ -309,7 +322,13 @@ class GrokClient:
             out.append({"role": m["role"], "content": content})
         if image_b64 and provider.name == "grok":
             model = os.getenv("GROK_VISION_MODEL", model)
-        return {"model": model, "messages": out, "max_tokens": 1024, "temperature": 0.7}, model
+        temperature = 0.7 if provider.temperature is None else provider.temperature
+        return {
+            "model": model,
+            "messages": out,
+            "max_tokens": provider.max_tokens or 1024,
+            "temperature": temperature,
+        }, model
 
     @staticmethod
     def _flatten_messages(messages: list[Dict[str, str]]) -> tuple[str, str]:
