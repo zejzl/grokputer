@@ -31,6 +31,7 @@
 - All 14 bare `except:` blocks now name their exception types; `connect_to_process` no longer hits an unbound socket
 
 ### Changed
+- Moved the unreferenced staging files out of `db/` into `scripts/legacy/db/` (`swarm_analytics_enhancement*.py`, `temp_merge.py` (byte-identical to the first), `async_tool_wrappers.py`, `updated_config.py`, `updated_main.py`, `updated_requirements.txt`, `test_swarm*.py`, `test_analytics.py`); deleted `db/5.9.0` (captured pip output). `db/` now holds `config.py`, `analytics_performance_tools.py`, the SQLite files, `db.sql`, `knowledge_base.json` (used by `src/offline_mode.py`), `offline_cache/` and notes
 - Removed `db/integrated_tools.py`: every function in it already existed in `src/tools/toolkit.py`, identical except `invoke_prayer`. The toolkit now has the real `invoke_prayer` (reads `server_prayer.txt`, returns `prayer` and `mantra`) instead of a 5-line stub, and `src.tools.invoke_prayer` resolves to it (the package's separate print-only stub is gone). `tests/test_tools.py` now tests the toolkit
 - Reviewed the four duplicate agent pairs (`observer`, `actor`, `analyzer`, `improver` vs their `*_agent` versions): they are different implementations with different message protocols, so they were documented (`src/agents/__init__.py`) and tested instead of merged. `PantheonCoordinator` no longer imports the plain classes just for annotations; stale `epic_win.py` moved to `scripts/legacy/`
 - `ActorAgent` `file_create` / `file_edit` actions raise a clear "not supported" error (`ActionExecutor` has no file operations); click and type go through `execute_async`
@@ -38,7 +39,7 @@
 
 ### Known Issues
 - `observer`/`observer_agent`, `actor`/`actor_agent`, `analyzer`/`analyzer_agent`, `improver`/`improver_agent` are still pairs of different implementations
-- `db/` holds live code (`config.py`, `analytics_performance_tools.py`: string-returning analytics with MAF metrics, used by `main.py`, `dashboard.py`, `metrics_server.py`) next to unreferenced staging files (`swarm_analytics_enhancement*.py`, `temp_merge.py` which is byte-identical to the first, `async_tool_wrappers.py`, `updated_*`, `test_swarm*.py`, `test_analytics.py`). The toolkit's dict-returning analytics are a separate API, not a copy
+- `db/analytics_performance_tools.py` (string-returning analytics with MAF metrics, used by `main.py`, `dashboard.py`, `metrics_server.py`) and the toolkit's dict-returning analytics are separate APIs, not copies; do not merge them blindly
 - Two `ActionExecutor` PyAutoGUI tests fail if the real mouse sits in a screen corner (fail-safe)
 
 ## [v2026.10.15] - 2026-10-15 - Runtime Fixes, claude-cli Provider, Token Usage, Plan-Only Pantheon, Real MAF Providers
