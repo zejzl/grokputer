@@ -15,7 +15,7 @@ from datetime import datetime
 from pathlib import Path
 from collections import defaultdict
 import subprocess
-from typing import Dict, List, Any
+from typing import Any, Dict, List, Optional
 
 # Local imports
 from src import config
@@ -135,6 +135,7 @@ def apply_edit(fix: Dict[str, Any], dry_run: bool = False) -> bool:
     backup = file_path.with_suffix(f".{BACKUP_SUFFIX}_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
     if not dry_run:
         shutil.copy2(file_path, backup)
+        fix["_backup"] = str(backup)  # lets the caller revert if the follow-up test fails
         log_improvement(f"Backup created: {backup}")
 
     old_str = fix["old_str"]
@@ -156,6 +157,17 @@ def apply_edit(fix: Dict[str, Any], dry_run: bool = False) -> bool:
         return False
 
     log_improvement(f"Applied edit to {fix['file']}: {fix['reason']}")
+    return True
+
+
+def revert_edit(fix: Dict[str, Any]) -> bool:
+    """Restore the file from the backup apply_edit made. Returns True if it was restored."""
+    backup = Path(fix.get("_backup", ""))
+    if not fix.get("_backup") or not backup.exists():
+        log_improvement(f"No backup to restore for {fix.get('file')}.")
+        return False
+    shutil.copy2(backup, fix["file"])
+    log_improvement(f"Reverted {fix['file']} from {backup}")
     return True
 
 
@@ -216,7 +228,8 @@ def main(dry_run: bool = False, max_issues: int = 1):
             if success:
                 log_improvement(f"Improvement successful for {issue['agent_action']}!")
             else:
-                log_improvement("Test failed; reverted edit.")
+                log_improvement("Test failed; reverting edit.")
+                revert_edit(fix)
         else:
             log_improvement("Edit not applied.")
 

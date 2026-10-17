@@ -81,6 +81,36 @@ class TestImproveSwarm:
         assert "--max-iterations" in args[0]
 
 
+class TestImproveSwarmRevert:
+    @pytest.fixture(autouse=True)
+    def _quiet_log(self, monkeypatch, tmp_path):
+        monkeypatch.setattr(improve_swarm, "IMPROVE_LOG", tmp_path / "improve.log")
+
+    def _run_main(self, tmp_path, test_passes):
+        f = tmp_path / "mod.py"
+        f.write_text("value = 1" + chr(10), encoding="utf-8")
+        fix = {"file": str(f), "old_str": "value = 1", "new_str": "value = 2", "reason": "test"}
+        issue = {"agent_action": "actor.bash", "error": "e", "count": 3, "examples": [], "file": str(f)}
+        with patch.object(improve_swarm, "read_logs", return_value=[{"x": 1}]), patch.object(
+            improve_swarm, "detect_issues", return_value=[issue]
+        ), patch.object(improve_swarm, "get_grok_fix", return_value=fix), patch.object(
+            improve_swarm, "test_fix", return_value=test_passes
+        ):
+            improve_swarm.main()
+        return f
+
+    def test_failed_test_reverts_the_edit(self, tmp_path):
+        f = self._run_main(tmp_path, test_passes=False)
+        assert f.read_text(encoding="utf-8") == "value = 1" + chr(10)
+
+    def test_passing_test_keeps_the_edit(self, tmp_path):
+        f = self._run_main(tmp_path, test_passes=True)
+        assert f.read_text(encoding="utf-8") == "value = 2" + chr(10)
+
+    def test_revert_without_backup_is_a_noop(self):
+        assert improve_swarm.revert_edit({"file": "nope.py"}) is False
+
+
 class TestFormerBareExcepts:
     def test_taskmaster_fallback_does_not_raise(self):
         import asyncio

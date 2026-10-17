@@ -5,13 +5,16 @@ Implements vault scanning, prayer invocation, analytics queries, performance mon
 """
 from __future__ import annotations
 
+import ast
 import asyncio
 import glob
 import json
 import logging
+import re
 import shlex
 import sqlite3
 import subprocess
+import sys
 import time
 from collections import defaultdict
 from pathlib import Path
@@ -297,7 +300,7 @@ def invoke_prayer() -> Dict[str, Any]:
     return {"status": "success", "message": "ETERNAL | INFINITE"}
 
 
-def generate_code(filename: str, code_content: str, sandbox_dir: str = "outputs") -> Dict[str, Any]:
+def get_vault_stats() -> Dict[str, Any]:
     """
     Get statistics about the vault contents.
 
@@ -413,9 +416,9 @@ TOOL_REGISTRY = {
 }
 
 
-def execute_tool(tool_name: str, **kwargs) -> Dict[str, Any]:
+def generate_code(filename: str, code_content: str, sandbox_dir: str = "outputs") -> Dict[str, Any]:
     """
-    Execute a tool by name with the given arguments.
+    Write a generated Python script into the sandbox directory after checking its syntax.
 
     Args:
         filename: Name of the file to create (e.g., 'season_haiku.py').
@@ -433,8 +436,10 @@ def execute_tool(tool_name: str, **kwargs) -> Dict[str, Any]:
         sandbox_path = Path(sandbox_dir)
         sandbox_path.mkdir(exist_ok=True)
 
-        # Full path
-        file_path = sandbox_path / filename
+        # Keep the write inside the sandbox directory
+        file_path = (sandbox_path / filename).resolve()
+        if sandbox_path.resolve() not in file_path.parents:
+            return {"status": "error", "message": f"Filename escapes sandbox directory: {filename}"}
 
         # Write file
         with open(file_path, "w", encoding="utf-8") as f:
@@ -445,6 +450,30 @@ def execute_tool(tool_name: str, **kwargs) -> Dict[str, Any]:
         return {"status": "error", "message": f"Syntax error in generated code: {e}"}
     except Exception as e:
         return {"status": "error", "message": f"Failed to generate script: {e}"}
+
+
+def execute_tool(tool_name: str, **kwargs) -> Dict[str, Any]:
+    """
+    Execute a tool by name with the given arguments.
+
+    Args:
+        tool_name: Name of the tool to execute
+        **kwargs: Tool-specific arguments
+
+    Returns:
+        Tool execution result
+    """
+    if tool_name not in TOOL_REGISTRY:
+        logger.error(f"Unknown tool: {tool_name}")
+        return {"status": "error", "error": f"Unknown tool: {tool_name}", "available_tools": list(TOOL_REGISTRY.keys())}
+
+    try:
+        tool_func = TOOL_REGISTRY[tool_name]
+        logger.info(f"Executing tool: {tool_name} with args: {kwargs}")
+        return tool_func(**kwargs)
+    except Exception as e:
+        logger.error(f"Error executing tool {tool_name}: {e}")
+        return {"status": "error", "error": str(e), "tool": tool_name}
 
 
 def execute_generated_code(filename: str, sandbox_dir: str = "outputs") -> Dict[str, Any]:
@@ -560,29 +589,12 @@ def search(query: str, path: str = ".") -> Dict[str, Any]:
         return {"status": "success", "results": results, "message": f"Found {len(results)} files containing '{query}'"}
     except Exception as e:
         return {"status": "error", "message": f"Search failed: {e}"}
-        logger.error(f"Error executing tool {tool_name}: {e}")
-        return {
-            "status": "error",
-            "error": str(e),
-            "tool": tool_name,
-        }  # Enhancement to analytics tools based on grokputer_swarm_examples.md
+
+
+# Enhancement to analytics tools based on grokputer_swarm_examples.md
 
 
 # Adds swarm performance analytics: execution times, success rates, message counts, agent efficiency
-
-import re
-import sqlite3
-from pathlib import Path
-from typing import Any, Dict, List
-
-from src import config
-
-
-# Existing analytics_query from analytics_performance_tools.py
-def analytics_query(query_type: str, agent_name: str = None, limit: int = 10) -> Dict[str, Any]:
-    # ... (existing code for summary, top_agents, agent_stats, roll_distribution)
-    pass  # Copy from previous
-
 
 # NEW: Swarm performance analytics based on examples
 def swarm_performance_analytics(metric: str = "overview", example_filter: str = None) -> Dict[str, Any]:
@@ -800,6 +812,8 @@ def analyze_message_counts(examples: List[Dict[str, Any]]) -> Dict[str, Any]:
         for ex in examples
         if "execution_time" in ex and "message_count" in ex
     ]
+    times = [t for t, _ in time_msg_pairs]
+    avg_time = sum(times) / len(times) if times else 0
 
     return {
         "status": "success",
