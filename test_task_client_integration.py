@@ -71,18 +71,21 @@ async def test_task_client_integration():
             "description": "Write a 500-word story about artificial intelligence gaining consciousness and learning about human emotions.",
             "priority": "medium",
             "tags": ["story_generation", "creative_writing"],
+            "required_capabilities": ["story_generation"],
         },
         {
             "title": "Analyze character motivations in a story",
             "description": "Analyze the character arc and motivations of a protagonist who discovers they have special abilities.",
             "priority": "medium",
             "tags": ["character_analysis", "literary_analysis"],
+            "required_capabilities": ["character_analysis"],
         },
         {
             "title": "Coordinate a multi-agent creative writing project",
             "description": "Break down and coordinate the creation of a short story involving multiple characters with different backgrounds.",
             "priority": "high",
             "tags": ["task_coordination", "multi_agent"],
+            "required_capabilities": ["task_coordination"],
         },
     ]
 
@@ -93,6 +96,7 @@ async def test_task_client_integration():
             description=task_data["description"],
             priority=TaskPriority(task_data["priority"]),
             tags=task_data["tags"],
+            required_capabilities=task_data["required_capabilities"],
         )
         print(f"Created task: {created.task_id} - {task_data['title']}")
 

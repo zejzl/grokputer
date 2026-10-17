@@ -346,3 +346,117 @@ class TestBaseAgentTaskLoop:
             assert master.task_registry.get_task(task_id).status == TaskStatus.COMPLETED
         finally:
             await stop(master, master_task)
+
+
+class TestCapabilityMatching:
+    """required_capabilities is a hard filter; tag/capability overlap (affinity) is only a tie-breaker."""
+
+    def test_can_take_rules(self):
+        reg = TaskRegistry()
+        anyone = reg.create_task("anyone", "")
+        needs_both = reg.create_task("needs both", "", required_capabilities=["Writing", "editing"])
+
+        assert reg.can_take(anyone, None) and reg.can_take(anyone, []) and reg.can_take(anyone, ["x"])
+        assert not reg.can_take(needs_both, None)
+        assert not reg.can_take(needs_both, ["writing"])  # all required capabilities, not any
+        assert reg.can_take(needs_both, [" WRITING ", "Editing", "extra"])  # case/whitespace-insensitive
+
+    def test_available_tasks_are_filtered_by_capability(self):
+        reg = TaskRegistry()
+        open_task = reg.create_task("open", "")
+        story = reg.create_task("story", "", required_capabilities=["story"])
+        reg.create_task("code", "", required_capabilities=["code"])
+
+        ids = lambda caps: {t.task_id for t in reg.get_available_tasks("a", 10, caps)}  # noqa: E731
+        assert ids(None) == {open_task.task_id}
+        assert ids(["story"]) == {open_task.task_id, story.task_id}
+        assert len(ids(["story", "code"])) == 3
+
+    def test_affinity_breaks_ties_but_priority_still_wins(self):
+        reg = TaskRegistry()
+        plain = reg.create_task("plain", "", priority=TaskPriority.MEDIUM, tags=["other"])
+        match = reg.create_task("match", "", priority=TaskPriority.MEDIUM, tags=["story"])
+        urgent = reg.create_task("urgent", "", priority=TaskPriority.CRITICAL, tags=["other"])
+
+        order = [t.task_id for t in reg.get_available_tasks("a", 3, ["story"])]
+        assert order == [urgent.task_id, match.task_id, plain.task_id]
+
+    def test_task_roundtrips_required_capabilities(self):
+        from src.agents.task_master import Task
+
+        task = TaskRegistry().create_task("t", "d", required_capabilities=["a", "b"])
+        assert Task.from_dict(task.to_dict()).required_capabilities == ["a", "b"]
+
+    @pytest.mark.asyncio
+    async def test_task_request_only_offers_tasks_the_agent_can_take(self):
+        bus = MessageBus()
+        master = make_master(bus)
+        await master.process_message(msg("create_task", {"title": "Story", "required_capabilities": ["story"]}))
+        await master.process_message(msg("agent_capabilities", {"capabilities": ["code"]}, from_agent="coder"))
+        await master.process_message(msg("agent_capabilities", {"capabilities": ["story"]}, from_agent="writer"))
+
+        assert (await master.process_message(msg("task_request", from_agent="coder")))["status"] == "no_tasks"
+        assert (await master.process_message(msg("task_request", from_agent="stranger")))["status"] == "no_tasks"
+        listing = await master.process_message(msg("get_available_tasks", from_agent="coder"))
+        assert listing["tasks"] == []
+        assert (await master.process_message(msg("task_request", from_agent="writer")))["status"] == "assigned"
+
+    @pytest.mark.asyncio
+    async def test_auto_delegation_goes_to_the_capable_agent_even_if_another_is_idler(self):
+        bus = MessageBus()
+        master = make_master(bus, auto_delegate=True)
+        for agent_id, caps in (("coder", ["code"]), ("writer", ["story"])):
+            await master.process_message(msg("agent_capabilities", {"capabilities": caps}, from_agent=agent_id))
+            await master.process_message(msg("agent_heartbeat", from_agent=agent_id))
+        # give the writer work so the coder is the less loaded agent
+        await master.process_message(msg("create_task", {"title": "busy", "required_capabilities": ["story"]}))
+
+        created = await master.process_message(msg("create_task", {"title": "S2", "required_capabilities": ["story"]}))
+        assert master.task_registry.get_task(created["task"]["task_id"]).assigned_agent == "writer"
+
+    @pytest.mark.asyncio
+    async def test_auto_delegation_prefers_the_better_tag_match_at_equal_load(self):
+        master = make_master(auto_delegate=True)
+        for agent_id, caps in (("a", ["code"]), ("b", ["story"])):
+            await master.process_message(msg("agent_capabilities", {"capabilities": caps}, from_agent=agent_id))
+            await master.process_message(msg("agent_heartbeat", from_agent=agent_id))
+
+        created = await master.process_message(msg("create_task", {"title": "S", "tags": ["story"]}))
+        assert master.task_registry.get_task(created["task"]["task_id"]).assigned_agent == "b"
+
+    @pytest.mark.asyncio
+    async def test_task_nobody_can_take_waits_and_is_reported(self):
+        bus = MessageBus()
+        master = make_master(bus, auto_delegate=True)
+        await master.process_message(msg("agent_capabilities", {"capabilities": ["code"]}, from_agent="coder"))
+        await master.process_message(msg("agent_heartbeat", from_agent="coder"))
+
+        created = await master.process_message(msg("create_task", {"title": "Poem", "required_capabilities": ["poetry"]}))
+        task_id = created["task"]["task_id"]
+        assert master.task_registry.get_task(task_id).status == TaskStatus.PENDING
+        assert [t.task_id for t in master.unassignable_tasks()] == [task_id]
+        assert (await master.process_message(msg("get_system_stats")))["data"]["unassignable"] == 1
+        assert master.get_system_status()["unassignable_tasks"] == [task_id]
+
+        # a poet shows up and pulls the waiting task
+        bus.register_agent("poet")
+        await master.process_message(msg("agent_capabilities", {"capabilities": ["poetry"]}, from_agent="poet"))
+        assert master.unassignable_tasks() == []
+        assert (await master.process_message(msg("task_request", from_agent="poet")))["task_id"] == task_id
+
+    @pytest.mark.asyncio
+    async def test_clients_can_create_tasks_with_required_capabilities(self):
+        from src.core.task_client import TaskClient
+
+        bus = MessageBus()
+        master = make_master(bus)
+        worker = Worker("w1", bus, MagicMock(), {})
+        worker.enable_task_client(["writing"])
+        master_task = await run_in_background(master)
+        try:
+            via_agent = await worker.create_task("A", "d", required_capabilities=["writing"])
+            via_client = (await TaskClient("admin", bus).create_task("B", "d", required_capabilities=["x"]))["task"]
+            assert master.task_registry.get_task(via_agent).required_capabilities == ["writing"]
+            assert via_client["required_capabilities"] == ["x"]
+        finally:
+            await stop(master, master_task)

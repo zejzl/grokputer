@@ -131,8 +131,9 @@ class TaskClient:
         priority: str = "medium",
         tags: Optional[List[str]] = None,
         metadata: Optional[Dict[str, Any]] = None,
+        required_capabilities: Optional[List[str]] = None,
     ):
-        """Create a new task (admin function)."""
+        """Create a new task (admin function). Only agents with every `required_capabilities` may take it."""
         response = await self._send_message(
             "create_task",
             {
@@ -141,6 +142,7 @@ class TaskClient:
                 "priority": priority,
                 "tags": tags or [],
                 "metadata": metadata or {},
+                "required_capabilities": required_capabilities or [],
             },
         )
 

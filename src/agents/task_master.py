@@ -63,6 +63,9 @@ class Task:
     dependencies: List[str] = field(default_factory=list)
     tags: List[str] = field(default_factory=list)
     metadata: Dict[str, Any] = field(default_factory=dict)
+    # Hard requirement: only agents that registered ALL of these capabilities may take the task.
+    # (Tags are only a soft hint, see TaskRegistry.get_available_tasks.)
+    required_capabilities: List[str] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert task to dictionary for serialization."""
@@ -79,6 +82,7 @@ class Task:
             "dependencies": self.dependencies,
             "tags": self.tags,
             "metadata": self.metadata,
+            "required_capabilities": self.required_capabilities,
         }
 
     @classmethod
@@ -97,6 +101,7 @@ class Task:
             dependencies=data.get("dependencies", []),
             tags=data.get("tags", []),
             metadata=data.get("metadata", {}),
+            required_capabilities=data.get("required_capabilities", []),
         )
 
 
@@ -117,6 +122,7 @@ class TaskRegistry:
         dependencies: List[str] = None,
         tags: List[str] = None,
         metadata: Dict[str, Any] = None,
+        required_capabilities: List[str] = None,
     ) -> Task:
         """Create a new task."""
         self.task_counter += 1
@@ -131,6 +137,7 @@ class TaskRegistry:
             dependencies=dependencies or [],
             tags=tags or [],
             metadata=metadata or {},
+            required_capabilities=required_capabilities or [],
         )
 
         self.tasks[task_id] = task
@@ -204,12 +211,38 @@ class TaskRegistry:
                 return False
         return True
 
-    def get_available_tasks(self, agent_id: str, max_tasks: int = 3) -> List[Task]:
-        """Get tasks that could be assigned to an agent (pending, dependencies completed)."""
+    @staticmethod
+    def _normalize(items: Optional[List[str]]) -> Set[str]:
+        return {str(item).strip().lower() for item in (items or []) if str(item).strip()}
+
+    def can_take(self, task: Task, capabilities: Optional[List[str]]) -> bool:
+        """True when the agent's capabilities cover every capability the task requires.
+
+        A task without `required_capabilities` can be taken by anyone, including an agent that never
+        registered capabilities.
+        """
+        return self._normalize(task.required_capabilities) <= self._normalize(capabilities)
+
+    def affinity(self, task: Task, capabilities: Optional[List[str]]) -> int:
+        """Soft match: how many of the task's tags are among the agent's capabilities."""
+        return len(self._normalize(task.tags) & self._normalize(capabilities))
+
+    def get_available_tasks(
+        self, agent_id: str, max_tasks: int = 3, capabilities: Optional[List[str]] = None
+    ) -> List[Task]:
+        """Get tasks that could be assigned to an agent.
+
+        Pending, dependencies completed, and the agent's `capabilities` cover the task's
+        `required_capabilities`. Ordered by priority, then by tag/capability overlap (affinity),
+        then by deadline and age.
+        """
         available_tasks = [
             task
             for task in self.tasks.values()
-            if task.status == TaskStatus.PENDING and task.assigned_agent != agent_id and self.is_ready(task)
+            if task.status == TaskStatus.PENDING
+            and task.assigned_agent != agent_id
+            and self.is_ready(task)
+            and self.can_take(task, capabilities)
         ]
 
         # Sort by priority and deadline
@@ -219,7 +252,7 @@ class TaskRegistry:
             if task.deadline:
                 time_until_deadline = task.deadline - time.time()
                 deadline_weight = max(0, 1000 - time_until_deadline)  # Closer deadlines get higher weight
-            return (priority_weight, deadline_weight, -task.created_at)  # Newer tasks first
+            return (priority_weight, self.affinity(task, capabilities), deadline_weight, -task.created_at)
 
         available_tasks.sort(key=sort_key, reverse=True)
         return available_tasks[:max_tasks]
@@ -318,7 +351,9 @@ class TaskMaster(BaseAgent):
             }
 
         # Find suitable task
-        available_tasks = self.task_registry.get_available_tasks(agent_id, 1)
+        available_tasks = self.task_registry.get_available_tasks(
+            agent_id, 1, capabilities=self.agent_capabilities.get(agent_id)
+        )
         if not available_tasks:
             return {"status": "no_tasks", "message": "No available tasks"}
 
@@ -384,9 +419,20 @@ class TaskMaster(BaseAgent):
 
         return {"status": "capabilities_updated"}
 
+    def unassignable_tasks(self) -> List[Task]:
+        """Pending tasks whose required capabilities no registered agent covers (they wait for one)."""
+        return [
+            task
+            for task in self.task_registry.tasks.values()
+            if task.status == TaskStatus.PENDING
+            and task.required_capabilities
+            and not any(self.task_registry.can_take(task, caps) for caps in self.agent_capabilities.values())
+        ]
+
     async def _handle_get_system_stats(self, message: Message) -> Dict[str, Any]:
         """Handle request for system statistics."""
         stats = self.task_registry.get_system_stats()
+        stats["unassignable"] = len(self.unassignable_tasks())
         return {"status": "stats", "data": stats}
 
     async def _handle_create_task(self, message: Message) -> Dict[str, Any]:
@@ -401,6 +447,7 @@ class TaskMaster(BaseAgent):
             dependencies=content.get("dependencies", []),
             tags=content.get("tags", []),
             metadata=content.get("metadata", {}),
+            required_capabilities=content.get("required_capabilities", []),
         )
 
         # Auto-delegate if enabled
@@ -414,7 +461,7 @@ class TaskMaster(BaseAgent):
         agent_id = message.from_agent
         limit = message.content.get("limit", 5)
 
-        available_tasks = self.task_registry.get_available_tasks(agent_id, limit)
+        available_tasks = self.task_registry.get_available_tasks(agent_id, limit, capabilities=self.agent_capabilities.get(agent_id))
         return {"status": "available_tasks", "tasks": [task.to_dict() for task in available_tasks]}
 
     async def _check_auto_delegate(self, agent_id: str):
@@ -428,7 +475,9 @@ class TaskMaster(BaseAgent):
 
         # If agent has capacity, try to assign a task
         if active_count < self.max_agent_tasks:
-            available_tasks = self.task_registry.get_available_tasks(agent_id, 1)
+            available_tasks = self.task_registry.get_available_tasks(
+                agent_id, 1, capabilities=self.agent_capabilities.get(agent_id)
+            )
             if available_tasks:
                 task = available_tasks[0]
                 if self.task_registry.assign_task(task.task_id, agent_id):
@@ -448,11 +497,15 @@ class TaskMaster(BaseAgent):
         if not self.auto_delegate or not self.task_registry.is_ready(task):
             return
 
-        # Find best agent for this task
+        # Find best agent for this task: capable, active, with capacity; least loaded, then best tag match
         best_agent = None
-        min_workload = float("inf")
+        best_rank = None
 
-        for agent_id in self.agent_capabilities.keys():
+        for agent_id, capabilities in self.agent_capabilities.items():
+            # Hard requirement: the agent must have registered every capability the task requires
+            if not self.task_registry.can_take(task, capabilities):
+                continue
+
             # Check if agent is active (recent heartbeat)
             last_heartbeat = self.last_heartbeat.get(agent_id, 0)
             if time.time() - last_heartbeat > self.heartbeat_timeout:
@@ -462,9 +515,15 @@ class TaskMaster(BaseAgent):
             current_tasks = self.task_registry.get_agent_workload(agent_id)
             active_count = sum(1 for t in current_tasks if t.status in [TaskStatus.ASSIGNED, TaskStatus.IN_PROGRESS])
 
-            if active_count < self.max_agent_tasks and active_count < min_workload:
+            rank = (active_count, -self.task_registry.affinity(task, capabilities))
+            if active_count < self.max_agent_tasks and (best_rank is None or rank < best_rank):
                 best_agent = agent_id
-                min_workload = active_count
+                best_rank = rank
+
+        if best_agent is None and task.required_capabilities:
+            logger.info(
+                f"[TaskMaster] {task.task_id} waits for an agent with {task.required_capabilities}"
+            )
 
         if best_agent:
             if self.task_registry.assign_task(task.task_id, best_agent):
@@ -538,6 +597,7 @@ class TaskMaster(BaseAgent):
                 ]
             ),
             "task_stats": self.task_registry.get_system_stats(),
+            "unassignable_tasks": [t.task_id for t in self.unassignable_tasks()],
             "auto_delegate": self.auto_delegate,
             "max_agent_tasks": self.max_agent_tasks,
         }

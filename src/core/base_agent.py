@@ -286,14 +286,26 @@ class BaseAgent(ABC):
         return response.get("tasks", []) if response else []
 
     async def create_task(
-        self, title: str, description: str, priority: str = "medium", tags: Optional[List[str]] = None
+        self,
+        title: str,
+        description: str,
+        priority: str = "medium",
+        tags: Optional[List[str]] = None,
+        required_capabilities: Optional[List[str]] = None,
     ) -> Optional[str]:
         """Create a new task."""
         if not self.task_client_enabled:
             return None
 
         response = await self._send_task_message(
-            "create_task", {"title": title, "description": description, "priority": priority, "tags": tags or []}
+            "create_task",
+            {
+                "title": title,
+                "description": description,
+                "priority": priority,
+                "tags": tags or [],
+                "required_capabilities": required_capabilities or [],
+            },
         )
 
         if not response:
