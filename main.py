@@ -149,6 +149,15 @@ async def run_performance_monitor(snapshot):
     """Stub: Run performance monitor."""
     return "Performance monitor not implemented yet"
 
+def _ask(prompt: str) -> str:
+    """input() that exits cleanly on EOF (piped/closed stdin) or Ctrl+C instead of crashing."""
+    try:
+        return input(prompt)
+    except (EOFError, KeyboardInterrupt):
+        print("\n[EXIT] Input closed. Za Groka. Za Vrzibrzi. Za Server.\n")
+        sys.exit(0)
+
+
 def _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot):
     """
     Run interactive menu mode - user selects mode and enters task.
@@ -183,14 +192,14 @@ def _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot):
         10. Quit
 
 """)
-        choice = input("        Choose mode (1-10): ").strip()
+        choice = _ask("        Choose mode (1-10): ").strip()
 
         if choice == "1":
             print("\n[MODE] Single Agent (Grok only)\n")
-            task = input("Enter task: ").strip()
+            task = _ask("Enter task: ").strip()
             if not task:
                 print("[ERROR] Task cannot be empty\n")
-                input("Press Enter to continue...")
+                _ask("Press Enter to continue...")
                 continue
             try:
                 asyncio.run(_run_single_agent_mode(task, max_iterations, debug, skip_boot, provider="grok"))
@@ -198,10 +207,10 @@ def _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot):
                 print(f"[ERROR] Single agent mode failed: {e}")
         elif choice == "2":
             print("\n[MODE] Collaboration Mode (Grok + Claude)\n")
-            task = input("Enter task: ").strip()
+            task = _ask("Enter task: ").strip()
             if not task:
                 print("[ERROR] Task cannot be empty\n")
-                input("Press Enter to continue...")
+                _ask("Press Enter to continue...")
                 continue
             try:
                 asyncio.run(_run_collaboration_mode(task, max_rounds, debug, review_mode=False))
@@ -209,12 +218,12 @@ def _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot):
                 print(f"[ERROR] Collaboration mode failed: {e}")
         elif choice == "3":
             print("\n[MODE] Swarm Mode (Multi-agent)\n")
-            task = input("Enter task: ").strip()
+            task = _ask("Enter task: ").strip()
             if not task:
                 print("[ERROR] Task cannot be empty\n")
-                input("Press Enter to continue...")
+                _ask("Press Enter to continue...")
                 continue
-            roles_input = input("Agent roles (default: coordinator,observer,actor): ").strip()
+            roles_input = _ask("Agent roles (default: coordinator,observer,actor): ").strip()
             roles = [r.strip() for r in roles_input.split(",")] if roles_input else ["coordinator", "observer", "actor"]
             try:
                 asyncio.run(_run_swarm_mode(task, roles, debug))
@@ -223,7 +232,7 @@ def _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot):
         elif choice == "4":
             print("\n[MODE] Improver Manual - Self-improvement on session/log\n")
             print("[INFO] Improver agent will analyze a session and propose improvements")
-            session_id = input("Enter session ID (or 'latest'): ").strip()
+            session_id = _ask("Enter session ID (or 'latest'): ").strip()
             if not session_id:
                 session_id = "latest"
             try:
@@ -235,10 +244,10 @@ def _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot):
         elif choice == "5":
             print("\n[MODE] Offline Mode - Cached/local fallback\n")
             print("[INFO] Using cached responses and local knowledge base")
-            task = input("Enter task: ").strip()
+            task = _ask("Enter task: ").strip()
             if not task:
                 print("[ERROR] Task cannot be empty\n")
-                input("Press Enter to continue...")
+                _ask("Press Enter to continue...")
                 continue
             try:
                 from src.offline_mode import run_offline_mode
@@ -247,7 +256,7 @@ def _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot):
                 print(f"[ERROR] Offline mode failed: {e}")
         elif choice == "6":
             print("\n[MODE] Community Vault Sync - Pull/push evolutions and tools\n")
-            sync_choice = input("Sync action (pull/push/both/list): ").strip().lower()
+            sync_choice = _ask("Sync action (pull/push/both/list): ").strip().lower()
             if sync_choice in ["pull", "push", "both", "list"]:
                 try:
                     from src.vault_sync import run_vault_sync
@@ -278,10 +287,10 @@ def _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot):
                 print(f"[SAVE] Error: {e}")
         elif choice == "8":
             print("\n[MODE] Pantheon Mode (9-agent architecture)\n")
-            task = input("Enter task: ").strip()
+            task = _ask("Enter task: ").strip()
             if not task:
                 print("[ERROR] Task cannot be empty\n")
-                input("Press Enter to continue...")
+                _ask("Press Enter to continue...")
                 continue
             try:
                 asyncio.run(_run_pantheon_mode(task, debug))
@@ -289,14 +298,14 @@ def _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot):
                 print(f"[ERROR] Pantheon mode failed: {e}")
         elif choice == "9":
             print("\n[MODE] MAF Multi-Provider Mode\n")
-            task = input("Enter task: ").strip()
+            task = _ask("Enter task: ").strip()
             if not task:
                 print("[ERROR] Task cannot be empty\n")
-                input("Press Enter to continue...")
+                _ask("Press Enter to continue...")
                 continue
-            providers_input = input("Providers (comma-separated, default: grok): ").strip() or "grok"
+            providers_input = _ask("Providers (comma-separated, default: grok): ").strip() or "grok"
             providers = [p.strip() for p in providers_input.split(",")]
-            maf_config = input("MAF config preset (default: grok_claude_dual): ").strip() or "grok_claude_dual"
+            maf_config = _ask("MAF config preset (default: grok_claude_dual): ").strip() or "grok_claude_dual"
             try:
                 asyncio.run(_run_maf_mode(task, providers, maf_config, max_rounds, debug, review_mode=False))
             except Exception as e:
@@ -306,7 +315,7 @@ def _run_interactive_mode(debug, max_iterations, max_rounds, skip_boot):
             sys.exit(0)
         else:
             print("\n[ERROR] Invalid choice. Please select 1-10.\n")
-            input("Press Enter to continue...")
+            _ask("Press Enter to continue...")
             print("\033[H\033[J")
 
 async def _list_models_for_provider(provider: str, api_key: Optional[str]):
