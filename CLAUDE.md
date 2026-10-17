@@ -2,7 +2,7 @@
 
 **Last Updated**: 2026-10-17
 **Project**: Grokputer - AI-Powered Computer Control & Multi-Agent System
-**Status**: Active development. Full test suite green (627 passed, 11 skipped). Known runtime bugs remain (see Known Issues). Session notes and TODO: `nightowl_2026-10-15.md`.
+**Status**: Active development. Full test suite green (629 passed, 11 skipped). Known runtime bugs remain (see Known Issues). Session notes and TODO: `nightowl_2026-10-15.md`.
 
 Claims below marked "(unverified)" come from older notes and have not been re-measured.
 
@@ -54,7 +54,7 @@ Copy `.env.example` to `.env` (gitignored). Main variables: `XAI_API_KEY`, `ANTH
 
 ## Testing
 
-**Current run (2026-10-15, Python 3.14.7, `pytest tests -q --continue-on-collection-errors`)**: 627 passed, 11 skipped, 0 failed, 0 errors as of 2026-10-17 (2 PyAutoGUI action_executor tests fail if the real mouse sits in a screen corner: fail-safe). (Before the 2026-10-15 fixes: 299 passed, 13 failed, 12 collection errors.)
+**Current run (2026-10-15, Python 3.14.7, `pytest tests -q --continue-on-collection-errors`)**: 629 passed, 11 skipped, 0 failed, 0 errors as of 2026-10-17 (2 PyAutoGUI action_executor tests fail if the real mouse sits in a screen corner: fail-safe). (Before the 2026-10-15 fixes: 299 passed, 13 failed, 12 collection errors.)
 
 How the suite is set up:
 - `tests/conftest.py` sets a placeholder `XAI_API_KEY` (a real one in the environment is left alone), because `src/config.py` raises at import time without a key. Tests mock all network calls.
@@ -87,7 +87,7 @@ pytest tests -q --continue-on-collection-errors
 7. (done) `node_modules/`, `saves/`, `backups/`, `logs/` untracked and ignored; root `fix_*` scripts moved to `scripts/legacy_fixes/`.
 8. (done) workflow engine wired into `main.py --workflow`. Also: Two agents: `Taskmaster` (`src/agents/taskmaster.py`, bus id `task_planner`) is the analytics planner (`suggest`, `next_step`); `TaskMaster` (`src/agents/task_master.py`, bus id `taskmaster`) is the task board that `BaseAgent`'s task client talks to (restored from commit 37db194, where it had been overwritten; the client now waits for replies via `send_and_wait`; task dependencies are now enforced). `demo_task_management.py` and `test_task_client_integration.py` need live LLM agents and were not run; `ActorAgent` file_create/file_edit are unsupported (ActionExecutor has no file ops).
 
-Fixed 2026-10-17: the old `src/tools.py` was shadowed by the `src/tools/` package and had spliced function bodies (`get_vault_stats` had no `def`, `generate_code`/`execute_tool` bodies were swapped, a stub `analytics_query` overrode the real one). It is now `src/tools/toolkit.py`, re-exported lazily from `src.tools` (`from src.tools import bash, search, execute_tool, ...` works). `generate_code` rejects filenames that escape the sandbox dir. Tests: `tests/test_tools_package.py`.
+Fixed 2026-10-17: `db/integrated_tools.py` removed (strict duplicate of `src/tools/toolkit.py`; the toolkit now has its real `invoke_prayer`). `db/` still holds live code (`config.py`, `analytics_performance_tools.py`) next to unreferenced staging files (`swarm_analytics_enhancement*.py`, `temp_merge.py` = byte-identical copy, `async_tool_wrappers.py`, `updated_*`, `test_swarm*.py`, `test_analytics.py`); `analytics_performance_tools` (strings, MAF metrics) and the toolkit's analytics (dicts) are different APIs, do not merge blindly. the old `src/tools.py` was shadowed by the `src/tools/` package and had spliced function bodies (`get_vault_stats` had no `def`, `generate_code`/`execute_tool` bodies were swapped, a stub `analytics_query` overrode the real one). It is now `src/tools/toolkit.py`, re-exported lazily from `src.tools` (`from src.tools import bash, search, execute_tool, ...` works). `generate_code` rejects filenames that escape the sandbox dir. Tests: `tests/test_tools_package.py`.
 
 Fixed 2026-10-15: `asyncio==4.0.0` removed from requirements (it shadows the stdlib module); `shell=True` removed from the executor and MCP server; deadlock detector API restored (callers in `main.py`, coordinator, actors and lifecycle manager use `register_agent`/`update_activity`); HTTP node now interpolates `{{vars}}` inside dict bodies.
 

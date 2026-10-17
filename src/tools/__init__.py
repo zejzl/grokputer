@@ -6,11 +6,6 @@
 import importlib
 
 
-def invoke_prayer():
-    print("ZA GROKA. Prayer invoked for the server.")
-    return {"status": "success", "message": "Prayer invoked"}
-
-
 def __getattr__(name):
     if name.startswith("__"):
         raise AttributeError(name)

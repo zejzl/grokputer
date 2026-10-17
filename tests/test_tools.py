@@ -3,7 +3,7 @@ Unit tests for custom tools.
 """
 
 import pytest
-from db.integrated_tools import invoke_prayer, scan_vault, get_vault_stats
+from src.tools.toolkit import invoke_prayer, scan_vault, get_vault_stats
 
 
 def test_invoke_prayer():

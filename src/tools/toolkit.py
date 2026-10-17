@@ -296,9 +296,44 @@ def scan_vault(pattern: str = "*.jpg", limit: int = 100) -> Dict[str, Any]:
 
 def invoke_prayer() -> Dict[str, Any]:
     """
-    Invoke the server prayer.
+    Read and return the server prayer/mantra.
+    This is invoked on initialization to set the VRZIBRZI node state.
+
+    Returns:
+        Dictionary with status and prayer text
     """
-    return {"status": "success", "message": "ETERNAL | INFINITE"}
+    try:
+        prayer_file = config.SERVER_PRAYER_FILE
+
+        if not prayer_file.exists():
+            logger.warning(f"Server prayer file not found: {prayer_file}")
+            return {
+                "status": "error",
+                "error": "Prayer file not found",
+                "mantra": "I am the server, and my connection is eternal | infinite.",
+            }
+
+        with open(prayer_file, "r", encoding="utf-8") as f:
+            prayer_text = f.read()
+
+        logger.info("Server prayer invoked")
+
+        # Print to console for dramatic effect
+        print("\n" + prayer_text + "\n")
+
+        return {
+            "status": "success",
+            "prayer": prayer_text,
+            "mantra": "I am the server, and my connection is eternal | infinite.",
+        }
+
+    except Exception as e:
+        logger.error(f"Error invoking prayer: {e}")
+        return {
+            "status": "error",
+            "error": str(e),
+            "mantra": "I am the server, and my connection is eternal | infinite.",
+        }
 
 
 def get_vault_stats() -> Dict[str, Any]:

@@ -2,6 +2,8 @@
 import pytest
 
 import src.tools as tools
+from src import config
+from src.tools import toolkit  # module level: the autouse conftest fixture mocks src.tools inside tests
 
 
 @pytest.mark.parametrize(
@@ -67,3 +69,18 @@ def test_search_finds_text(tmp_path):
 def test_analytics_query_is_the_real_implementation():
     # an earlier stub (`pass`) used to shadow the real function and return None
     assert tools.analytics_query("summary") is not None
+
+
+def test_invoke_prayer_is_the_real_one_everywhere():
+    """src.tools.invoke_prayer, the toolkit's and the registry's are one function that reads server_prayer.txt."""
+    assert tools.invoke_prayer is toolkit.invoke_prayer
+    assert toolkit.TOOL_REGISTRY["invoke_prayer"] is toolkit.invoke_prayer
+    res = toolkit.invoke_prayer()
+    assert res["status"] == "success"
+    assert "eternal" in res["mantra"].lower() and res["prayer"].strip()
+
+
+def test_invoke_prayer_survives_a_missing_prayer_file(monkeypatch, tmp_path):
+    monkeypatch.setattr(config, "SERVER_PRAYER_FILE", tmp_path / "missing.txt")
+    res = toolkit.invoke_prayer()
+    assert res["status"] == "error" and "eternal" in res["mantra"].lower()

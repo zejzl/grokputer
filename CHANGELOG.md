@@ -10,7 +10,7 @@
 - `tests/test_shell_hardening.py`: AST guards that fail on any `shell=True` call or bare `except:` in `main.py`, `autonomous.py`, `improve_swarm.py` and `src/`
 - `tests/test_tools_package.py`, `tests/test_main_menu.py`
 - `scripts/legacy_fixes/` for the old one-off `fix_*` scripts
-- Tests: 627 passing, 11 skipped
+- Tests: 629 passing, 11 skipped
 
 ### Fixed
 - **TaskMaster** never enforced task `dependencies`; a task could be assigned or auto-delegated before the tasks it depends on were completed
@@ -31,13 +31,14 @@
 - All 14 bare `except:` blocks now name their exception types; `connect_to_process` no longer hits an unbound socket
 
 ### Changed
+- Removed `db/integrated_tools.py`: every function in it already existed in `src/tools/toolkit.py`, identical except `invoke_prayer`. The toolkit now has the real `invoke_prayer` (reads `server_prayer.txt`, returns `prayer` and `mantra`) instead of a 5-line stub, and `src.tools.invoke_prayer` resolves to it (the package's separate print-only stub is gone). `tests/test_tools.py` now tests the toolkit
 - Reviewed the four duplicate agent pairs (`observer`, `actor`, `analyzer`, `improver` vs their `*_agent` versions): they are different implementations with different message protocols, so they were documented (`src/agents/__init__.py`) and tested instead of merged. `PantheonCoordinator` no longer imports the plain classes just for annotations; stale `epic_win.py` moved to `scripts/legacy/`
 - `ActorAgent` `file_create` / `file_edit` actions raise a clear "not supported" error (`ActionExecutor` has no file operations); click and type go through `execute_async`
 - `node_modules/`, `saves/`, `backups/` and `logs/` are untracked and ignored (files stay on disk); `main.py.backup` and the unused `src/agents/executor.py` and `imrover_agent.py` are removed
 
 ### Known Issues
 - `observer`/`observer_agent`, `actor`/`actor_agent`, `analyzer`/`analyzer_agent`, `improver`/`improver_agent` are still pairs of different implementations
-- `db/integrated_tools.py` duplicates much of `src/tools/toolkit.py`
+- `db/` holds live code (`config.py`, `analytics_performance_tools.py`: string-returning analytics with MAF metrics, used by `main.py`, `dashboard.py`, `metrics_server.py`) next to unreferenced staging files (`swarm_analytics_enhancement*.py`, `temp_merge.py` which is byte-identical to the first, `async_tool_wrappers.py`, `updated_*`, `test_swarm*.py`, `test_analytics.py`). The toolkit's dict-returning analytics are a separate API, not a copy
 - Two `ActionExecutor` PyAutoGUI tests fail if the real mouse sits in a screen corner (fail-safe)
 
 ## [v2026.10.15] - 2026-10-15 - Runtime Fixes, claude-cli Provider, Token Usage, Plan-Only Pantheon, Real MAF Providers
