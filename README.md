@@ -251,11 +251,12 @@ See `docs/MAF_SYSTEM.md` for detailed documentation.
 **Status**: 🔄 PLANNING COMPLETE - Implementation ready
 
 ```bash
-# Run workflow (planned)
-python main.py --workflow examples/notion_asana_sync.py
+# Run a workflow defined in a YAML/JSON file
+python main.py --workflow workflows/hello.yaml
+python main.py --workflow workflows/hello.yaml --workflow-input '{"user": {"name": "Zej"}}'
 
-# With Pantheon delegation (planned)
-python main.py --pantheon --workflow examples/complex_workflow.py
+# Python-defined workflows: see examples/workflow_quickstart.py and examples/notion_asana_sync.py
+# (a --pantheon --workflow combination is still planned)
 
 # View task breakdown
 cat GG_TASK_PLAN.md

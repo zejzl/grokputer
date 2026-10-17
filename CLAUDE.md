@@ -2,7 +2,7 @@
 
 **Last Updated**: 2026-10-17
 **Project**: Grokputer - AI-Powered Computer Control & Multi-Agent System
-**Status**: Active development. Full test suite green (526 passed, 11 skipped). Known runtime bugs remain (see Known Issues). Session notes and TODO: `nightowl_2026-10-15.md`.
+**Status**: Active development. Full test suite green (544 passed, 11 skipped). Known runtime bugs remain (see Known Issues). Session notes and TODO: `nightowl_2026-10-15.md`.
 
 Claims below marked "(unverified)" come from older notes and have not been re-measured.
 
@@ -16,7 +16,7 @@ Grokputer is a Python multi-agent system that combines screen capture/vision, LL
 - **Pantheon** (9 agents): Observer, Reasoner/Coordinator, Actor, Validator, Learner, Memory, Executor, Analyzer, Improver. Implemented in `src/agents/`.
 - **MAF** (`src/collaboration/`): multi-provider collaboration with weighted-voting consensus, provider registry/pool, RL optimizer. Providers: xAI Grok, Anthropic Claude, OpenAI, Google Gemini, Ollama.
 - **Multi-modal**: `src/vision_processor.py`, `src/audio_processor.py`, `src/multimodal_processor.py`, `src/knowledge_graph.py`. Audio tests are skipped on Python 3.13+ because the `audioop` module was removed.
-- **GG Framework** (`src/workflow/`): implemented, not just planned. Engine, state, flow DSL, healing, learning, Pantheon/MessageBus adapters, and nodes (ai, asana, conditional, http, notion, slack, transform). `WorkflowEngine.execute(workflow)` returns status/data/state/nodes_executed and honors `timeout`; `Workflow.validate()` detects cycles; `TransformNode` supports jq-style paths (`.a.b`, `.items[0].id`). `main.py` has no `--workflow` option yet.
+- **GG Framework** (`src/workflow/`): implemented, not just planned. Engine, state, flow DSL, healing, learning, Pantheon/MessageBus adapters, and nodes (ai, asana, conditional, http, notion, slack, transform). `WorkflowEngine.execute(workflow)` returns status/data/state/nodes_executed and honors `timeout`; `Workflow.validate()` detects cycles; `TransformNode` supports jq-style paths (`.a.b`, `.items[0].id`). `main.py --workflow FILE` runs a YAML/JSON definition (`src/workflow/loader.py`, example `workflows/hello.yaml`); the engine does not yet gate nodes on a conditional's `branch`.
 - **Phase 4** (self-improvement/RL): started; `src/self_improvement/`, `src/agents/learner.py`, `src/collaboration/rl_optimizer.py`.
 - **Distributed swarm**: Docker Swarm + Redis pub/sub, Prometheus (9101), Grafana (3000), Streamlit (8501). Speedup and effectiveness figures in older notes are unverified.
 
@@ -34,13 +34,14 @@ Grokputer is a Python multi-agent system that combines screen capture/vision, LL
 
 ## CLI (verified against main.py)
 
-Options: `--task`, `--max-iterations`, `--max-rounds`, `--debug`, `--skip-boot`, `--provider`, `--model`, `--swarm`, `--agent-roles`, `--messagebus`, `--pantheon`, `--providers`, `--maf-config`, `--review-mode`, `--analytics`, `--agent-name`, `--limit`, `--performance`, `--list-models`, `--syntax-check`, `--quick-check`, `--mcp`, `--todo-daemon`, `--distributed`, `--process-id`, `--connect-to`, `--grok4git`.
+Options: `--task`, `--max-iterations`, `--max-rounds`, `--debug`, `--skip-boot`, `--provider`, `--model`, `--swarm`, `--agent-roles`, `--messagebus`, `--pantheon`, `--providers`, `--maf-config`, `--review-mode`, `--analytics`, `--agent-name`, `--limit`, `--performance`, `--list-models`, `--syntax-check`, `--quick-check`, `--mcp`, `--todo-daemon`, `--distributed`, `--process-id`, `--connect-to`, `--grok4git`, `--execute`, `--workflow`, `--workflow-input`.
 
 ```bash
 python main.py --task "your task"
 python main.py --pantheon --task "complex task"
 python main.py --providers grok,claude --task "collaborative analysis"
 python main.py --messagebus --task "messagebus task"
+python main.py --workflow workflows/hello.yaml   # GG workflow from YAML/JSON (see src/workflow/loader.py)
 python autonomous.py daemon src --auto-propose --replicas 3
 streamlit run dashboard.py
 ```
@@ -53,7 +54,7 @@ Copy `.env.example` to `.env` (gitignored). Main variables: `XAI_API_KEY`, `ANTH
 
 ## Testing
 
-**Current run (2026-10-15, Python 3.14.7, `pytest tests -q --continue-on-collection-errors`)**: 526 passed, 11 skipped, 0 failed, 0 errors as of 2026-10-17 (2 PyAutoGUI action_executor tests fail if the real mouse sits in a screen corner: fail-safe). (Before the 2026-10-15 fixes: 299 passed, 13 failed, 12 collection errors.)
+**Current run (2026-10-15, Python 3.14.7, `pytest tests -q --continue-on-collection-errors`)**: 544 passed, 11 skipped, 0 failed, 0 errors as of 2026-10-17 (2 PyAutoGUI action_executor tests fail if the real mouse sits in a screen corner: fail-safe). (Before the 2026-10-15 fixes: 299 passed, 13 failed, 12 collection errors.)
 
 How the suite is set up:
 - `tests/conftest.py` sets a placeholder `XAI_API_KEY` (a real one in the environment is left alone), because `src/config.py` raises at import time without a key. Tests mock all network calls.
@@ -84,7 +85,7 @@ pytest tests -q --continue-on-collection-errors
 5. (done) `main.py` menu exits cleanly on EOF/Ctrl+C via `_ask()`.
 6. Partly done: removed the unused `executor.py` and `imrover_agent.py`. The `observer`/`observer_agent`, `actor`/`actor_agent`, `analyzer`/`analyzer_agent`, `improver`/`improver_agent` pairs are different, both-imported implementations; pick one API before merging.
 7. (done) `node_modules/`, `saves/`, `backups/`, `logs/` untracked and ignored; root `fix_*` scripts moved to `scripts/legacy_fixes/`.
-8. Wire the workflow engine into `main.py`. Also: `Taskmaster` (`src/agents/taskmaster.py`) is now a working BaseAgent (handles `suggest` and `next_step` messages), but `demo_task_management.py` and `test_task_client_integration.py` import a different, nonexistent `TaskMaster` task-board class that `BaseAgent`'s task client expects (`agent_capabilities`, `task_request`, ... messages) and that does not exist yet; `ActorAgent` file_create/file_edit are unsupported (ActionExecutor has no file ops).
+8. (done) workflow engine wired into `main.py --workflow`. Also: `Taskmaster` (`src/agents/taskmaster.py`) is now a working BaseAgent (handles `suggest` and `next_step` messages), but `demo_task_management.py` and `test_task_client_integration.py` import a different, nonexistent `TaskMaster` task-board class that `BaseAgent`'s task client expects (`agent_capabilities`, `task_request`, ... messages) and that does not exist yet; `ActorAgent` file_create/file_edit are unsupported (ActionExecutor has no file ops).
 
 Fixed 2026-10-17: the old `src/tools.py` was shadowed by the `src/tools/` package and had spliced function bodies (`get_vault_stats` had no `def`, `generate_code`/`execute_tool` bodies were swapped, a stub `analytics_query` overrode the real one). It is now `src/tools/toolkit.py`, re-exported lazily from `src.tools` (`from src.tools import bash, search, execute_tool, ...` works). `generate_code` rejects filenames that escape the sandbox dir. Tests: `tests/test_tools_package.py`.
 

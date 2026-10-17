@@ -3,6 +3,7 @@
 ## [v2026.10.17] - 2026-10-17 - Agent Fixes, Provider Fallback, Shell Hardening, Tools Repair
 
 ### Added
+- **`main.py --workflow FILE`** (+ `--workflow-input JSON`): run a GG workflow defined in YAML/JSON via the new `src/workflow/loader.py` (node-type whitelist, `${ENV}` expansion, cycle/edge validation, exit codes 0/1/2); example `workflows/hello.yaml`; tests in `tests/workflow/test_loader.py`
 - Agent smoke tests (`tests/agents/test_agent_smoke.py`): every `BaseAgent` agent answers a `Message` directly and through its real `run()` loop, including Taskmaster and the Actor
 - `tests/test_shell_hardening.py`: AST guards that fail on any `shell=True` call or bare `except:` in `main.py`, `autonomous.py`, `improve_swarm.py` and `src/`
 - `tests/test_tools_package.py`, `tests/test_main_menu.py`

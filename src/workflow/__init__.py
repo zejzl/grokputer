@@ -25,6 +25,7 @@ from .learning import (
     WorkflowLearner,
     WorkflowMetrics,
 )
+from .loader import WorkflowDefinitionError, build_workflow, load_workflow
 from .messagebus_adapter import MessageBusAdapter, MessageBusNode
 from .nodes import (
     AINode,
@@ -50,6 +51,9 @@ __all__ = [
     # Core
     "Workflow",
     "WorkflowEngine",
+    "WorkflowDefinitionError",
+    "build_workflow",
+    "load_workflow",
     # Nodes
     "BaseNode",
     "NodeContext",

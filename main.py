@@ -355,7 +355,9 @@ async def _list_models_for_provider(provider: str, api_key: Optional[str]):
 @click.option("--connect-to", help="Comma-separated list of process IDs to connect to")
 @click.option("--grok4git", is_flag=True, help="Run grok4git CLI mode")
 @click.option("--execute", is_flag=True, help="Pantheon: run actor subtasks (asks to confirm every command; default is plan only)")
-def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, swarm, agent_roles, messagebus, pantheon, providers, maf_config, review_mode, analytics, agent_name, limit, performance, list_models, syntax_check, quick_check, mcp, todo_daemon: bool = False, distributed: bool = False, process_id: str = "main", connect_to: Optional[str] = None, grok4git: bool = False, execute: bool = False):
+@click.option("--workflow", "workflow_path", type=click.Path(dir_okay=False), help="Run a GG workflow from a YAML/JSON file")
+@click.option("--workflow-input", help="Initial workflow data as a JSON object (merged over the file's `input`)")
+def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, swarm, agent_roles, messagebus, pantheon, providers, maf_config, review_mode, analytics, agent_name, limit, performance, list_models, syntax_check, quick_check, mcp, todo_daemon: bool = False, distributed: bool = False, process_id: str = "main", connect_to: Optional[str] = None, grok4git: bool = False, execute: bool = False, workflow_path: Optional[str] = None, workflow_input: Optional[str] = None):
     """
     Grokputer - VRZIBRZI Node
     Main entry point for the observe-reason-act loop.
@@ -399,6 +401,13 @@ def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, sw
     if performance:
         result = asyncio.run(run_performance_monitor('snapshot'))
         print(result)
+        return
+
+    # Handle workflow mode
+    if workflow_path:
+        code = asyncio.run(_run_workflow_mode(workflow_path, workflow_input))
+        if code:
+            sys.exit(code)
         return
 
     try:
@@ -515,6 +524,39 @@ def main(task, max_iterations, max_rounds, debug, skip_boot, provider, model, sw
         logger.error(f"Fatal error: {e}")
         print(f"\nFatal error: {e}")
         sys.exit(1)
+
+
+async def _run_workflow_mode(path: str, input_text: Optional[str] = None) -> int:
+    """Load a GG workflow file, run it and print a summary. Returns a process exit code."""
+    import json as _json
+
+    from src.workflow import WorkflowDefinitionError, WorkflowEngine, load_workflow
+
+    try:
+        workflow, options = load_workflow(path)
+        initial = dict(options.get("input", {}))
+        if input_text:
+            extra = _json.loads(input_text)
+            if not isinstance(extra, dict):
+                raise ValueError("--workflow-input must be a JSON object")
+            initial.update(extra)
+    except (WorkflowDefinitionError, ValueError) as e:
+        print(f"[WORKFLOW] Invalid workflow: {e}")
+        return 2
+
+    print(f"[WORKFLOW] Running '{workflow.name}' ({len(workflow.engine.nodes)} nodes)")
+    engine = WorkflowEngine(workflow.name, timeout=options.get("timeout"))
+    try:
+        result = await engine.execute(workflow, initial)
+    except Exception as e:
+        print(f"[WORKFLOW] Failed: {type(e).__name__}: {e}")
+        for node_id, status in workflow.get_status()["nodes"].items():
+            print(f"[WORKFLOW]   {node_id}: {status}")
+        return 1
+
+    print(f"[WORKFLOW] {result['status']}: {result['nodes_executed']} nodes in {result['duration']:.2f}s")
+    print(_json.dumps(result["data"], indent=2, default=str))
+    return 0
 
 
 async def _confirm_command_cli(subtask: dict, command: str) -> bool:

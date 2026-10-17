@@ -1,0 +1,18 @@
+# Minimal GG workflow: pull a value out of the input, then pass it along.
+# Run: python main.py --workflow workflows/hello.yaml
+#      python main.py --workflow workflows/hello.yaml --workflow-input '{"user": {"name": "Zej"}}'
+name: hello
+timeout: 30
+input:
+  user:
+    name: Grokputer
+nodes:
+  - id: pick_name
+    type: transform
+    config:
+      operation: jq
+      expression: ".user.name"
+  - id: done
+    type: noop
+edges:
+  - [pick_name, done]

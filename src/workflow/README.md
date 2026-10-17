@@ -56,6 +56,34 @@ async def main():
 asyncio.run(main())
 ```
 
+## Running a workflow from a file
+
+Define the workflow in YAML (or JSON) and run it with `main.py`:
+
+```yaml
+name: hello
+timeout: 30                 # optional, seconds
+input: {user: {name: Grokputer}}   # optional initial data
+nodes:
+  - id: pick_name
+    type: transform         # http | conditional | transform | ai | notion | asana | slack | noop
+    config: {operation: jq, expression: ".user.name"}
+  - id: done
+    type: noop
+edges:
+  - [pick_name, done]       # or {from: a, to: b, condition: "true"}
+```
+
+```bash
+python main.py --workflow workflows/hello.yaml
+python main.py --workflow workflows/hello.yaml --workflow-input '{"user": {"name": "Zej"}}'
+```
+
+- String values in node configs can use `${ENV_VAR}` (a missing variable is an error), so tokens need not live in the file. `{{variables}}` are left for the engine.
+- Callables (`transform_func`, `custom_evaluator`) cannot be written in a file; transform nodes use `operation: jq`.
+- An edge `condition` is stored on the source node, but the engine does not yet skip nodes based on a conditional's `branch`.
+- Exit codes: 0 success, 1 a node failed or timed out, 2 invalid definition or input. Loader: `src/workflow/loader.py`; example: `workflows/hello.yaml`.
+
 ## Available Nodes
 
 ### Core Nodes
