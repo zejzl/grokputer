@@ -98,3 +98,6 @@ ULTIMATE_KEY.md
 node_modules/
 saves/
 *.backup
+
+# Graphify knowledge graph (regenerable: graphify extract .)
+graphify-out/
