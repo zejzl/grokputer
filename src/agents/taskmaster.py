@@ -10,11 +10,13 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-from dataclasses import dataclass
-from typing import Any, Dict, List
+import sqlite3
+from dataclasses import asdict, dataclass
+from typing import Any, Dict, List, Optional
 
 from analytics import generate_report  # For metrics
 from src.core.base_agent import BaseAgent
+from src.core.message_bus import Message
 from src.grok_client import FallbackGrokClient  # For reasoning
 
 logger = logging.getLogger(__name__)
@@ -30,16 +32,52 @@ class TaskSuggestion:
 
 
 class Taskmaster(BaseAgent):
-    """Taskmaster: Analyzes analytics, suggests prioritized tasks."""
+    """
+    Taskmaster: Analyzes analytics, suggests prioritized tasks.
 
-    def __init__(self, name="taskmaster", client=None):
-        super().__init__(name=name)
+    Message types handled:
+    - 'suggest': content {"state": str} -> reply type 'suggestions' with a list of task dicts
+    - 'next_step': content {"task": str} -> reply type 'next_step' with an implementation plan
+    """
+
+    def __init__(self, agent_id="taskmaster", message_bus=None, session_logger=None, config=None, client=None):
+        super().__init__(agent_id, message_bus, session_logger, config or {})
         self.client = client or FallbackGrokClient()
-        self.analytics = generate_report(30)  # Last 30 days; refresh as needed
+
+    async def process_message(self, message: Message) -> Optional[Dict[str, Any]]:
+        """Handle suggestion requests arriving over the MessageBus."""
+        content = message.content if isinstance(message.content, dict) else {}
+
+        if message.message_type == "suggest":
+            suggestions = await self.suggest_tasks(content.get("state", ""))
+            logger.info(f"[{self.agent_id}] Suggested {len(suggestions)} tasks")
+            return {
+                "to": message.from_agent,
+                "type": "suggestions",
+                "content": {"suggestions": [asdict(t) for t in suggestions]},
+            }
+
+        if message.message_type == "next_step":
+            task = content.get("task", "")
+            if not task:
+                return {"to": message.from_agent, "type": "error", "content": {"reason": "Missing task"}}
+            plan = await self.get_next_step(task)
+            return {"to": message.from_agent, "type": "next_step", "content": {"task": task, "plan": plan}}
+
+        logger.warning(f"[{self.agent_id}] Unknown message type: {message.message_type}")
+        return {
+            "to": message.from_agent,
+            "type": "error",
+            "content": {"reason": f"Unknown message type: {message.message_type}"},
+        }
 
     async def analyze_metrics(self) -> Dict[str, Any]:
         """Analyze analytics for bottlenecks/insights."""
-        report = generate_report(30)
+        try:
+            report = generate_report(30)  # Last 30 days
+        except sqlite3.Error as e:
+            logger.warning(f"[{self.agent_id}] Analytics unavailable: {e}")
+            report = {"success_rate_percent": 100, "avg_duration_seconds": 0, "total_api_calls": 0, "providers": {}}
         insights = {
             "success_rate": report["success_rate_percent"],
             "avg_duration": report["avg_duration_seconds"],
@@ -99,38 +137,23 @@ class Taskmaster(BaseAgent):
         messages = [{"role": "user", "content": f"For task '{task}', provide step-by-step implementation plan."}]
         return await self.client.chat(messages)
 
-    async def run(self):
-        """Taskmaster run loop: Suggest based on queue."""
-        while True:
-            if self.inbox.qsize() > 0:
-                msg = await self.inbox.get()
-                if msg["type"] == "suggest":
-                    suggestions = await self.suggest_tasks(msg.get("state", ""))
-                    await self.outbox.put({"type": "suggestions", "data": suggestions})
-                    logger.info(f"Taskmaster suggested {len(suggestions)} tasks")
-                await asyncio.sleep(0.1)
-            else:
-                await asyncio.sleep(1)
-
 
 # Integration with Pantheon
-async def integrate_with_pantheon():
+async def integrate_with_pantheon(bus, session_logger):
     """Example: Add Taskmaster to message bus."""
-    from src.core.message_bus import MessageBus
-
-    bus = MessageBus()
-    taskmaster = Taskmaster()
-    bus.register_agent(taskmaster)
-    # Start in coordinator: Send {'type': 'suggest'} to taskmaster inbox
+    taskmaster = Taskmaster("taskmaster", bus, session_logger, {})
+    # Start in coordinator: send a Message(message_type="suggest") to "taskmaster"
     asyncio.create_task(taskmaster.run())
     logger.info("Taskmaster integrated with Pantheon")
 
 
 if __name__ == "__main__":
-    import json
-
     async def demo():
-        tm = Taskmaster()
+        from unittest.mock import MagicMock
+
+        from src.core.message_bus import MessageBus
+
+        tm = Taskmaster("taskmaster", MessageBus(), MagicMock(), {})
         suggestions = await tm.suggest_tasks("Post-opt wave; Redis restored.")
         print(json.dumps([s.__dict__ for s in suggestions], indent=2))
 

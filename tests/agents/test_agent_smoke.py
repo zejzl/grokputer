@@ -12,6 +12,7 @@ from src.agents.executor_agent import ExecutorAgent
 from src.agents.improver_agent import ImproverAgent
 from src.agents.learner import LearnerAgent
 from src.agents.memory_agent import MemoryAgent
+from src.agents.taskmaster import Taskmaster
 from src.agents.validator import ValidatorAgent
 from src.core.message_bus import Message, MessageBus
 
@@ -275,3 +276,67 @@ class TestActorAgent:
             except BaseException:
                 pass
         assert escalated.message_type == "action_failed" and "boom" in escalated.content["error"]
+
+
+class TestTaskmaster:
+    def _taskmaster(self, reply):
+        client = MagicMock()
+        client.chat = AsyncMock(return_value=reply)
+        tm = make_agent(Taskmaster, client=client)
+        tm.analyze_metrics = AsyncMock(return_value={})
+        return tm
+
+    @pytest.mark.asyncio
+    async def test_suggest_returns_sorted_task_dicts_to_sender(self):
+        import json
+
+        payload = [
+            {"description": "low", "priority": "low", "impact": 2, "effort": "low", "category": "opt"},
+            {"description": "high", "priority": "high", "impact": 9, "effort": "low", "category": "feature"},
+        ]
+        tm = self._taskmaster(json.dumps(payload))
+        res = await tm.process_message(msg("suggest", {"state": "x"}))
+        assert res["to"] == "tester" and res["type"] == "suggestions"
+        assert [t["description"] for t in res["content"]["suggestions"]] == ["high", "low"]
+
+    @pytest.mark.asyncio
+    async def test_suggest_falls_back_on_unparseable_reply(self):
+        tm = self._taskmaster("not json")
+        res = await tm.process_message(msg("suggest"))
+        assert len(res["content"]["suggestions"]) == 3
+
+    @pytest.mark.asyncio
+    async def test_next_step_and_validation(self):
+        tm = self._taskmaster("1. do it")
+        res = await tm.process_message(msg("next_step", {"task": "ship"}))
+        assert res["type"] == "next_step" and res["content"]["plan"] == "1. do it"
+        assert (await tm.process_message(msg("next_step")))["type"] == "error"
+
+    @pytest.mark.asyncio
+    async def test_unknown_type_is_an_error(self):
+        assert (await self._taskmaster("x").process_message(msg("bogus")))["type"] == "error"
+
+    @pytest.mark.asyncio
+    async def test_construction_does_not_touch_analytics_db(self):
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setattr("src.agents.taskmaster.generate_report", lambda days: (_ for _ in ()).throw(AssertionError))
+            make_agent(Taskmaster, client=MagicMock())
+
+    @pytest.mark.asyncio
+    async def test_analyze_metrics_survives_missing_analytics_db(self):
+        import sqlite3
+
+        def boom(days):
+            raise sqlite3.OperationalError("no such table: sessions")
+
+        client = MagicMock()
+        tm = make_agent(Taskmaster, client=client)
+        with pytest.MonkeyPatch.context() as mp:
+            mp.setattr("src.agents.taskmaster.generate_report", boom)
+            insights = await tm.analyze_metrics()
+        assert insights["total_api_calls"] == 0
+
+    @pytest.mark.asyncio
+    async def test_reply_through_run_loop_keeps_correlation_id(self):
+        reply = await _roundtrip(self._taskmaster("[]"), "suggest", {})
+        assert reply.message_type == "suggestions" and reply.correlation_id == "corr-1"
