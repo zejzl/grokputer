@@ -1,8 +1,8 @@
 # CLAUDE.md - Grokputer Technical Reference for Claude AI
 
-**Last Updated**: 2026-10-15
+**Last Updated**: 2026-10-17
 **Project**: Grokputer - AI-Powered Computer Control & Multi-Agent System
-**Status**: Active development. Full test suite green (454 passed, 11 skipped). Known runtime bugs remain (see Known Issues). Session notes and TODO: `nightowl_2026-10-15.md`.
+**Status**: Active development. Full test suite green (495 passed, 11 skipped). Known runtime bugs remain (see Known Issues). Session notes and TODO: `nightowl_2026-10-15.md`.
 
 Claims below marked "(unverified)" come from older notes and have not been re-measured.
 
@@ -53,7 +53,7 @@ Copy `.env.example` to `.env` (gitignored). Main variables: `XAI_API_KEY`, `ANTH
 
 ## Testing
 
-**Current run (2026-10-15, Python 3.14.7, `pytest tests -q --continue-on-collection-errors`)**: 454 passed, 11 skipped, 0 failed, 0 errors. (Before today's fixes: 299 passed, 13 failed, 12 collection errors.)
+**Current run (2026-10-15, Python 3.14.7, `pytest tests -q --continue-on-collection-errors`)**: 495 passed, 11 skipped, 0 failed, 0 errors as of 2026-10-17 (2 PyAutoGUI action_executor tests fail if the real mouse sits in a screen corner: fail-safe). (Before the 2026-10-15 fixes: 299 passed, 13 failed, 12 collection errors.)
 
 How the suite is set up:
 - `tests/conftest.py` sets a placeholder `XAI_API_KEY` (a real one in the environment is left alone), because `src/config.py` raises at import time without a key. Tests mock all network calls.
@@ -76,15 +76,15 @@ pytest tests -q --continue-on-collection-errors
 ## Known Issues and Pending Work
 
 1. Old xAI and Google/Gemini keys were committed in `grokputerfirstversionbackup/xaikey.txt` and remain in git history. They are already deactivated and deleted (confirmed by the user), so no rotation is needed. The files are now untracked and ignored (also `ULTIMATE_KEY.md`); scrubbing history is optional.
-2. `src/grok_client.py`: Claude/Gemini API paths are unit-tested but not exercised live; `chat()` never falls back to the next provider because `_call_provider` returns None on failure instead of raising. Test provider `claude-cli` (`PRIORITY_PROVIDER=claude-cli`, optional `CLAUDE_CLI_MODEL`) runs `claude -p` on the subscription login (text only; strips `ANTHROPIC_API_KEY` from the subprocess env).
+2. `src/grok_client.py`: Claude/Gemini API paths are unit-tested but not exercised live; `chat()` falls back to the next configured provider when one returns None or raises (fixed 2026-10-17); it returns None if all fail. Test provider `claude-cli` (`PRIORITY_PROVIDER=claude-cli`, optional `CLAUDE_CLI_MODEL`) runs `claude -p` on the subscription login (text only; strips `ANTHROPIC_API_KEY` from the subprocess env).
 3. Token usage is recorded per agent tag; `--pantheon` prints a TOKEN USAGE table at the end (only the Coordinator's calls so far: ~870 in / 850-1560 out per decomposition).
-3b. `--pantheon` is plan-only by default: decompose -> safety review of each subtask -> report (prints PLAN and TOKEN USAGE). `--pantheon --execute` also runs `actor` subtasks one at a time: the LLM proposes ONE command, the validator checks it, you confirm at the prompt, then `ActionExecutor.execute_bash` runs it (no shell; metacharacters rejected). Non-actor subtasks are reported as skipped. Executor/Analyzer/Improver are not used by this flow. Known limits: validator safety patterns are crude substrings (the word "format" flags a subtask), only the first 300 chars of command output are shown, and `ExecutorAgent` still calls a nonexistent `action_executor.execute`.
+3b. `--pantheon` is plan-only by default: decompose -> safety review of each subtask -> report (prints PLAN and TOKEN USAGE). `--pantheon --execute` also runs `actor` subtasks one at a time: the LLM proposes ONE command, the validator checks it, you confirm at the prompt, then `ActionExecutor.execute_bash` runs it (no shell; metacharacters rejected). Non-actor subtasks are reported as skipped. Executor/Analyzer/Improver are not used by this flow. Known limits: validator safety patterns are crude substrings (the word "format" flags a subtask), only the first 300 chars of command output are shown. `ExecutorAgent` now uses `execute_async` (fixed 2026-10-17) but is covered only by unit tests, not a live run.
 3c. MAF mode (menu option 9, `--providers`) now calls real models. Providers: `grok`, `claude`, `claude-cli`, `gemini`, `openai`, optionally with a model (`claude-cli:haiku,claude-cli:sonnet` lets two Claude models collaborate when only the subscription is available). `MAF_USE_MOCK=1` restores canned mock responses. The orchestrator needs at least 2 providers; the default preset is `grok_claude_dual` (roles analyzer/critic; the old `primary_agent`/`secondary_agent` roles failed the schema). Each round costs one call per provider. Limits: same-family providers share one sender label (`AgentRole`), `success` means consensus was reached, RL provider selection logs an unhashable-key warning and falls back to the default, and `openai`/`gemini` are untested live.
-4. `improve_swarm.py` still uses `shell=True` (the two in `src/executor.py` and `grokputer_server.py` are fixed).
-5. `main.py` interactive menu crashes on EOF.
-6. Resolve duplicate agent modules in `src/agents/` (`executor.py` and `imrover_agent.py` have no importers).
-7. Repo hygiene: the root holds one-off `fix_*.py` scripts, `*.backup` files, session notes; `node_modules/`, `saves/`, `backups/`, `logs/` are committed. Move or delete and extend `.gitignore`.
-8. Wire the workflow engine into `main.py`; 14 bare `except:` blocks in `src/` and `main.py`.
+4. (done 2026-10-17) `shell=True` removed from `improve_swarm.py` (pure-Python edit, argv test run) and `src/tools.py`. Guard: `tests/test_shell_hardening.py` fails on any `shell=True` call or bare `except:` in `main.py`, `improve_swarm.py`, `autonomous.py`, `src/`. Still open: `improve_swarm.py` does not actually revert the edit when `test_fix` fails (only when the edit itself fails).
+5. (done) `main.py` menu exits cleanly on EOF/Ctrl+C via `_ask()`.
+6. Partly done: removed the unused `executor.py` and `imrover_agent.py`. The `observer`/`observer_agent`, `actor`/`actor_agent`, `analyzer`/`analyzer_agent`, `improver`/`improver_agent` pairs are different, both-imported implementations; pick one API before merging.
+7. (done) `node_modules/`, `saves/`, `backups/`, `logs/` untracked and ignored; root `fix_*` scripts moved to `scripts/legacy_fixes/`.
+8. Wire the workflow engine into `main.py`. Also: `src/tools.py` is shadowed by the `src/tools/` package and fails to load (`get_vault_stats` undefined), so `mcp/tools_handler.py` calls to `tools.bash`/`tools.search` fail; `Taskmaster` is missing `process_message` so it cannot be instantiated; `ActorAgent` file_create/file_edit are unsupported (ActionExecutor has no file ops).
 
 Fixed 2026-10-15: `asyncio==4.0.0` removed from requirements (it shadows the stdlib module); `shell=True` removed from the executor and MCP server; deadlock detector API restored (callers in `main.py`, coordinator, actors and lifecycle manager use `register_agent`/`update_activity`); HTTP node now interpolates `{{vars}}` inside dict bodies.
 

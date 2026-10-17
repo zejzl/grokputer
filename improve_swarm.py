@@ -6,6 +6,7 @@ Run: python improve_swarm.py [dry-run] [max_issues=1]
 """
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import sys
@@ -20,8 +21,8 @@ from typing import Dict, List, Any
 from src import config
 from src.grok_client import GrokClient
 
-LOG_FILE = Path(config.LOG_DIR) / "grokputer_tasks.jsonl"
-IMPROVE_LOG = Path(config.LOG_DIR) / "improvement_log.txt"
+LOG_FILE = Path(config.LOGS_DIR) / "grokputer_tasks.jsonl"
+IMPROVE_LOG = Path(config.LOGS_DIR) / "improvement_log.txt"
 BACKUP_SUFFIX = "_backup_before_improve"
 
 
@@ -111,7 +112,7 @@ Respond ONLY in JSON:
 Focus on single, safe edit (e.g., add if os.path.exists(path): before call).
 """
 
-    response = grok.create_message(task=prompt)
+    response = asyncio.run(grok.create_message(task=prompt))
     if response["status"] == "success":
         try:
             # Parse JSON from content (assume Grok returns clean JSON)
@@ -136,32 +137,39 @@ def apply_edit(fix: Dict[str, Any], dry_run: bool = False) -> bool:
         shutil.copy2(file_path, backup)
         log_improvement(f"Backup created: {backup}")
 
-    old_str = fix["old_str"].replace("/", "\\/")  # Escape for sed
-    new_str = fix["new_str"].replace("/", "\\/")
-
-    cmd = f"sed -i 's/{old_str}/{new_str}/g' {file_path}"
+    old_str = fix["old_str"]
+    new_str = fix["new_str"]
     if dry_run:
-        log_improvement(f"DRY-RUN: Would run: {cmd}")
+        log_improvement(f"DRY-RUN: Would replace {old_str!r} with {new_str!r} in {file_path}")
         return True
 
-    result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-    if result.returncode == 0:
-        log_improvement(f"Applied edit to {fix['file']}: {fix['reason']}")
-        return True
-    else:
-        log_improvement(f"Edit failed: {result.stderr}. Reverting from {backup}")
+    # Literal replacement in Python (no shell, and Grok's text is not read as a regex)
+    try:
+        content = file_path.read_text(encoding="utf-8")
+        if not old_str or old_str not in content:
+            raise ValueError("old_str not found in file")
+        file_path.write_text(content.replace(old_str, new_str), encoding="utf-8")
+    except (OSError, ValueError) as e:
+        log_improvement(f"Edit failed: {e}. Reverting from {backup}")
         if backup.exists():
             shutil.copy2(backup, file_path)
         return False
+
+    log_improvement(f"Applied edit to {fix['file']}: {fix['reason']}")
+    return True
 
 
 def test_fix(issue: Dict[str, Any]) -> bool:
     """Run quick swarm test to verify fix."""
     test_task = infer_test_task(issue)  # e.g., for actor.bash: "ls vault"
-    cmd = f"python main.py --swarm --task '{test_task}' --max_iterations 1"
-    log_improvement(f"Testing fix with: {cmd}")
+    cmd = [sys.executable, "main.py", "--swarm", "--task", test_task, "--max-iterations", "1"]
+    log_improvement(f"Testing fix with: {' '.join(cmd)}")
 
-    result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=60)
+    try:
+        result = subprocess.run(cmd, shell=False, capture_output=True, text=True, timeout=60)
+    except subprocess.TimeoutExpired:
+        log_improvement("Test timed out after 60s.")
+        return False
     if result.returncode == 0:
         # Check new logs for no repeat error
         new_logs = read_logs()

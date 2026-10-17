@@ -9,6 +9,7 @@ import asyncio
 import glob
 import json
 import logging
+import shlex
 import sqlite3
 import subprocess
 import time
@@ -496,16 +497,27 @@ def bash(command: str) -> Dict[str, Any]:
     Returns:
         Dict with status, output, and any errors.
     """
+    dangerous_chars = [";", "&", "|", "<", ">", "$", "`", "\\", "\n", "\r", "%", "(", ")"]
+    if any(char in command for char in dangerous_chars):
+        return {
+            "status": "error",
+            "message": "Command contains shell metacharacters (; & | < > $ ` \\ % parentheses). "
+            "Commands run without a shell; pass a single program with plain arguments.",
+        }
+
     try:
+        argv = shlex.split(command)
+        if not argv:
+            return {"status": "error", "message": "No command provided"}
         result = subprocess.run(
-            command, shell=True, capture_output=True, text=True, timeout=30  # 30s timeout for safety
+            argv, shell=False, capture_output=True, text=True, timeout=30  # 30s timeout for safety
         )
 
         output = result.stdout if result.stdout else "No output."
         error = result.stderr if result.stderr else None
 
         if result.returncode == 0:
-            return {"status": "success", "output": output, "message": f"Command executed successfully"}
+            return {"status": "success", "output": output, "message": "Command executed successfully"}
         else:
             return {
                 "status": "error",
@@ -542,7 +554,7 @@ def search(query: str, path: str = ".") -> Dict[str, Any]:
                             content = f.read()
                             if query in content:
                                 results.append(f"{os.path.join(root, file)}: {content.count(query)} matches")
-                    except:
+                    except (OSError, ValueError):
                         pass  # Skip files that can't be read
 
         return {"status": "success", "results": results, "message": f"Found {len(results)} files containing '{query}'"}

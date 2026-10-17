@@ -31,7 +31,7 @@ class OfflineCache:
             try:
                 with open(kb_file, "r") as f:
                     return json.load(f)
-            except:
+            except (OSError, ValueError):
                 pass
 
         # Build from sessions
@@ -58,7 +58,7 @@ class OfflineCache:
         try:
             with open(kb_file, "w") as f:
                 json.dump(kb, f, indent=2)
-        except:
+        except (OSError, TypeError, ValueError):
             pass
 
         return kb

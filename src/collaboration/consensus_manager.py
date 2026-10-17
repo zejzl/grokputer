@@ -547,7 +547,7 @@ class ConflictResolver:
 
             if numerical_votes:
                 return statistics.median(numerical_votes)
-        except:
+        except statistics.StatisticsError:
             pass
 
         # Fallback to majority

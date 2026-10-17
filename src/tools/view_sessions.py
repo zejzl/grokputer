@@ -26,7 +26,7 @@ def format_timestamp(iso_string: str) -> str:
     try:
         dt = datetime.fromisoformat(iso_string)
         return dt.strftime("%Y-%m-%d %H:%M:%S")
-    except:
+    except (ValueError, TypeError):
         return iso_string
 
 

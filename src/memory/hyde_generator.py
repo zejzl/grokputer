@@ -83,5 +83,5 @@ class HyDEGenerator:
         finally:
             try:
                 loop.close()
-            except:
+            except Exception:
                 pass

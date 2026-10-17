@@ -140,7 +140,7 @@ class VoiceSynthesizer:
 
                 try:
                     os.remove("temp_speech.mp3")
-                except:
+                except OSError:
                     pass
 
                 return True
@@ -166,7 +166,7 @@ class VoiceSynthesizer:
         if self.backend == "gtts":
             try:
                 self.pygame.mixer.quit()
-            except:
+            except Exception:
                 pass
 
     def get_available_voices(self) -> list:

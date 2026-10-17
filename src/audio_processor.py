@@ -516,7 +516,7 @@ class AudioProcessor:
         """Get file size in bytes."""
         try:
             return os.path.getsize(file_path)
-        except:
+        except OSError:
             return 0
 
     def _get_audio_format(self, file_path: str) -> str:

@@ -101,13 +101,13 @@ class ProcessCommunicator:
         if not port:
             # Try to find the process on a range of ports
             for p in range(50000, 50100):
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 try:
-                    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     sock.connect((host, p))
                     self.client_sockets[target_process_id] = sock
                     logger.info(f"[{self.process_id}] Connected to {target_process_id} on {host}:{p}")
                     return True
-                except:
+                except OSError:
                     sock.close()
                     continue
             return False

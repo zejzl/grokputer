@@ -8,6 +8,7 @@ Integrates with Pantheon Coordinator for dynamic next steps.
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 from dataclasses import dataclass
 from typing import Any, Dict, List
@@ -84,11 +85,11 @@ class Taskmaster(BaseAgent):
                     )
                 )
             return sorted(tasks, key=lambda t: t.impact_score, reverse=True)
-        except:
+        except (ValueError, TypeError, KeyError):
             # Fallback suggestions
             fallback = [
                 TaskSuggestion("Implement provider fallbacks", "high", 9.5, "medium", "integration"),
-                Taskmaster("Add Taskmaster integration to Pantheon", "medium", 8.0, "low", "feature"),
+                TaskSuggestion("Add Taskmaster integration to Pantheon", "medium", 8.0, "low", "feature"),
                 TaskSuggestion("Optimize memory leaks", "low", 7.0, "high", "opt"),
             ]
             return fallback

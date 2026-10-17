@@ -439,7 +439,7 @@ class ImproverAgent(BaseAgent):
 
             if response and "stats" in response:
                 metrics.update(response["stats"])
-        except:
+        except Exception:
             pass  # Proceed with placeholder metrics
 
         return metrics

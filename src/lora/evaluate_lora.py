@@ -101,7 +101,7 @@ def evaluate_lora(adapter_path="./lora_adapter", model_name="meta-llama/Llama-2-
         try:
             json.loads(s)
             return True
-        except:
+        except (ValueError, TypeError):
             return False
 
     acc_lora = sum(is_valid_json(p) for p in predictions_lora) / len(predictions_lora)
