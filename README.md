@@ -792,6 +792,7 @@ flake8 src/ tests/
 
 - ✅ **Shell Injection Protection**: Advanced input sanitization blocks dangerous metacharacters (;, &, |, <, >, $, `, \, %, (, ))
 - ✅ **Secure Command Execution**: Uses `shlex.split()` and `shell=False` to prevent command injection attacks
+- ✅ **Blocked Programs** (`src/core/command_safety.py`): destructive and network programs that contain no metacharacters are refused too: `format`, `diskpart`, `mkfs*`, `dd`, `shutdown`/`reboot`, `curl`/`wget`/`nc`, shells and interpreters (`cmd`, `powershell`, `bash`, ...), and recursive or forced deletes (`rm -r`, `del /s`). Plain `ls`, `git`, `python` and `rm file` still run. This is a guard rail, not a sandbox: an allowed program can still do harm, which is why `--pantheon --execute` also asks you to confirm every command
 - ✅ **AST-Based Security Scanning**: Autonomous scanner detects shell injection vulnerabilities in code
 - ✅ Confirmation prompts for destructive actions
 - ✅ Docker sandbox isolation

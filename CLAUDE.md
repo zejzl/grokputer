@@ -23,7 +23,7 @@ Grokputer is a Python multi-agent system that combines screen capture/vision, LL
 ## Key Files
 
 - `main.py` - CLI entry point (click). `autonomous.py` - daemon/swarm orchestration.
-- `src/core/` - `message_bus.py`, `base_agent.py`, `action_executor.py`
+- `src/core/` - `message_bus.py` (incl. `send_and_wait` request/response), `base_agent.py`, `action_executor.py`, `command_safety.py` (shared shell-metacharacter and blocked-program checks used by ActionExecutor, the Actor and the toolkit's `bash()`)
 - `src/agents/` - agents. NOTE: many exist in two versions (`observer.py` and `observer_agent.py`, same for actor, executor, analyzer, improver; plus `imrover_agent.py`, a typo copy). Check which one is actually imported before editing.
 - `src/collaboration/` - `provider_registry.py`, `provider_pool.py`, `consensus_manager.py`, `orchestrator.py`, `multi_provider_coordinator.py`, `rl_optimizer.py`
 - `src/memory/` - `hierarchical_memory.py`, `backends/redis_store.py`, `backends/pinecone_store.py`
