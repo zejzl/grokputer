@@ -17,21 +17,30 @@ echo "====================================="
 # Create reports directory
 mkdir -p reports
 
+# One timestamp per run, so every report file is written and read under the same name
+TS=$(date +%Y%m%d_%H%M%S)
+
+# Set to 1 when a check finds real problems (vulnerabilities); makes the script exit nonzero
+ISSUES_FOUND=0
+
 # Function to check for outdated packages
 check_outdated() {
     echo -e "${BLUE}Checking for outdated packages...${NC}"
 
     if [ -f "requirements.txt" ]; then
         echo "Python packages:"
-        pip list --outdated --format=columns > "reports/outdated_python_$(date +%Y%m%d_%H%M%S).txt" 2>/dev/null || true
-        cat "reports/outdated_python_$(date +%Y%m%d_%H%M%S).txt" | head -20
+        local out="reports/outdated_python_${TS}.txt"
+        pip list --outdated --format=columns > "$out" 2>/dev/null || true
+        head -20 "$out"
         echo -e "${GREEN}✓ Python packages checked${NC}"
     fi
 
     if [ -f "package.json" ]; then
         echo "Node packages:"
-        npm outdated > "reports/outdated_node_$(date +%Y%m%d_%H%M%S).txt" 2>/dev/null || true
-        cat "reports/outdated_node_$(date +%Y%m%d_%H%M%S).txt" | head -20
+        local out="reports/outdated_node_${TS}.txt"
+        # npm outdated exits 1 when anything is outdated, which is not an error here
+        npm outdated > "$out" 2>/dev/null || true
+        head -20 "$out"
         echo -e "${GREEN}✓ Node packages checked${NC}"
     fi
 }
@@ -43,21 +52,29 @@ check_security() {
     # Python security
     if command -v safety &> /dev/null; then
         echo "Python vulnerabilities:"
-        safety check --output text > "reports/security_python_$(date +%Y%m%d_%H%M%S).txt" 2>&1 || true
-        if grep -q "vulnerability" "reports/security_python_$(date +%Y%m%d_%H%M%S).txt"; then
+        local out="reports/security_python_${TS}.txt"
+        safety check --output text > "$out" 2>&1 || true
+        if grep -q "vulnerabilit" "$out"; then
             echo -e "${RED}⚠ Python security issues found!${NC}"
-            grep "vulnerability" "reports/security_python_$(date +%Y%m%d_%H%M%S).txt"
+            grep "vulnerabilit" "$out"
+            ISSUES_FOUND=1
         else
             echo -e "${GREEN}✓ No Python security issues${NC}"
         fi
+    else
+        echo -e "${YELLOW}⚠ Python vulnerability check skipped (safety not installed)${NC}"
     fi
 
     # Node security
     if [ -f "package.json" ] && command -v npm &> /dev/null; then
         echo "Node vulnerabilities:"
-        npm audit --audit-level moderate > "reports/security_node_$(date +%Y%m%d_%H%M%S).txt" 2>&1 || true
-        if grep -q "vulnerability" "reports/security_node_$(date +%Y%m%d_%H%M%S).txt"; then
-            echo -e "${RED}⚠ Node security issues found!${NC}"
+        local out="reports/security_node_${TS}.txt"
+        npm audit --audit-level moderate > "$out" 2>&1 || true
+        if grep -qE "npm ERR|ENOLOCK|audit endpoint" "$out"; then
+            echo -e "${YELLOW}⚠ Node audit could not run (see $out)${NC}"
+        elif grep -qE "[1-9][0-9]* (low|moderate|high|critical)|found [1-9]" "$out"; then
+            echo -e "${RED}⚠ Node security issues found! (see $out)${NC}"
+            ISSUES_FOUND=1
         else
             echo -e "${GREEN}✓ No Node security issues${NC}"
         fi
@@ -66,35 +83,36 @@ check_security() {
     # Check for secrets in code
     if command -v trufflehog &> /dev/null; then
         echo "Checking for secrets in code..."
-        trufflehog --regex --entropy=False . > "reports/secrets_$(date +%Y%m%d_%H%M%S).txt" 2>&1 || true
-        if grep -q "Found" "reports/secrets_$(date +%Y%m%d_%H%M%S).txt"; then
+        local out="reports/secrets_${TS}.txt"
+        trufflehog --regex --entropy=False . > "$out" 2>&1 || true
+        if grep -q "Found" "$out"; then
             echo -e "${RED}⚠ Potential secrets found!${NC}"
+            ISSUES_FOUND=1
         else
             echo -e "${GREEN}✓ No secrets detected${NC}"
         fi
     fi
 }
 
-# Function to update dependencies safely
+# Function to update dependencies. Dry run unless DEPS_APPLY=1: requirements.txt pins
+# versions on purpose (e.g. huggingface-hub), so it is never rewritten from pip freeze.
 update_dependencies() {
-    echo -e "${BLUE}Updating dependencies safely...${NC}"
+    if [ "${DEPS_APPLY:-0}" != "1" ]; then
+        echo -e "${YELLOW}Dry run: nothing is upgraded. Set DEPS_APPLY=1 to apply.${NC}"
+        check_outdated
+        return 0
+    fi
 
-    # Backup current requirements
+    echo -e "${BLUE}Updating dependencies...${NC}"
+
     if [ -f "requirements.txt" ]; then
-        cp requirements.txt "requirements.txt.backup.$(date +%Y%m%d_%H%M%S)"
+        cp requirements.txt "requirements.txt.backup.${TS}"
         echo -e "${GREEN}✓ Requirements backed up${NC}"
+        echo "Upgrading Python packages within the pins in requirements.txt..."
+        pip install -r requirements.txt
+        echo -e "${GREEN}✓ Python packages installed${NC}"
     fi
 
-    # Update Python packages (conservative)
-    if [ -f "requirements.txt" ]; then
-        echo "Updating Python packages..."
-        pip install --upgrade --upgrade-strategy eager -r requirements.txt 2>/dev/null || true
-        pip freeze > requirements.txt.new
-        mv requirements.txt.new requirements.txt
-        echo -e "${GREEN}✓ Python packages updated${NC}"
-    fi
-
-    # Update Node packages
     if [ -f "package.json" ]; then
         echo "Updating Node packages..."
         npm update
@@ -125,9 +143,9 @@ cleanup_dependencies() {
 generate_report() {
     echo -e "${BLUE}Generating dependency report...${NC}"
 
-    local report_file="reports/dependency_report_$(date +%Y%m%d_%H%M%S).md"
+    local report_file="reports/dependency_report_${TS}.md"
 
-    cat > "$report_file" << 'EOF'
+    cat > "$report_file" << EOF
 # Dependency Analysis Report
 
 Generated on: $(date)
@@ -169,7 +187,7 @@ EOF
         echo "\`\`\`" >> "$report_file"
     fi
 
-    cat >> "$report_file" << 'EOF'
+    cat >> "$report_file" << EOF
 
 ## Recommendations
 
@@ -192,7 +210,7 @@ check_licenses() {
     echo -e "${BLUE}Checking license compatibility...${NC}"
 
     if command -v licensecheck &> /dev/null; then
-        licensecheck --recursive . > "reports/licenses_$(date +%Y%m%d_%H%M%S).txt" 2>/dev/null || true
+        licensecheck --recursive . > "reports/licenses_${TS}.txt" 2>/dev/null || true
         echo -e "${GREEN}✓ License check completed${NC}"
     fi
 }
@@ -227,3 +245,5 @@ case "${1:-all}" in
 esac
 
 echo -e "${GREEN}Dependency management completed!${NC}"
+
+exit "$ISSUES_FOUND"
