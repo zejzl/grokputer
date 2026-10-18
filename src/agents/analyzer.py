@@ -17,12 +17,15 @@ import time
 from collections import defaultdict, deque
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from src.cognitive.agent_integration import CognitiveAnalyzerMixin
 from src.core.base_agent import BaseAgent
 from src.core.message_bus import Message, MessageBus, MessagePriority
 from src.tools.alerts import get_haiku_alerts
+
+if TYPE_CHECKING:
+    from src.observability.session_logger import SessionLogger
 
 logger = logging.getLogger(__name__)
 

@@ -1078,7 +1078,7 @@ Output only the JSON object, no additional text.
                 st
                 for st in subtasks
                 if all(dep in self.completed_subtasks for dep in st.get("dependencies", []))
-                and sub["id"] not in self.completed_subtasks
+                and st["id"] not in self.completed_subtasks
             ]
 
             if not ready_subtasks:

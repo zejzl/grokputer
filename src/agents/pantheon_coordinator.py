@@ -23,7 +23,7 @@ import logging
 import platform
 import re
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
 
 from src.agents.character_analysis_agent import CharacterAnalysisAgent
 from src.agents.coordinator import Coordinator
@@ -36,6 +36,12 @@ from src.core.message_bus import Message, MessageBus, MessagePriority
 from src.memory.backends.redis_store import RedisMemoryBackend
 from src.memory.hierarchical_memory import HierarchicalMemoryManager
 from src.memory.interfaces import MemoryConfig
+
+if TYPE_CHECKING:
+    from src.agents.documentation_agent import DocumentationAgent
+    from src.agents.love_agent import LoveAgent
+    from src.agents.maf_coordinator import MAFCoordinator
+    from src.agents.visionary_agent import VisionaryAgent
 
 logger = logging.getLogger(__name__)
 

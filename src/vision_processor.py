@@ -527,11 +527,7 @@ class VisionProcessor:
                 # Determine dominant alignment
                 left_aligned = sum(1 for x in x_positions if x < width * 0.1)
                 center_aligned = sum(
-                    1
-                    for x in x_positions
-                    if abs(x + w / 2 - width / 2) < width * 0.1
-                    for elem in ui_elements
-                    if (w := elem["bbox"][2])
+                    1 for elem in ui_elements if abs(elem["bbox"][0] + elem["bbox"][2] / 2 - width / 2) < width * 0.1
                 )
                 right_aligned = sum(1 for x in x_positions if x > width * 0.9)
 

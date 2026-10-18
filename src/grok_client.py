@@ -30,6 +30,11 @@ import aiohttp
 
 ANALYTICS_ENABLED = False
 
+
+def log_api_call(*args, **kwargs):
+    """No-op stand-in while the analytics integration above is disabled."""
+
+
 # Standardized error handling
 from .exceptions import APIError, handle_error, retry_with_backoff
 

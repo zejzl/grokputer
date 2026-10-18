@@ -4,6 +4,7 @@ import asyncio
 from typing import Optional, Dict, Any
 
 from src.core.base_agent import BaseAgent
+from src.core.message_bus import Message
 from vault.archetype import ArchetypeAgent
 
 
@@ -14,7 +15,7 @@ class VisionaryAgent(BaseAgent):
         self.archetype = ArchetypeAgent()
         self.archetype.activate_mode(archetype_mode)
 
-    async def process_message(self, message: 'Message') -> Optional[Dict[str, Any]]:
+    async def process_message(self, message: Message) -> Optional[Dict[str, Any]]:
         idea = message.content.get("seed", "transcendent creation")
 
         # Use archetype to process visionary idea

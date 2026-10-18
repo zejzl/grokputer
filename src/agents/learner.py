@@ -17,12 +17,15 @@ import random
 from collections import Counter, defaultdict, deque
 from dataclasses import asdict, dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
 from src.core.base_agent import BaseAgent
 from src.core.message_bus import Message, MessageBus, MessagePriority
+
+if TYPE_CHECKING:
+    from src.observability.session_logger import SessionLogger
 
 logger = logging.getLogger(__name__)
 

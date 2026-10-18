@@ -6,11 +6,14 @@ import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
-# Lazy import SessionLogger
 from ..exceptions import MessageBusError
 from .message_bus import Message, MessageBus, MessagePriority
+
+if TYPE_CHECKING:
+    # Imported lazily to avoid a circular import
+    from ..observability.session_logger import SessionLogger
 
 
 @dataclass

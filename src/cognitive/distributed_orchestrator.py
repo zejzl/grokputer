@@ -15,6 +15,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 from ..cognitive.flash_attention import CognitiveEnhancer
 from ..core.message_bus import Message, MessageBus, MessagePriority
+from ..knowledge_graph import Entity
 from ..memory.hierarchical_memory import HierarchicalMemoryManager
 from ..memory.interfaces import MemoryConfig
 

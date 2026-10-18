@@ -14,7 +14,7 @@ import threading
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
 
 import psutil
 
@@ -22,6 +22,9 @@ import psutil
 
 from src.observability.deadlock_detector import DeadlockDetector
 from src.observability.session_logger import SessionLogger
+
+if TYPE_CHECKING:
+    from src.core.base_agent import BaseAgent
 
 logger = logging.getLogger(__name__)
 

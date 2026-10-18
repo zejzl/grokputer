@@ -9,7 +9,7 @@ import asyncio
 import json
 import re
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from src.core.base_agent import BaseAgent
 from src.core.message_bus import Message, MessageBus, MessagePriority
@@ -27,7 +27,7 @@ class CharacterAnalysisAgent(BaseAgent):
         agent_id: str,
         message_bus: MessageBus,
         session_logger: SessionLogger,
-        config: Config,
+        config: Dict[str, Any],
         heartbeat_interval: int = 30,
     ):
         super().__init__(agent_id, message_bus, session_logger, config, heartbeat_interval)

@@ -34,7 +34,7 @@ start_time = time.time()
 
 
 def reset_performance_counters():
-    global api_call_count, response_times, start_time
+    global start_time
     api_call_count.clear()
     response_times.clear()
     start_time = time.time()

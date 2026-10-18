@@ -6,6 +6,7 @@ Handles natural language task parsing, dialogue management, and feedback collect
 """
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import re
