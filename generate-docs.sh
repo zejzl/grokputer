@@ -503,6 +503,12 @@ EOF
 generate_readme() {
     echo -e "${BLUE}Generating README...${NC}"
 
+    # The template below is generic; never replace a maintained README with it by accident
+    if [ -f README.md ] && [ "${DOCS_OVERWRITE_README:-0}" != "1" ]; then
+        echo -e "${YELLOW}⚠ README.md exists, not overwriting (set DOCS_OVERWRITE_README=1 to replace it)${NC}"
+        return 0
+    fi
+
     cat > README.md << 'EOF'
 # Grokputer 🤖
 
