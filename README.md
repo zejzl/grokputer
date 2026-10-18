@@ -769,7 +769,7 @@ pip install -r requirements.txt
  # Run with coverage
  pytest --cov=src tests/
 
-  # Current Status: 710 passed, 0 failed, 11 skipped (2026-10-17, Python 3.14)
+  # Current Status: 719 passed, 0 failed, 11 skipped (2026-10-18, Python 3.14)
   # Coverage: 25% (improving with ongoing fixes)
   # MessageBus: 51k-105k msg/sec end-to-end, 0.007ms unloaded latency (measured 2026-10-15)
 ```
@@ -780,9 +780,23 @@ pip install -r requirements.txt
 # Format code
 black src/ tests/
 
-# Lint
+# Lint (full ruleset; src/ is only clean on the error-only selection below)
 flake8 src/ tests/
+
+# Error-only lint, as enforced by tests/test_lint_guard.py
+flake8 src --select=E9,F63,F7,F82,F824
 ```
+
+### Automation Scripts
+
+`./orchestrate.sh help` lists the workflows (`dev`, `health`, `monitor`, `maintenance`, `security`, `docs`, `infinite`, ...). A failing step does not stop a workflow; each ends with an ok/failed/skipped summary.
+
+| Variable | Effect |
+|----------|--------|
+| `QUALITY_MYPY=1` | include mypy in `automate.sh quality` (slow, over 100 s) |
+| `QUALITY_TIMEOUT=N` | per-tool timeout for `quality`, default 120 s |
+| `DEPS_APPLY=1` | let `manage-dependencies.sh update` actually upgrade packages (dry run otherwise) |
+| `DOCS_OVERWRITE_README=1` | let `generate-docs.sh readme` replace an existing README.md |
 
 ---
 

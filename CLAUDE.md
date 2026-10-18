@@ -1,8 +1,8 @@
 # CLAUDE.md - Grokputer Technical Reference for Claude AI
 
-**Last Updated**: 2026-10-17
+**Last Updated**: 2026-10-18
 **Project**: Grokputer - AI-Powered Computer Control & Multi-Agent System
-**Status**: Active development. Full test suite green (710 passed, 11 skipped). Known runtime bugs remain (see Known Issues). Session notes and TODO: `nightowl_2026-10-15.md`.
+**Status**: Active development. Full test suite green (719 passed, 11 skipped). Known runtime bugs remain (see Known Issues). Session notes and TODO: `nightowl_2026-10-15.md`.
 
 Claims below marked "(unverified)" come from older notes and have not been re-measured.
 
@@ -54,13 +54,16 @@ Copy `.env.example` to `.env` (gitignored). Main variables: `XAI_API_KEY`, `ANTH
 
 ## Testing
 
-**Current run (2026-10-15, Python 3.14.7, `pytest tests -q --continue-on-collection-errors`)**: 710 passed, 11 skipped, 0 failed, 0 errors as of 2026-10-17 (2 PyAutoGUI action_executor tests fail if the real mouse sits in a screen corner: fail-safe). (Before the 2026-10-15 fixes: 299 passed, 13 failed, 12 collection errors.)
+**Current run (2026-10-15, Python 3.14.7, `pytest tests -q --continue-on-collection-errors`)**: 719 passed, 11 skipped, 0 failed, 0 errors as of 2026-10-18 (2 PyAutoGUI action_executor tests fail if the real mouse sits in a screen corner: fail-safe). (Before the 2026-10-15 fixes: 299 passed, 13 failed, 12 collection errors.)
 
 How the suite is set up:
 - `tests/conftest.py` sets a placeholder `XAI_API_KEY` (a real one in the environment is left alone), because `src/config.py` raises at import time without a key. Tests mock all network calls.
 - `pyproject.toml` uses `--strict-markers`; registered markers: `slow`, `integration`, `stress`, `windows`, `phase1`. Register any new marker there.
 - `tests/workflow/test_healing.py` tests `WorkflowHealer` (magic healing disabled for determinism).
 - `tests/observability/test_deadlock_detector.py` tests the restored original `DeadlockDetector` API.
+- `tests/test_lint_guard.py` fails if `flake8 src --select=E9,F63,F7,F82,F824` (syntax errors, undefined names) reports anything; `src/` is clean on that selection. The full flake8 ruleset is not clean.
+- `tests/test_code_scanner.py` covers `CodeSecurityScanner` (it used `ast.Str`, removed in Python 3.12, so every string literal aborted a scan; fixed 2026-10-18).
+- `tests/test_orchestrate_smoke.py` runs `orchestrate.sh` against stub tool scripts (no Docker, git or network).
 
 Skipped (11):
 - `tests/test_hyde_complete.py`: Pinecone not installed; also `huggingface-hub` must match the pin in `requirements.txt` (0.36.0) for `transformers` to import.
@@ -101,6 +104,17 @@ Fixed 2026-10-15: `asyncio==4.0.0` removed from requirements (it shadows the std
 - Prefer Python dicts/YAML over JSON for configs.
 - Use `ripgrep` for text search and `ast-grep` for structural changes; prefer dedicated tools over shell one-liners.
 - Test risky changes in Docker. Back up state before large changes (`python save_game.py --auto`).
+
+## Automation scripts
+
+`orchestrate.sh` is a menu/CLI wrapper (`setup`, `dev`, `maintenance`, `monitor`, `optimize`, `security`, `docs`, `health`, `recovery`, `infinite`, `tools`, `help`) around `automate.sh`, `monitor.sh`, `manage-dependencies.sh`, `generate-docs.sh`, `code-review.sh`, `optimize-performance.sh`, `git-workflow.sh`, `deploy.sh` and `verify-mcp-setup.sh`. Behavior to know:
+- A failing step does not abort the workflow (no `set -e`); each workflow ends with an ok/failed/skipped summary. Tools run via `bash`, so exec bits do not matter.
+- `dev` skips `git-workflow.sh commit` when stdin is not a terminal (the step prompts and would auto-commit).
+- `automate.sh quality`: flake8 error-only selection (nonzero exit on findings), `black --check`, and mypy only with `QUALITY_MYPY=1` (over 100 s on `src/`). `QUALITY_TIMEOUT` (default 120 s) limits each tool.
+- `monitor.sh check` reads CPU/memory/disk on Windows via PowerShell; unmeasurable metrics are reported as `n/a`. Docker checks fail while Docker Desktop is stopped.
+- `manage-dependencies.sh`: `check` exits nonzero when vulnerabilities are found; `update` is a dry run unless `DEPS_APPLY=1` and never rewrites `requirements.txt` (the pins are deliberate).
+- `generate-docs.sh readme` refuses to overwrite an existing `README.md` unless `DOCS_OVERWRITE_README=1`. `docs/api.md`, `docs/deployment.md` and `docs/troubleshooting.md` are generated locally; `*.md` is gitignored. The deployment and troubleshooting text is a fixed template (Docker/MCP-Alpine), not derived from the repo.
+- Not yet reviewed: `deploy.sh`, `setup-mcp-alpine.sh`, `verify-mcp-setup.sh` (Docker-dependent).
 
 ## Docker
 
