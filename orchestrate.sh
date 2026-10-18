@@ -141,7 +141,13 @@ dev_workflow() {
     run_tool "automate.sh" "quality"
     run_tool "automate.sh" "test"
     run_tool "code-review.sh" "changes"
-    run_tool "git-workflow.sh" "commit"
+    # The commit step prompts for a message; without a terminal it would auto-commit
+    if [ -t 0 ]; then
+        run_tool "git-workflow.sh" "commit"
+    else
+        echo -e "${YELLOW}⚠ no terminal, skipping git-workflow.sh commit${NC}"
+        STEPS_SKIPPED=$((STEPS_SKIPPED + 1))
+    fi
 
     print_summary "Development workflow"
 }
