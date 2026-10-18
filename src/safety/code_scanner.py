@@ -68,6 +68,7 @@ class CodeSecurityScanner:
     def __init__(self):
         self.vulnerabilities: List[SecurityVulnerability] = []
         self.current_file = ""
+        self.source_code = ""
 
     def scan_file(self, file_path: str) -> List[SecurityVulnerability]:
         """
@@ -80,11 +81,13 @@ class CodeSecurityScanner:
             List of detected vulnerabilities
         """
         self.current_file = file_path
+        self.source_code = ""
         self.vulnerabilities = []
 
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 source_code = f.read()
+            self.source_code = source_code
 
             tree = ast.parse(source_code, filename=file_path)
             self._analyze_ast(tree, source_code)
@@ -149,7 +152,7 @@ class CodeSecurityScanner:
         location = f"{self.current_file}:{line_no}"
 
         # Extract code snippet
-        lines = source_code.split("\n")
+        lines = self.source_code.split("\n")
         start_line = max(0, line_no - 2)
         end_line = min(len(lines), line_no + 2)
         code_snippet = "\n".join(lines[start_line:end_line])
@@ -209,10 +212,15 @@ class SecurityASTVisitor(ast.NodeVisitor):
             )
         self.generic_visit(node)
 
-    def visit_Str(self, node: ast.Str):
-        """Check string literals for suspicious patterns."""
-        # Check for embedded shell commands in strings
-        if any(char in node.s for char in CodeSecurityScanner.SHELL_METACHARS):
+    def visit_Constant(self, node: ast.Constant):
+        """Check string literals for suspicious patterns (ast.Str was removed in Python 3.12)."""
+        if isinstance(node.value, str):
+            self._check_string(node, node.value)
+        self.generic_visit(node)
+
+    def _check_string(self, node: ast.Constant, value: str):
+        """Flag string literals that embed shell metacharacters and command-like patterns."""
+        if any(char in value for char in CodeSecurityScanner.SHELL_METACHARS):
             # More sophisticated check - look for command-like patterns
             suspicious_patterns = [
                 r"\b(rm|del|format|shutdown|reboot)\b",
@@ -221,7 +229,7 @@ class SecurityASTVisitor(ast.NodeVisitor):
             ]
 
             for pattern in suspicious_patterns:
-                if re.search(pattern, node.s, re.IGNORECASE):
+                if re.search(pattern, value, re.IGNORECASE):
                     self.scanner._add_vulnerability(
                         "SUSPICIOUS_STRING",
                         "MEDIUM",
@@ -229,14 +237,6 @@ class SecurityASTVisitor(ast.NodeVisitor):
                         f"String contains suspicious command-like pattern: {pattern}",
                     )
                     break
-
-        self.generic_visit(node)
-
-    def visit_Constant(self, node: ast.Constant):
-        """Check constant values (Python 3.8+)."""
-        if isinstance(node.value, str):
-            self.visit_Str(ast.Str(s=node.value, lineno=node.lineno, col_offset=getattr(node, "col_offset", 0)))
-        self.generic_visit(node)
 
     def _check_shell_injection(self, node: ast.Call):
         """Check for potential shell injection vulnerabilities."""

@@ -319,9 +319,7 @@ TBD
 
     def _get_docstring(self, body: List[ast.stmt]) -> str:
         """Extract docstring from AST body."""
-        if body and isinstance(body[0], ast.Expr) and isinstance(body[0].value, ast.Str):
-            return body[0].value.s
-        elif (
+        if (
             body
             and isinstance(body[0], ast.Expr)
             and isinstance(body[0].value, ast.Constant)
