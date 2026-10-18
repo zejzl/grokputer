@@ -42,10 +42,12 @@ fi
 
 # Check MCP server (basic connectivity)
 echo -n "Checking MCP server... "
-if curl -f -s --max-time 5 http://localhost:8000 > /dev/null 2>&1; then
-    echo -e "${GREEN}✓${NC}"
+# Any HTTP status means the server is up: / is 404 and /mcp is 400 without an MCP client
+MCP_STATUS=$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 http://localhost:8000/mcp 2>/dev/null)
+if [ -n "$MCP_STATUS" ] && [ "$MCP_STATUS" != "000" ]; then
+    echo -e "${GREEN}✓ (HTTP $MCP_STATUS from /mcp)${NC}"
 else
-    echo -e "${YELLOW}⚠ (no response - may not have health endpoint)${NC}"
+    echo -e "${YELLOW}⚠ (no response on port 8000)${NC}"
 fi
 
 echo ""

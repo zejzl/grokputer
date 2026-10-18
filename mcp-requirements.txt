@@ -16,3 +16,6 @@ aiofiles>=23.0.0
 # Screen capture tools (optional but recommended)
 pyautogui>=0.9.54
 pillow>=10.0.0
+
+# Redis client (used by the key restore in setup-mcp-alpine.sh)
+redis>=5.0.0

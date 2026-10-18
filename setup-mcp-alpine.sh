@@ -7,6 +7,19 @@ set -e  # Exit on any error
 echo "🚀 Grokputer Redis Alpine MCP Auto-Setup"
 echo "========================================"
 
+# Git Bash/MSYS rewrites POSIX-looking paths passed to docker.exe (it turned
+# -v /d/x:/app/vault into a mangled Windows path with a stray ";C:" part), so
+# turn that off and give docker a host path it understands.
+case "$(uname -s)" in
+    MINGW*|MSYS*|CYGWIN*)
+        export MSYS_NO_PATHCONV=1
+        HOST_DIR="$(pwd -W)"
+        ;;
+    *)
+        HOST_DIR="$(pwd)"
+        ;;
+esac
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -93,8 +106,8 @@ start_container() {
         -p 8000:8000 \
         -p 6379:6379 \
         --env-file .env \
-        -v "$(pwd)/vault:/app/vault" \
-        -v "$(pwd)/logs:/app/logs" \
+        -v "$HOST_DIR/vault:/app/vault" \
+        -v "$HOST_DIR/logs:/app/logs" \
         grokputer-mcp-alpine:latest; then
 
         print_success "Container started successfully"
@@ -112,7 +125,8 @@ import_redis_keys() {
 
     if [ -f "vault/redis_backup.json" ]; then
         # Create a temporary script to automate the restore
-        cat > /tmp/redis_restore_auto.py << 'EOF'
+        local restore_script=".redis_restore_auto.tmp.py"
+        cat > "$restore_script" << 'EOF'
 import redis
 import json
 import os
@@ -169,8 +183,9 @@ if __name__ == '__main__':
 EOF
 
         # Copy and run the restore script in container
-        docker cp /tmp/redis_restore_auto.py grokputer-mcp:/app/restore_auto.py
-        docker cp vault/redis_backup.json grokputer-mcp:/app/vault/
+        # The vault is bind-mounted at /app/vault, so the backup is already in the container
+        docker cp "$restore_script" grokputer-mcp:/app/restore_auto.py
+        rm -f "$restore_script"
 
         if docker exec grokputer-mcp python3 restore_auto.py; then
             print_success "Redis keys imported successfully"
@@ -179,8 +194,6 @@ EOF
             exit 1
         fi
 
-        # Cleanup
-        rm -f /tmp/redis_restore_auto.py
     else
         print_warning "No Redis backup found at vault/redis_backup.json - skipping import"
     fi
@@ -197,10 +210,12 @@ verify_setup() {
     fi
 
     # Check MCP server health
-    if curl -f -s http://localhost:8000/health > /dev/null 2>&1; then
-        print_success "MCP server is healthy"
+    # The server has no /health route; any HTTP status from /mcp means it is serving
+    MCP_STATUS=$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 http://localhost:8000/mcp 2>/dev/null)
+    if [ -n "$MCP_STATUS" ] && [ "$MCP_STATUS" != "000" ]; then
+        print_success "MCP server is responding (HTTP $MCP_STATUS from /mcp)"
     else
-        print_warning "MCP server health check failed (may not have health endpoint)"
+        print_warning "MCP server did not respond on port 8000"
     fi
 
     # Check Redis connection

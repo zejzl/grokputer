@@ -47,5 +47,4 @@ HEALTHCHECK --interval=5s --timeout=3s --start-period=5s --retries=2 \
   CMD python -c "import sys; sys.exit(0)"
 
 # Start both Redis and MCP server
-CMD ["sh", "-c", "redis-server --daemonize yes --appendonly yes && uvicorn grokputer_server:app --host 0.0.0.0 --port 8000 --workers 1"]</content>
-<parameter name="filePath">Dockerfile.mcp-alpine
+CMD ["sh", "-c", "redis-server --daemonize yes --appendonly yes && uvicorn grokputer_server:app --host 0.0.0.0 --port 8000 --workers 1"]
