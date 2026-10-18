@@ -2,7 +2,9 @@
 # Lightweight setup for <3s startup time
 
 # MCP Framework
-fastmcp>=0.1.0
+fastmcp==4.1.1
+# Pulled in by fastmcp; pinned to the version verified with it on 2026-10-18
+mcp==2.3.0
 
 # ASGI Server
 uvicorn[standard]>=0.24.0
