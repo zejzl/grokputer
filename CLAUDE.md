@@ -114,7 +114,9 @@ Fixed 2026-10-15: `asyncio==4.0.0` removed from requirements (it shadows the std
 - `monitor.sh check` reads CPU/memory/disk on Windows via PowerShell; unmeasurable metrics are reported as `n/a`. Docker checks fail while Docker Desktop is stopped.
 - `manage-dependencies.sh`: `check` exits nonzero when vulnerabilities are found; `update` is a dry run unless `DEPS_APPLY=1` and never rewrites `requirements.txt` (the pins are deliberate).
 - `generate-docs.sh readme` refuses to overwrite an existing `README.md` unless `DOCS_OVERWRITE_README=1`. `docs/api.md`, `docs/deployment.md` and `docs/troubleshooting.md` are generated locally; `*.md` is gitignored. The deployment and troubleshooting text is a fixed template (Docker/MCP-Alpine), not derived from the repo.
-- Not yet reviewed: `deploy.sh`, `setup-mcp-alpine.sh`, `verify-mcp-setup.sh` (Docker-dependent).
+- Docker scripts (verified 2026-10-18 against Docker Desktop 29.8): `setup-mcp-alpine.sh` builds `grokputer-mcp-alpine`, starts container `grokputer-mcp` (MCP :8000, Redis :6379), restores `vault/redis_backup.json` (133 of 138 keys; 5 are skipped by the restore's own error handling). The MCP server lists 9 tools at `http://localhost:8000/mcp` (no `/health`; `/` is 404, `/mcp` answers 400 without an MCP client, which the checks treat as up).
+- `deploy.sh staging|production|rollback [env]` uses one container and port pair per environment (staging `grokputer-mcp-staging` 8001/6380, production `grokputer-mcp` 8000/6379, development 8002/6381). Before 2026-10-18 the health checks and rollback always targeted the production container. `rollback` removes only that environment's container and does not restore Redis data. `deploy.sh` runs the full test suite and `manage-dependencies.sh check` before deploying.
+- Under Git Bash the Docker scripts set `MSYS_NO_PATHCONV=1` and pass `pwd -W` host paths; without that, `-v` mounts land at a mangled path. `mcp-requirements.txt` is unpinned, so rebuilt images pick up the newest fastmcp/mcp (4.1.1 / 2.3.0 on 2026-10-18).
 
 ## Docker
 

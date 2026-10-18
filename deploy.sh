@@ -4,6 +4,18 @@
 
 set -e
 
+# Git Bash/MSYS rewrites POSIX-looking paths passed to docker.exe (it mangles
+# -v /d/x:/app/vault), so turn that off and hand docker a native host path.
+case "$(uname -s)" in
+    MINGW*|MSYS*|CYGWIN*)
+        export MSYS_NO_PATHCONV=1
+        HOST_DIR="$(pwd -W)"
+        ;;
+    *)
+        HOST_DIR="$(pwd)"
+        ;;
+esac
+
 # Colors
 GREEN='\033[0;32m'
 RED='\033[0;31m'
@@ -23,6 +35,33 @@ BACKUP_DIR="backups/pre_deploy_$(date +%Y%m%d_%H%M%S)"
 # Function to log deployment steps
 deploy_log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') [DEPLOY] $*" | tee -a "$DEPLOY_LOG"
+}
+
+# Per-environment container name and host ports. Every check below goes through
+# these, so a staging deploy never inspects or removes the production container.
+env_container() {
+    case "$1" in
+        staging) echo "grokputer-mcp-staging" ;;
+        production) echo "grokputer-mcp" ;;
+        development) echo "grokputer-mcp-dev" ;;
+        *) return 1 ;;
+    esac
+}
+
+env_mcp_port() {
+    case "$1" in
+        staging) echo 8001 ;;
+        production) echo 8000 ;;
+        development) echo 8002 ;;
+    esac
+}
+
+env_redis_port() {
+    case "$1" in
+        staging) echo 6380 ;;
+        production) echo 6379 ;;
+        development) echo 6381 ;;
+    esac
 }
 
 # Function to create rollback point
@@ -47,26 +86,35 @@ create_rollback() {
 
 # Function to rollback deployment
 rollback_deployment() {
-    deploy_log "Rolling back deployment..."
+    local environment="${1:-production}"
+    local container_name
+    container_name=$(env_container "$environment") || { deploy_log "Unknown environment: $environment"; return 1; }
 
-    if [ ! -d "$BACKUP_DIR" ]; then
+    deploy_log "Rolling back $environment deployment..."
+
+    # A standalone 'rollback' run has a fresh timestamp, so fall back to the newest rollback point
+    local backup_dir="$BACKUP_DIR"
+    if [ ! -d "$backup_dir" ]; then
+        backup_dir=$(ls -d backups/pre_deploy_* 2>/dev/null | tail -1)
+    fi
+    if [ -z "$backup_dir" ] || [ ! -d "$backup_dir" ]; then
         deploy_log "No rollback point found!"
         return 1
     fi
+    deploy_log "Using rollback point: $backup_dir"
 
-    # Stop current services
-    docker stop grokputer-mcp 2>/dev/null || true
-    docker rm grokputer-mcp 2>/dev/null || true
+    # Stop only this environment's container
+    docker stop "$container_name" 2>/dev/null || true
+    docker rm "$container_name" 2>/dev/null || true
 
     # Restore from backup
-    if [ -f "$BACKUP_DIR/redis_rollback.rdb" ]; then
-        deploy_log "Restoring Redis data..."
-        # This would need to be implemented based on your Redis setup
+    if [ -f "$backup_dir/redis_rollback.rdb" ]; then
+        deploy_log "Redis snapshot kept at $backup_dir/redis_rollback.rdb (restoring it is not automated)"
     fi
 
-    if [ -f "$BACKUP_DIR/.env" ]; then
+    if [ -f "$backup_dir/.env" ]; then
         deploy_log "Restoring configuration..."
-        cp "$BACKUP_DIR/.env" .env
+        cp "$backup_dir/.env" .env
     fi
 
     deploy_log "Rollback completed"
@@ -96,7 +144,7 @@ validate_prerequisites() {
 
     # Check disk space
     local available_space
-    available_space=$(df / | tail -1 | awk '{print $4}')
+    available_space=$(df -P . | tail -1 | awk '{print $4}')
     if [ "$available_space" -lt 1000000 ]; then  # Less than ~1GB
         deploy_log "Insufficient disk space: ${available_space}KB available"
         return 1
@@ -134,29 +182,14 @@ build_artifacts() {
 # Function to deploy to environment
 deploy_to_environment() {
     local environment="$1"
-    local image_tag="${2:-latest}"
+    local image_tag="${2:-$environment}"
+    local container_name mcp_port redis_port
 
     deploy_log "Deploying to $environment environment..."
 
-    # Environment-specific configuration
-    case "$environment" in
-        "staging")
-            local container_name="grokputer-mcp-staging"
-            local ports="8001:8000 6380:6379"
-            ;;
-        "production")
-            local container_name="grokputer-mcp"
-            local ports="8000:8000 6379:6379"
-            ;;
-        "development")
-            local container_name="grokputer-mcp-dev"
-            local ports="8002:8000 6381:6379"
-            ;;
-        *)
-            deploy_log "Unknown environment: $environment"
-            return 1
-            ;;
-    esac
+    container_name=$(env_container "$environment") || { deploy_log "Unknown environment: $environment"; return 1; }
+    mcp_port=$(env_mcp_port "$environment")
+    redis_port=$(env_redis_port "$environment")
 
     # Stop existing container
     docker stop "$container_name" 2>/dev/null || true
@@ -165,50 +198,56 @@ deploy_to_environment() {
     # Start new container
     docker run -d \
         --name "$container_name" \
-        -p "$ports" \
+        -p "$mcp_port:8000" \
+        -p "$redis_port:6379" \
         --env-file .env \
-        -v "$(pwd)/vault:/app/vault" \
-        -v "$(pwd)/logs:/app/logs" \
+        -v "$HOST_DIR/vault:/app/vault" \
+        -v "$HOST_DIR/logs:/app/logs" \
         "grokputer-mcp-alpine:$image_tag"
 
-    deploy_log "Container $container_name deployed on ports $ports"
+    deploy_log "Container $container_name deployed (MCP :$mcp_port, Redis :$redis_port)"
 }
 
 # Function to run health checks
 run_health_checks() {
     local environment="$1"
+    local container_name mcp_port
+    container_name=$(env_container "$environment") || return 1
+    mcp_port=$(env_mcp_port "$environment")
     local max_attempts=30
     local attempt=1
 
-    deploy_log "Running health checks for $environment..."
+    deploy_log "Running health checks for $environment ($container_name)..."
 
     while [ $attempt -le $max_attempts ]; do
         deploy_log "Health check attempt $attempt/$max_attempts..."
 
         # Check container
-        if ! docker ps | grep -q "grokputer-mcp"; then
+        if ! docker ps --format '{{.Names}}' | grep -qx "$container_name"; then
             deploy_log "Container not running"
             sleep 5
-            ((attempt++))
+            attempt=$((attempt + 1))
             continue
         fi
 
         # Check Redis
-        if ! docker exec grokputer-mcp redis-cli ping 2>/dev/null | grep -q PONG; then
+        if ! docker exec "$container_name" redis-cli ping 2>/dev/null | grep -q PONG; then
             deploy_log "Redis not responding"
             sleep 5
-            ((attempt++))
+            attempt=$((attempt + 1))
             continue
         fi
 
-        # Check application
-        if curl -f -s --max-time 10 "http://localhost:8000/health" > /dev/null 2>&1; then
-            deploy_log "All health checks passed!"
+        # Check application: the server has no /health route, any HTTP status from /mcp means it is serving
+        local status
+        status=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "http://localhost:$mcp_port/mcp" 2>/dev/null)
+        if [ -n "$status" ] && [ "$status" != "000" ]; then
+            deploy_log "All health checks passed! (HTTP $status from /mcp)"
             return 0
         else
             deploy_log "Application health check failed"
             sleep 5
-            ((attempt++))
+            attempt=$((attempt + 1))
             continue
         fi
     done
@@ -219,16 +258,22 @@ run_health_checks() {
 
 # Function to run smoke tests
 run_smoke_tests() {
+    local environment="$1"
+    local container_name mcp_port status
+    container_name=$(env_container "$environment") || return 1
+    mcp_port=$(env_mcp_port "$environment")
+
     deploy_log "Running smoke tests..."
 
     # Basic connectivity test
-    if ! curl -f -s --max-time 5 "http://localhost:8000" > /dev/null; then
+    status=$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 "http://localhost:$mcp_port/mcp" 2>/dev/null)
+    if [ -z "$status" ] || [ "$status" = "000" ]; then
         deploy_log "Basic connectivity test failed"
         return 1
     fi
 
     # Redis connectivity test
-    if ! docker exec grokputer-mcp redis-cli ping | grep -q PONG; then
+    if ! docker exec "$container_name" redis-cli ping | grep -q PONG; then
         deploy_log "Redis connectivity test failed"
         return 1
     fi
@@ -274,9 +319,6 @@ cleanup_deployment() {
     # Remove old images (keep last 3)
     docker images grokputer-mcp-alpine --format "table {{.Repository}}\t{{.Tag}}\t{{.ID}}" | tail -n +2 | head -n -3 | awk '{print $3}' | xargs -r docker rmi 2>/dev/null || true
 
-    # Clean up dangling images
-    docker image prune -f >/dev/null 2>&1
-
     deploy_log "Cleanup completed"
 }
 
@@ -289,12 +331,12 @@ deploy_staging() {
     build_artifacts "staging"
     deploy_to_environment "staging"
 
-    if run_health_checks "staging" && run_smoke_tests; then
+    if run_health_checks "staging" && run_smoke_tests "staging"; then
         notify_stakeholders "staging" "success"
         deploy_log "Staging deployment completed successfully"
     else
         deploy_log "Staging deployment failed, rolling back..."
-        rollback_deployment
+        rollback_deployment "staging"
         notify_stakeholders "staging" "failure"
         return 1
     fi
@@ -315,10 +357,10 @@ deploy_production() {
     build_artifacts "production"
     deploy_to_environment "production"
 
-    if run_health_checks "production" && run_smoke_tests; then
+    if run_health_checks "production" && run_smoke_tests "production"; then
         # Additional production validation
         local key_count
-        key_count=$(docker exec grokputer-mcp redis-cli dbsize 2>/dev/null)
+        key_count=$(docker exec "$(env_container production)" redis-cli dbsize 2>/dev/null)
         if [ "$key_count" -lt 10 ]; then
             deploy_log "Warning: Low Redis key count in production: $key_count"
         fi
@@ -328,7 +370,7 @@ deploy_production() {
         deploy_log "Production deployment completed successfully"
     else
         deploy_log "Production deployment failed, rolling back..."
-        rollback_deployment
+        rollback_deployment "production"
         notify_stakeholders "production" "failure"
         return 1
     fi
@@ -358,7 +400,7 @@ case "${1:-status}" in
     "production")
         deploy_production ;;
     "rollback")
-        rollback_deployment ;;
+        rollback_deployment "${2:-production}" ;;
     "status")
         show_deployment_status ;;
     "validate")
@@ -373,7 +415,7 @@ case "${1:-status}" in
         echo "Commands:"
         echo "  staging    - Deploy to staging environment"
         echo "  production - Deploy to production environment"
-        echo "  rollback   - Rollback last deployment"
+        echo "  rollback   - Rollback last deployment: rollback [staging|production]"
         echo "  status     - Show deployment status"
         echo "  validate   - Validate deployment prerequisites"
         echo "  cleanup    - Clean up deployment artifacts"
