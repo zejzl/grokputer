@@ -2,7 +2,7 @@
 # Master Orchestration Script
 # Unified interface for all Grokputer automation tools
 
-set -e
+# No 'set -e': one failing step must not abort the rest; run_tool tracks results
 
 # Colors
 GREEN='\033[0;32m'
@@ -36,7 +36,27 @@ EOF
 # Function to check if tool exists
 tool_exists() {
     local tool="$1"
-    [ -f "$tool" ] && [ -x "$tool" ]
+    [ -f "$tool" ]
+}
+
+# Step results collected by run_tool, reported by print_summary
+STEPS_OK=0
+STEPS_FAILED=0
+STEPS_SKIPPED=0
+FAILED_STEPS=()
+
+print_summary() {
+    local title="$1"
+    if [ "$STEPS_FAILED" -eq 0 ]; then
+        echo -e "${GREEN}✓ $title finished: $STEPS_OK ok, $STEPS_SKIPPED skipped${NC}"
+    else
+        echo -e "${RED}✗ $title finished with failures: $STEPS_OK ok, $STEPS_FAILED failed, $STEPS_SKIPPED skipped${NC}"
+        printf '  failed: %s
+' "${FAILED_STEPS[@]}"
+    fi
+    local rc=$STEPS_FAILED
+    STEPS_OK=0; STEPS_FAILED=0; STEPS_SKIPPED=0; FAILED_STEPS=()
+    [ "$rc" -eq 0 ]
 }
 
 # Function to run tool with error handling
@@ -47,15 +67,19 @@ run_tool() {
 
     if tool_exists "$tool"; then
         echo -e "${BLUE}Running $tool $args...${NC}"
-        if "./$tool" $args; then
+        if bash "./$tool" $args; then
             echo -e "${GREEN}✓ $tool completed successfully${NC}"
+            STEPS_OK=$((STEPS_OK + 1))
             return 0
         else
             echo -e "${RED}✗ $tool failed${NC}"
+            STEPS_FAILED=$((STEPS_FAILED + 1))
+            FAILED_STEPS+=("$tool $args")
             return 1
         fi
     else
         echo -e "${YELLOW}⚠ $tool not found, skipping${NC}"
+        STEPS_SKIPPED=$((STEPS_SKIPPED + 1))
         return 1
     fi
 }
@@ -106,7 +130,7 @@ system_setup() {
     run_tool "git-workflow.sh" "setup"
     run_tool "generate-docs.sh" "all"
 
-    echo -e "${GREEN}✓ System setup completed!${NC}"
+    print_summary "System setup"
 }
 
 # Function for development workflow
@@ -119,7 +143,7 @@ dev_workflow() {
     run_tool "code-review.sh" "changes"
     run_tool "git-workflow.sh" "commit"
 
-    echo -e "${GREEN}✓ Development workflow completed!${NC}"
+    print_summary "Development workflow"
 }
 
 # Function for deployment pipeline
@@ -134,7 +158,7 @@ deployment_pipeline() {
     run_tool "deploy.sh" "$env"
     run_tool "verify-mcp-setup.sh"
 
-    echo -e "${GREEN}✓ Deployment to $env completed!${NC}"
+    print_summary "Deployment to $env"
 }
 
 # Function for maintenance tasks
@@ -148,7 +172,7 @@ maintenance_tasks() {
     run_tool "manage-dependencies.sh" "update"
     run_tool "generate-docs.sh" "check"
 
-    echo -e "${GREEN}✓ Maintenance tasks completed!${NC}"
+    print_summary "Maintenance tasks"
 }
 
 # Function for monitoring dashboard
@@ -177,7 +201,7 @@ performance_optimization() {
     run_tool "code-review.sh" "complexity"
     run_tool "automate.sh" "optimize"
 
-    echo -e "${GREEN}✓ Performance optimization completed!${NC}"
+    print_summary "Performance optimization"
 }
 
 # Function for security audit
@@ -189,7 +213,7 @@ security_audit() {
     run_tool "code-review.sh" "ai"
     run_tool "automate.sh" "security"
 
-    echo -e "${GREEN}✓ Security audit completed!${NC}"
+    print_summary "Security audit"
 }
 
 # Function for documentation update
@@ -200,7 +224,7 @@ docs_update() {
     run_tool "generate-docs.sh" "all"
     run_tool "generate-docs.sh" "check"
 
-    echo -e "${GREEN}✓ Documentation updated!${NC}"
+    print_summary "Documentation update"
 }
 
 # Function for emergency recovery
@@ -214,7 +238,7 @@ emergency_recovery() {
     if [ "$confirm" = "yes" ]; then
         run_tool "deploy.sh" "rollback"
         run_tool "automate.sh" "cleanup"
-        echo -e "${GREEN}✓ Emergency recovery completed!${NC}"
+        print_summary "Emergency recovery"
     else
         echo "Recovery cancelled."
     fi
@@ -227,7 +251,7 @@ system_health() {
 
     echo -e "${CYAN}Core Services:${NC}"
     if tool_exists "verify-mcp-setup.sh"; then
-        ./verify-mcp-setup.sh
+        bash ./verify-mcp-setup.sh
     fi
 
     echo ""
@@ -338,10 +362,10 @@ infinite_panda_adventure() {
         local achievements=0
 
         # Check various metrics
-        if docker ps | grep -q grokputer; then ((achievements++)); fi
-        if [ -f "vault/redis_backup.json" ]; then ((achievements++)); fi
-        if [ -d "reports" ] && [ "$(ls reports/ | wc -l)" -gt 5 ]; then ((achievements++)); fi
-        if [ -f ".env" ]; then ((achievements++)); fi
+        if docker ps 2>/dev/null | grep -q grokputer; then achievements=$((achievements + 1)); fi
+        if [ -f "vault/redis_backup.json" ]; then achievements=$((achievements + 1)); fi
+        if [ -d "reports" ] && [ "$(ls reports/ | wc -l)" -gt 5 ]; then achievements=$((achievements + 1)); fi
+        if [ -f ".env" ]; then achievements=$((achievements + 1)); fi
 
         echo -e "${GREEN}✓ Achievement Points: $achievements/4${NC}"
 
@@ -370,7 +394,7 @@ infinite_panda_adventure() {
 
         # Wait before next cycle (5 minutes)
         sleep 300
-        ((cycle++))
+        cycle=$((cycle + 1))
     done
 }
 
@@ -401,7 +425,7 @@ interactive_mode() {
         show_header
         show_menu
 
-        read -p "Choose an option (0-12): " choice
+        read -p "Choose an option (0-13): " choice
         echo ""
 
         case $choice in

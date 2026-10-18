@@ -110,40 +110,76 @@ monitor_containers() {
     fi
 }
 
+# Metric helpers: print an integer percentage, or nothing if it cannot be measured
+is_int() {
+    [[ "$1" =~ ^[0-9]+$ ]]
+}
+
+is_windows() {
+    case "$(uname -s)" in
+        MINGW*|MSYS*|CYGWIN*) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+get_cpu_usage() {
+    local v
+    if is_windows; then
+        v=$(powershell.exe -NoProfile -Command "[int](Get-CimInstance Win32_Processor | Measure-Object -Property LoadPercentage -Average).Average" 2>/dev/null | tr -d '')
+    elif command -v top &> /dev/null; then
+        v=$(top -bn1 2>/dev/null | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1}')
+    fi
+    echo "${v%%.*}"
+}
+
+get_mem_usage() {
+    local v
+    if is_windows; then
+        v=$(powershell.exe -NoProfile -Command "\$o = Get-CimInstance Win32_OperatingSystem; [int](100 * (\$o.TotalVisibleMemorySize - \$o.FreePhysicalMemory) / \$o.TotalVisibleMemorySize)" 2>/dev/null | tr -d '')
+    elif command -v free &> /dev/null; then
+        v=$(free | grep Mem | awk '{printf "%.0f", $3/$2 * 100.0}')
+    fi
+    echo "$v"
+}
+
+get_disk_usage() {
+    df -P . 2>/dev/null | tail -1 | awk '{print $5}' | sed 's/%//'
+}
+
 # Function to monitor system resources
 monitor_system() {
     log "Monitoring system resources..."
 
-    # CPU usage
-    local cpu_usage
-    cpu_usage=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1}')
-    cpu_usage=${cpu_usage%%.*}
+    local cpu_usage mem_usage disk_usage
+    cpu_usage=$(get_cpu_usage)
+    mem_usage=$(get_mem_usage)
+    disk_usage=$(get_disk_usage)
 
-    if [ "$cpu_usage" -gt 90 ]; then
-        send_alert "System_CPU" "High CPU usage: ${cpu_usage}%" "CRITICAL"
-    elif [ "$cpu_usage" -gt 75 ]; then
-        send_alert "System_CPU" "Elevated CPU usage: ${cpu_usage}%" "WARNING"
+    if is_int "$cpu_usage"; then
+        if [ "$cpu_usage" -gt 90 ]; then
+            send_alert "System_CPU" "High CPU usage: ${cpu_usage}%" "CRITICAL"
+        elif [ "$cpu_usage" -gt 75 ]; then
+            send_alert "System_CPU" "Elevated CPU usage: ${cpu_usage}%" "WARNING"
+        fi
     fi
 
-    # Memory usage
-    local mem_usage
-    mem_usage=$(free | grep Mem | awk '{printf "%.0f", $3/$2 * 100.0}')
-    if [ "$mem_usage" -gt 90 ]; then
-        send_alert "System_Memory" "High memory usage: ${mem_usage}%" "CRITICAL"
-    elif [ "$mem_usage" -gt 80 ]; then
-        send_alert "System_Memory" "Elevated memory usage: ${mem_usage}%" "WARNING"
+    if is_int "$mem_usage"; then
+        if [ "$mem_usage" -gt 90 ]; then
+            send_alert "System_Memory" "High memory usage: ${mem_usage}%" "CRITICAL"
+        elif [ "$mem_usage" -gt 80 ]; then
+            send_alert "System_Memory" "Elevated memory usage: ${mem_usage}%" "WARNING"
+        fi
     fi
 
-    # Disk usage
-    local disk_usage
-    disk_usage=$(df / | tail -1 | awk '{print $5}' | sed 's/%//')
-    if [ "$disk_usage" -gt 95 ]; then
-        send_alert "System_Disk" "Critical disk usage: ${disk_usage}%" "CRITICAL"
-    elif [ "$disk_usage" -gt 85 ]; then
-        send_alert "System_Disk" "High disk usage: ${disk_usage}%" "WARNING"
+    if is_int "$disk_usage"; then
+        if [ "$disk_usage" -gt 95 ]; then
+            send_alert "System_Disk" "Critical disk usage: ${disk_usage}%" "CRITICAL"
+        elif [ "$disk_usage" -gt 85 ]; then
+            send_alert "System_Disk" "High disk usage: ${disk_usage}%" "WARNING"
+        fi
     fi
 
-    log "System status - CPU: ${cpu_usage}%, Memory: ${mem_usage}%, Disk: ${disk_usage}%"
+    log "System status - CPU: ${cpu_usage:-n/a}%, Memory: ${mem_usage:-n/a}%, Disk: ${disk_usage:-n/a}%"
 }
 
 # Function to monitor application health
@@ -210,8 +246,8 @@ monitor_performance() {
 
     # Check for zombie processes
     local zombie_count
-    zombie_count=$(ps aux | awk '{print $8}' | grep -c "Z" 2>/dev/null || echo "0")
-    if [ "$zombie_count" -gt 0 ]; then
+    zombie_count=$(ps aux 2>/dev/null | awk '$8 ~ /^Z/' | wc -l | tr -d ' ')
+    if is_int "$zombie_count" && [ "$zombie_count" -gt 0 ]; then
         send_alert "System_Zombies" "Zombie processes detected: $zombie_count" "WARNING"
     fi
 }

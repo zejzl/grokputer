@@ -89,24 +89,41 @@ setup_environment() {
 
 run_quality_checks() {
     print_section "Code Quality Checks"
+    local failed=0
+    local limit="${QUALITY_TIMEOUT:-120}"
 
-    # Python linting
+    # Python linting: only real errors (syntax errors, undefined names)
     if command -v flake8 &> /dev/null; then
-        flake8 src/ --count --select=E9,F63,F7,F82 --show-source --statistics || true
-        print_success "Python linting completed"
+        if timeout "$limit" flake8 src/ --count --select=E9,F63,F7,F82 --statistics; then
+            print_success "Python linting clean"
+        else
+            print_warning "Python linting found errors (or timed out after ${limit}s)"
+            failed=1
+        fi
     fi
 
-    # Type checking
-    if command -v mypy &> /dev/null; then
-        mypy src/ --ignore-missing-imports || true
-        print_success "Type checking completed"
+    # Type checking is slow on src/ (over 100s), so it is opt-in: QUALITY_MYPY=1
+    if [ "${QUALITY_MYPY:-0}" = "1" ] && command -v mypy &> /dev/null; then
+        if timeout "$limit" mypy src/ --ignore-missing-imports; then
+            print_success "Type checking clean"
+        else
+            print_warning "Type checking found errors (or timed out after ${limit}s)"
+            failed=1
+        fi
+    else
+        print_warning "Type checking skipped (set QUALITY_MYPY=1 to enable)"
     fi
 
-    # Format code
+    # Formatting: report which files differ, not the 6000-line diff
     if command -v black &> /dev/null; then
-        black src/ --check --diff || true
-        print_success "Code formatting checked"
+        if timeout "$limit" black src/ --check -q; then
+            print_success "Code formatting clean"
+        else
+            print_warning "Code formatting differs (run: black src/ --diff for details)"
+        fi
     fi
+
+    return $failed
 }
 
 run_tests() {
