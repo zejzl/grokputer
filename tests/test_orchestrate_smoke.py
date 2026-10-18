@@ -45,6 +45,7 @@ def sandbox(tmp_path):
     # shorten panda mode to two cycles without waiting
     script = script.replace("sleep 300", 'sleep 0; [ "$cycle" -ge 2 ] && break')
     (tmp_path / "orchestrate.sh").write_text(script, encoding="utf-8", newline="\n")
+    (tmp_path / ".env").write_text("", encoding="utf-8")  # makes panda mode increment its counter
     for tool in TOOLS:
         (tmp_path / tool).write_text(
             'echo "$0 $*" >> calls.log\n[ "$1" = "quality" ] && exit 1\nexit 0\n', encoding="utf-8", newline="\n"
