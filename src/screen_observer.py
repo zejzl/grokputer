@@ -19,6 +19,7 @@ import pyautogui
 from PIL import Image
 
 from src import config
+from src.core.wayland_input import WaylandInput, backend_name
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +60,11 @@ class ScreenObserver:
             PIL Image object
         """
         try:
-            if region:
+            if backend_name() == "wayland":
+                # PyAutoGUI cannot see native Wayland windows; grim captures the real screen
+                logger.info(f"Capturing screenshot with grim (region: {region})")
+                screenshot = await asyncio.to_thread(WaylandInput().screenshot, region)
+            elif region:
                 logger.info(f"Capturing screenshot region: {region}")
                 screenshot = await asyncio.to_thread(pyautogui.screenshot, region=region)
             else:
@@ -162,7 +167,7 @@ class ScreenObserver:
         Returns:
             Tuple of (width, height)
         """
-        size = pyautogui.size()
+        size = WaylandInput().size() if backend_name() == "wayland" else pyautogui.size()
         logger.debug(f"Screen size: {size.width}x{size.height}")
         return (size.width, size.height)
 
