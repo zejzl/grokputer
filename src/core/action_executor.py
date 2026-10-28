@@ -23,6 +23,7 @@ import pyautogui
 from PIL import Image
 
 from src.core.command_safety import find_blocked_program, find_shell_metacharacter
+from src.core.wayland_input import WaylandInput, backend_name
 
 logger = logging.getLogger(__name__)
 
@@ -82,6 +83,11 @@ class ActionExecutor:
         self.action_queue: PriorityQueue = PriorityQueue(maxsize=max_queue_size)
         self.result_queues: Dict[str, Queue] = {}
         self.default_timeout = default_timeout
+
+        # On Wayland (Hyprland) PyAutoGUI only reaches XWayland windows; use the
+        # compositor's tools instead. GROKPUTER_INPUT_BACKEND overrides the choice.
+        self.input_backend = backend_name()
+        self.wayland = WaylandInput() if self.input_backend == "wayland" else None
 
         # Action history (circular buffer)
         self.history: List[ActionHistory] = []
@@ -159,6 +165,15 @@ class ActionExecutor:
         """
         action_type = action.action_type
         params = action.params
+
+        if self.wayland is not None and action_type == "screenshot":
+            screenshot = self.wayland.screenshot(params.get("region"))
+            buffer = io.BytesIO()
+            screenshot.save(buffer, format="PNG")
+            img_str = base64.b64encode(buffer.getvalue()).decode()
+            return {"status": "success", "action": "screenshot", "data": img_str, "dimensions": screenshot.size}
+        if self.wayland is not None and action_type in ("click", "type", "key", "scroll", "move", "drag"):
+            return self.wayland.execute(action_type, params)
 
         if action_type == "click":
             x, y = params["x"], params["y"]
