@@ -168,8 +168,10 @@ class ScreenObserver:
             Tuple of (width, height)
         """
         size = WaylandInput().size() if backend_name() == "wayland" else pyautogui.size()
-        logger.debug(f"Screen size: {size.width}x{size.height}")
-        return (size.width, size.height)
+        # WaylandInput returns a plain tuple and PyAutoGUI a Size namedtuple; both unpack.
+        width, height = size
+        logger.debug(f"Screen size: {width}x{height}")
+        return (width, height)
 
     def get_mouse_position(self) -> Tuple[int, int]:
         """
@@ -178,6 +180,8 @@ class ScreenObserver:
         Returns:
             Tuple of (x, y) coordinates
         """
+        if backend_name() == "wayland":
+            return WaylandInput().cursor_position()
         pos = pyautogui.position()
         return (pos.x, pos.y)
 

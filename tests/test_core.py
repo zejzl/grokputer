@@ -105,6 +105,15 @@ class TestBaseAgent:
 
 
 class TestActionExecutor:
+    @pytest.fixture(autouse=True)
+    def fake_pyautogui(self, monkeypatch):
+        """These tests used the real PyAutoGUI: they clicked and typed on the live desktop."""
+        from unittest.mock import MagicMock
+
+        fake = MagicMock()
+        monkeypatch.setattr("src.core.action_executor.pyautogui", fake)
+        return fake
+
     @pytest.mark.asyncio
     async def test_execute_sync(self):
         """Test action execution."""

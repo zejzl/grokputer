@@ -94,7 +94,10 @@ class WaylandInput:
 
     def screenshot(self, region: Optional[Tuple[int, int, int, int]] = None) -> Image.Image:
         self._need("grim", "install grim for screenshots")
-        argv = ["grim"]
+        # -s 1: capture in logical pixels, the space hyprctl cursor moves and size() use.
+        # grim's default is the largest output scale, so a scaled monitor would give the
+        # model an image bigger than the coordinates it clicks in.
+        argv = ["grim", "-s", "1"]
         if region:
             left, top, width, height = region
             argv += ["-g", f"{left},{top} {width}x{height}"]
@@ -149,6 +152,14 @@ class WaylandInput:
             self._ydotool("mousemove", "-x", str(int(dx)), "-y", str(int(dy)))
         finally:
             self._ydotool("click", hex(code | RELEASE))
+
+    def cursor_position(self) -> Tuple[int, int]:
+        """Cursor position in logical pixels, from Hyprland (PyAutoGUI only sees the XWayland pointer)."""
+        import json
+
+        self._need("hyprctl", "cursor position comes from hyprctl")
+        pos = json.loads(self._run(["hyprctl", "cursorpos", "-j"]))
+        return int(pos["x"]), int(pos["y"])
 
     def size(self) -> Tuple[int, int]:
         """Size of the focused monitor in logical pixels."""
