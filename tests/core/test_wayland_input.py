@@ -41,9 +41,9 @@ def test_screenshot_full_and_region():
     backend, run = _backend(output=_png())
     image = backend.screenshot()
     assert image.size == (4, 3)
-    assert run.calls[-1] == ["grim", "-"]
+    assert run.calls[-1] == ["grim", "-s", "1", "-"]
     backend.screenshot((10, 20, 300, 200))
-    assert run.calls[-1] == ["grim", "-g", "10,20 300x200", "-"]
+    assert run.calls[-1] == ["grim", "-s", "1", "-g", "10,20 300x200", "-"]
 
 
 def test_click_moves_then_clicks():
@@ -113,3 +113,28 @@ def test_execute_matches_pyautogui_result_shape():
     backend, _ = _backend()
     result = backend.execute("click", {"x": 1, "y": 2})
     assert result == {"status": "success", "action": "click", "coords": (1, 2), "button": "left", "clicks": 1}
+
+
+def test_cursor_position_comes_from_hyprctl():
+    backend, run = _backend(json.dumps({"x": 701, "y": 1011}).encode())
+    assert backend.cursor_position() == (701, 1011)
+    assert run.calls[-1] == ["hyprctl", "cursorpos", "-j"]
+
+
+def test_screen_observer_reads_wayland_size_and_cursor(monkeypatch):
+    """Regression: get_screen_size read .width on the plain tuple WaylandInput.size() returns."""
+    from src import screen_observer
+
+    monkeypatch.setattr(screen_observer, "backend_name", lambda: "wayland")
+
+    class FakeWayland:
+        def size(self):
+            return (1920, 1080)
+
+        def cursor_position(self):
+            return (5, 6)
+
+    monkeypatch.setattr(screen_observer, "WaylandInput", FakeWayland)
+    observer = screen_observer.ScreenObserver.__new__(screen_observer.ScreenObserver)
+    assert observer.get_screen_size() == (1920, 1080)
+    assert observer.get_mouse_position() == (5, 6)
