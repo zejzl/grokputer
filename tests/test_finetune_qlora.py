@@ -76,7 +76,7 @@ def test_record_feedback_rejects_bad_input(tmp_path, rating, issues):
 def test_build_dataset_needs_enough_sessions(tmp_path):
     directory = write_session(tmp_path, "session_1", logger_session())
     fq.record_feedback(directory, 1, ["Timeout"])
-    with pytest.raises(ValueError, match="record_feedback"):
+    with pytest.raises(ValueError, match="src.training.rate"):
         fq.build_dataset(fq.TrainingConfig(logs_dir=tmp_path))
 
 
