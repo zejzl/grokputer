@@ -22,31 +22,13 @@ from typing import List, Dict, Any
 from dataclasses import dataclass
 from datetime import datetime
 
-# Check for GPU availability early
-if not torch.cuda.is_available():
-    print("=" * 70)
-    print("❌ ERROR: GPU not detected!")
-    print("   Make sure AMD ROCm is installed:")
-    print("   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.1")
-    print("=" * 70)
-    exit(1)
-
-print("=" * 70)
-print("🚀 Grokputer QLoRA Fine-Tuning (AMD ROCm)")
-print("=" * 70)
-print(f"✓ PyTorch version: {torch.__version__}")
-print(f"✓ GPU: {torch.cuda.get_device_name(0)}")
-print(f"✓ VRAM: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
-print("=" * 70)
-
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
     BitsAndBytesConfig,
-    TrainingArguments
 )
 from peft import LoraConfig, get_peft_model, PeftModel
-from trl import SFTTrainer
+from trl import SFTConfig, SFTTrainer
 from datasets import Dataset
 
 # Setup logging
@@ -94,15 +76,92 @@ class TrainingConfig:
             self.target_modules = ["q_proj", "v_proj", "k_proj", "o_proj"]
 
 
+def require_gpu():
+    """Exit with a hint when no GPU is visible. Called from main(), not at import, so the data and config helpers can be tested without a GPU."""
+    if not torch.cuda.is_available():
+        print("=" * 70)
+        print("[ERROR] GPU not detected!")
+        print("   Make sure AMD ROCm is installed:")
+        print("   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.1")
+        print("=" * 70)
+        raise SystemExit(1)
+
+    print("=" * 70)
+    print("Grokputer QLoRA Fine-Tuning (AMD ROCm)")
+    print("=" * 70)
+    print(f"[OK] PyTorch version: {torch.__version__}")
+    print(f"[OK] GPU: {torch.cuda.get_device_name(0)}")
+    print(f"[OK] VRAM: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
+    print("=" * 70)
+
+
+FEEDBACK_FILE = "feedback.json"
+
+
+def record_feedback(session_dir: Path, rating: int, what_went_wrong: List[str], comment: str = "") -> Path:
+    """Attach a rating to a finished session. This is the supported way to create training data.
+
+    SessionLogger writes session.json (task, tool_executions, errors) but never asks for a rating, so the rating
+    lives in a sidecar file next to it: {"user_rating": 1-5, "what_went_wrong": [...], "feedback_comment": "..."}.
+    """
+    if not isinstance(rating, int) or isinstance(rating, bool) or not 1 <= rating <= 5:
+        raise ValueError("rating must be an integer from 1 to 5")
+    if not what_went_wrong or not all(isinstance(i, str) and i.strip() for i in what_went_wrong):
+        raise ValueError("what_went_wrong must list at least one issue (non-empty strings)")
+    path = Path(session_dir) / FEEDBACK_FILE
+    path.write_text(json.dumps({"user_rating": rating, "what_went_wrong": list(what_went_wrong),
+                                "feedback_comment": comment}, indent=2), encoding="utf-8")
+    return path
+
+
+def read_session(session_dir: Path) -> Dict[str, Any] | None:
+    """One session as {task, rating, issues, comment, actions}, or None when it has no usable data.
+
+    Reads what the current SessionLogger writes (session.json: top-level "task" and "tool_executions", each with
+    "tool") plus the feedback.json sidecar. The older layout, with everything under session.json "metadata"
+    (user_rating, what_went_wrong, feedback_comment, task) and "iterations[].tool_results[].function_name", still loads.
+    """
+    session_json = session_dir / "session.json"
+    if not session_json.exists():
+        return None
+    with open(session_json, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    if not isinstance(data, dict):
+        return None
+
+    meta = data.get("metadata") if isinstance(data.get("metadata"), dict) else {}
+    feedback = {}
+    feedback_json = session_dir / FEEDBACK_FILE
+    if feedback_json.exists():
+        with open(feedback_json, "r", encoding="utf-8") as f:
+            loaded = json.load(f)
+        feedback = loaded if isinstance(loaded, dict) else {}
+
+    def pick(key):
+        return feedback.get(key, meta.get(key))
+
+    actions = [e.get("tool", "unknown") for e in data.get("tool_executions", []) if isinstance(e, dict)]
+    for iteration in data.get("iterations", []) if isinstance(data.get("iterations"), list) else []:
+        for result in iteration.get("tool_results", []):
+            actions.append(result.get("function_name", "unknown"))
+    return {
+        "task": data.get("task") or meta.get("task") or "Unknown task",
+        "rating": pick("user_rating"),
+        "issues": pick("what_went_wrong") or [],
+        "comment": pick("feedback_comment") or "",
+        "actions": actions,
+    }
+
+
 def load_failed_sessions(config: TrainingConfig) -> List[Dict[str, Any]]:
     """
-    Load sessions with low ratings from logs directory.
+    Load sessions rated at or below config.max_rating_for_failure.
 
     Args:
         config: Training configuration
 
     Returns:
-        List of failed session data
+        List of failed sessions as read_session() dicts
     """
     logger.info(f"Loading sessions from {config.logs_dir}...")
 
@@ -112,35 +171,26 @@ def load_failed_sessions(config: TrainingConfig) -> List[Dict[str, Any]]:
 
     failed_sessions = []
 
-    # Get all session directories
     session_dirs = [d for d in config.logs_dir.iterdir()
                    if d.is_dir() and d.name.startswith("session_")]
 
     logger.info(f"Found {len(session_dirs)} total sessions")
 
     for session_dir in session_dirs:
-        session_json = session_dir / "session.json"
-
-        if not session_json.exists():
-            continue
-
         try:
-            with open(session_json, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-
-            metadata = data.get("metadata", {})
-            rating = metadata.get("user_rating")
-
-            # Check if session qualifies as "failed"
-            if rating is not None and rating <= config.max_rating_for_failure:
-                failed_sessions.append(data)
-                logger.debug(f"  Loaded failed session: {session_dir.name} (rating: {rating})")
-
+            session = read_session(session_dir)
         except (json.JSONDecodeError, IOError) as e:
             logger.warning(f"  Skipping {session_dir.name}: {e}")
             continue
+        if session is None:
+            continue
 
-    logger.info(f"✓ Loaded {len(failed_sessions)} failed sessions (rating ≤{config.max_rating_for_failure})")
+        rating = session["rating"]
+        if isinstance(rating, (int, float)) and not isinstance(rating, bool) and rating <= config.max_rating_for_failure:
+            failed_sessions.append(session)
+            logger.debug(f"  Loaded failed session: {session_dir.name} (rating: {rating})")
+
+    logger.info(f"[OK] Loaded {len(failed_sessions)} failed sessions (rating <= {config.max_rating_for_failure})")
 
     return failed_sessions
 
@@ -165,25 +215,15 @@ def generate_corrective_examples(sessions: List[Dict[str, Any]]) -> List[Dict[st
     examples = []
 
     for session in sessions:
-        metadata = session.get("metadata", {})
-        iterations = session.get("iterations", [])
-
-        task = metadata.get("task", "Unknown task")
-        rating = metadata.get("user_rating", 0)
-        issues = metadata.get("what_went_wrong", [])
-        comment = metadata.get("feedback_comment", "")
+        task = session.get("task", "Unknown task")
+        issues = session.get("issues", [])
+        comment = session.get("comment", "")
 
         # Build corrective instruction
         if not issues:
             continue  # Skip if no specific issues identified
 
-        # Extract what Grok actually did
-        actions_taken = []
-        for iteration in iterations:
-            tool_results = iteration.get("tool_results", [])
-            for result in tool_results:
-                function_name = result.get("function_name", "unknown")
-                actions_taken.append(function_name)
+        actions_taken = session.get("actions", [])
 
         # Generate corrected plan based on issues
         corrections = generate_corrections(task, actions_taken, issues, comment)
@@ -278,14 +318,14 @@ def build_dataset(config: TrainingConfig) -> Dataset:
     if len(sessions) < config.min_failed_sessions:
         raise ValueError(
             f"Not enough failed sessions! Found {len(sessions)}, need at least {config.min_failed_sessions}\n"
-            f"Run more Grokputer tasks and rate them <4 to collect training data."
+            f"Rate finished sessions with record_feedback(session_dir, rating, [issues]) (writes feedback.json next to session.json)."
         )
 
     # Generate corrective examples
     examples = generate_corrective_examples(sessions)
 
     if not examples:
-        raise ValueError("No training examples generated! Make sure to specify 'what_went_wrong' issues.")
+        raise ValueError("No training examples generated! Pass at least one issue to record_feedback().")
 
     # Create Hugging Face Dataset
     dataset = Dataset.from_list(examples)
@@ -310,6 +350,28 @@ def get_next_version(output_dir: Path) -> int:
                 continue
 
     return max(versions) + 1 if versions else 1
+
+
+def build_sft_config(config: TrainingConfig, output_path: Path) -> SFTConfig:
+    """Training arguments for the pinned stack (transformers 4.57, trl 0.25): packing and max_length live in SFTConfig."""
+    return SFTConfig(
+        output_dir=str(output_path),
+        num_train_epochs=config.num_epochs,
+        per_device_train_batch_size=config.batch_size,
+        gradient_accumulation_steps=config.gradient_accumulation_steps,
+        learning_rate=config.learning_rate,
+        fp16=torch.cuda.is_available(),  # Mixed precision training; the setting is rejected without a GPU
+        bf16=False,  # SFTConfig turns bf16 on by default when fp16 is off, which fails on a machine without a GPU
+        logging_steps=10,
+        save_steps=100,
+        save_total_limit=3,  # Keep only last 3 checkpoints
+        eval_strategy="no",  # No eval set for small datasets
+        load_best_model_at_end=False,
+        report_to="none",  # No W&B/tensorboard
+        remove_unused_columns=False,
+        packing=True,  # Pack short sequences for efficiency
+        max_length=config.max_seq_length,
+    )
 
 
 def train_qlora(config: TrainingConfig, dataset: Dataset):
@@ -389,21 +451,7 @@ def train_qlora(config: TrainingConfig, dataset: Dataset):
     version = get_next_version(config.output_dir)
     output_path = config.output_dir / f"lora-v{version}"
 
-    training_args = TrainingArguments(
-        output_dir=str(output_path),
-        num_train_epochs=config.num_epochs,
-        per_device_train_batch_size=config.batch_size,
-        gradient_accumulation_steps=config.gradient_accumulation_steps,
-        learning_rate=config.learning_rate,
-        fp16=True,  # Mixed precision training
-        logging_steps=10,
-        save_steps=100,
-        save_total_limit=3,  # Keep only last 3 checkpoints
-        evaluation_strategy="no",  # No eval set for small datasets
-        load_best_model_at_end=False,
-        report_to="none",  # No W&B/tensorboard
-        remove_unused_columns=False,
-    )
+    training_args = build_sft_config(config, output_path)
 
     # 6. Formatting function for Alpaca prompts
     def formatting_func(example):
@@ -425,10 +473,8 @@ def train_qlora(config: TrainingConfig, dataset: Dataset):
         model=model,
         train_dataset=dataset,
         args=training_args,
-        tokenizer=tokenizer,
-        packing=True,  # Pack short sequences for efficiency
+        processing_class=tokenizer,
         formatting_func=formatting_func,
-        max_seq_length=config.max_seq_length,
     )
 
     # 8. Train!
@@ -504,6 +550,7 @@ def train_qlora(config: TrainingConfig, dataset: Dataset):
 
 def main():
     """Main training pipeline."""
+    require_gpu()
     # Parse config (could add argparse here)
     config = TrainingConfig()
 
